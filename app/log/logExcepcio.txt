@@ -1,0 +1,1 @@
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'pepito' for key 'uk_nombreUsuario'0.67682700 1718222749

@@ -1,0 +1,43 @@
+/* BARRA MENU */
+.menu{
+    background-color: rgba(200, 119, 119, 1);
+    box-shadow: 2px 2px 5px rgba(8, 8, 8, 0.767); /*Sombreado*/
+}
+
+.menu a {
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-decoration: none;
+}
+
+.menu a:hover { /*Al pasar el raton por encima del menu cambia de color*/
+    color:lightsalmon;
+    transition: all .3s;
+}
+
+/* */ 
+
+.h1Inicio {
+    color: rgba(200, 119, 119, 1);
+}
+
+.tablaP {
+    color:rgba(200, 119, 119, 1);
+    font-size: 20px;
+}
+
+.tablaP:hover { /*Al pasar el raton por encima del menu cambia de color*/
+    color: rgba(72, 32, 32, 1);
+    transition: all .3s;
+}
+
+/* FOOTER */
+.pie {
+    background-color: rgba(200, 119, 119, 1);
+    color: white;
+    box-shadow: 2px 2px 5px rgba(8, 8, 8, 0.767); /*Sombreado*/    
+}
+
+.borde {
+    border: 2px solid rgba(58, 56, 56, 0.918);
+}
