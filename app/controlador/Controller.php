@@ -55,23 +55,32 @@ class Controller {
             );
             $menu = $this->cargaMenu();
     
+            // Si ya hay un usuario con sesión activa, redirige al inicio
             if ($_SESSION['nivel_usuario'] > 0) {
                 header("location:index.php?ctl=inicio");
             }
+    
+            // Cuando se envía el formulario
             if (isset($_POST['bIniciarSesion'])) {
                 $nombreUsuario = htmlspecialchars(recoge('nombreUsuario'), ENT_QUOTES, 'UTF-8');
                 $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
     
+                // Verifica si el nombre de usuario es válido
                 if (cUser($nombreUsuario, "nombreUsuario", $params)) {
                     $m = new GastosModelo();
+                    // Consulta el usuario en la base de datos
                     if ($usuario = $m->consultarUsuario($nombreUsuario)) {
-                        if (comprobarhash($contrasenya, $usuario['contrasenya'])) {
+                        // Compara la contraseña ingresada con la contraseña hasheada en la base de datos
+                        if (password_verify($contrasenya, $usuario['contrasenya'])) {
+                            // La contraseña es correcta, se inicia la sesión
                             $_SESSION['idUser'] = $usuario['idUser'];
                             $_SESSION['nombreUsuario'] = $usuario['nombreUsuario'];
                             $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
     
+                            // Redirige al inicio
                             header('Location: index.php?ctl=inicio');
                         } else {
+                            // La contraseña es incorrecta
                             $params['mensaje'] = 'Contraseña incorrecta.';
                         }
                     } else {
@@ -96,8 +105,11 @@ class Controller {
             error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logError.txt");
             header('Location: index.php?ctl=error');
         }
+        
+        // Muestra el formulario de inicio de sesión
         require __DIR__ . '/../../web/templates/formIniciarSesion.php';
     }
+    
     
     public function registro() {
         $menu = $this->cargaMenu();
@@ -113,17 +125,19 @@ class Controller {
             'nivel_usuario' => 1
         );
         $errores = array();
+    
         if (isset($_POST['bRegistro'])) {
             $nombre = recoge('nombre');
             $apellido = recoge('apellido');
             $nombreUsuario = recoge('nombreUsuario');
             $contrasenya = recoge('contrasenya');
             $nivel_usuario = recoge('nivel_usuario');
-            
+    
             cTexto($nombre, "nombre", $errores);
             cTexto($apellido, "apellido", $errores);
             cUser($nombreUsuario, "nombreUsuario", $errores);
-            
+    
+            // Verificación de la contraseña
             if (strlen($contrasenya) < 8 || !preg_match('/[A-Z]/', $contrasenya) || !preg_match('/[0-9]/', $contrasenya)) {
                 $errores['contrasenya'] = "La contraseña debe contener al menos 1 letra mayúscula, 1 número y tener un tamaño mínimo de 8 caracteres.";
             }
@@ -135,7 +149,9 @@ class Controller {
     
             if (empty($errores)) {
                 try {
-                    $hashedPassword = encriptar($contrasenya); 
+                    // Cifra la contraseña de manera segura utilizando password_hash
+                    $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
+    
                     if ($m->insertarUsuario($nombre, $apellido, $nombreUsuario, $hashedPassword, $nivel_usuario)) {
                         $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
                         header('Location: index.php?ctl=registro');
@@ -176,6 +192,7 @@ class Controller {
     
         require __DIR__ . '/../../web/templates/formRegistro.php';
     }
+    
 
     public function listarGastos() {
         try {

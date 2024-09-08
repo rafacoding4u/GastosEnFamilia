@@ -24,19 +24,19 @@
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
         ?>
-        <form action="index.php?ctl=insertarProducto" method="post">
+        <form action="index.php?ctl=insertarGasto" method="post">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <p>* <input type="text" name="nombre" placeholder="Nombre" required><br></p>
-            <p>* 
-                <select name="categoria" required>
-                    <option value="">Seleccione una categoría</option>
-                    <?php foreach ($params['categorias'] as $categoria) { ?>
-                        <option value="<?php echo $categoria['idCategoria']; ?>"><?php echo $categoria['nombreCategoria']; ?></option>
-                    <?php } ?>
-                </select>
-            </p>
-            <p>* <input type="number" step="0.01" name="precio" placeholder="Precio" required><br></p>
-            <input type="submit" name="bInsertarProducto" value="Aceptar"><br>
+            
+            <!-- Campo para el concepto del gasto -->
+            <p>* <input type="text" name="concepto" placeholder="Concepto del gasto" required><br></p>
+            
+            <!-- Campo para el monto del gasto -->
+            <p>* <input type="number" step="0.01" name="monto" placeholder="Monto" required><br></p>
+            
+            <!-- Campo para la fecha del gasto -->
+            <p>* <input type="date" name="fecha" required><br></p>
+            
+            <input type="submit" name="bInsertarGasto" value="Aceptar"><br>
         </form>
     </div>
 </div>

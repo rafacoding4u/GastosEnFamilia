@@ -1,43 +1,38 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>TIENDA VIRTUAL</title>
+    <title>GastosEnFamilia</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="<?php echo 'css/' . Config::$mvc_vis_css ?>" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    
-    <style>/* No me lee el .css así que pongo el style aquí */
+
+    <style>
         body.reading-mode { 
-            background-color: #f0f0f0; /* Fondo muy claro */
-            color: #000000; /* Texto negro */
+            background-color: #f0f0f0;
+            color: #000000;
         }
         .menu {
-            background-color: #FFDAB9; /* Color asalmonado claro */
+            background-color: #B0E0E6; /* Color claro para la navegación */
         }
         .pie {
-            background-color: #FFDAB9;
+            background-color: #B0E0E6;
             color: #000000;
         }
         .menu.reading-mode {
-            background-color: #dcdcdc; /* Fondo claro */
+            background-color: #dcdcdc;
         }
         .pie.reading-mode {
             background-color: #dcdcdc;
             color: #000000;
         }
-        .tablaP.reading-mode {
-            color: #000000;
-        }
-        .borde.reading-mode {
-            border-color: #888888; /* Bordes grises */
-        }
         table, th, td {
-            border: 1px solid #888888; /* Bordes grises */
+            border: 1px solid #888888;
         }
-        table.reading-mode, th.reading-mode, td.reading-mode {
-            border-color: #888888; /* Bordes grises en modo lectura */
+        .content-header {
+            margin: 20px 0;
         }
     </style>
+
     <script>
         function confirmDelete(url) {
             if (confirm("¿Estás seguro de que deseas eliminar este elemento?")) {
@@ -50,15 +45,11 @@
                 document.body.classList.add('reading-mode');
                 document.querySelectorAll('.menu').forEach(el => el.classList.add('reading-mode'));
                 document.querySelectorAll('.pie').forEach(el => el.classList.add('reading-mode'));
-                document.querySelectorAll('.tablaP').forEach(el => el.classList.add('reading-mode'));
-                document.querySelectorAll('.borde').forEach(el => el.classList.add('reading-mode'));
                 document.querySelectorAll('table, th, td').forEach(el => el.classList.add('reading-mode'));
             } else {
                 document.body.classList.remove('reading-mode');
                 document.querySelectorAll('.menu').forEach(el => el.classList.remove('reading-mode'));
                 document.querySelectorAll('.pie').forEach(el => el.classList.remove('reading-mode'));
-                document.querySelectorAll('.tablaP').forEach(el => el.classList.remove('reading-mode'));
-                document.querySelectorAll('.borde').forEach(el => el.classList.remove('reading-mode'));
                 document.querySelectorAll('table, th, td').forEach(el => el.classList.remove('reading-mode'));
             }
         }
@@ -87,7 +78,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-11">
-                    <h1 class="text-center"><b>TIENDA VIRTUAL</b></h1>    
+                    <h1 class="text-center"><b>Gastos En Familia</b></h1>    
                 </div>
                 <div class="col-md-1">
                     <button id="readingModeToggle">Modo Lectura</button>
@@ -96,24 +87,27 @@
         </div>
     </div>
 
+    <!-- Menú de navegación -->
     <?php   
     if (!isset($menu)) {
-        $menu = 'menuInvitado.php';
+        $menu = 'menuInvitado.php';  // Aquí puedes poner la lógica para mostrar distintos menús
     }
     include $menu;
     ?>
 
-    <div class="container-fluid">
+    <!-- Contenido principal -->
+    <div class="container-fluid content-header">
         <div class="container">
             <div id="contenido">
-            <?php echo $contenido ?>
+                <?php echo $contenido ?>
             </div>
         </div>
     </div>
 
+    <!-- Pie de página -->
     <div class="container-fluid pie p-2 my-5">
         <div class="container">
-            <h5 class="text-center"> Ten la tienda al alcance de tu mano</h5>
+            <h5 class="text-center">Gestiona tus finanzas familiares de manera eficiente</h5>
         </div>
     </div>
 
@@ -136,6 +130,7 @@
                 }
             });
         });
+
         /* cookies */
         function setCookie(name, value, hours) {
             var expires = "";
@@ -157,8 +152,6 @@
             }
             return null;
         }
-        
     </script>
 </body>
 </html>
-

@@ -1,1 +1,4 @@
 SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'pepito' for key 'uk_nombreUsuario'0.67682700 1718222749
+SQLSTATE[HY000] [1049] Unknown database 'gastos_db'0.33397000 1725814549
+SQLSTATE[HY000] [1049] Unknown database 'gastos_db'0.81737500 1725814626
+SQLSTATE[HY000] [1049] Unknown database 'gastos_db'0.41373600 1725814761
