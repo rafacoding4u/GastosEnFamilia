@@ -1,6 +1,6 @@
 <?php
 
-class GastosController {
+class Controller {
 
     private function cargaMenu() {
         if ($_SESSION['nivel_usuario'] == 0) {
