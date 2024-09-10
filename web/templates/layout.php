@@ -12,7 +12,7 @@
             color: #000000;
         }
         .menu {
-            background-color: #B0E0E6; /* Color claro para la navegación */
+            background-color: #B0E0E6;
         }
         .pie {
             background-color: #B0E0E6;
@@ -40,7 +40,7 @@
             }
         }
         function setTheme(themeName) {
-            document.cookie = "theme=" + themeName + "; path=/; max-age=10800"; /* 3 horas */
+            document.cookie = "theme=" + themeName + "; path=/; max-age=10800"; 
             if (themeName === 'reading') {
                 document.body.classList.add('reading-mode');
                 document.querySelectorAll('.menu').forEach(el => el.classList.add('reading-mode'));
@@ -90,9 +90,15 @@
     <!-- Menú de navegación -->
     <?php   
     if (!isset($menu)) {
-        $menu = 'menuInvitado.php';  // Aquí puedes poner la lógica para mostrar distintos menús
+        // Si no se define un menú, por defecto se carga el de usuario normal
+        $menu = 'menuUser.php';  // Cambia esto al menú que consideres necesario como default
     }
-    include $menu;
+
+    if (file_exists($menu)) {
+        include $menu;
+    } else {
+        echo "<p>Error: El archivo de menú no existe.</p>";
+    }
     ?>
 
     <!-- Contenido principal -->
@@ -111,7 +117,7 @@
         </div>
     </div>
 
-    <script>/* script para el botón de modo lectura */
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             var readingModeToggle = document.getElementById('readingModeToggle');
             var readingMode = getCookie('readingMode');
@@ -131,7 +137,6 @@
             });
         });
 
-        /* cookies */
         function setCookie(name, value, hours) {
             var expires = "";
             if (hours) {
