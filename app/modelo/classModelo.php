@@ -29,6 +29,7 @@ class GastosModelo {
     }
 
     // Métodos adicionales relacionados con los refranes y usuarios...// -------------------------------
+
     // Métodos relacionados con refranes
     // -------------------------------
 
@@ -82,7 +83,7 @@ class GastosModelo {
     }
 
     // -------------------------------
-    // Otros métodos relacionados con la aplicación
+    // Métodos adicionales relacionados con la aplicación
     // -------------------------------
 
     /**
@@ -99,7 +100,6 @@ class GastosModelo {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-        
 
     /**
      * Método para verificar si un nombre de usuario ya existe en la base de datos.
@@ -114,8 +114,6 @@ class GastosModelo {
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
-    
-    
 
     /**
      * Método para insertar un nuevo usuario en la base de datos.
@@ -145,11 +143,31 @@ class GastosModelo {
         return $stmt->execute();
     }
 
-    // Aquí se pueden añadir otros métodos según las necesidades de la aplicación
+    // -------------------------------
+    // Métodos relacionados con los ingresos y gastos
+    // -------------------------------
 
+    /**
+     * Obtener el total de ingresos.
+     * 
+     * @return float Total de ingresos.
+     */
+    public function obtenerTotalIngresos() {
+        $sql = "SELECT SUM(importe) AS totalIngresos FROM ingresos";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchColumn();
+    }
+
+    /**
+     * Obtener el total de gastos.
+     * 
+     * @return float Total de gastos.
+     */
+    public function obtenerTotalGastos() {
+        $sql = "SELECT SUM(importe) AS totalGastos FROM gastos";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchColumn();
+    }
 }
+
 ?>
-
-    
-
-    

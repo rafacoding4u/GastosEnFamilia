@@ -16,23 +16,23 @@ class Controller {
 
     private function cargaMenu() {
         if (isset($_SESSION['nivel_usuario'])) {
-            if ($_SESSION['nivel_usuario'] == 'usuario') {
-                return 'menuUser.php';
-            } else if ($_SESSION['nivel_usuario'] == 'admin') {
-                return 'menuAdmin.php';
-            } else if ($_SESSION['nivel_usuario'] == 'superadmin') {
-                return 'menuSuperadmin.php';
-            } else {
-                return 'menuUser.php'; // Valor por defecto para usuarios estándar
+            switch ($_SESSION['nivel_usuario']) {
+                case 'usuario':
+                    return 'menuUser.php';
+                case 'admin':
+                    return 'menuAdmin.php';
+                case 'superadmin':
+                    return 'menuSuperadmin.php';
+                default:
+                    return 'menuUser.php'; // Valor por defecto para usuarios estándar
             }
-        } else {
-            return null;
         }
+        return null;
     }
-    
+
     private function render($vista, $params = array()) {
         ob_start();
-        extract($params); 
+        extract($params);
         require __DIR__ . '/../../web/templates/' . $vista;
         $contenido = ob_get_clean();
 
@@ -41,7 +41,7 @@ class Controller {
         if ($menu) {
             require __DIR__ . '/../../web/templates/layout.php';
         } else {
-            // Si no hay un menú específico, cargar solo el layout general
+            echo "Error: No se pudo cargar el menú.";
             require __DIR__ . '/../../web/templates/layout.php';
         }
     }
@@ -60,11 +60,19 @@ class Controller {
     }
 
     public function inicio() {
-        echo "DEBUG: nivel_usuario -> " . $_SESSION['nivel_usuario']; // Para verificar el nivel del usuario
+        // Obtener datos financieros del usuario para la vista
+        $m = new GastosModelo();
+        $totalIngresos = $m->obtenerTotalIngresos(); // Sin argumentos, corregido
+        $totalGastos = $m->obtenerTotalGastos(); // Sin argumentos, corregido
+        $balance = $totalIngresos - $totalGastos;
+
         $params = array(
             'mensaje' => 'Bienvenido a GastosEnFamilia',
             'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
-            'fecha' => date('d-m-Y')
+            'fecha' => date('d-m-Y'),
+            'totalIngresos' => $totalIngresos,
+            'totalGastos' => $totalGastos,
+            'balance' => $balance
         );
         $this->render('inicio.php', $params);
     }
@@ -188,5 +196,6 @@ class Controller {
     
         $this->render('formRegistro.php', $params);
     }
+
 }
 ?>
