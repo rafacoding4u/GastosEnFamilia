@@ -13,7 +13,10 @@ ini_set('display_errors', 1);
 
 session_start();
 echo "DEBUG: Iniciando index.php <br>";
-print_r($_SESSION);
+echo '<pre>';
+print_r($_SESSION); // Muestra el contenido de la sesión
+echo '</pre>';
+
 
 if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;

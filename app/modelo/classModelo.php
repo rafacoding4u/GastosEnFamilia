@@ -91,13 +91,15 @@ class GastosModelo {
      * @param string $nombreUsuario Nombre de usuario.
      * @return array Datos del usuario.
      */
-    public function consultarUsuario($nombreUsuario) {
-        $sql = "SELECT * FROM usuarios WHERE alias = :alias"; // Cambiamos 'nombreUsuario' por 'alias'
+    public function consultarUsuario($alias) {
+        echo "DEBUG: Alias en consulta: " . $alias . "<br>";
+        $sql = "SELECT * FROM usuarios WHERE alias = :alias";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':alias', $nombreUsuario, PDO::PARAM_STR); // Reemplazamos el parámetro también
+        $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }    
+    }
+        
 
     /**
      * Método para verificar si un nombre de usuario ya existe en la base de datos.
@@ -105,13 +107,15 @@ class GastosModelo {
      * @param string $nombreUsuario Nombre de usuario.
      * @return bool True si el usuario existe, False si no.
      */
-    public function existeUsuario($nombreUsuario) {
-        $sql = "SELECT COUNT(*) FROM usuarios WHERE nombreUsuario = :nombreUsuario";
+    public function existeUsuario($alias) {
+        $sql = "SELECT COUNT(*) FROM usuarios WHERE alias = :alias";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreUsuario', $nombreUsuario, PDO::PARAM_STR);
+        $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
+    
+    
 
     /**
      * Método para insertar un nuevo usuario en la base de datos.

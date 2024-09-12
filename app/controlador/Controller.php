@@ -15,14 +15,22 @@ class Controller {
     }
 
     private function cargaMenu() {
-        if ($_SESSION['nivel_usuario'] == 'usuario') {
-            return 'menuUser.php';
-        } else if ($_SESSION['nivel_usuario'] == 'admin') {
-            return 'menuAdmin.php';
-        } else if ($_SESSION['nivel_usuario'] == 'superadmin') {
-            return 'menuSuperadmin.php';
+        if (isset($_SESSION['nivel_usuario'])) {
+            if ($_SESSION['nivel_usuario'] == 'usuario') {
+                return 'menuUser.php';
+            } else if ($_SESSION['nivel_usuario'] == 'admin') {
+                return 'menuAdmin.php';
+            } else if ($_SESSION['nivel_usuario'] == 'superadmin') {
+                return 'menuSuperadmin.php';
+            } else {
+                return 'menuUser.php'; // Valor por defecto para usuarios estándar
+            }
+        } else {
+            return null;
         }
     }
+    
+    
 
     private function render($vista, $params = array()) {
         ob_start();
@@ -30,8 +38,14 @@ class Controller {
         require __DIR__ . '/../../web/templates/' . $vista;
         $contenido = ob_get_clean();
 
+        // Cargar el menú si está disponible
         $menu = $this->cargaMenu();
-        require __DIR__ . '/../../web/templates/layout.php';
+        if ($menu) {
+            require __DIR__ . '/../../web/templates/layout.php';
+        } else {
+            // Si no hay un menú específico, cargar solo el layout general
+            require __DIR__ . '/../../web/templates/layout.php';
+        }
     }
 
     public function home() {
@@ -48,6 +62,7 @@ class Controller {
     }
 
     public function inicio() {
+        echo "DEBUG: nivel_usuario -> " . $_SESSION['nivel_usuario']; // Para verificar el nivel del usuario
         $params = array(
             'mensaje' => 'Bienvenido a GastosEnFamilia',
             'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
@@ -55,6 +70,7 @@ class Controller {
         );
         $this->render('inicio.php', $params);
     }
+    
 
     public function salir() {
         session_destroy();
@@ -67,35 +83,50 @@ class Controller {
 
     public function iniciarSesion() {
         $params = array(
-            'nombreUsuario' => '',
+            'alias' => '', // Actualizado de 'nombreUsuario' a 'alias'
             'contrasenya' => ''
         );
-
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bIniciarSesion'])) {
-            $nombreUsuario = htmlspecialchars(recoge('nombreUsuario'), ENT_QUOTES, 'UTF-8');
+            $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
             $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
-
+    
+            echo "DEBUG: Alias recibido: " . $alias . "<br>";
+            echo "DEBUG: Contraseña recibida: " . $contrasenya . "<br>";
+    
             $m = new GastosModelo();
-            if ($usuario = $m->consultarUsuario($nombreUsuario)) {
+            $usuario = $m->consultarUsuario($alias);
+    
+            if ($usuario) {
+                echo "DEBUG: Usuario encontrado: ";
+                print_r($usuario); // Ver los datos del usuario encontrados en la base de datos
+                echo "<br>";
+    
                 if (password_verify($contrasenya, $usuario['contrasenya'])) {
+                    echo "DEBUG: Contraseña correcta<br>";
                     iniciarSesion($usuario);
                     header('Location: index.php?ctl=inicio');
                     exit();
                 } else {
+                    echo "DEBUG: Contraseña incorrecta<br>";
                     $params['mensaje'] = 'Contraseña incorrecta.';
                 }
             } else {
+                echo "DEBUG: Usuario no encontrado<br>";
                 $params['mensaje'] = 'Usuario no encontrado.';
             }
         }
         $this->render('formIniciarSesion.php', $params);
     }
+    
+    
+        
 
     public function registro() {
         $params = array(
             'nombre' => '',
             'apellido' => '',
-            'nombreUsuario' => '',
+            'alias' => '',
             'contrasenya' => '',
             'fecha_nacimiento' => '',
             'email' => '',
@@ -104,39 +135,41 @@ class Controller {
             'es_menor' => false
         );
         $errores = array();
-
+    
         if (isset($_POST['bRegistro'])) {
             $nombre = recoge('nombre');
             $apellido = recoge('apellido');
-            $nombreUsuario = recoge('nombreUsuario');
+            $alias = recoge('alias');
             $contrasenya = recoge('contrasenya');
             $fecha_nacimiento = recoge('fecha_nacimiento');
             $email = recoge('email');
             $telefono = recoge('telefono');
             $nivel_usuario = recoge('nivel_usuario');
-
+    
+            // Validar campos
             cTexto($nombre, "nombre", $errores);
             cTexto($apellido, "apellido", $errores);
-            cUser($nombreUsuario, "nombreUsuario", $errores);
+            cUser($alias, "alias", $errores);
             cContrasenya($contrasenya, $errores);
             cEmail($email, $errores);
             cTelefono($telefono, $errores);
-
+    
+            // Validar la edad y asignar nivel de usuario si es menor
             if (validarEdad($fecha_nacimiento, $errores)) {
                 $params['es_menor'] = true;
                 $nivel_usuario = 'usuario';
             }
-
+    
+            // Comprobar si ya existe el alias en la base de datos
             $m = new GastosModelo();
-            if ($m->existeUsuario($nombreUsuario)) {
-                $errores['nombreUsuario'] = "El nombre de usuario ya existe. Por favor elija otro.";
+            if ($m->existeUsuario($alias)) {
+                $errores['alias'] = "El alias ya existe. Por favor elija otro.";
             }
-
+    
             if (empty($errores)) {
                 try {
                     $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
-
-                    if ($m->insertarUsuario($nombre, $apellido, $nombreUsuario, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono)) {
+                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono)) {
                         $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
                         header('Location: index.php?ctl=iniciarSesion');
                         exit();
@@ -152,8 +185,10 @@ class Controller {
                 }
             }
         }
-
+    
         $this->render('formRegistro.php', $params);
     }
+    
+    
 }
 ?>

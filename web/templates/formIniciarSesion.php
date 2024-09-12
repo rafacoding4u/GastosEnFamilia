@@ -5,8 +5,8 @@
 
     <form action="index.php?ctl=iniciarSesion" method="post">
         <div class="form-group">
-            <label for="nombreUsuario">Nombre de Usuario:</label>
-            <input type="text" id="nombreUsuario" name="nombreUsuario" class="form-control" required>
+            <label for="alias">Alias (Nombre de Usuario):</label>
+            <input type="text" id="alias" name="alias" class="form-control" required>
         </div>
 
         <div class="form-group">
@@ -25,5 +25,3 @@
 </div>
 
 <?php include 'footer.php'; ?>
-
-
