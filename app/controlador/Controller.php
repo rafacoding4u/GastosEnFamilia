@@ -30,8 +30,6 @@ class Controller {
         }
     }
     
-    
-
     private function render($vista, $params = array()) {
         ob_start();
         extract($params); 
@@ -70,7 +68,6 @@ class Controller {
         );
         $this->render('inicio.php', $params);
     }
-    
 
     public function salir() {
         session_destroy();
@@ -104,7 +101,13 @@ class Controller {
     
                 if (password_verify($contrasenya, $usuario['contrasenya'])) {
                     echo "DEBUG: Contraseña correcta<br>";
-                    iniciarSesion($usuario);
+                    $_SESSION['nivel_usuario'] = $usuario['nivel_usuario']; // Asignamos el nivel de usuario
+                    $_SESSION['usuario'] = array(
+                        'id' => $usuario['idUser'],
+                        'nombre' => $usuario['nombre'],
+                        'nivel_usuario' => $usuario['nivel_usuario'],
+                        'email' => $usuario['email']
+                    );
                     header('Location: index.php?ctl=inicio');
                     exit();
                 } else {
@@ -118,9 +121,6 @@ class Controller {
         }
         $this->render('formIniciarSesion.php', $params);
     }
-    
-    
-        
 
     public function registro() {
         $params = array(
@@ -188,7 +188,5 @@ class Controller {
     
         $this->render('formRegistro.php', $params);
     }
-    
-    
 }
 ?>

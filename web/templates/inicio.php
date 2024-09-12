@@ -3,15 +3,35 @@
 <div class="container p-4">
     <h2>Situación Financiera</h2>
 
-    <p><b>Total Ingresos:</b> <?= htmlspecialchars($params['totalIngresos']) ?></p>
-    <p><b>Total Gastos:</b> <?= htmlspecialchars($params['totalGastos']) ?></p>
-    <p><b>Balance:</b> <?= htmlspecialchars($params['balance']) ?></p>
+    <!-- Total Ingresos -->
+    <p><b>Total Ingresos:</b> 
+        <?= isset($params['totalIngresos']) ? htmlspecialchars($params['totalIngresos']) : '<span class="text-muted">No disponible</span>' ?>
+    </p>
 
+    <!-- Total Gastos -->
+    <p><b>Total Gastos:</b> 
+        <?= isset($params['totalGastos']) ? htmlspecialchars($params['totalGastos']) : '<span class="text-muted">No disponible</span>' ?>
+    </p>
+
+    <!-- Balance -->
+    <p><b>Balance:</b> 
+        <?= isset($params['balance']) ? htmlspecialchars($params['balance']) : '<span class="text-muted">No disponible</span>' ?>
+    </p>
+
+    <!-- Mensaje informativo si está definido -->
     <?php if (isset($params['mensaje'])): ?>
-        <div class="alert alert-info">
+        <div class="alert alert-info mt-3">
             <?= htmlspecialchars($params['mensaje']) ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Mensaje por si no hay datos -->
+    <?php if (!isset($params['totalIngresos']) && !isset($params['totalGastos']) && !isset($params['balance'])): ?>
+        <div class="alert alert-warning mt-3">
+            No se encontraron datos financieros. Por favor, añade ingresos y gastos para ver tu situación financiera.
         </div>
     <?php endif; ?>
 </div>
 
 <?php include 'footer.php'; ?>
+

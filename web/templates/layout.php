@@ -14,11 +14,12 @@
     </header>
 
    <!-- Menú según el rol del usuario -->
-<nav>
+   <nav>
     <?php 
     if (isset($menu)) {
         // Verificamos si el archivo de menú existe antes de incluirlo
         $menuPath = __DIR__ . '/' . $menu;
+        echo "<p>DEBUG: Intentando cargar el menú desde {$menuPath}</p>"; // Depuración
         if (file_exists($menuPath)) {
             include $menuPath;
         } else {
@@ -29,6 +30,7 @@
     }
     ?>
 </nav>
+
 
 
 
