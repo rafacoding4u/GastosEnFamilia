@@ -5,13 +5,25 @@ class Controller {
 
     private function cargaMenu() {
         // Mejora para usar los roles por nombre
-        if ($_SESSION['nivel_usuario'] == 'usuario') {
+        if ($_SESSION['usuario']['nivel_usuario'] == 'usuario') {
             return 'menuUser.php';
-        } else if ($_SESSION['nivel_usuario'] == 'admin') {
+        } else if ($_SESSION['usuario']['nivel_usuario'] == 'admin') {
             return 'menuAdmin.php';
-        } else if ($_SESSION['nivel_usuario'] == 'superadmin') {
-            return 'menuSuperAdmin.php';
+        } else if ($_SESSION['usuario']['nivel_usuario'] == 'superadmin') {
+            return 'menuSuperadmin.php';
         }
+    }
+
+    private function render($vista, $params = array()) {
+        // Buffer de salida para capturar la vista y pasarla al layout
+        ob_start();
+        extract($params); // Extraemos las variables para usarlas en la vista
+        require __DIR__ . '/../../web/templates/' . $vista;
+        $contenido = ob_get_clean();
+
+        // Cargar el layout con el contenido de la vista
+        $menu = $this->cargaMenu();
+        require __DIR__ . '/../../web/templates/layout.php';
     }
 
     public function home() {
@@ -20,75 +32,60 @@ class Controller {
             'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
             'fecha' => date('d-m-Y')
         );
-        $menu = 'menuHome.php';
-
-        if ($_SESSION['nivel_usuario'] > 0) {
+        if (isset($_SESSION['usuario']['nivel_usuario']) && $_SESSION['usuario']['nivel_usuario'] > 0) {
             header("location:index.php?ctl=inicio");
+            exit();
         }
-        require __DIR__ . '/../../web/templates/inicio.php';
+        $this->render('inicio.php', $params);
     }
-
+    
     public function inicio() {
         $params = array(
             'mensaje' => 'Bienvenido a GastosEnFamilia',
             'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
             'fecha' => date('d-m-Y')
         );
-        $menu = $this->cargaMenu();
-
-        require __DIR__ . '/../../web/templates/inicio.php';
+        $this->render('inicio.php', $params);
     }
 
     public function salir() {
-        session_destroy();
+        cerrarSesion();
         header("location:index.php?ctl=home");
     }
 
     public function error() {
-        $menu = $this->cargaMenu();
-        require __DIR__ . '/../../web/templates/error.php';
+        $params = array('mensaje' => 'Ha ocurrido un error en el sistema. Por favor, inténtalo más tarde.');
+        $this->render('error.php', $params);
     }
 
     public function iniciarSesion() {
-        try {
-            $params = array(
-                'nombreUsuario' => '',
-                'contrasenya' => ''
-            );
-            $menu = $this->cargaMenu();
-        
-            if (isset($_POST['bIniciarSesion'])) {
-                $nombreUsuario = htmlspecialchars(recoge('nombreUsuario'), ENT_QUOTES, 'UTF-8');
-                $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
-        
-                $m = new GastosModelo();
-                if ($usuario = $m->consultarUsuario($nombreUsuario)) {
-                    if (password_verify($contrasenya, $usuario['contrasenya'])) {
-                        // Iniciar sesión y guardar datos del usuario
-                        iniciarSesion($usuario);
-                        header('Location: index.php?ctl=inicio');
-                    } else {
-                        $params['mensaje'] = 'Contraseña incorrecta.';
-                    }
+        $params = array(
+            'nombreUsuario' => '',
+            'contrasenya' => '',
+            'mensaje' => ''
+        );
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bIniciarSesion'])) {
+            $nombreUsuario = htmlspecialchars(recoge('nombreUsuario'), ENT_QUOTES, 'UTF-8');
+            $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
+    
+            $m = new GastosModelo();
+            if ($usuario = $m->consultarUsuario($nombreUsuario)) {
+                if (password_verify($contrasenya, $usuario['contrasenya'])) {
+                    iniciarSesion($usuario);
+                    header('Location: index.php?ctl=inicio');
+                    exit();
                 } else {
-                    $params['mensaje'] = 'Usuario no encontrado.';
+                    $params['mensaje'] = 'Contraseña incorrecta.';
                 }
+            } else {
+                $params['mensaje'] = 'Usuario no encontrado.';
             }
-        } catch (Exception $e) {
-            error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logExcepcio.txt");
-            header('Location: index.php?ctl=error');
         }
-    
-        require __DIR__ . '/../../web/templates/formIniciarSesion.php';
+        $this->render('formIniciarSesion.php', $params);
     }
-    
 
     public function registro() {
-        $menu = $this->cargaMenu();
-        if ($_SESSION['nivel_usuario'] > 0) {
-            header("location:index.php?ctl=inicio");
-        }
-    
         $params = array(
             'nombre' => '',
             'apellido' => '',
@@ -97,8 +94,9 @@ class Controller {
             'fecha_nacimiento' => '',
             'email' => '',
             'telefono' => '',
-            'nivel_usuario' => 'usuario', // Nivel de usuario por defecto
-            'es_menor' => false // Inicializamos este parámetro para la vista
+            'nivel_usuario' => 'usuario',
+            'es_menor' => false,
+            'mensaje' => ''
         );
         $errores = array();
     
@@ -112,18 +110,15 @@ class Controller {
             $telefono = recoge('telefono');
             $nivel_usuario = recoge('nivel_usuario');
     
-            // Calcular la edad a partir de la fecha de nacimiento
             $fecha_actual = new DateTime();
             $fecha_nacimiento_dt = new DateTime($fecha_nacimiento);
             $edad = $fecha_actual->diff($fecha_nacimiento_dt)->y;
     
-            // Si el usuario es menor de 18 años, solo puede ser "usuario"
             if ($edad < 18) {
                 $params['es_menor'] = true;
-                $nivel_usuario = 'usuario'; // Forzamos el nivel de usuario a "usuario"
+                $nivel_usuario = 'usuario';
             }
     
-            // Validaciones de los campos
             cTexto($nombre, "nombre", $errores);
             cTexto($apellido, "apellido", $errores);
             cUser($nombreUsuario, "nombreUsuario", $errores);
@@ -151,7 +146,7 @@ class Controller {
     
                     if ($m->insertarUsuario($nombre, $apellido, $nombreUsuario, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono)) {
                         $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
-                        header('Location: index.php?ctl=registro');
+                        header('Location: index.php?ctl=iniciarSesion');
                         exit();
                     } else {
                         $params['mensaje'] = 'No se ha podido insertar el usuario. Revisa el formulario.';
@@ -166,93 +161,30 @@ class Controller {
             }
         }
     
-        require __DIR__ . '/../../web/templates/formRegistro.php';
-    }
-    
-    public function listarGastos() {
-        try {
-            checkUser(); // Verifica que el usuario esté autenticado
-            $m = new GastosModelo(); // Objeto para interactuar con la base de datos
-            $usuario = $_SESSION['usuario'];
-    
-            // Verifica el rol y carga los gastos correspondientes
-            if (esSuperadmin()) {
-                $params = array('gastos' => $m->listarGastosTodos());
-            } elseif (esAdmin()) {
-                // Admin puede ver los gastos de su familia o grupo
-                $params = array('gastos' => $m->listarGastosPorGrupoFamilia($usuario['idFamilia'], $usuario['idGrupo']));
-            } elseif (esUsuarioNormal()) {
-                // Usuario normal solo ve sus propios gastos
-                $params = array('gastos' => $m->listarGastosPorUsuario($usuario['idUser']));
-            }
-    
-            // Si no hay gastos que mostrar
-            if (!$params['gastos']) {
-                $params['mensaje'] = "No hay gastos que mostrar.";
-            }
-        } catch (Exception $e) {
-            // Manejo de errores
-            error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logExcepcio.txt");
-            header('Location: index.php?ctl=error');
-        }
-    
-        $menu = $this->cargaMenu(); // Cargar el menú correspondiente
-        require __DIR__ . '/../../web/templates/mostrarGastos.php'; // Cargar la vista
-    }
-    
-
-    public function insertarGasto() {
-        $menu = $this->cargaMenu();
-        $errores = [];
-        $params = ['concepto' => '', 'monto' => '', 'fecha' => ''];
-        
-        checkUser(); // Verifica que el usuario esté autenticado
-    
-        if (esAdmin() || esSuperadmin() || esUsuarioNormal()) {
-            $m = new GastosModelo();
-            if (isset($_POST['bInsertarGasto'])) {
-                $concepto = htmlspecialchars(recoge('concepto'), ENT_QUOTES, 'UTF-8');
-                $monto = htmlspecialchars(recoge('monto'), ENT_QUOTES, 'UTF-8');
-                $fecha = recoge('fecha');
-        
-                if ($m->insertarGasto($concepto, $monto, $fecha, $_SESSION['usuario']['idUser'])) {
-                    $_SESSION['mensaje_exito_gasto'] = 'Gasto registrado correctamente';
-                    header('Location: index.php?ctl=insertarGasto');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se ha podido registrar el gasto.';
-                }
-            }
-        }
-        
-        require __DIR__ . '/../../web/templates/formInsertarGasto.php';
-    }
-    
-    function checkUser() {
-        if (!isset($_SESSION['usuario'])) {
-            // Redirigir al formulario de inicio de sesión si no hay usuario en la sesión
-            header("Location: index.php?ctl=iniciarSesion");
-            exit();
-        }
-        return $_SESSION['usuario']; // Retorna los datos del usuario almacenados en la sesión
-    }
-    public function enviarRefranDiario($momento) {
-        $horaEnvio = ($momento == 'mañana') ? '11:00' : '20:00';
-        $m = new RefranesModelo();
-        
-        // Obtener el refrán que no se haya usado en 365 días
-        $refran = $m->obtenerRefranNoUsado();
-    
-        // Obtener la lista de usuarios
-        $usuarios = $m->listarUsuarios();
-        
-        foreach ($usuarios as $usuario) {
-            // Enviar refrán por correo electrónico
-            mail($usuario['email'], "Refrán del día", $refran['texto_refran']);
-    
-            // Registrar el envío en la base de datos
-            $m->registrarEnvioRefran($refran['idRefran'], $usuario['idUser'], $momento);
-        }
+        $this->render('formRegistro.php', $params);
     }
 
+    // Función para ver la situación financiera
+    public function verSituacion() {
+        $modelo = new GastosModelo();
+        $situacion = [];
+
+        if (esSuperadmin()) {
+            $situacion = $modelo->obtenerSituacionGlobal(); // Todos los usuarios
+            $totalSaldo = $modelo->obtenerSaldoTotal();
+        } elseif (esAdmin()) {
+            $situacion = $modelo->obtenerSituacionGrupo($_SESSION['usuario']['idGrupo']);
+            $totalSaldo = $modelo->obtenerSaldoTotalGrupo($_SESSION['usuario']['idGrupo']);
+        } elseif (esUsuarioNormal()) {
+            $situacion = $modelo->obtenerSituacionUsuario($_SESSION['usuario']['idUser']);
+            $totalSaldo = null; // No se muestra saldo total
+        }
+
+        $params = [
+            'situacion' => $situacion,
+            'totalSaldo' => $totalSaldo ?? null
+        ];
+
+        $this->render('verSituacion.php', $params);
+    }
 }

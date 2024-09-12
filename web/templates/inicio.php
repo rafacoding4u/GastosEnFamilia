@@ -1,26 +1,17 @@
-<?php ob_start() ?>
+<?php include 'layout.php'; ?>
 
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <!-- Mostrar la fecha actual -->
-            <h3 class="text-center mb-4"><b><?php echo $params['fecha'] ?></b></h3>
+<div class="container p-4">
+    <h2>Situación Financiera</h2>
 
-            <!-- Mostrar mensaje de bienvenida -->
-            <h1 class="display-4"><b><?php echo $params['mensaje'] ?></b></h1>
+    <p><b>Total Ingresos:</b> <?= htmlspecialchars($params['totalIngresos']) ?></p>
+    <p><b>Total Gastos:</b> <?= htmlspecialchars($params['totalGastos']) ?></p>
+    <p><b>Balance:</b> <?= htmlspecialchars($params['balance']) ?></p>
 
-            <!-- Mostrar mensaje secundario -->
-            <h4 class="text-muted mt-3"><?php echo $params['mensaje2'] ?></h4>
-            
-            <!-- Botones de acción -->
-            <div class="mt-4">
-                <a href="index.php?ctl=iniciarSesion" class="btn btn-primary btn-lg mx-2">Iniciar Sesión</a>
-                <a href="index.php?ctl=registro" class="btn btn-secondary btn-lg mx-2">Registrarse</a>
-            </div>
+    <?php if (isset($params['mensaje'])): ?>
+        <div class="alert alert-info">
+            <?= htmlspecialchars($params['mensaje']) ?>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
-<?php $contenido = ob_get_clean() ?>
-<?php include 'layout.php' ?>
-
+<?php include 'footer.php'; ?>
