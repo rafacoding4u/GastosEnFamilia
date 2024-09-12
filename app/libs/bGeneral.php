@@ -154,4 +154,45 @@ function getSecureCookie($name) {
     return isset($_COOKIE[$name]) ? htmlspecialchars($_COOKIE[$name], ENT_QUOTES, 'UTF-8') : null;
 }
 
+// Validar una contraseña (al menos 8 caracteres, una mayúscula y un número)
+function cContrasenya(string $contrasenya, array &$errores): bool {
+    if (strlen($contrasenya) < 8 || !preg_match('/[A-Z]/', $contrasenya) || !preg_match('/[0-9]/', $contrasenya)) {
+        $errores['contrasenya'] = "La contraseña debe contener al menos 1 letra mayúscula, 1 número y tener un mínimo de 8 caracteres.";
+        return false;
+    }
+    return true;
+}
+
+// Validar un email
+function cEmail(string $email, array &$errores): bool {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errores['email'] = "El correo electrónico no es válido.";
+        return false;
+    }
+    return true;
+}
+
+// Validar teléfono (exactamente 9 dígitos)
+function cTelefono(string $telefono, array &$errores): bool {
+    if (!preg_match('/^[0-9]{9}$/', $telefono)) {
+        $errores['telefono'] = "El número de teléfono debe tener 9 dígitos.";
+        return false;
+    }
+    return true;
+}
+
+// Validar si el usuario tiene más de 18 años
+function validarEdad(string $fecha_nacimiento, array &$errores): bool {
+    $fecha_actual = new DateTime();
+    $fecha_nacimiento_dt = new DateTime($fecha_nacimiento);
+    $edad = $fecha_actual->diff($fecha_nacimiento_dt)->y;
+
+    if ($edad < 18) {
+        $errores['edad'] = "El usuario debe ser mayor de edad.";
+        return false;
+    }
+    return true;
+}
+
+
 ?>

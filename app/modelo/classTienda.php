@@ -1,6 +1,6 @@
 <?php
 
-class Tienda extends Modelo {
+/*class Tienda extends Modelo {
     
     public function consultarUsuario($nombreUsuario) {
         $consulta = "SELECT * FROM usuarios WHERE nombreUsuario=:nombreUsuario";
@@ -136,5 +136,5 @@ class Tienda extends Modelo {
         return $result->fetchColumn() > 0;
     }
     
-}
+}*/
 

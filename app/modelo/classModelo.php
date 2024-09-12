@@ -4,22 +4,31 @@ class GastosModelo {
 
     private $conexion;
 
-    // Constructor donde se inicializa la conexión a la base de datos
     public function __construct() {
         try {
-            $dsn = "mysql:host=localhost;dbname=gastos_familia"; // Cambia los valores según tu configuración
-            $usuario = "root"; // Cambia esto según tu usuario
-            $contrasenya = ""; // Cambia esto según tu contraseña
+            $dsn = "mysql:host=localhost;dbname=gastosencasa_bd"; // Asegúrate de que el nombre de la base de datos sea correcto
+            $usuario = "root"; // Ajusta el usuario si es necesario
+            $contrasenya = ""; // Ajusta la contraseña si es necesario
             $this->conexion = new PDO($dsn, $usuario, $contrasenya);
             $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conexion->exec("SET NAMES 'utf8'"); // Configuración de codificación
+            $this->conexion->exec("SET NAMES 'utf8'");
         } catch (PDOException $e) {
             echo "Error de conexión a la base de datos: " . $e->getMessage();
             exit();
         }
     }
 
-    // -------------------------------
+    public function pruebaConexion() {
+        try {
+            $stmt = $this->conexion->query("SELECT 1");
+            return $stmt !== false;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    // Métodos adicionales relacionados con los refranes y usuarios...// -------------------------------
     // Métodos relacionados con refranes
     // -------------------------------
 
@@ -72,6 +81,71 @@ class GastosModelo {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Aquí irían otros métodos relacionados con tu aplicación
+    // -------------------------------
+    // Otros métodos relacionados con la aplicación
+    // -------------------------------
+
+    /**
+     * Método para consultar un usuario por nombre de usuario.
+     * 
+     * @param string $nombreUsuario Nombre de usuario.
+     * @return array Datos del usuario.
+     */
+    public function consultarUsuario($nombreUsuario) {
+        $sql = "SELECT * FROM usuarios WHERE alias = :alias"; // Cambiamos 'nombreUsuario' por 'alias'
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':alias', $nombreUsuario, PDO::PARAM_STR); // Reemplazamos el parámetro también
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }    
+
+    /**
+     * Método para verificar si un nombre de usuario ya existe en la base de datos.
+     * 
+     * @param string $nombreUsuario Nombre de usuario.
+     * @return bool True si el usuario existe, False si no.
+     */
+    public function existeUsuario($nombreUsuario) {
+        $sql = "SELECT COUNT(*) FROM usuarios WHERE nombreUsuario = :nombreUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':nombreUsuario', $nombreUsuario, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Método para insertar un nuevo usuario en la base de datos.
+     * 
+     * @param string $nombre Nombre del usuario.
+     * @param string $apellido Apellido del usuario.
+     * @param string $nombreUsuario Nombre de usuario.
+     * @param string $contrasenya Contraseña del usuario (encriptada).
+     * @param string $nivel_usuario Nivel de usuario (admin, usuario, etc.).
+     * @param string $fecha_nacimiento Fecha de nacimiento del usuario.
+     * @param string $email Correo electrónico del usuario.
+     * @param string $telefono Número de teléfono del usuario.
+     * @return bool True si la inserción fue exitosa, False en caso contrario.
+     */
+    public function insertarUsuario($nombre, $apellido, $nombreUsuario, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono) {
+        $sql = "INSERT INTO usuarios (nombre, apellido, nombreUsuario, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono) 
+                VALUES (:nombre, :apellido, :nombreUsuario, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono)";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+        $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+        $stmt->bindValue(':nombreUsuario', $nombreUsuario, PDO::PARAM_STR);
+        $stmt->bindValue(':contrasenya', $contrasenya, PDO::PARAM_STR);
+        $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+        $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+        $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    // Aquí se pueden añadir otros métodos según las necesidades de la aplicación
 
 }
+?>
+
+    
+
+    

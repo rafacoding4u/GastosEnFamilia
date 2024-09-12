@@ -1,4 +1,7 @@
 <?php
+// Asegúrate de que no haya ninguna salida antes de session_start
+ob_start(); // Inicia el almacenamiento en búfer de salida
+
 require_once __DIR__ . '/app/libs/Config.php';
 require_once __DIR__ . '/app/libs/bGeneral.php';
 require_once __DIR__ . '/app/libs/bSeguridad.php';
@@ -24,11 +27,13 @@ $map = array(
     'error' => array('controller' => 'Controller', 'action' => 'error', 'nivel_usuario' => 0),
     'iniciarSesion' => array('controller' => 'Controller', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
     'registro' => array('controller' => 'Controller', 'action' => 'registro', 'nivel_usuario' => 0),
-
     'listarGastos' => array('controller' => 'Controller', 'action' => 'listarGastos', 'nivel_usuario' => 1),
     'insertarGasto' => array('controller' => 'Controller', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
     'listarUsuarios' => array('controller' => 'Controller', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
-    'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2)
+    'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
+    
+    // Nueva ruta para probar la conexión a la base de datos
+    'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0)
 );
 
 if (isset($_GET['ctl'])) {
@@ -56,4 +61,6 @@ if (method_exists($controlador['controller'], $controlador['action'])) {
     header('Status: 404 Not Found');
     echo '<html><body><h1>Error 404: El controlador <i>' . $controlador['controller'] . '->' . $controlador['action'] . '</i> no existe</h1></body></html>';
 }
+
+ob_end_flush(); // Enviar el contenido almacenado en el búfer y desactivar el almacenamiento en búfer de salida
 ?>
