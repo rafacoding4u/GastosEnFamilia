@@ -23,7 +23,6 @@ if (!isset($_SESSION['nivel_usuario'])) {
     echo "DEBUG: Estableciendo nivel_usuario a 0 <br>";
 }
 
-// Definir las rutas de la aplicación
 $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'Controller', 'action' => 'home', 'nivel_usuario' => 0),
@@ -35,17 +34,20 @@ $map = array(
     
     // Gestión de gastos
     'verGastos' => array('controller' => 'Controller', 'action' => 'verGastos', 'nivel_usuario' => 1),
+    'formInsertarGasto' => array('controller' => 'Controller', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1), // Nueva ruta
     'insertarGasto' => array('controller' => 'Controller', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
     'editarGasto' => array('controller' => 'Controller', 'action' => 'editarGasto', 'nivel_usuario' => 1),
     'eliminarGasto' => array('controller' => 'Controller', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
     
     // Gestión de ingresos
     'verIngresos' => array('controller' => 'Controller', 'action' => 'verIngresos', 'nivel_usuario' => 1),
+    'formInsertarIngreso' => array('controller' => 'Controller', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1), // Nueva ruta
     'insertarIngreso' => array('controller' => 'Controller', 'action' => 'insertarIngreso', 'nivel_usuario' => 1),
     'editarIngreso' => array('controller' => 'Controller', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'eliminarIngreso' => array('controller' => 'Controller', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
 
     // Gestión financiera
+    'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1), // Nueva ruta
     'verSituacionFinanciera' => array('controller' => 'Controller', 'action' => 'verSituacionFinanciera', 'nivel_usuario' => 1),
 
     // Gestión de categorías (ingresos y gastos)
@@ -67,6 +69,7 @@ $map = array(
     // Probar la conexión a la base de datos
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),
 );
+
 
 // Verificar si la ruta existe
 if (isset($_GET['ctl'])) {

@@ -233,6 +233,16 @@ class Controller {
         $this->render('verSituacion.php', $params);
     }
 
+    // Formulario para insertar gasto
+    public function formInsertarGasto() {
+        $m = new GastosModelo();
+        $params = array(
+            'categorias' => $m->obtenerCategoriasGastos(),
+            'mensaje' => ''
+        );
+        $this->render('formInsertarGasto.php', $params);
+    }
+
     // Insertar Gasto
     public function insertarGasto() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
@@ -249,7 +259,17 @@ class Controller {
                 $params['mensaje'] = 'No se pudo insertar el gasto.';
             }
         }
-        $this->render('formInsertarGasto.php');
+        $this->formInsertarGasto();
+    }
+
+    // Formulario para insertar ingreso
+    public function formInsertarIngreso() {
+        $m = new GastosModelo();
+        $params = array(
+            'categorias' => $m->obtenerCategoriasIngresos(),
+            'mensaje' => ''
+        );
+        $this->render('formInsertarIngreso.php', $params);
     }
 
     // Insertar Ingreso
@@ -268,7 +288,7 @@ class Controller {
                 $params['mensaje'] = 'No se pudo insertar el ingreso.';
             }
         }
-        $this->render('formInsertarIngreso.php');
+        $this->formInsertarIngreso();
     }
 
     // Listar Usuarios
