@@ -6,6 +6,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                <!-- Opciones de usuario -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verGastos">Ver Mis Gastos</a>
                 </li>
@@ -21,6 +22,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Mi Situación Financiera</a>
                 </li>
+                
+                <!-- Opción de cerrar sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                 </li>

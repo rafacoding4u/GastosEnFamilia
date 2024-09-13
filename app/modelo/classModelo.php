@@ -6,9 +6,9 @@ class GastosModelo {
 
     public function __construct() {
         try {
-            $dsn = "mysql:host=localhost;dbname=gastosencasa_bd"; // Asegúrate de que el nombre de la base de datos sea correcto
-            $usuario = "root"; // Ajusta el usuario si es necesario
-            $contrasenya = ""; // Ajusta la contraseña si es necesario
+            $dsn = "mysql:host=localhost;dbname=gastosencasa_bd"; 
+            $usuario = "root"; 
+            $contrasenya = ""; 
             $this->conexion = new PDO($dsn, $usuario, $contrasenya);
             $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conexion->exec("SET NAMES 'utf8'");
@@ -28,14 +28,9 @@ class GastosModelo {
         }
     }
 
-    // Métodos adicionales relacionados con los refranes y usuarios...// -------------------------------
-
+    // -------------------------------
     // Métodos relacionados con refranes
     // -------------------------------
-
-    /**
-     * Obtener un refrán que no se haya usado en los últimos 365 días.
-     */
     public function obtenerRefranNoUsado() {
         $sql = "SELECT * FROM refranes 
                 WHERE idRefran NOT IN (
@@ -48,13 +43,6 @@ class GastosModelo {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Registrar el envío de un refrán.
-     * 
-     * @param int $idRefran ID del refrán enviado.
-     * @param int $idUser ID del usuario que recibe el refrán.
-     * @param string $momento Momento del envío (puede ser 'mañana', 'tarde', etc.).
-     */
     public function registrarEnvioRefran($idRefran, $idUser, $momento) {
         $sql = "INSERT INTO envio_refranes (idRefran, idUser, fecha_envio, momento) 
                 VALUES (:idRefran, :idUser, NOW(), :momento)";
@@ -65,12 +53,6 @@ class GastosModelo {
         return $stmt->execute();
     }
 
-    /**
-     * Listar los refranes enviados a un usuario específico.
-     * 
-     * @param int $idUser ID del usuario.
-     * @return array Listado de refranes enviados, con fecha y momento.
-     */
     public function listarRefranesEnviados($idUser) {
         $sql = "SELECT r.refran, e.fecha_envio, e.momento 
                 FROM refranes r 
@@ -83,17 +65,10 @@ class GastosModelo {
     }
 
     // -------------------------------
-    // Métodos adicionales relacionados con la aplicación
+    // Métodos relacionados con usuarios
     // -------------------------------
 
-    /**
-     * Método para consultar un usuario por nombre de usuario.
-     * 
-     * @param string $nombreUsuario Nombre de usuario.
-     * @return array Datos del usuario.
-     */
     public function consultarUsuario($alias) {
-        echo "DEBUG: Alias en consulta: " . $alias . "<br>";
         $sql = "SELECT * FROM usuarios WHERE alias = :alias";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
@@ -101,12 +76,6 @@ class GastosModelo {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Método para verificar si un nombre de usuario ya existe en la base de datos.
-     * 
-     * @param string $nombreUsuario Nombre de usuario.
-     * @return bool True si el usuario existe, False si no.
-     */
     public function existeUsuario($alias) {
         $sql = "SELECT COUNT(*) FROM usuarios WHERE alias = :alias";
         $stmt = $this->conexion->prepare($sql);
@@ -115,21 +84,8 @@ class GastosModelo {
         return $stmt->fetchColumn() > 0;
     }
 
-    /**
-     * Método para insertar un nuevo usuario en la base de datos.
-     * 
-     * @param string $nombre Nombre del usuario.
-     * @param string $apellido Apellido del usuario.
-     * @param string $nombreUsuario Nombre de usuario.
-     * @param string $contrasenya Contraseña del usuario (encriptada).
-     * @param string $nivel_usuario Nivel de usuario (admin, usuario, etc.).
-     * @param string $fecha_nacimiento Fecha de nacimiento del usuario.
-     * @param string $email Correo electrónico del usuario.
-     * @param string $telefono Número de teléfono del usuario.
-     * @return bool True si la inserción fue exitosa, False en caso contrario.
-     */
     public function insertarUsuario($nombre, $apellido, $nombreUsuario, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono) {
-        $sql = "INSERT INTO usuarios (nombre, apellido, nombreUsuario, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono) 
+        $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono) 
                 VALUES (:nombre, :apellido, :nombreUsuario, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
@@ -143,31 +99,111 @@ class GastosModelo {
         return $stmt->execute();
     }
 
+    public function obtenerUsuarios() {
+        $sql = "SELECT * FROM usuarios";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function eliminarUsuario($idUsuario) {
+        $sql = "DELETE FROM usuarios WHERE idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     // -------------------------------
     // Métodos relacionados con los ingresos y gastos
     // -------------------------------
 
-    /**
-     * Obtener el total de ingresos.
-     * 
-     * @return float Total de ingresos.
-     */
-    public function obtenerTotalIngresos() {
-        $sql = "SELECT SUM(importe) AS totalIngresos FROM ingresos";
-        $stmt = $this->conexion->query($sql);
+    public function obtenerTotalIngresos($idUsuario) {
+        $sql = "SELECT SUM(importe) AS totalIngresos FROM ingresos WHERE idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchColumn();
     }
 
-    /**
-     * Obtener el total de gastos.
-     * 
-     * @return float Total de gastos.
-     */
-    public function obtenerTotalGastos() {
-        $sql = "SELECT SUM(importe) AS totalGastos FROM gastos";
-        $stmt = $this->conexion->query($sql);
+    public function obtenerTotalGastos($idUsuario) {
+        $sql = "SELECT SUM(importe) AS totalGastos FROM gastos WHERE idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchColumn();
+    }
+
+    public function obtenerGastosPorUsuario($idUsuario) {
+        $sql = "SELECT g.idGasto, g.importe, g.concepto, g.fecha, c.nombreCategoria, g.origen
+                FROM gastos g
+                JOIN categorias_gastos c ON g.idCategoria = c.idCategoria
+                WHERE g.idUser = :idUsuario
+                ORDER BY g.fecha DESC";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerIngresosPorUsuario($idUsuario) {
+        $sql = "SELECT i.idIngreso, i.importe, i.concepto, i.fecha, c.nombreCategoria, i.origen
+                FROM ingresos i
+                JOIN categorias_ingresos c ON i.idCategoria = c.idCategoria
+                WHERE i.idUser = :idUsuario
+                ORDER BY i.fecha DESC";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerSituacionFinanciera($idUsuario) {
+        $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos
+                FROM ingresos i
+                LEFT JOIN gastos g ON i.idUser = g.idUser
+                WHERE i.idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insertarGasto($idUsuario, $importe, $idCategoria, $concepto, $origen) {
+        $sql = "INSERT INTO gastos (idUser, importe, idCategoria, concepto, origen, fecha) 
+                VALUES (:idUsuario, :importe, :idCategoria, :concepto, :origen, NOW())";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':importe', $importe, PDO::PARAM_STR);
+        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+        $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+        $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function insertarIngreso($idUsuario, $importe, $idCategoria, $concepto, $origen) {
+        $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha) 
+                VALUES (:idUsuario, :importe, :idCategoria, :concepto, :origen, NOW())";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':importe', $importe, PDO::PARAM_STR);
+        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+        $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+        $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    // -------------------------------
+    // Métodos relacionados con categorías
+    // -------------------------------
+
+    public function obtenerCategoriasGastos() {
+        $sql = "SELECT * FROM categorias_gastos";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerCategoriasIngresos() {
+        $sql = "SELECT * FROM categorias_ingresos";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-?>

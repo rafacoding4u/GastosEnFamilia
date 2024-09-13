@@ -1,11 +1,19 @@
 <?php ob_start(); ?>
 <div class="container text-center p-4">
-    <h3>Ha habido un error</h3>
+    <h3>Ha ocurrido un error</h3>
+    
     <?php if (isset($params['mensaje'])): ?>
-        <p><b><span style="color: rgba(200, 119, 119, 1);">
+        <p><b><span style="color: #d9534f;"> <!-- Usar una alerta de color rojo -->
             <?= htmlspecialchars($params['mensaje']) ?>
         </span></b></p>
+    <?php else: ?>
+        <p><b><span style="color: #d9534f;">
+            Algo salió mal. Inténtalo de nuevo más tarde.
+        </span></b></p>
     <?php endif; ?>
+
+    <!-- Botón para regresar a la página principal -->
+    <a href="index.php?ctl=home" class="btn btn-primary mt-3">Volver al inicio</a>
 </div>
 <?php $contenido = ob_get_clean(); ?>
 <?php include 'layout.php'; ?>

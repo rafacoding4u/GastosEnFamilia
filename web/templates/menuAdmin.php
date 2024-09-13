@@ -6,6 +6,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                <!-- Opciones para el Administrador -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
                 </li>
@@ -21,6 +22,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
                 </li>
+
+                <!-- Nueva opción para gestionar usuarios -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a>
+                </li>
+
+                <!-- Nuevas opciones para gestionar categorías -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
+                </li>
+
+                <!-- Cerrar Sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                 </li>
@@ -28,4 +44,3 @@
         </div>
     </div>
 </nav>
-

@@ -5,17 +5,17 @@
 
     <!-- Total Ingresos -->
     <p><b>Total Ingresos:</b> 
-        <?= isset($params['totalIngresos']) ? htmlspecialchars($params['totalIngresos']) : '<span class="text-muted">No disponible</span>' ?>
+        <?= isset($params['totalIngresos']) ? number_format(htmlspecialchars($params['totalIngresos']), 2) . ' €' : '<span class="text-muted">No disponible</span>' ?>
     </p>
 
     <!-- Total Gastos -->
     <p><b>Total Gastos:</b> 
-        <?= isset($params['totalGastos']) ? htmlspecialchars($params['totalGastos']) : '<span class="text-muted">No disponible</span>' ?>
+        <?= isset($params['totalGastos']) ? number_format(htmlspecialchars($params['totalGastos']), 2) . ' €' : '<span class="text-muted">No disponible</span>' ?>
     </p>
 
     <!-- Balance -->
     <p><b>Balance:</b> 
-        <?= isset($params['balance']) ? htmlspecialchars($params['balance']) : '<span class="text-muted">No disponible</span>' ?>
+        <?= isset($params['balance']) ? number_format(htmlspecialchars($params['balance']), 2) . ' €' : '<span class="text-muted">No disponible</span>' ?>
     </p>
 
     <!-- Mensaje informativo si está definido -->

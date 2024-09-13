@@ -9,7 +9,7 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Usuario</th>
+                    <th>Alias</th> <!-- Cambiado de "Usuario" a "Alias", de acuerdo con la BD -->
                     <th>Nivel de Usuario</th>
                     <th>Acciones</th>
                 </tr>
@@ -19,7 +19,7 @@
                     <tr>
                         <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                         <td><?= htmlspecialchars($usuario['apellido']) ?></td>
-                        <td><?= htmlspecialchars($usuario['nombreUsuario']) ?></td>
+                        <td><?= htmlspecialchars($usuario['alias']) ?></td> <!-- Ajustado a "alias" en lugar de "nombreUsuario" -->
                         <td><?= htmlspecialchars($usuario['nivel_usuario']) ?></td>
                         <td>
                             <a href="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning">Editar</a>
@@ -35,4 +35,5 @@
 </div>
 
 <?php include 'footer.php'; ?>
+
 

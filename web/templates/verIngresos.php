@@ -7,8 +7,10 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>Categoría</th>
                     <th>Concepto</th>
-                    <th>Cantidad</th>
+                    <th>Importe (€)</th>
+                    <th>Origen</th>
                     <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>
@@ -16,8 +18,12 @@
             <tbody>
                 <?php foreach ($ingresos as $ingreso): ?>
                     <tr>
+                        <td><?= htmlspecialchars($ingreso['nombreCategoria']) ?></td> <!-- Mostrar el nombre de la categoría -->
                         <td><?= htmlspecialchars($ingreso['concepto']) ?></td>
-                        <td><?= htmlspecialchars($ingreso['cantidad']) ?></td>
+                        <td><?= number_format($ingreso['importe'], 2, ',', '.') ?> €</td> <!-- Formato de importe -->
+                        <td>
+                            <?= htmlspecialchars($ingreso['origen']) === 'banco' ? '🏦 Banco' : '💵 Efectivo' ?> <!-- Representar el origen con íconos -->
+                        </td>
                         <td><?= htmlspecialchars($ingreso['fecha']) ?></td>
                         <td>
                             <a href="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-warning">Editar</a>
@@ -33,3 +39,4 @@
 </div>
 
 <?php include 'footer.php'; ?>
+

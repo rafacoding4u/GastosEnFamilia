@@ -1,49 +1,48 @@
 <?php
 require_once 'app/modelo/classModelo.php';
 
+// Función para enviar refrán diario
 function enviarRefranDiario($momento) {
-    // Instanciar el modelo
     $m = new GastosModelo();
 
-    // Obtener el refrán que no se haya usado en 365 días
+    // Obtener el refrán que no se haya usado en los últimos 365 días
     $refran = $m->obtenerRefranNoUsado();
-
-    // Si no hay refrán disponible, salir
+    
     if (!$refran) {
         echo "No hay refrán disponible para enviar.";
         return;
     }
 
     // Obtener la lista de usuarios
-    $usuarios = $m->listarUsuarios();
+    $usuarios = $m->obtenerUsuarios();
 
     foreach ($usuarios as $usuario) {
-        // Enviar refrán por correo electrónico
+        // Preparar asunto y mensaje del correo
         $asunto = "Refrán del día";
-        $mensaje = $refran['texto_refran'];
-        $headers = "From: no-reply@gastosfamilia.com";
-        
-        // Aquí usamos la función mail() para enviar el correo
-        mail($usuario['email'], $asunto, $mensaje, $headers);
+        $mensaje = "Estimado " . htmlspecialchars($usuario['nombre']) . ",\n\n" . htmlspecialchars($refran['texto_refran']);
+        $headers = "From: no-reply@gastosfamilia.com\r\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-        // Si tienes un servicio de SMS, puedes usar una función aquí para enviar SMS al usuario:
-        // enviarSMS($usuario['telefono'], $mensaje);
-
-        // Registrar el envío en la base de datos
-        $m->registrarEnvioRefran($refran['idRefran'], $usuario['idUser'], $momento);
+        // Usar PHPMailer o cualquier otro servicio para el envío de correos en lugar de mail()
+        if (mail($usuario['email'], $asunto, $mensaje, $headers)) {
+            // Registrar el envío en la base de datos
+            $m->registrarEnvioRefran($refran['idRefran'], $usuario['idUser'], $momento);
+            echo "Refrán enviado a " . htmlspecialchars($usuario['email']) . "\n";
+        } else {
+            echo "Fallo al enviar el refrán a " . htmlspecialchars($usuario['email']) . "\n";
+        }
     }
 
-    echo "Refrán enviado con éxito a todos los usuarios.";
+    echo "Refrán enviado con éxito a todos los usuarios.\n";
 }
 
-// Determinar si es la mañana o la tarde
+// Definir la hora de envío y el momento
 $horaActual = date('H');
+
 if ($horaActual >= 11 && $horaActual < 12) {
-    // Enviar a las 11:00 AM
     enviarRefranDiario('mañana');
 } elseif ($horaActual >= 20 && $horaActual < 21) {
-    // Enviar a las 8:00 PM
     enviarRefranDiario('tarde');
 } else {
-    echo "No es el momento de enviar refranes.";
+    echo "No es el momento de enviar refranes.\n";
 }
