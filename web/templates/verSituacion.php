@@ -24,10 +24,11 @@
             <?php if (!empty($params['situacion'])): ?>
                 <?php foreach ($params['situacion'] as $situacion): ?>
                     <tr>
-                        <td><?= htmlspecialchars($situacion['nombre']) ?> <?= htmlspecialchars($situacion['apellido']) ?></td> <!-- Mostrar nombre y apellido del usuario -->
-                        <td><?= isset($situacion['total_ingresos']) ? number_format($situacion['total_ingresos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Total ingresos -->
-                        <td><?= isset($situacion['total_gastos']) ? number_format($situacion['total_gastos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Total gastos -->
-                        <td><?= isset($situacion['saldo']) ? number_format($situacion['saldo'], 2, ',', '.') : '0,00' ?> €</td> <!-- Mostrar el saldo (ingresos - gastos) -->
+                        <td><?= htmlspecialchars($situacion['nombre']) ?> <?= htmlspecialchars($situacion['apellido']) ?></td> 
+                        <!-- Mostrar nombre y apellido del usuario -->
+                        <td><?= isset($situacion['totalIngresos']) ? number_format($situacion['totalIngresos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Cambiado a totalIngresos -->
+                        <td><?= isset($situacion['totalGastos']) ? number_format($situacion['totalGastos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Cambiado a totalGastos -->
+                        <td><?= isset($situacion['saldo']) ? number_format($situacion['saldo'], 2, ',', '.') : '0,00' ?> €</td> <!-- Mostrar el saldo -->
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
