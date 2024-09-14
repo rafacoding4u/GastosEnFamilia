@@ -9,7 +9,7 @@ function enviarRefranDiario($momento) {
     $refran = $m->obtenerRefranNoUsado();
     
     if (!$refran) {
-        echo "No hay refrán disponible para enviar.";
+        echo "No hay refrán disponible para enviar.\n";
         return;
     }
 
@@ -23,13 +23,18 @@ function enviarRefranDiario($momento) {
         $headers = "From: no-reply@gastosfamilia.com\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-        // Usar PHPMailer o cualquier otro servicio para el envío de correos en lugar de mail()
-        if (mail($usuario['email'], $asunto, $mensaje, $headers)) {
-            // Registrar el envío en la base de datos
-            $m->registrarEnvioRefran($refran['idRefran'], $usuario['idUser'], $momento);
-            echo "Refrán enviado a " . htmlspecialchars($usuario['email']) . "\n";
+        // Verificar que el usuario tiene un email válido
+        if (filter_var($usuario['email'], FILTER_VALIDATE_EMAIL)) {
+            // Usar mail() o un servicio de envío de correos como PHPMailer para enviar el correo
+            if (mail($usuario['email'], $asunto, $mensaje, $headers)) {
+                // Registrar el envío en la base de datos
+                $m->registrarEnvioRefran($refran['idRefran'], $usuario['idUser'], $momento);
+                echo "Refrán enviado a " . htmlspecialchars($usuario['email']) . "\n";
+            } else {
+                echo "Fallo al enviar el refrán a " . htmlspecialchars($usuario['email']) . "\n";
+            }
         } else {
-            echo "Fallo al enviar el refrán a " . htmlspecialchars($usuario['email']) . "\n";
+            echo "Email inválido para el usuario " . htmlspecialchars($usuario['nombre']) . "\n";
         }
     }
 
