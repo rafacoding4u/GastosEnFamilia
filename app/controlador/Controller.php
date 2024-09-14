@@ -82,9 +82,16 @@ class Controller {
 
     // Cerrar sesión
     public function salir() {
-        session_destroy();
-        header("location:index.php?ctl=home");
+        // Destruir sesión
+        session_start();  // Asegurarse de que la sesión está activa
+        session_unset();  // Eliminar todas las variables de sesión
+        session_destroy();  // Destruir la sesión
+    
+        // Redirigir a la página de inicio
+        header("Location: index.php?ctl=home");
+        exit();  // Asegúrate de que el script termine después de la redirección
     }
+    
 
     // Página de error
     public function error() {
@@ -137,9 +144,16 @@ class Controller {
             'email' => '',
             'telefono' => '',
             'nivel_usuario' => 'usuario',
+            'idFamilia' => null,
+            'idGrupo' => null,
             'es_menor' => false
         );
         $errores = array();
+    
+        // Cargar grupos y familias existentes para el formulario
+        $m = new GastosModelo();
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
     
         if (isset($_POST['bRegistro'])) {
             $nombre = recoge('nombre');
@@ -150,6 +164,10 @@ class Controller {
             $email = recoge('email');
             $telefono = recoge('telefono');
             $nivel_usuario = recoge('nivel_usuario');
+            $idGrupoFamilia = recoge('idGrupoFamilia');
+            $passwordFamiliaGrupo = recoge('passwordGrupoFamilia');
+            $nombreNuevo = recoge('nombre_nuevo');
+            $passwordNuevo = recoge('password_nuevo');
     
             // Validar campos
             cTexto($nombre, "nombre", $errores);
@@ -159,22 +177,37 @@ class Controller {
             cEmail($email, $errores);
             cTelefono($telefono, $errores);
     
-            // Validar la edad y asignar nivel de usuario si es menor
-            if (validarEdad($fecha_nacimiento, $errores)) {
-                $params['es_menor'] = true;
-                $nivel_usuario = 'usuario';
+            // Verificar si seleccionó un grupo o familia existente
+            if (!empty($idGrupoFamilia)) {
+                if (strpos($idGrupoFamilia, 'grupo_') === 0) {
+                    $idGrupo = substr($idGrupoFamilia, 6);
+                    $grupo = $m->obtenerGrupoPorId($idGrupo);
+                    if (!password_verify($passwordFamiliaGrupo, $grupo['password'])) {
+                        $errores['idGrupo'] = "La contraseña del grupo es incorrecta.";
+                    }
+                } elseif (strpos($idGrupoFamilia, 'familia_') === 0) {
+                    $idFamilia = substr($idGrupoFamilia, 8);
+                    $familia = $m->obtenerFamiliaPorId($idFamilia);
+                    if (!password_verify($passwordFamiliaGrupo, $familia['password'])) {
+                        $errores['idFamilia'] = "La contraseña de la familia es incorrecta.";
+                    }
+                }
             }
     
-            // Comprobar si ya existe el alias en la base de datos
-            $m = new GastosModelo();
-            if ($m->existeUsuario($alias)) {
-                $errores['alias'] = "El alias ya existe. Por favor elija otro.";
+            // Verificar si está creando un nuevo grupo o familia
+            if (!empty($nombreNuevo) && !empty($passwordNuevo)) {
+                $hashedPasswordNuevo = password_hash($passwordNuevo, PASSWORD_DEFAULT);
+                if ($_POST['tipo_vinculo'] == 'grupo') {
+                    $idGrupo = $m->insertarGrupo($nombreNuevo, $hashedPasswordNuevo);
+                } elseif ($_POST['tipo_vinculo'] == 'familia') {
+                    $idFamilia = $m->insertarFamilia($nombreNuevo, $hashedPasswordNuevo);
+                }
             }
     
             if (empty($errores)) {
                 try {
                     $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
-                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono)) {
+                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idGrupo, $idFamilia)) {
                         $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
                         header('Location: index.php?ctl=iniciarSesion');
                         exit();
@@ -190,6 +223,9 @@ class Controller {
                 }
             }
         }
+    
+        $params['familias'] = $familias;
+        $params['grupos'] = $grupos;
     
         $this->render('formRegistro.php', $params);
     }

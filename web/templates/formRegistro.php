@@ -61,6 +61,47 @@
             </select>
         </div>
 
+        <!-- Selección de grupo o familia -->
+        <div class="form-group">
+            <label for="tipo_vinculo">¿Perteneces a un grupo o familia existente?</label>
+            <select id="tipo_vinculo" name="tipo_vinculo" class="form-control" required>
+                <option value="grupo">Grupo</option>
+                <option value="familia">Familia</option>
+                <option value="individual">Usuario individual (sin grupo o familia)</option>
+            </select>
+        </div>
+
+        <!-- Campo para seleccionar grupo/familia existente -->
+        <div class="form-group" id="selectGrupoFamilia" style="display:none;">
+            <label for="idGrupoFamilia">Seleccionar Grupo o Familia:</label>
+            <select id="idGrupoFamilia" name="idGrupoFamilia" class="form-control">
+                <optgroup label="Grupos">
+                    <?php foreach ($grupos as $grupo): ?>
+                        <option value="grupo_<?= $grupo['idGrupo'] ?>"><?= $grupo['nombre_grupo'] ?></option>
+                    <?php endforeach; ?>
+                </optgroup>
+                <optgroup label="Familias">
+                    <?php foreach ($familias as $familia): ?>
+                        <option value="familia_<?= $familia['idFamilia'] ?>"><?= $familia['nombre_familia'] ?></option>
+                    <?php endforeach; ?>
+                </optgroup>
+            </select>
+        </div>
+
+        <!-- Campo para la contraseña del grupo/familia -->
+        <div class="form-group" id="passwordGrupoFamilia" style="display:none;">
+            <label for="passwordGrupoFamilia">Contraseña del Grupo/Familia:</label>
+            <input type="password" id="passwordGrupoFamilia" name="passwordGrupoFamilia" class="form-control">
+        </div>
+
+        <!-- Creación de un nuevo grupo o familia -->
+        <div class="form-group" id="crearGrupoFamilia" style="display:none;">
+            <label for="nombre_nuevo">Nombre del Nuevo Grupo/Familia:</label>
+            <input type="text" id="nombre_nuevo" name="nombre_nuevo" class="form-control">
+            <label for="password_nuevo">Contraseña del Nuevo Grupo/Familia:</label>
+            <input type="password" id="password_nuevo" name="password_nuevo" class="form-control">
+        </div>
+
         <!-- Botón de envío -->
         <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>
 
@@ -83,5 +124,27 @@
         <?php endif; ?>
     </form>
 </div>
+
+<script>
+    document.getElementById('tipo_vinculo').addEventListener('change', function() {
+        var selectGrupoFamilia = document.getElementById('selectGrupoFamilia');
+        var passwordGrupoFamilia = document.getElementById('passwordGrupoFamilia');
+        var crearGrupoFamilia = document.getElementById('crearGrupoFamilia');
+        
+        if (this.value === 'grupo' || this.value === 'familia') {
+            selectGrupoFamilia.style.display = 'block';
+            passwordGrupoFamilia.style.display = 'block';
+            crearGrupoFamilia.style.display = 'none';
+        } else if (this.value === 'individual') {
+            selectGrupoFamilia.style.display = 'none';
+            passwordGrupoFamilia.style.display = 'none';
+            crearGrupoFamilia.style.display = 'none';
+        } else {
+            selectGrupoFamilia.style.display = 'none';
+            passwordGrupoFamilia.style.display = 'none';
+            crearGrupoFamilia.style.display = 'block';
+        }
+    });
+</script>
 
 <?php include 'footer.php'; ?>

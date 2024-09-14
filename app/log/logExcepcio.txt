@@ -15,3 +15,5 @@ SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombreUsuario' in 'field
 SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombreUsuario' in 'field list'0.04703400 1726163431
 SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'rrafa@me.com' for key 'email'0.82637800 1726325201
 SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'rrafa@me.com' for key 'email'0.52568600 1726325297
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'rrafa@me.com' for key 'email'0.29344100 1726330283
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'rrafa@me.com' for key 'email'0.95163900 1726330454
