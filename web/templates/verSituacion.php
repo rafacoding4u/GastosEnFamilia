@@ -2,7 +2,7 @@
 <?php include 'layout.php'; ?>
 
 <div class="container">
-    <h2>Situación Financiera de la Familia <?= htmlspecialchars($params['familia']['nombre_familia']) ?></h2>
+    <h2>Situación Financiera de la Familia <?= htmlspecialchars($params['familia']['nombre_familia'] ?? 'No disponible') ?></h2>
 
     <?php if (isset($params['mensaje'])): ?>
         <div class="alert alert-info">
@@ -25,9 +25,9 @@
                 <?php foreach ($params['situacion'] as $situacion): ?>
                     <tr>
                         <td><?= htmlspecialchars($situacion['nombre']) ?> <?= htmlspecialchars($situacion['apellido']) ?></td> <!-- Mostrar nombre y apellido del usuario -->
-                        <td><?= number_format($situacion['total_ingresos'], 2, ',', '.') ?> €</td> <!-- Total ingresos -->
-                        <td><?= number_format($situacion['total_gastos'], 2, ',', '.') ?> €</td> <!-- Total gastos -->
-                        <td><?= number_format($situacion['saldo'], 2, ',', '.') ?> €</td> <!-- Mostrar el saldo (ingresos - gastos) -->
+                        <td><?= isset($situacion['total_ingresos']) ? number_format($situacion['total_ingresos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Total ingresos -->
+                        <td><?= isset($situacion['total_gastos']) ? number_format($situacion['total_gastos'], 2, ',', '.') : '0,00' ?> €</td> <!-- Total gastos -->
+                        <td><?= isset($situacion['saldo']) ? number_format($situacion['saldo'], 2, ',', '.') : '0,00' ?> €</td> <!-- Mostrar el saldo (ingresos - gastos) -->
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
