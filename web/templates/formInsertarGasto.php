@@ -20,7 +20,8 @@
         <div class="form-group">
             <label for="idCategoria">Categoría:</label>
             <select id="idCategoria" name="idCategoria" class="form-control" required>
-                <?php foreach ($categorias as $categoria): ?>
+                <option value="" disabled selected>Seleccione una categoría</option>
+                <?php foreach ($params['categorias'] as $categoria): ?>
                     <option value="<?= htmlspecialchars($categoria['idCategoria']) ?>">
                         <?= htmlspecialchars($categoria['nombreCategoria']) ?>
                     </option>
@@ -32,8 +33,8 @@
         <div class="form-group">
             <label for="origen">Origen:</label>
             <select id="origen" name="origen" class="form-control" required>
-                <option value="banco">Banco</option>
-                <option value="efectivo">Efectivo</option>
+                <option value="banco">🏦 Banco</option>
+                <option value="efectivo">💵 Efectivo</option>
             </select>
         </div>
 
@@ -56,5 +57,3 @@
 </div>
 
 <?php include 'footer.php'; ?>
-
-

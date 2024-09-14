@@ -6,45 +6,45 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Opciones para Superadmin -->
+                <!-- Opciones del Superadmin -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
+                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a> <!-- Ver todos los gastos del sistema -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a>
+                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a> <!-- Ver todos los ingresos del sistema -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a>
+                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a> <!-- Formulario para insertar un nuevo gasto -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
+                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a> <!-- Formulario para insertar un nuevo ingreso -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
-                </li>
-
-                <!-- Gestión de usuarios para Superadmin -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a>
+                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de usuarios y familias -->
                 </li>
 
-                <!-- Nuevas opciones para gestión avanzada de Superadmin -->
+                <!-- Gestión de usuarios (Superadmin) -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a>
+                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Gestión completa de usuarios -->
+                </li>
+
+                <!-- Opciones avanzadas de Superadmin -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a> <!-- Gestionar familias en la plataforma -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a>
+                    <a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a> <!-- Gestionar grupos asociados a familias -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
                 </li>
 
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
+                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Opción para cerrar sesión -->
                 </li>
             </ul>
         </div>

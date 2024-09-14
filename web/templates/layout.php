@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gastos En Familia</title>
-    <!-- Carga de CSS local y, opcionalmente, Bootstrap para mejorar el diseño -->
+    <!-- Carga de CSS local y Bootstrap para mejorar el diseño -->
     <link rel="stylesheet" href="web/css/estilo.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
@@ -23,7 +23,6 @@
             if (isset($menu)) {
                 // Verificamos si el archivo de menú existe antes de incluirlo
                 $menuPath = __DIR__ . '/' . $menu;
-                echo "<p class='text-muted small'>DEBUG: Cargando menú desde {$menuPath}</p>"; // Depuración
                 if (file_exists($menuPath)) {
                     include $menuPath;
                 } else {

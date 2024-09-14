@@ -1,6 +1,6 @@
 <?php
-// Asegúrate de que no haya ninguna salida antes de session_start
-ob_start(); // Inicia el almacenamiento en búfer de salida
+// Inicia el almacenamiento en búfer de salida para evitar problemas de cabeceras
+ob_start(); 
 
 require_once __DIR__ . '/app/libs/Config.php';
 require_once __DIR__ . '/app/libs/bGeneral.php';
@@ -14,15 +14,16 @@ ini_set('display_errors', 1);
 session_start();
 echo "DEBUG: Iniciando index.php <br>";
 echo '<pre>';
-print_r($_SESSION); // Muestra el contenido de la sesión
+print_r($_SESSION); // Muestra el contenido de la sesión para depuración
 echo '</pre>';
 
-// Si el nivel de usuario no está definido, lo inicializamos a 0
+// Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;
     echo "DEBUG: Estableciendo nivel_usuario a 0 <br>";
 }
 
+// Define las rutas disponibles en la aplicación
 $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'Controller', 'action' => 'home', 'nivel_usuario' => 0),
@@ -34,23 +35,23 @@ $map = array(
     
     // Gestión de gastos
     'verGastos' => array('controller' => 'Controller', 'action' => 'verGastos', 'nivel_usuario' => 1),
-    'formInsertarGasto' => array('controller' => 'Controller', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1), // Nueva ruta
+    'formInsertarGasto' => array('controller' => 'Controller', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1),
     'insertarGasto' => array('controller' => 'Controller', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
     'editarGasto' => array('controller' => 'Controller', 'action' => 'editarGasto', 'nivel_usuario' => 1),
     'eliminarGasto' => array('controller' => 'Controller', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
     
     // Gestión de ingresos
     'verIngresos' => array('controller' => 'Controller', 'action' => 'verIngresos', 'nivel_usuario' => 1),
-    'formInsertarIngreso' => array('controller' => 'Controller', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1), // Nueva ruta
+    'formInsertarIngreso' => array('controller' => 'Controller', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1),
     'insertarIngreso' => array('controller' => 'Controller', 'action' => 'insertarIngreso', 'nivel_usuario' => 1),
     'editarIngreso' => array('controller' => 'Controller', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'eliminarIngreso' => array('controller' => 'Controller', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
 
     // Gestión financiera
-    'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1), // Nueva ruta
+    'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1),
     'verSituacionFinanciera' => array('controller' => 'Controller', 'action' => 'verSituacionFinanciera', 'nivel_usuario' => 1),
 
-    // Gestión de categorías (ingresos y gastos)
+    // Gestión de categorías de ingresos y gastos
     'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
     'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
     'editarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 2),
@@ -61,7 +62,7 @@ $map = array(
     'editarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 2),
     'eliminarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'eliminarCategoriaIngreso', 'nivel_usuario' => 2),
 
-    // Gestión de usuarios (solo accesible para admins)
+    // Gestión de usuarios
     'listarUsuarios' => array('controller' => 'Controller', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
     'editarUsuario' => array('controller' => 'Controller', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
     'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
@@ -70,39 +71,42 @@ $map = array(
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),
 );
 
-
-// Verificar si la ruta existe
+// Verificar si la ruta solicitada existe
 if (isset($_GET['ctl'])) {
     if (isset($map[$_GET['ctl']])) {
         $ruta = $_GET['ctl'];
+        echo "DEBUG: Ruta encontrada -> " . htmlspecialchars($ruta) . "<br>";
     } else {
-        // Manejar error 404 si la ruta no existe
+        // Manejo de error 404 si la ruta no es válida
         header('Status: 404 Not Found');
         echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
         exit;
     }
 } else {
-    // Ruta por defecto es 'home'
+    // Si no hay ninguna ruta, la ruta por defecto será 'home'
     $ruta = 'home';
+    echo "DEBUG: Ruta por defecto -> home <br>";
 }
 
 $controlador = $map[$ruta];
+echo "DEBUG: Controlador -> " . htmlspecialchars($controlador['controller']) . "<br>";
+echo "DEBUG: Acción -> " . htmlspecialchars($controlador['action']) . "<br>";
 
-// Verificar si el método existe en el controlador
+// Verificar si el método solicitado existe en el controlador
 if (method_exists($controlador['controller'], $controlador['action'])) {
-    // Verificar nivel de usuario
+    // Comprobar el nivel de acceso del usuario
     if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
         echo "DEBUG: Llamando a la acción del controlador<br>";
         call_user_func(array(new $controlador['controller'], $controlador['action']));
     } else {
-        // Redirigir si no tiene el nivel de acceso adecuado
+        // Redirigir a 'inicio' si el usuario no tiene el nivel de acceso requerido
         echo "DEBUG: Redirigiendo a inicio por nivel de usuario insuficiente<br>";
         call_user_func(array(new $controlador['controller'], 'inicio'));
     }
 } else {
-    // Manejar error si no existe el controlador o la acción
+    // Manejar el error si el controlador o el método no existen
     header('Status: 404 Not Found');
     echo '<html><body><h1>Error 404: El controlador <i>' . htmlspecialchars($controlador['controller']) . '->' . htmlspecialchars($controlador['action']) . '</i> no existe</h1></body></html>';
 }
 
-ob_end_flush(); // Enviar el contenido almacenado en el búfer y desactivar el almacenamiento en búfer de salida
+ob_end_flush(); // Finaliza el almacenamiento en búfer y envía la salida al navegador

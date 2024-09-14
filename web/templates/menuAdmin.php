@@ -6,39 +6,39 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Opciones para el Administrador -->
+                <!-- Opciones del Administrador -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
+                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a> <!-- Permite ver todos los gastos del sistema -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a>
+                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a> <!-- Permite ver todos los ingresos del sistema -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a>
+                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a> <!-- Formulario para insertar un nuevo gasto -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
+                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a> <!-- Formulario para insertar un nuevo ingreso -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
-                </li>
-
-                <!-- Nueva opción para gestionar usuarios -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a>
+                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de los usuarios -->
                 </li>
 
-                <!-- Nuevas opciones para gestionar categorías -->
+                <!-- Gestión de usuarios (solo para admins) -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
+                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Permite ver y gestionar todos los usuarios -->
+                </li>
+
+                <!-- Gestión de categorías de gastos e ingresos -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
                 </li>
 
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
+                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Permite al administrador cerrar sesión -->
                 </li>
             </ul>
         </div>

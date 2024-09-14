@@ -223,11 +223,22 @@ class Controller {
     // Ver Situación Financiera
     public function verSituacion() {
         $m = new GastosModelo();
-        $situacion = $m->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+        $usuario = $m->obtenerUsuarioPorId($_SESSION['usuario']['id']);
         
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            // Si el usuario es superadmin, obtener la situación de la familia
+            $situacion = $m->obtenerSituacionFinancieraFamilia($usuario['idFamilia']);
+            $totalSaldo = $m->calcularSaldoGlobalFamilia($usuario['idFamilia']);
+        } else {
+            // Obtener situación financiera individual
+            $situacion = $m->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+            $totalSaldo = null;
+        }
+
         $params = array(
             'situacion' => $situacion,
-            'mensaje' => 'Tu situación financiera actual'
+            'mensaje' => 'Tu situación financiera actual',
+            'totalSaldo' => $totalSaldo
         );
         
         $this->render('verSituacion.php', $params);
