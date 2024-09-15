@@ -49,8 +49,7 @@ $map = array(
 
     // Gestión financiera
     'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1),
-    'verSituacionFinanciera' => array('controller' => 'Controller', 'action' => 'verSituacionFinanciera', 'nivel_usuario' => 1),
-
+    
     // Gestión de categorías de ingresos y gastos
     'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
     'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
@@ -67,9 +66,14 @@ $map = array(
     'editarUsuario' => array('controller' => 'Controller', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
     'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
 
+    // Gestión de Familias y Grupos (Superadmin)
+    'listarFamilias' => array('controller' => 'Controller', 'action' => 'listarFamilias', 'nivel_usuario' => 2), // Añadir ruta para gestionar familias
+    'verGrupos' => array('controller' => 'Controller', 'action' => 'verGrupos', 'nivel_usuario' => 2), // Añadir ruta para gestionar grupos
+    
     // Probar la conexión a la base de datos
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),
 );
+
 
 // Verificar si la ruta solicitada existe
 if (isset($_GET['ctl'])) {

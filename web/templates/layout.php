@@ -16,31 +16,37 @@
         <p>Aplicación para la gestión de finanzas familiares</p>
     </header>
 
-    <!-- Menú de navegación dinámico según el rol del usuario -->
+    <!-- Menú de navegación dinámico según el estado de autenticación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <?php 
-            if (isset($menu)) {
-                // Verificamos si el archivo de menú existe antes de incluirlo
-                $menuPath = __DIR__ . '/' . $menu;
-                if (file_exists($menuPath)) {
-                    include $menuPath;
+            if (isset($_SESSION['usuario'])):  // Verificar si el usuario está autenticado
+                if (isset($menu)) {
+                    $menuPath = __DIR__ . '/' . $menu;
+                    if (file_exists($menuPath)) {
+                        include $menuPath;  // Incluir el archivo de menú según el rol
+                    } else {
+                        echo "<div class='alert alert-danger'>Error: El archivo del menú '{$menu}' no fue encontrado en '{$menuPath}'.</div>";
+                    }
                 } else {
-                    echo "<div class='alert alert-danger'>Error: El archivo del menú '{$menu}' no fue encontrado en '{$menuPath}'.</div>";
+                    echo "<div class='alert alert-warning'>Error: Menú no definido.</div>";
                 }
-            } else {
-                echo "<div class='alert alert-warning'>Error: Menú no definido.</div>";
-            }
+            else:  // Menú básico para usuarios no autenticados
             ?>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=home">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
+                </ul>
+            <?php endif; ?>
         </div>
     </nav>
 
     <!-- Contenido principal de la página -->
     <main class="container py-4">
         <?php 
-        // Asegurarse de que la variable $contenido esté definida
         if (isset($contenido)) {
-            echo $contenido;
+            echo $contenido;  // Mostrar el contenido dinámico
         } else {
             echo "<div class='alert alert-danger'>Error: Contenido no disponible.</div>";
         }

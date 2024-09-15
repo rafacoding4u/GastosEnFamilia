@@ -6,7 +6,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Opciones del Superadmin -->
+                <!-- Opciones de Gestión Financiera (Superadmin) -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a> <!-- Ver todos los gastos del sistema -->
                 </li>
@@ -23,7 +23,7 @@
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de usuarios y familias -->
                 </li>
 
-                <!-- Gestión de usuarios (Superadmin) -->
+                <!-- Gestión de Usuarios (Superadmin) -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Gestión completa de usuarios -->
                 </li>
@@ -33,13 +33,13 @@
                     <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a> <!-- Gestionar familias en la plataforma -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a> <!-- Gestionar grupos asociados a familias -->
+                    <a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a> <!-- Gestionar grupos asociados a familias -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
+                    <a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
+                    <a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
                 </li>
 
                 <!-- Cerrar Sesión -->

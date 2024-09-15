@@ -1,34 +1,38 @@
 <?php include 'layout.php'; ?>
 
 <div class="container p-4">
-    <h2>Lista de Usuarios</h2>
+    <h2>Lista de Usuarios Registrados</h2>
 
-    <!-- Verificar si hay un mensaje de éxito o error -->
+    <!-- Mostrar mensaje en caso de éxito o error -->
     <?php if (isset($params['mensaje'])): ?>
         <div class="alert alert-info">
             <?= htmlspecialchars($params['mensaje']); ?>
         </div>
     <?php endif; ?>
 
-    <!-- Verificar si hay usuarios para mostrar -->
-    <?php if (isset($usuarios) && count($usuarios) > 0): ?>
+    <!-- Verificar si existen usuarios para mostrar -->
+    <?php if (isset($params['usuarios']) && count($params['usuarios']) > 0): ?>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Alias</th> <!-- Mostrar el alias de usuario -->
-                    <th>Nivel de Usuario</th> <!-- Nivel de acceso (usuario, admin, superadmin) -->
+                    <th>Email</th> <!-- Mostrar el correo del usuario -->
+                    <th>Nivel de Usuario</th> <!-- Mostrar el nivel de usuario (usuario, admin, superadmin) -->
+                    <th>Familia</th> <!-- Mostrar el nombre de la familia a la que pertenece el usuario -->
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($usuarios as $usuario): ?>
+                <?php foreach ($params['usuarios'] as $usuario): ?>
                     <tr>
                         <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                         <td><?= htmlspecialchars($usuario['apellido']) ?></td>
-                        <td><?= htmlspecialchars($usuario['alias']) ?></td> <!-- Ajustado a "alias" -->
+                        <td><?= htmlspecialchars($usuario['alias']) ?></td>
+                        <td><?= htmlspecialchars($usuario['email']) ?></td>
                         <td><?= htmlspecialchars($usuario['nivel_usuario']) ?></td>
+                        <td><?= htmlspecialchars($usuario['nombre_familia'] ?? 'Sin Familia') ?></td> <!-- Muestra el nombre de la familia o "Sin Familia" si no tiene -->
                         <td>
                             <!-- Botón para editar el usuario -->
                             <a href="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning">Editar</a>
