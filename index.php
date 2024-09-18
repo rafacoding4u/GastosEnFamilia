@@ -1,6 +1,6 @@
 <?php
 // Inicia el almacenamiento en búfer de salida para evitar problemas de cabeceras
-ob_start(); 
+ob_start();
 
 require_once __DIR__ . '/app/libs/Config.php';
 require_once __DIR__ . '/app/libs/bGeneral.php';
@@ -32,14 +32,14 @@ $map = array(
     'error' => array('controller' => 'Controller', 'action' => 'error', 'nivel_usuario' => 0),
     'iniciarSesion' => array('controller' => 'Controller', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
     'registro' => array('controller' => 'Controller', 'action' => 'registro', 'nivel_usuario' => 0),
-    
+
     // Gestión de gastos
     'verGastos' => array('controller' => 'Controller', 'action' => 'verGastos', 'nivel_usuario' => 1),
     'formInsertarGasto' => array('controller' => 'Controller', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1),
     'insertarGasto' => array('controller' => 'Controller', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
     'editarGasto' => array('controller' => 'Controller', 'action' => 'editarGasto', 'nivel_usuario' => 1),
     'eliminarGasto' => array('controller' => 'Controller', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
-    
+
     // Gestión de ingresos
     'verIngresos' => array('controller' => 'Controller', 'action' => 'verIngresos', 'nivel_usuario' => 1),
     'formInsertarIngreso' => array('controller' => 'Controller', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1),
@@ -49,7 +49,7 @@ $map = array(
 
     // Gestión financiera
     'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1),
-    
+
     // Gestión de categorías de ingresos y gastos
     'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
     'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
@@ -67,13 +67,26 @@ $map = array(
     'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
 
     // Gestión de Familias y Grupos (Superadmin)
-    'listarFamilias' => array('controller' => 'Controller', 'action' => 'listarFamilias', 'nivel_usuario' => 2), // Añadir ruta para gestionar familias
-    'verGrupos' => array('controller' => 'Controller', 'action' => 'verGrupos', 'nivel_usuario' => 2), // Añadir ruta para gestionar grupos
-    
+    'listarFamilias' => array('controller' => 'Controller', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
+    'verGrupos' => array('controller' => 'Controller', 'action' => 'verGrupos', 'nivel_usuario' => 2),
+
+    // Rutas para familias y grupos
+    'formCrearFamilia' => array('controller' => 'Controller', 'action' => 'formCrearFamilia', 'nivel_usuario' => 2),
+    'crearFamilia' => array('controller' => 'Controller', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
+    'formCrearGrupo' => array('controller' => 'Controller', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
+    'crearGrupo' => array('controller' => 'Controller', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
+
+    // Nueva ruta para crear usuario
+    'formCrearUsuario' => array('controller' => 'Controller', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2),
+    'crearUsuario' => array('controller' => 'Controller', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
+
+    // Asignar usuarios a grupos y familias
+    'formAsignarUsuario' => array('controller' => 'Controller', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
+    'asignarUsuario' => array('controller' => 'Controller', 'action' => 'asignarUsuario', 'nivel_usuario' => 2),
+
     // Probar la conexión a la base de datos
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),
 );
-
 
 // Verificar si la ruta solicitada existe
 if (isset($_GET['ctl'])) {

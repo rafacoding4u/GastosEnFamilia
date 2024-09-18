@@ -3,6 +3,9 @@
 <div class="container p-4">
     <h2>Lista de Grupos</h2>
 
+    <!-- Botón para añadir un nuevo grupo -->
+    <a href="index.php?ctl=formCrearGrupo" class="btn btn-success mb-3">Añadir Grupo</a>
+
     <!-- Mensaje informativo si está definido -->
     <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
         <div class="alert alert-info">

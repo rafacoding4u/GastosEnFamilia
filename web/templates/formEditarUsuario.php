@@ -3,57 +3,61 @@
 <div class="container p-4">
     <h2>Editar Usuario</h2>
 
-    <!-- Mostrar errores si existen -->
-    <?php if (isset($errores) && count($errores) > 0): ?>
-        <div class="alert alert-danger">
-            <ul>
-                <?php foreach ($errores as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-
-    <!-- Mostrar mensaje informativo -->
-    <?php if (isset($mensaje)): ?>
+    <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
         <div class="alert alert-info">
-            <?= htmlspecialchars($mensaje) ?>
+            <?= htmlspecialchars($params['mensaje']); ?>
         </div>
     <?php endif; ?>
 
-    <!-- Formulario para editar el usuario -->
-    <form action="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($idUser) ?>" method="post">
+    <form action="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($params['idUser']) ?>" method="POST">
         <div class="form-group">
-            <label for="nombre">Nombre:</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" value="<?= htmlspecialchars($nombre) ?>" required>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($params['nombre']) ?>" required>
         </div>
 
         <div class="form-group">
-            <label for="apellido">Apellido:</label>
-            <input type="text" class="form-control" id="apellido" name="apellido" value="<?= htmlspecialchars($apellido) ?>" required>
+            <label for="apellido">Apellido</label>
+            <input type="text" name="apellido" class="form-control" value="<?= htmlspecialchars($params['apellido']) ?>" required>
         </div>
 
         <div class="form-group">
-            <label for="alias">Alias:</label>
-            <input type="text" class="form-control" id="alias" name="alias" value="<?= htmlspecialchars($alias) ?>" required>
+            <label for="alias">Alias</label>
+            <input type="text" name="alias" class="form-control" value="<?= htmlspecialchars($params['alias']) ?>" required>
         </div>
 
         <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email) ?>" required>
+            <label for="email">Email</label>
+            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($params['email']) ?>" required>
         </div>
 
         <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="text" class="form-control" id="telefono" name="telefono" value="<?= htmlspecialchars($telefono) ?>" required>
+            <label for="telefono">Teléfono</label>
+            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($params['telefono']) ?>" required>
         </div>
 
+        <!-- Selección de familia -->
         <div class="form-group">
-            <label for="nivel_usuario">Nivel de Usuario:</label>
-            <select class="form-control" id="nivel_usuario" name="nivel_usuario" required>
-                <option value="usuario" <?= $nivel_usuario == 'usuario' ? 'selected' : '' ?>>Usuario</option>
-                <option value="admin" <?= $nivel_usuario == 'admin' ? 'selected' : '' ?>>Admin</option>
-                <option value="superadmin" <?= $nivel_usuario == 'superadmin' ? 'selected' : '' ?>>Superadmin</option>
+            <label for="idFamilia">Familia</label>
+            <select name="idFamilia" class="form-control">
+                <option value="">Sin Familia</option> <!-- Opción para no seleccionar familia -->
+                <?php foreach ($params['familias'] as $familia): ?>
+                    <option value="<?= $familia['idFamilia'] ?>" <?= ($familia['idFamilia'] == $params['idFamilia']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($familia['nombre_familia']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <!-- Selección de grupo -->
+        <div class="form-group">
+            <label for="idGrupo">Grupo</label>
+            <select name="idGrupo" class="form-control">
+                <option value="">Sin Grupo</option> <!-- Opción para no seleccionar grupo -->
+                <?php foreach ($params['grupos'] as $grupo): ?>
+                    <option value="<?= $grupo['idGrupo'] ?>" <?= ($grupo['idGrupo'] == $params['idGrupo']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
 

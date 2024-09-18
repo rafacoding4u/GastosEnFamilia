@@ -1,11 +1,13 @@
 <?php
-require_once 'app/libs/bSeguridad.php'; 
-require_once 'app/libs/bGeneral.php'; 
+require_once 'app/libs/bSeguridad.php';
+require_once 'app/libs/bGeneral.php';
 
-class Controller {
+class Controller
+{
 
     // Método para probar la conexión a la base de datos
-    public function probarConexionBD() {
+    public function probarConexionBD()
+    {
         $modelo = new GastosModelo();
         if ($modelo->pruebaConexion()) {
             echo "Conexión exitosa a la base de datos.";
@@ -15,7 +17,8 @@ class Controller {
     }
 
     // Cargar el menú según el nivel de usuario
-    private function cargaMenu() {
+    private function cargaMenu()
+    {
         if (isset($_SESSION['nivel_usuario'])) {
             switch ($_SESSION['nivel_usuario']) {
                 case 'usuario':
@@ -32,7 +35,8 @@ class Controller {
     }
 
     // Renderizar una vista con los parámetros dados
-    private function render($vista, $params = array()) {
+    private function render($vista, $params = array())
+    {
         ob_start();
         extract($params);
         require __DIR__ . '/../../web/templates/' . $vista;
@@ -49,82 +53,87 @@ class Controller {
     }
 
     // Página de inicio (landing page para usuarios no autenticados)
-public function home() {
-    // Si el usuario ya está autenticado, redirigir a la página principal
-    if (isset($_SESSION['usuario']) && $_SESSION['nivel_usuario'] > 0) {
-        header("Location: index.php?ctl=inicio");
-        exit();
+    public function home()
+    {
+        // Si el usuario ya está autenticado, redirigir a la página principal
+        if (isset($_SESSION['usuario']) && $_SESSION['nivel_usuario'] > 0) {
+            header("Location: index.php?ctl=inicio");
+            exit();
+        }
+
+        // Si no está autenticado, mostrar la página de bienvenida
+        $params = array(
+            'mensaje' => 'Bienvenido a GastosEnFamilia',
+            'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
+            'fecha' => date('d-m-Y')
+        );
+
+        $this->render('home.php', $params); // Usar una vista separada para el landing page
     }
-    
-    // Si no está autenticado, mostrar la página de bienvenida
-    $params = array(
-        'mensaje' => 'Bienvenido a GastosEnFamilia',
-        'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
-        'fecha' => date('d-m-Y')
-    );
-    
-    $this->render('home.php', $params); // Usar una vista separada para el landing page
-}
 
 
     /// Página principal del usuario autenticado
-public function inicio() {
-    // Verificar si el usuario está autenticado
-    if (!isset($_SESSION['usuario'])) {
-        // Si no está autenticado, redirigir al inicio de sesión
-        header("Location: index.php?ctl=iniciarSesion");
-        exit();
+    public function inicio()
+    {
+        // Verificar si el usuario está autenticado
+        if (!isset($_SESSION['usuario'])) {
+            // Si no está autenticado, redirigir al inicio de sesión
+            header("Location: index.php?ctl=iniciarSesion");
+            exit();
+        }
+
+        $m = new GastosModelo();
+        $totalIngresos = $m->obtenerTotalIngresos($_SESSION['usuario']['id']);
+        $totalGastos = $m->obtenerTotalGastos($_SESSION['usuario']['id']);
+        $balance = $totalIngresos - $totalGastos;
+
+        $params = array(
+            'mensaje' => 'Bienvenido a GastosEnFamilia',
+            'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
+            'fecha' => date('d-m-Y'),
+            'totalIngresos' => $totalIngresos,
+            'totalGastos' => $totalGastos,
+            'balance' => $balance
+        );
+
+        $this->render('inicio.php', $params); // Renderizar la vista del usuario autenticado
     }
-
-    $m = new GastosModelo();
-    $totalIngresos = $m->obtenerTotalIngresos($_SESSION['usuario']['id']);
-    $totalGastos = $m->obtenerTotalGastos($_SESSION['usuario']['id']);
-    $balance = $totalIngresos - $totalGastos;
-
-    $params = array(
-        'mensaje' => 'Bienvenido a GastosEnFamilia',
-        'mensaje2' => 'Gestiona tus finanzas familiares de manera eficiente',
-        'fecha' => date('d-m-Y'),
-        'totalIngresos' => $totalIngresos,
-        'totalGastos' => $totalGastos,
-        'balance' => $balance
-    );
-
-    $this->render('inicio.php', $params); // Renderizar la vista del usuario autenticado
-}
 
 
     // Cerrar sesión
-    public function salir() {
+    public function salir()
+    {
         session_start();  // Asegurarse de que la sesión está activa
         session_unset();  // Eliminar todas las variables de sesión
         session_destroy();  // Destruir la sesión
         header("Location: index.php?ctl=home");
-        exit(); 
+        exit();
     }
 
     // Página de error
-    public function error() {
+    public function error()
+    {
         $this->render('error.php');
     }
 
     // Iniciar sesión
-    public function iniciarSesion() {
+    public function iniciarSesion()
+    {
         $params = array(
             'alias' => '',
             'contrasenya' => ''
         );
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bIniciarSesion'])) {
             $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
             $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
-    
+
             $m = new GastosModelo();
             $usuario = $m->consultarUsuario($alias);
-    
+
             if ($usuario) {
                 if (password_verify($contrasenya, $usuario['contrasenya'])) {
-                    $_SESSION['nivel_usuario'] = $usuario['nivel_usuario']; 
+                    $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
                     $_SESSION['usuario'] = array(
                         'id' => $usuario['idUser'],
                         'nombre' => $usuario['nombre'],
@@ -144,7 +153,8 @@ public function inicio() {
     }
 
     // Registro de usuario
-    public function registro() {
+    public function registro()
+    {
         $params = array(
             'nombre' => '',
             'apellido' => '',
@@ -159,12 +169,12 @@ public function inicio() {
             'es_menor' => false
         );
         $errores = array();
-    
+
         // Cargar grupos y familias existentes para el formulario
         $m = new GastosModelo();
         $familias = $m->obtenerFamilias();
         $grupos = $m->obtenerGrupos();
-    
+
         if (isset($_POST['bRegistro'])) {
             $nombre = recoge('nombre');
             $apellido = recoge('apellido');
@@ -178,7 +188,7 @@ public function inicio() {
             $passwordFamiliaGrupo = recoge('passwordGrupoFamilia');
             $nombreNuevo = recoge('nombre_nuevo');
             $passwordNuevo = recoge('password_nuevo');
-    
+
             // Validar campos
             cTexto($nombre, "nombre", $errores);
             cTexto($apellido, "apellido", $errores);
@@ -186,7 +196,7 @@ public function inicio() {
             cContrasenya($contrasenya, $errores);
             cEmail($email, $errores);
             cTelefono($telefono, $errores);
-    
+
             // Verificar si seleccionó un grupo o familia existente
             if (!empty($idGrupoFamilia)) {
                 if (strpos($idGrupoFamilia, 'grupo_') === 0) {
@@ -203,7 +213,7 @@ public function inicio() {
                     }
                 }
             }
-    
+
             // Verificar si está creando un nuevo grupo o familia
             if (!empty($nombreNuevo) && !empty($passwordNuevo)) {
                 $hashedPasswordNuevo = password_hash($passwordNuevo, PASSWORD_DEFAULT);
@@ -213,7 +223,7 @@ public function inicio() {
                     $idFamilia = $m->insertarFamilia($nombreNuevo, $hashedPasswordNuevo);
                 }
             }
-    
+
             if (empty($errores)) {
                 try {
                     $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
@@ -233,274 +243,698 @@ public function inicio() {
                 }
             }
         }
-    
+
         $params['familias'] = $familias;
         $params['grupos'] = $grupos;
         $this->render('formRegistro.php', $params);
     }
 
-        // Ver Gastos
-        public function verGastos() {
-            $m = new GastosModelo();
-            $gastos = $m->obtenerGastosPorUsuario($_SESSION['usuario']['id']);
-            
-            $params = array(
-                'gastos' => $gastos,
-                'mensaje' => 'Lista de tus gastos'
-            );
-            
-            $this->render('verGastos.php', $params);
+    // Formulario para crear una nueva familia
+    public function formCrearFamilia()
+    {
+        // Solo superadmin tiene acceso
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            header('Location: index.php?ctl=inicio');
+            exit();
         }
-    
-        // Ver Ingresos
-        public function verIngresos() {
-            $m = new GastosModelo();
-            $ingresos = $m->obtenerIngresosPorUsuario($_SESSION['usuario']['id']);
-            
-            $params = array(
-                'ingresos' => $ingresos,
-                'mensaje' => 'Lista de tus ingresos'
-            );
-            
-            $this->render('verIngresos.php', $params);
-        }
-    
-        // Ver Situación Financiera
-        public function verSituacion() {
-            $m = new GastosModelo();
-            $usuario = $m->obtenerUsuarioPorId($_SESSION['usuario']['id']);
-            
-            if ($usuario['nivel_usuario'] === 'superadmin') {
-                // Si el usuario es superadmin, obtener la situación de la familia
-                $situacion = $m->obtenerSituacionFinancieraFamilia($usuario['idFamilia']);
-                $totalSaldo = $m->calcularSaldoGlobalFamilia($usuario['idFamilia']);
+
+        $this->render('formCrearFamilia.php');
+    }
+
+    // Crear una nueva familia
+    public function crearFamilia()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bCrearFamilia'])) {
+            $nombre_familia = recoge('nombre_familia');
+            $password_familia = recoge('password_familia');
+
+            $errores = array();
+            cTexto($nombre_familia, "nombre_familia", $errores);
+            cContrasenya($password_familia, $errores);
+
+            if (empty($errores)) {
+                $m = new GastosModelo();
+                if ($m->insertarFamilia($nombre_familia, $password_familia)) {
+                    header('Location: index.php?ctl=listarFamilias');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se pudo crear la familia.';
+                }
             } else {
-                // Obtener situación financiera individual
-                $situacion = $m->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
-                $totalSaldo = null;
+                $params['errores'] = $errores;
             }
-    
-            $params = array(
-                'situacion' => $situacion,
-                'mensaje' => 'Tu situación financiera actual',
-                'totalSaldo' => $totalSaldo
-            );
-            
-            $this->render('verSituacion.php', $params);
+
+            $this->render('formCrearFamilia.php', $params);
         }
-    
-        // Formulario para insertar gasto
-        public function formInsertarGasto() {
-            $m = new GastosModelo();
-            $params = array(
-                'categorias' => $m->obtenerCategoriasGastos(),
-                'mensaje' => ''
-            );
-            $this->render('formInsertarGasto.php', $params);
-        }
-    
-        // Insertar Gasto
-        public function insertarGasto() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
-                $monto = recoge('importe');
-                $categoria = recoge('idCategoria');
-                $concepto = recoge('concepto');
-                $origen = recoge('origen');
-    
-                $m = new GastosModelo();
-                if ($m->insertarGasto($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
-                    header('Location: index.php?ctl=verGastos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo insertar el gasto.';
-                }
-            }
-            $this->formInsertarGasto();
-        }
-    
-        // Formulario para insertar ingreso
-        public function formInsertarIngreso() {
-            $m = new GastosModelo();
-            $params = array(
-                'categorias' => $m->obtenerCategoriasIngresos(),
-                'mensaje' => ''
-            );
-            $this->render('formInsertarIngreso.php', $params);
-        }
-    
-        // Insertar Ingreso
-        public function insertarIngreso() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
-                $monto = recoge('importe');
-                $categoria = recoge('idCategoria');
-                $concepto = recoge('concepto');
-                $origen = recoge('origen');
-    
-                $m = new GastosModelo();
-                if ($m->insertarIngreso($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
-                    header('Location: index.php?ctl=verIngresos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo insertar el ingreso.';
-                }
-            }
-            $this->formInsertarIngreso();
-        }
-    
-        // Gestión de Categorías de Gastos
-        public function verCategoriasGastos() {
-            $m = new GastosModelo();
-            $categorias = $m->obtenerCategoriasGastos();
-            
-            $params = array(
-                'categorias' => $categorias,
-                'mensaje' => 'Gestión de categorías de gastos'
-            );
-            
-            $this->render('verCategoriasGastos.php', $params);
-        }
-    
-        public function insertarCategoriaGasto() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
-                $nombreCategoria = recoge('nombreCategoria');
-                $m = new GastosModelo();
-                
-                if ($m->insertarCategoriaGasto($nombreCategoria)) {
-                    header('Location: index.php?ctl=verCategoriasGastos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo insertar la categoría de gasto.';
-                }
-            }
-            $this->verCategoriasGastos();
-        }
-    
-        public function editarCategoriaGasto() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaGasto'])) {
-                $idCategoria = recoge('idCategoria');
-                $nombreCategoria = recoge('nombreCategoria');
-                $m = new GastosModelo();
-    
-                if ($m->actualizarCategoriaGasto($idCategoria, $nombreCategoria)) {
-                    header('Location: index.php?ctl=verCategoriasGastos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo actualizar la categoría de gasto.';
-                }
-            }
-            $this->verCategoriasGastos();
-        }
-    
-        public function eliminarCategoriaGasto() {
-            if (isset($_GET['id'])) {
-                $m = new GastosModelo();
-                if ($m->eliminarCategoriaGasto($_GET['id'])) {
-                    header('Location: index.php?ctl=verCategoriasGastos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo eliminar la categoría de gasto.';
-                }
-            }
-        }
-    
-        // Gestión de Categorías de Ingresos
-        public function verCategoriasIngresos() {
-            $m = new GastosModelo();
-            $categorias = $m->obtenerCategoriasIngresos();
-            
-            $params = array(
-                'categorias' => $categorias,
-                'mensaje' => 'Gestión de categorías de ingresos'
-            );
-            
-            $this->render('verCategoriasIngresos.php', $params);
-        }
-    
-        public function insertarCategoriaIngreso() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaIngreso'])) {
-                $nombreCategoria = recoge('nombreCategoria');
-                $m = new GastosModelo();
-                
-                if ($m->insertarCategoriaIngreso($nombreCategoria)) {
-                    header('Location: index.php?ctl=verCategoriasIngresos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo insertar la categoría de ingreso.';
-                }
-            }
-            $this->verCategoriasIngresos();
-        }
-    
-        public function editarCategoriaIngreso() {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
-                $idCategoria = recoge('idCategoria');
-                $nombreCategoria = recoge('nombreCategoria');
-                $m = new GastosModelo();
-    
-                if ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
-                    header('Location: index.php?ctl=verCategoriasIngresos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
-                }
-            }
-            $this->verCategoriasIngresos();
-        }
-    
-        public function eliminarCategoriaIngreso() {
-            if (isset($_GET['id'])) {
-                $m = new GastosModelo();
-                if ($m->eliminarCategoriaIngreso($_GET['id'])) {
-                    header('Location: index.php?ctl=verCategoriasIngresos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo eliminar la categoría de ingreso.';
-                }
-            }
-        }
-    
-        // Gestión de Grupos
-        public function verGrupos() {
-            $m = new GastosModelo();
-            $grupos = $m->obtenerGrupos();
-            
-            $params = array(
-                'grupos' => $grupos,
-                'mensaje' => 'Gestión de grupos'
-            );
-            
-            $this->render('verGrupos.php', $params);
-        }
-    
-        // Listar Usuarios
-        public function listarUsuarios() {
-            $m = new GastosModelo();
-            $usuarios = $m->obtenerUsuarios();
-            
-            $params = array(
-                'usuarios' => $usuarios,
-                'mensaje' => 'Lista de usuarios registrados'
-            );
-            
-            $this->render('listarUsuarios.php', $params);
-        }
-    
-        // Eliminar Usuario
-        public function eliminarUsuario() {
-            if (isset($_GET['id'])) {
-                $m = new GastosModelo();
-                if ($m->eliminarUsuario($_GET['id'])) {
-                    header('Location: index.php?ctl=listarUsuarios');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo eliminar el usuario.';
-                }
-            }
-        }
-    
-            // Editar Usuario
-    public function editarUsuario() {
+    }
+
+    // Listar Familias
+    public function listarFamilias()
+    {
         $m = new GastosModelo();
+        $familias = $m->obtenerFamilias(); // Utiliza el método del modelo que ya tienes implementado
+
+        $params = array(
+            'familias' => $familias,
+            'mensaje' => 'Lista de familias registradas'
+        );
+
+        $this->render('listarFamilias.php', $params); // Renderiza la vista listarFamilias
+    }
+    // Editar Familia
+    public function editarFamilia()
+    {
+        $m = new GastosModelo();
+        if (isset($_GET['id'])) {
+            $familia = $m->obtenerFamiliaPorId($_GET['id']);
+            if (!$familia) {
+                $params['mensaje'] = 'Familia no encontrada.';
+                $this->listarFamilias();
+                return;
+            }
+        }
+
+        $params = array(
+            'nombre_familia' => $familia['nombre_familia'],
+            'idFamilia' => $familia['idFamilia']
+        );
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarFamilia'])) {
+            $nombre_familia = recoge('nombre_familia');
+            $errores = array();
+
+            cTexto($nombre_familia, "nombre_familia", $errores);
+
+            if (empty($errores)) {
+                if ($m->actualizarFamilia($familia['idFamilia'], $nombre_familia)) {
+                    header('Location: index.php?ctl=listarFamilias');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se pudo actualizar la familia.';
+                }
+            } else {
+                $params['errores'] = $errores;
+            }
+        }
+
+        $this->render('formEditarFamilia.php', $params);
+    }
+
+    // Eliminar Familia
+    public function eliminarFamilia()
+    {
+        if (isset($_GET['id'])) {
+            $m = new GastosModelo();
+            if ($m->eliminarFamilia($_GET['id'])) {
+                header('Location: index.php?ctl=listarFamilias');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo eliminar la familia.';
+            }
+        }
+    }
+    // Formulario para insertar gasto de otro usuario
+    public function formInsertarGastoOtroUsuario()
+    {
+        $idUsuario = recoge('id');
+        $m = new GastosModelo();
+
+        // Asegurarse de que el usuario no es un superusuario
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            header('Location: index.php?ctl=error');
+            exit();
+        }
+
+        $params = array(
+            'categorias' => $m->obtenerCategoriasGastos(),
+            'usuario' => $usuario
+        );
+        $this->render('formInsertarGasto.php', $params);
+    }
+
+
+    // Ver Gastos
+    public function verGastos()
+    {
+        $m = new GastosModelo();
+        $gastos = $m->obtenerGastosPorUsuario($_SESSION['usuario']['id']);
+
+        $params = array(
+            'gastos' => $gastos,
+            'mensaje' => 'Lista de tus gastos'
+        );
+
+        $this->render('verGastos.php', $params);
+    }
+
+    // Ver Gastos de un Usuario Específico (para superadmin)
+    public function verGastosUsuario()
+    {
+        $idUsuario = recoge('id'); // Obtener el ID del usuario
+        $m = new GastosModelo();
+
+        // Asegurarse de que el usuario no es un superusuario
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            header('Location: index.php?ctl=error'); // Redirigir si es superadmin
+            exit();
+        }
+
+        // Obtener los gastos del usuario
+        $gastos = $m->obtenerGastosPorUsuario($idUsuario);
+
+        $params = array(
+            'gastos' => $gastos,
+            'usuario' => $usuario
+        );
+
+        $this->render('verGastos.php', $params); // Renderizar la vista
+    }
+
+    // Insertar gasto para otro usuario
+    public function insertarGastoOtroUsuario()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
+            $idUsuario = recoge('idUsuario');
+            $monto = recoge('importe');
+            $categoria = recoge('idCategoria');
+            $concepto = recoge('concepto');
+            $origen = recoge('origen');
+
+            $m = new GastosModelo();
+            if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen)) {
+                header("Location: index.php?ctl=verGastosUsuario&id=$idUsuario");
+                exit();
+            }
+        }
+    }
+
+    // Formulario para insertar ingreso de otro usuario
+    public function formInsertarIngresoOtroUsuario()
+    {
+        $idUsuario = recoge('id');
+        $m = new GastosModelo();
+
+        // Asegurarse de que el usuario no es un superusuario
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            header('Location: index.php?ctl=error');
+            exit();
+        }
+
+        $params = array(
+            'categorias' => $m->obtenerCategoriasIngresos(),
+            'usuario' => $usuario
+        );
+        $this->render('formInsertarIngreso.php', $params);
+    }
+
+    // Insertar ingreso para otro usuario
+    public function insertarIngresoOtroUsuario()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
+            $idUsuario = recoge('idUsuario');
+            $monto = recoge('importe');
+            $categoria = recoge('idCategoria');
+            $concepto = recoge('concepto');
+            $origen = recoge('origen');
+
+            $m = new GastosModelo();
+            if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen)) {
+                header("Location: index.php?ctl=verIngresosUsuario&id=$idUsuario");
+                exit();
+            }
+        }
+    }
+
+    // Ver Ingresos
+    public function verIngresos()
+    {
+        $m = new GastosModelo();
+        $ingresos = $m->obtenerIngresosPorUsuario($_SESSION['usuario']['id']);
+
+        $params = array(
+            'ingresos' => $ingresos,
+            'mensaje' => 'Lista de tus ingresos'
+        );
+
+        $this->render('verIngresos.php', $params);
+    }
+
+    // Ver Ingresos de un Usuario Específico (para superadmin)
+    public function verIngresosUsuario()
+    {
+        $idUsuario = recoge('id'); // Obtener el ID del usuario
+        $m = new GastosModelo();
+
+        // Asegurarse de que el usuario no es un superusuario
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            header('Location: index.php?ctl=error'); // Redirigir si es superadmin
+            exit();
+        }
+
+        // Obtener los ingresos del usuario
+        $ingresos = $m->obtenerIngresosPorUsuario($idUsuario);
+
+        $params = array(
+            'ingresos' => $ingresos,
+            'usuario' => $usuario
+        );
+
+        $this->render('verIngresos.php', $params); // Renderizar la vista
+    }
+
+    // Ver Situación Financiera
+    public function verSituacion()
+    {
+        $m = new GastosModelo();
+        $usuario = $m->obtenerUsuarioPorId($_SESSION['usuario']['id']);
+
+        if ($usuario['nivel_usuario'] === 'superadmin') {
+            // Si el usuario es superadmin, obtener la situación de la familia
+            $situacion = $m->obtenerSituacionFinancieraFamilia($usuario['idFamilia']);
+            $totalSaldo = $m->calcularSaldoGlobalFamilia($usuario['idFamilia']);
+        } else {
+            // Obtener situación financiera individual
+            $situacion = $m->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+            $totalSaldo = null;
+        }
+
+        $params = array(
+            'situacion' => $situacion,
+            'mensaje' => 'Tu situación financiera actual',
+            'totalSaldo' => $totalSaldo
+        );
+
+        $this->render('verSituacion.php', $params);
+    }
+
+    // Ver Situación Financiera con filtro
+    public function verSituacionFiltrada()
+    {
+        $filtro = recoge('filtro');
+        $m = new GastosModelo();
+
+        if ($filtro === 'todas') {
+            $situacion = $m->obtenerSituacionGlobal();
+        } elseif (strpos($filtro, 'familia_') === 0) {
+            $idFamilia = substr($filtro, 8);
+            $situacion = $m->obtenerSituacionFinancieraFamilia($idFamilia);
+        } elseif (strpos($filtro, 'grupo_') === 0) {
+            $idGrupo = substr($filtro, 6);
+            $situacion = $m->obtenerSituacionFinancieraGrupo($idGrupo);
+        } elseif (strpos($filtro, 'usuario_') === 0) {
+            $idUsuario = substr($filtro, 8);
+            $situacion = $m->obtenerSituacionFinanciera($idUsuario);
+        }
+
+        $params = array(
+            'situacion' => $situacion,
+            'mensaje' => 'Situación financiera filtrada'
+        );
+
+        $this->render('verSituacion.php', $params);
+    }
+
+    // Formulario para insertar gasto
+    public function formInsertarGasto()
+    {
+        $m = new GastosModelo();
+        $params = array(
+            'categorias' => $m->obtenerCategoriasGastos(),
+            'mensaje' => ''
+        );
+        $this->render('formInsertarGasto.php', $params);
+    }
+
+    // Insertar Gasto
+    public function insertarGasto()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
+            $monto = recoge('importe');
+            $categoria = recoge('idCategoria');
+            $concepto = recoge('concepto');
+            $origen = recoge('origen');
+
+            $m = new GastosModelo();
+            if ($m->insertarGasto($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
+                header('Location: index.php?ctl=verGastos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar el gasto.';
+            }
+        }
+        $this->formInsertarGasto();
+    }
+
+    // Formulario para insertar ingreso
+    public function formInsertarIngreso()
+    {
+        $m = new GastosModelo();
+        $params = array(
+            'categorias' => $m->obtenerCategoriasIngresos(),
+            'mensaje' => ''
+        );
+        $this->render('formInsertarIngreso.php', $params);
+    }
+
+    // Insertar Ingreso
+    public function insertarIngreso()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
+            $monto = recoge('importe');
+            $categoria = recoge('idCategoria');
+            $concepto = recoge('concepto');
+            $origen = recoge('origen');
+
+            $m = new GastosModelo();
+            if ($m->insertarIngreso($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
+                header('Location: index.php?ctl=verIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar el ingreso.';
+            }
+        }
+        $this->formInsertarIngreso();
+    }
+
+    // Gestión de Categorías de Gastos
+    public function verCategoriasGastos()
+    {
+        $m = new GastosModelo();
+        $categorias = $m->obtenerCategoriasGastos();
+
+        $params = array(
+            'categorias' => $categorias,
+            'mensaje' => 'Gestión de categorías de gastos'
+        );
+
+        $this->render('verCategoriasGastos.php', $params);
+    }
+
+    public function insertarCategoriaGasto()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
+            $nombreCategoria = recoge('nombreCategoria');
+            $m = new GastosModelo();
+
+            if ($m->insertarCategoriaGasto($nombreCategoria)) {
+                header('Location: index.php?ctl=verCategoriasGastos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar la categoría de gasto.';
+            }
+        }
+        $this->verCategoriasGastos();
+    }
+
+    public function editarCategoriaGasto()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaGasto'])) {
+            $idCategoria = recoge('idCategoria');
+            $nombreCategoria = recoge('nombreCategoria');
+            $m = new GastosModelo();
+
+            if ($m->actualizarCategoriaGasto($idCategoria, $nombreCategoria)) {
+                header('Location: index.php?ctl=verCategoriasGastos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo actualizar la categoría de gasto.';
+            }
+        }
+        $this->verCategoriasGastos();
+    }
+
+    public function eliminarCategoriaGasto()
+    {
+        if (isset($_GET['id'])) {
+            $m = new GastosModelo();
+            if ($m->eliminarCategoriaGasto($_GET['id'])) {
+                header('Location: index.php?ctl=verCategoriasGastos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo eliminar la categoría de gasto.';
+            }
+        }
+    }
+    // Obtener el desglose de ingresos y gastos por familia o grupo
+    public function verDesglose()
+    {
+        $tipo = recoge('tipo');
+        $id = recoge('id');
+        $m = new GastosModelo();
+
+        if ($tipo === 'familia') {
+            $gastos = $m->obtenerGastosPorFamilia($id);
+            $ingresos = $m->obtenerIngresosPorFamilia($id);
+        } elseif ($tipo === 'grupo') {
+            $gastos = $m->obtenerGastosPorGrupo($id);
+            $ingresos = $m->obtenerIngresosPorGrupo($id);
+        } elseif ($tipo === 'usuario') {
+            $gastos = $m->obtenerGastosPorUsuario($id);
+            $ingresos = $m->obtenerIngresosPorUsuario($id);
+        }
+
+        $params = array(
+            'gastos' => $gastos,
+            'ingresos' => $ingresos
+        );
+
+        $this->render('verDesglose.php', $params);
+    }
+
+
+    // Gestión de Categorías de Ingresos
+    public function verCategoriasIngresos()
+    {
+        $m = new GastosModelo();
+        $categorias = $m->obtenerCategoriasIngresos();
+
+        $params = array(
+            'categorias' => $categorias,
+            'mensaje' => 'Gestión de categorías de ingresos'
+        );
+
+        $this->render('verCategoriasIngresos.php', $params);
+    }
+
+    public function insertarCategoriaIngreso()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaIngreso'])) {
+            $nombreCategoria = recoge('nombreCategoria');
+            $m = new GastosModelo();
+
+            if ($m->insertarCategoriaIngreso($nombreCategoria)) {
+                header('Location: index.php?ctl=verCategoriasIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar la categoría de ingreso.';
+            }
+        }
+        $this->verCategoriasIngresos();
+    }
+
+    public function editarCategoriaIngreso()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
+            $idCategoria = recoge('idCategoria');
+            $nombreCategoria = recoge('nombreCategoria');
+            $m = new GastosModelo();
+
+            if ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
+                header('Location: index.php?ctl=verCategoriasIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
+            }
+        }
+        $this->verCategoriasIngresos();
+    }
+
+    public function eliminarCategoriaIngreso()
+    {
+        if (isset($_GET['id'])) {
+            $m = new GastosModelo();
+            if ($m->eliminarCategoriaIngreso($_GET['id'])) {
+                header('Location: index.php?ctl=verCategoriasIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo eliminar la categoría de ingreso.';
+            }
+        }
+    }
+
+    // Gestión de Grupos
+    public function verGrupos()
+    {
+        $m = new GastosModelo();
+        $grupos = $m->obtenerGrupos();
+
+        $params = array(
+            'grupos' => $grupos,
+            'mensaje' => 'Gestión de grupos'
+        );
+
+        $this->render('verGrupos.php', $params);
+    }
+    // Formulario para crear un nuevo grupo
+    public function formCrearGrupo()
+    {
+        // Solo superadmin tiene acceso
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            header('Location: index.php?ctl=inicio');
+            exit();
+        }
+
+        $this->render('formCrearGrupo.php');
+    }
+
+    // Crear un nuevo grupo
+    public function crearGrupo()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bCrearGrupo'])) {
+            $nombre_grupo = recoge('nombre_grupo');
+            $password_grupo = recoge('password_grupo');
+
+            $errores = array();
+            cTexto($nombre_grupo, "nombre_grupo", $errores);
+            cContrasenya($password_grupo, $errores);
+
+            if (empty($errores)) {
+                $m = new GastosModelo();
+                if ($m->insertarGrupo($nombre_grupo, $password_grupo)) {
+                    header('Location: index.php?ctl=listarGrupos');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se pudo crear el grupo.';
+                }
+            } else {
+                $params['errores'] = $errores;
+            }
+
+            $this->render('formCrearGrupo.php', $params);
+        }
+    }
+
+    // Formulario para asignar un usuario a una familia o grupo
+    public function formAsignarUsuario()
+    {
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            header('Location: index.php?ctl=inicio');
+            exit();
+        }
+
+        $m = new GastosModelo();
+        $usuarios = $m->obtenerUsuarios();
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+
+        $params = array(
+            'usuarios' => $usuarios,
+            'familias' => $familias,
+            'grupos' => $grupos
+        );
+
+        $this->render('formAsignarUsuario.php', $params);
+    }
+
+    // Asignar usuario a familia o grupo
+    public function asignarUsuario()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bAsignarUsuario'])) {
+            $idUsuario = recoge('idUsuario');
+            $idFamilia = recoge('idFamilia');
+            $idGrupo = recoge('idGrupo');
+
+            $m = new GastosModelo();
+
+            if ($m->actualizarUsuarioFamiliaGrupo($idUsuario, $idFamilia, $idGrupo)) {
+                header('Location: index.php?ctl=listarUsuarios');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo asignar el usuario a la familia o grupo.';
+            }
+
+            $this->render('formAsignarUsuario.php', $params);
+        }
+    }
+    public function formCrearUsuario()
+    {
+        $m = new GastosModelo();
+
+        // Obtener familias y grupos para asignar al nuevo usuario
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+
+        $params = array(
+            'familias' => $familias,
+            'grupos' => $grupos,
+            'mensaje' => ''
+        );
+
+        $this->render('formCrearUsuario.php', $params);
+    }
+
+    public function crearUsuario()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $m = new GastosModelo();
+
+            $nombre = recoge('nombre');
+            $apellido = recoge('apellido');
+            $alias = recoge('alias');
+            $email = recoge('email');
+            $contrasenya = password_hash(recoge('contrasenya'), PASSWORD_DEFAULT);
+            $nivel_usuario = recoge('nivel_usuario');
+            $idFamilia = recoge('idFamilia');
+            $idGrupo = recoge('idGrupo');
+
+            if ($m->insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $email, $idFamilia, $idGrupo)) {
+                header('Location: index.php?ctl=listarUsuarios');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar el usuario. Inténtalo de nuevo.';
+                $this->render('formCrearUsuario.php', $params);
+            }
+        }
+    }
+
+
+    // Listar Usuarios
+    public function listarUsuarios()
+    {
+        $m = new GastosModelo();
+        $usuarios = $m->obtenerUsuarios();
+
+        $params = array(
+            'usuarios' => $usuarios,
+            'mensaje' => 'Lista de usuarios registrados'
+        );
+
+        $this->render('listarUsuarios.php', $params);
+    }
+
+    // Eliminar Usuario
+    public function eliminarUsuario()
+    {
+        if (isset($_GET['id'])) {
+            $m = new GastosModelo();
+            if ($m->eliminarUsuario($_GET['id'])) {
+                header('Location: index.php?ctl=listarUsuarios');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo eliminar el usuario.';
+            }
+        }
+    }
+
+    // Editar Usuario
+    public function editarUsuario()
+    {
+        $m = new GastosModelo();
+
         if (isset($_GET['id'])) {
             $usuario = $m->obtenerUsuarioPorId($_GET['id']);
             if (!$usuario) {
@@ -510,6 +944,10 @@ public function inicio() {
             }
         }
 
+        // Obtener familias y grupos disponibles para mostrarlos en el formulario
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+
         $params = array(
             'nombre' => $usuario['nombre'],
             'apellido' => $usuario['apellido'],
@@ -517,7 +955,11 @@ public function inicio() {
             'email' => $usuario['email'],
             'telefono' => $usuario['telefono'],
             'idUser' => $usuario['idUser'],
-            'nivel_usuario' => $usuario['nivel_usuario']
+            'nivel_usuario' => $usuario['nivel_usuario'],
+            'idFamilia' => $usuario['idFamilia'],
+            'idGrupo' => $usuario['idGrupo'],
+            'familias' => $familias, // Pasar las familias disponibles
+            'grupos' => $grupos // Pasar los grupos disponibles
         );
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarUsuario'])) {
@@ -526,7 +968,8 @@ public function inicio() {
             $alias = recoge('alias');
             $email = recoge('email');
             $telefono = recoge('telefono');
-            $nivel_usuario = recoge('nivel_usuario');
+            $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null; // Manejo de "Sin Familia"
+            $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null; // Manejo de "Sin Grupo"
 
             $errores = array();
 
@@ -537,7 +980,7 @@ public function inicio() {
             cTelefono($telefono, $errores);
 
             if (empty($errores)) {
-                if ($m->actualizarUsuario($usuario['idUser'], $nombre, $apellido, $alias, $email, $telefono)) {
+                if ($m->actualizarUsuario($usuario['idUser'], $nombre, $apellido, $alias, $email, $telefono, $idFamilia, $idGrupo)) {
                     header('Location: index.php?ctl=listarUsuarios');
                     exit();
                 } else {
