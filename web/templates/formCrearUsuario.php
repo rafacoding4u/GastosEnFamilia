@@ -7,7 +7,7 @@
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" class="form-control" required>
         </div>
-        
+
         <div class="form-group">
             <label for="apellido">Apellido:</label>
             <input type="text" name="apellido" class="form-control" required>
@@ -20,8 +20,9 @@
 
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" name="email" class="form-control" required>
+            <input type="email" class="form-control" id="email" name="email" required>
         </div>
+
 
         <div class="form-group">
             <label for="contrasenya">Contraseña:</label>

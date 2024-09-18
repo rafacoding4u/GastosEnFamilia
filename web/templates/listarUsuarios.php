@@ -2,6 +2,10 @@
 
 <div class="container p-4">
     <h2>Lista de Usuarios Registrados</h2>
+    <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
+        <a href="index.php?ctl=formCrearUsuario" class="btn btn-success">Crear Usuario</a>
+    <?php endif; ?>
+
 
     <!-- Mostrar mensaje en caso de éxito o error -->
     <?php if (isset($params['mensaje'])): ?>

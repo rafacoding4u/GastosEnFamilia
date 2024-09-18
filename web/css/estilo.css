@@ -41,3 +41,14 @@
 .borde {
     border: 2px solid rgba(58, 56, 56, 0.918);
 }
+
+/* Clase para igualar el ancho de las columnas de concepto */
+.col-concepto {
+    width: 35%; /* Puedes ajustar el porcentaje según sea necesario */
+    text-align: left; /* Alinea el texto a la izquierda */
+}
+
+/* Ajustar la alineación en las tablas de detalles */
+.table th, .table td {
+    vertical-align: middle;
+}

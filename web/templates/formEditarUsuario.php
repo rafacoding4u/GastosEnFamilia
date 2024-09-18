@@ -61,6 +61,17 @@
             </select>
         </div>
 
+        <!-- nivel de acceso del usuario -->
+        <div class="form-group">
+    <label for="nivel_usuario">Nivel de Usuario</label>
+    <select name="nivel_usuario" class="form-control" id="nivel_usuario">
+        <option value="usuario" <?= ($nivel_usuario == 'usuario') ? 'selected' : '' ?>>Usuario</option>
+        <option value="admin" <?= ($nivel_usuario == 'admin') ? 'selected' : '' ?>>Administrador</option>
+        <option value="superadmin" <?= ($nivel_usuario == 'superadmin') ? 'selected' : '' ?>>Superusuario</option>
+    </select>
+</div>
+
+
         <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
     </form>
 </div>
