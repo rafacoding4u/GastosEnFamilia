@@ -649,114 +649,88 @@ class Controller
     }
 
     public function verSituacion()
-    {
-        $m = new GastosModelo();
-        $params = [];
+{
+    $m = new GastosModelo();
+    $params = [];
 
-        // Obtener el tipo seleccionado (global, familia, grupo, usuario)
-        $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
-        $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
+    // Obtener el tipo seleccionado (global, familia, grupo, usuario)
+    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
+    $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
 
-        $params['tipo'] = $tipo;
+    $params['tipo'] = $tipo;
 
-        if ($tipo === 'global') {
-            // Obtener situación global
-            $situacion = $m->obtenerSituacionGlobal();
-            $params['situacion'] = $situacion;
-        } elseif ($tipo === 'familia' && $idSeleccionado) {
-            // Obtener la situación financiera de una familia específica
-            $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
-            $params['situacion'] = $situacion;
-
-            // Obtener los usuarios pertenecientes a la familia y sus totales
-            $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
-
-            foreach ($usuarios as &$usuario) {
-                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
-                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-
-                // Obtener detalles de ingresos y gastos del usuario
-                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
-
-                // Imprimir los detalles de ingresos y gastos para verificar si hay datos
-                echo "<pre>";
-                print_r($usuario['detalles_ingresos']);
-                print_r($usuario['detalles_gastos']);
-                echo "</pre>";
-            }
-            $params['usuarios'] = $usuarios;
-        } elseif ($tipo === 'grupo' && $idSeleccionado) {
-            // Obtener la situación financiera de un grupo específico
-            $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
-            $params['situacion'] = $situacion;
-
-            // Obtener los usuarios pertenecientes al grupo y sus totales
-            $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
-
-            foreach ($usuarios as &$usuario) {
-                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
-                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-
-                // Obtener detalles de ingresos y gastos del usuario
-                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
-
-                // Imprimir los detalles de ingresos y gastos para verificar si hay datos
-                echo "<pre>";
-                print_r($usuario['detalles_ingresos']);
-                print_r($usuario['detalles_gastos']);
-                echo "</pre>";
-            }
-            $params['usuarios'] = $usuarios;
-        } elseif ($tipo === 'usuario' && $idSeleccionado) {
-            // Obtener la situación financiera de un usuario específico
-            $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
-
-            // Depurar el resultado de la consulta de situación financiera
-            echo "<pre>";
-            print_r($situacion);
-            echo "</pre>";
-
-            $params['situacion'] = $situacion;
-
-            // Obtener los detalles del usuario seleccionado
-            $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
-
-            // Agregar detalles de ingresos y gastos al usuario
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
-
-            // Imprimir los detalles de ingresos y gastos para verificar si hay datos
-            echo "<pre>";
-            print_r($usuario['detalles_ingresos']);
-            print_r($usuario['detalles_gastos']);
-            echo "</pre>";
-
-            // Pasar el usuario con los detalles al parámetro de la vista
-            $params['usuarios'] = [$usuario];
-        }
-
-
-
-        // Cargar listas para el dropdown de familias, grupos y usuarios
-        if ($tipo === 'familia') {
-            $params['familias'] = $m->obtenerFamilias();
-        } elseif ($tipo === 'grupo') {
-            $params['grupos'] = $m->obtenerGrupos();
-        } elseif ($tipo === 'usuario') {
-            $params['usuarios'] = $m->obtenerUsuarios();
-        }
-
+    if ($tipo === 'global') {
+        // Obtener situación global
+        $situacion = $m->obtenerSituacionGlobal();
         $params['situacion'] = $situacion;
-        $params['idSeleccionado'] = $idSeleccionado;
 
-        $this->render('verSituacion.php', $params);
+    } elseif ($tipo === 'familia' && $idSeleccionado) {
+        // Obtener la situación financiera de una familia específica
+        $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
+        $params['situacion'] = $situacion;
+
+        // Obtener los usuarios pertenecientes a la familia y sus totales
+        $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
+        foreach ($usuarios as &$usuario) {
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+            // Obtener detalles de ingresos y gastos del usuario
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+        }
+        $params['usuarios'] = $usuarios;
+
+    } elseif ($tipo === 'grupo' && $idSeleccionado) {
+        // Obtener la situación financiera de un grupo específico
+        $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
+        $params['situacion'] = $situacion;
+
+        // Obtener los usuarios pertenecientes al grupo y sus totales
+        $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
+        foreach ($usuarios as &$usuario) {
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+            // Obtener detalles de ingresos y gastos del usuario
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+        }
+        $params['usuarios'] = $usuarios;
+
+    } elseif ($tipo === 'usuario' && $idSeleccionado) {
+        // Obtener la situación financiera de un usuario específico
+        $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
+        $params['situacion'] = $situacion;
+
+        // Obtener los detalles del usuario seleccionado
+        $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
+        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
+        $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
+        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+        // Agregar detalles de ingresos y gastos al usuario
+        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
+        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
+
+        // Pasar el usuario con los detalles al parámetro de la vista
+        $params['usuarios'] = [$usuario];
     }
 
+    // Cargar listas para el dropdown de familias, grupos y usuarios
+    if ($tipo === 'familia') {
+        $params['familias'] = $m->obtenerFamilias();
+    } elseif ($tipo === 'grupo') {
+        $params['grupos'] = $m->obtenerGrupos();
+    } elseif ($tipo === 'usuario') {
+        $params['usuariosLista'] = $m->obtenerUsuarios();  // Lista de usuarios para el dropdown
+    }
 
+    $params['idSeleccionado'] = $idSeleccionado;
+    $this->render('verSituacion.php', $params);
+}
 
     // Ver Situación Financiera con filtro
     public function verSituacionFiltrada()

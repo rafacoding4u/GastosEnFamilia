@@ -255,6 +255,23 @@ public function obtenerUsuariosPorGrupo($idGrupo)
         return $stmt->execute();
     }
 
+    public function obtenerSituacionDeTodosLosUsuarios()
+{
+    $sql = "SELECT u.idUser, u.nombre, u.apellido, 
+                   IFNULL(SUM(i.importe), 0) AS totalIngresos, 
+                   IFNULL(SUM(g.importe), 0) AS totalGastos,
+                   (IFNULL(SUM(i.importe), 0) - IFNULL(SUM(g.importe), 0)) AS saldo
+            FROM usuarios u
+            LEFT JOIN ingresos i ON u.idUser = i.idUser
+            LEFT JOIN gastos g ON u.idUser = g.idUser
+            GROUP BY u.idUser, u.nombre, u.apellido";
+    
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
     // -------------------------------
     // Métodos relacionados con familias
     // -------------------------------

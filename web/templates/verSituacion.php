@@ -39,11 +39,12 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-            <?php elseif ($tipo === 'usuario' && !empty($usuarios)): ?>
+            <?php elseif ($tipo === 'usuario' && !empty($usuariosLista)): ?>
                 <div class="form-group">
                     <label for="idSeleccionado">Selecciona un usuario:</label>
                     <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
-                        <?php foreach ($usuarios as $usuario): ?>
+                        <option value="todos" <?= $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
+                        <?php foreach ($usuariosLista as $usuario): ?>
                             <option value="<?= $usuario['idUser'] ?>" <?= $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
                             </option>
@@ -68,7 +69,7 @@
         <p>No hay datos financieros disponibles.</p>
     <?php endif; ?>
 
-    <!-- Mostrar usuarios (en caso de familias, grupos o individuales) -->
+    <!-- Mostrar usuarios (si se selecciona familia, grupo o usuario específico) -->
     <?php if (isset($usuarios) && !empty($usuarios)): ?>
         <h4>Usuarios</h4>
         <table class="table table-bordered">
@@ -90,8 +91,8 @@
                         <td><span class="bg-success text-white px-2"><?= number_format($usuario['totalIngresos'] ?? 0, 2, ',', '.') ?> €</span></td>
                         <td><span class="bg-danger text-white px-2"><?= number_format($usuario['totalGastos'] ?? 0, 2, ',', '.') ?> €</span></td>
                         <td>
-                            <span class="px-2" style="color: white; background-color: <?= ($usuario['totalIngresos'] ?? 0) - ($usuario['totalGastos'] ?? 0) > 0 ? 'green' : (($usuario['totalIngresos'] ?? 0) - ($usuario['totalGastos'] ?? 0) < 0 ? 'red' : 'gray') ?>;">
-                                <?= number_format(($usuario['totalIngresos'] ?? 0) - ($usuario['totalGastos'] ?? 0), 2, ',', '.') ?> €
+                            <span class="px-2" style="color: white; background-color: <?= ($usuario['saldo'] > 0) ? 'green' : ($usuario['saldo'] < 0 ? 'red' : 'gray') ?>;">
+                                <?= number_format($usuario['saldo'] ?? 0, 2, ',', '.') ?> €
                             </span>
                         </td>
                         <td>
@@ -107,7 +108,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="col-concepto">Concepto</th> <!-- Aplicamos la clase aquí -->
+                                        <th class="col-concepto">Concepto</th>
                                         <th>Importe</th>
                                         <th>Fecha</th>
                                         <th>Origen</th>
@@ -136,7 +137,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="col-concepto">Concepto</th> <!-- Aplicamos la clase aquí -->
+                                        <th class="col-concepto">Concepto</th>
                                         <th>Importe</th>
                                         <th>Fecha</th>
                                         <th>Origen</th>
@@ -163,7 +164,7 @@
                     </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+            </table>
     <?php endif; ?>
 </div>
 
@@ -187,5 +188,3 @@
 </script>
 
 <?php include 'footer.php'; ?>
-
-
