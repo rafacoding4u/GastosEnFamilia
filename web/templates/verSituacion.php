@@ -164,7 +164,7 @@
                     </tr>
                 <?php endforeach; ?>
             </tbody>
-            </table>
+        </table>
     <?php endif; ?>
 </div>
 
@@ -188,3 +188,4 @@
 </script>
 
 <?php include 'footer.php'; ?>
+
