@@ -143,36 +143,43 @@ class GastosModelo
         return $stmt->fetchColumn();
     }
 
-    // Obtener gastos por usuario
-    public function obtenerGastosPorUsuario($idUsuario)
-    {
+    // Obtener los gastos de un usuario
+    public function obtenerGastosPorUsuario($idUsuario) {
         $sql = "SELECT * FROM gastos WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
-    // Obtener ingresos por usuario
-    public function obtenerIngresosPorUsuario($idUsuario)
-    {
+
+    // Obtener los ingresos de un usuario
+    public function obtenerIngresosPorUsuario($idUsuario) {
         $sql = "SELECT * FROM ingresos WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
-    // Obtener la situación financiera de un usuario
-public function obtenerSituacionFinanciera($idUsuario)
-{
-    $sql = "SELECT (SELECT SUM(importe) FROM ingresos WHERE idUser = :idUsuario) AS totalIngresos, 
-                   (SELECT SUM(importe) FROM gastos WHERE idUser = :idUsuario) AS totalGastos";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    // Obtener situación financiera de un usuario específico
+    public function obtenerSituacionFinanciera($idUsuario) {
+        $sql = "SELECT 
+                    SUM(CASE WHEN i.idUser = :idUsuario THEN i.importe ELSE 0 END) AS totalIngresos,
+                    SUM(CASE WHEN g.idUser = :idUsuario THEN g.importe ELSE 0 END) AS totalGastos
+                FROM usuarios u
+                LEFT JOIN ingresos i ON u.idUser = i.idUser
+                LEFT JOIN gastos g ON u.idUser = g.idUser
+                WHERE u.idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    
 
     // Obtener la situación financiera de una familia
 public function obtenerSituacionFinancieraFamilia($idFamilia)

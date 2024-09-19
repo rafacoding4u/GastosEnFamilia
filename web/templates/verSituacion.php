@@ -114,7 +114,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (isset($usuario['detalles_ingresos']) && is_array($usuario['detalles_ingresos'])): ?>
+                                    <?php if (isset($usuario['detalles_ingresos']) && count($usuario['detalles_ingresos']) > 0): ?>
                                         <?php foreach ($usuario['detalles_ingresos'] as $ingreso): ?>
                                             <tr>
                                                 <td><?= htmlspecialchars($ingreso['concepto']) ?></td>
@@ -125,7 +125,7 @@
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="4">No hay ingresos disponibles.</td>
+                                            <td colspan="4">No hay ingresos registrados para este usuario.</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -143,7 +143,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (isset($usuario['detalles_gastos']) && is_array($usuario['detalles_gastos'])): ?>
+                                    <?php if (isset($usuario['detalles_gastos']) && count($usuario['detalles_gastos']) > 0): ?>
                                         <?php foreach ($usuario['detalles_gastos'] as $gasto): ?>
                                             <tr>
                                                 <td><?= htmlspecialchars($gasto['concepto']) ?></td>
@@ -154,7 +154,7 @@
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="4">No hay gastos disponibles.</td>
+                                            <td colspan="4">No hay gastos registrados para este usuario.</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -187,4 +187,5 @@
 </script>
 
 <?php include 'footer.php'; ?>
+
 
