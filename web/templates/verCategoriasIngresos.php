@@ -1,6 +1,3 @@
-<?php ob_start(); ?>
-<?php include 'layout.php'; ?>
-
 <div class="container">
     <h2>Gestión de Categorías de Ingresos</h2>
 
@@ -46,7 +43,3 @@
         </tbody>
     </table>
 </div>
-
-<?php include 'footer.php'; ?>
-<?php $contenido = ob_get_clean(); ?>
-<?php include 'layout.php'; ?>

@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container text-center p-4">
     <h3>Iniciar Sesión</h3>
 
@@ -17,6 +15,9 @@
             <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
         </div>
 
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+
         <!-- Botón de envío del formulario -->
         <button type="submit" name="bIniciarSesion" class="btn btn-primary mt-3">Iniciar Sesión</button>
 
@@ -28,5 +29,3 @@
         <?php endif; ?>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

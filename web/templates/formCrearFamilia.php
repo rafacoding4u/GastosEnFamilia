@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Crear Nueva Familia</h2>
 
@@ -15,5 +13,3 @@
         <button type="submit" name="bCrearFamilia" class="btn btn-primary">Crear Familia</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

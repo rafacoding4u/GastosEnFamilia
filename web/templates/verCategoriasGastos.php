@@ -1,12 +1,9 @@
-<?php ob_start(); ?>
-<?php include 'layout.php'; ?>
-
 <div class="container">
     <h2>Gestión de Categorías de Gastos</h2>
 
-    <?php if (isset($params['mensaje'])): ?>
+    <?php if (isset($mensaje)): ?>
         <div class="alert alert-info">
-            <?= htmlspecialchars($params['mensaje']); ?>
+            <?= htmlspecialchars($mensaje); ?>
         </div>
     <?php endif; ?>
 
@@ -28,13 +25,13 @@
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($params['categorias'])): ?>
-                <?php foreach ($params['categorias'] as $categoria): ?>
+            <?php if (!empty($categorias)): ?>
+                <?php foreach ($categorias as $categoria): ?>
                     <tr>
                         <td><?= htmlspecialchars($categoria['nombreCategoria']); ?></td>
                         <td>
-                            <a href="index.php?ctl=editarCategoriaGasto&id=<?= $categoria['idCategoria'] ?>" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="index.php?ctl=eliminarCategoriaGasto&id=<?= $categoria['idCategoria'] ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                            <a href="index.php?ctl=editarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="index.php?ctl=eliminarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-danger btn-sm">Eliminar</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -46,7 +43,3 @@
         </tbody>
     </table>
 </div>
-
-<?php include 'footer.php'; ?>
-<?php $contenido = ob_get_clean(); ?>
-<?php include 'layout.php'; ?>

@@ -22,7 +22,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Mi Situación Financiera</a> <!-- Ver la situación financiera del usuario (Ingresos vs Gastos) -->
                 </li>
-                
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard Financiero</a> <!-- Ver el dashboard financiero -->
+                </li>
                 <!-- Opción de cerrar sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Cerrar sesión del usuario -->

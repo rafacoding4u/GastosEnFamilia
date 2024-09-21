@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <!-- Verifica si el usuario está autenticado -->
     <?php if (isset($_SESSION['usuario'])): ?>
@@ -59,5 +57,3 @@
         <?php endif; ?>
     <?php endif; ?>
 </div>
-
-<?php include 'footer.php'; ?>

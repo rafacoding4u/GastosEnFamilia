@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Editar Usuario</h2>
 
@@ -75,5 +73,3 @@
         <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

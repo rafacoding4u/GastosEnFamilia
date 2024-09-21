@@ -1,4 +1,3 @@
-<?php ob_start(); ?>
 <div class="container text-center p-4">
     <h3>Ha ocurrido un error</h3>
     
@@ -17,4 +16,3 @@
     <a href="index.php?ctl=home" class="btn btn-primary mt-3">Volver al inicio</a>
 </div>
 <?php $contenido = ob_get_clean(); ?>
-<?php include 'layout.php'; ?>

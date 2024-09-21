@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h3>Registro de Usuario</h3>
 
@@ -146,5 +144,3 @@
         }
     });
 </script>
-
-<?php include 'footer.php'; ?>

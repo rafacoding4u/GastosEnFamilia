@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Situación Financiera</h2>
 
@@ -186,6 +184,4 @@
         });
     });
 </script>
-
-<?php include 'footer.php'; ?>
 

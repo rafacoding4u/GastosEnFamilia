@@ -22,12 +22,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de usuarios y familias -->
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard Financiero</a> <!-- Ver el dashboard financiero -->
+                </li>
                 <!-- Gestión de Usuarios (Superadmin) -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Gestión completa de usuarios -->
                 </li>
-
                 <!-- Opciones avanzadas de Superadmin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a> <!-- Gestionar familias en la plataforma -->
@@ -41,7 +42,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
                 </li>
-
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Opción para cerrar sesión -->

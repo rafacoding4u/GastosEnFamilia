@@ -62,21 +62,24 @@ class GastosModelo
         return $stmt->fetchColumn() > 0;
     }
 
-    public function insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $email, $idFamilia = null, $idGrupo = null)
-    {
-        $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, email, idFamilia, idGrupo) 
-            VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :email, :idFamilia, :idGrupo)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-        $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-        $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
-        $stmt->bindValue(':contrasenya', $contrasenya, PDO::PARAM_STR);
-        $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR); // Email correctamente enviado
-        $stmt->bindValue(':idFamilia', $idFamilia !== null ? $idFamilia : null, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo !== null ? $idGrupo : null, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
+    public function insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia = null, $idGrupo = null)
+{
+    $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, idFamilia, idGrupo) 
+            VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :idFamilia, :idGrupo)";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+    $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+    $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
+    $stmt->bindValue(':contrasenya', $contrasenya, PDO::PARAM_STR);
+    $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+    $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR); // Fecha de nacimiento añadida
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR); // Teléfono añadido
+    $stmt->bindValue(':idFamilia', $idFamilia !== null ? $idFamilia : null, PDO::PARAM_INT);
+    $stmt->bindValue(':idGrupo', $idGrupo !== null ? $idGrupo : null, PDO::PARAM_INT);
+    return $stmt->execute();
+}
+
 
 
     public function obtenerUsuarios()
@@ -144,56 +147,76 @@ class GastosModelo
     }
 
     // Obtener los gastos de un usuario
-    public function obtenerGastosPorUsuario($idUsuario) {
-        $sql = "SELECT * FROM gastos WHERE idUser = :idUsuario";
+    public function obtenerGastosPorUsuario($idUsuario, $offset = 0, $limite = 10)
+    {
+        $sql = "SELECT * FROM gastos WHERE idUser = :idUsuario LIMIT :offset, :limite";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
 
+    public function contarGastosPorUsuario($idUsuario)
+    {
+        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 
     // Obtener los ingresos de un usuario
-    public function obtenerIngresosPorUsuario($idUsuario) {
+    public function obtenerIngresosPorUsuario($idUsuario)
+    {
         $sql = "SELECT * FROM ingresos WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
 
     // Obtener situación financiera de un usuario específico
-    public function obtenerSituacionFinanciera($idUsuario) {
-        $sql = "SELECT 
-                    SUM(CASE WHEN i.idUser = :idUsuario THEN i.importe ELSE 0 END) AS totalIngresos,
-                    SUM(CASE WHEN g.idUser = :idUsuario THEN g.importe ELSE 0 END) AS totalGastos
-                FROM usuarios u
-                LEFT JOIN ingresos i ON u.idUser = i.idUser
-                LEFT JOIN gastos g ON u.idUser = g.idUser
-                WHERE u.idUser = :idUsuario";
+    public function obtenerSituacionFinanciera($idUsuario)
+    {
+        $sql = "
+        SELECT 
+            SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+            SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+            (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+        FROM usuarios u
+        LEFT JOIN ingresos i ON u.idUser = i.idUser
+        LEFT JOIN gastos g ON u.idUser = g.idUser
+        WHERE u.idUser = :idUsuario";
+
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
-    
+
 
     // Obtener la situación financiera de una familia
-public function obtenerSituacionFinancieraFamilia($idFamilia)
-{
-    $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
-            FROM usuarios u 
-            LEFT JOIN ingresos i ON u.idUser = i.idUser 
-            LEFT JOIN gastos g ON u.idUser = g.idUser 
+    public function obtenerSituacionFinancieraFamilia($idFamilia)
+    {
+        $sql = "
+            SELECT 
+                SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+                SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+                (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+            FROM usuarios u
+            LEFT JOIN ingresos i ON u.idUser = i.idUser
+            LEFT JOIN gastos g ON u.idUser = g.idUser
             WHERE u.idFamilia = :idFamilia";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     public function calcularSaldoGlobalFamilia($idFamilia)
     {
@@ -209,23 +232,23 @@ public function obtenerSituacionFinancieraFamilia($idFamilia)
         return $stmt->fetchColumn();
     }
     // Obtener usuarios de una familia
-public function obtenerUsuariosPorFamilia($idFamilia)
-{
-    $sql = "SELECT * FROM usuarios WHERE idFamilia = :idFamilia";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-// Obtener usuarios de un grupo
-public function obtenerUsuariosPorGrupo($idGrupo)
-{
-    $sql = "SELECT * FROM usuarios WHERE idGrupo = :idGrupo";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    public function obtenerUsuariosPorFamilia($idFamilia)
+    {
+        $sql = "SELECT * FROM usuarios WHERE idFamilia = :idFamilia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Obtener usuarios de un grupo
+    public function obtenerUsuariosPorGrupo($idGrupo)
+    {
+        $sql = "SELECT * FROM usuarios WHERE idGrupo = :idGrupo";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // Insertar gasto para un usuario
     public function insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen)
@@ -256,8 +279,8 @@ public function obtenerUsuariosPorGrupo($idGrupo)
     }
 
     public function obtenerSituacionDeTodosLosUsuarios()
-{
-    $sql = "SELECT u.idUser, u.nombre, u.apellido, 
+    {
+        $sql = "SELECT u.idUser, u.nombre, u.apellido, 
                    IFNULL(SUM(i.importe), 0) AS totalIngresos, 
                    IFNULL(SUM(g.importe), 0) AS totalGastos,
                    (IFNULL(SUM(i.importe), 0) - IFNULL(SUM(g.importe), 0)) AS saldo
@@ -265,11 +288,11 @@ public function obtenerUsuariosPorGrupo($idGrupo)
             LEFT JOIN ingresos i ON u.idUser = i.idUser
             LEFT JOIN gastos g ON u.idUser = g.idUser
             GROUP BY u.idUser, u.nombre, u.apellido";
-    
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     // -------------------------------
@@ -393,18 +416,18 @@ public function obtenerUsuariosPorGrupo($idGrupo)
         return $stmt->execute();
     }
     // Obtener la situación financiera de un grupo
-public function obtenerSituacionFinancieraGrupo($idGrupo)
-{
-    $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
+    public function obtenerSituacionFinancieraGrupo($idGrupo)
+    {
+        $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
             FROM usuarios u 
             LEFT JOIN ingresos i ON u.idUser = i.idUser 
             LEFT JOIN gastos g ON u.idUser = g.idUser 
             WHERE u.idGrupo = :idGrupo";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     // Obtener gastos por grupo
     public function obtenerGastosPorGrupo($idGrupo)
     {
@@ -429,11 +452,17 @@ public function obtenerSituacionFinancieraGrupo($idGrupo)
     // Métodos relacionados con categorías
     // ------------------------------- 
     public function obtenerCategoriasGastos()
-    {
+{
+    try {
         $sql = "SELECT * FROM categorias_gastos";
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+        return [];
     }
+}
+
 
     public function insertarCategoriaGasto($nombreCategoria)
     {
@@ -461,11 +490,11 @@ public function obtenerSituacionFinancieraGrupo($idGrupo)
     }
 
     public function obtenerCategoriasIngresos()
-    {
-        $sql = "SELECT * FROM categorias_ingresos";
-        $stmt = $this->conexion->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+{
+    $sql = "SELECT * FROM categorias_ingresos"; // Asegúrate de que esta tabla exista en tu base de datos
+    $stmt = $this->conexion->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devolver las categorías como un array asociativo
+}
 
     public function insertarCategoriaIngreso($nombreCategoria)
     {
@@ -496,8 +525,8 @@ public function obtenerSituacionFinancieraGrupo($idGrupo)
     // -------------------------------
 
     public function obtenerTotalesPorUsuarioGrupo($idGrupo)
-{
-    $sql = "SELECT u.idUser, u.nombre, u.apellido, 
+    {
+        $sql = "SELECT u.idUser, u.nombre, u.apellido, 
                    SUM(i.importe) AS totalIngresos, 
                    SUM(g.importe) AS totalGastos,
                    (SUM(i.importe) - SUM(g.importe)) AS saldo
@@ -506,22 +535,29 @@ public function obtenerSituacionFinancieraGrupo($idGrupo)
             LEFT JOIN gastos g ON u.idUser = g.idUser
             WHERE u.idGrupo = :idGrupo
             GROUP BY u.idUser";
-    
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     // Obtener la situación financiera global
-public function obtenerSituacionGlobal()
-{
-    $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
-            FROM ingresos i LEFT JOIN gastos g ON i.idUser = g.idUser";
-    $stmt = $this->conexion->query($sql);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    public function obtenerSituacionGlobal()
+    {
+        $sql = "
+            SELECT 
+                SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+                SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+                (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+            FROM ingresos i
+            LEFT JOIN gastos g ON i.idUser = g.idUser";
+
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     // Obtener todos los gastos
     public function obtenerTodosGastos()
@@ -583,4 +619,116 @@ public function obtenerSituacionGlobal()
         $stmt->bindValue(':idGasto', $idGasto, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    public function obtenerGastosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
+    {
+        $sql = "SELECT g.*, c.nombreCategoria 
+            FROM gastos g 
+            LEFT JOIN categorias_gastos c ON g.idCategoria = c.idCategoria 
+            WHERE g.idUser = :idUsuario";
+
+        // Aplicar los filtros
+        if ($fechaInicio) {
+            $sql .= " AND g.fecha >= :fechaInicio";
+        }
+        if ($fechaFin) {
+            $sql .= " AND g.fecha <= :fechaFin";
+        }
+        if ($categoria) {
+            $sql .= " AND g.idCategoria = :categoria";
+        }
+        if ($origen) {
+            $sql .= " AND g.origen = :origen";
+        }
+
+        // Añadir límite y desplazamiento para la paginación
+        $sql .= " LIMIT :offset, :limite";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        if ($fechaInicio) {
+            $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        }
+        if ($fechaFin) {
+            $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        }
+        if ($categoria) {
+            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+        }
+        if ($origen) {
+            $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Método para contar los resultados filtrados
+    public function contarGastosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
+    {
+        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUsuario";
+
+        if ($fechaInicio) {
+            $sql .= " AND fecha >= :fechaInicio";
+        }
+        if ($fechaFin) {
+            $sql .= " AND fecha <= :fechaFin";
+        }
+        if ($categoria) {
+            $sql .= " AND idCategoria = :categoria";
+        }
+        if ($origen) {
+            $sql .= " AND origen = :origen";
+        }
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        if ($fechaInicio) {
+            $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+        }
+        if ($fechaFin) {
+            $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
+        }
+        if ($categoria) {
+            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+        }
+        if ($origen) {
+            $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    // Obtener gastos por categoría
+public function obtenerGastosPorCategoria($idUsuario)
+{
+    $sql = "
+        SELECT c.nombreCategoria, SUM(g.importe) AS total
+        FROM gastos g
+        LEFT JOIN categorias_gastos c ON g.idCategoria = c.idCategoria
+        WHERE g.idUser = :idUsuario
+        GROUP BY g.idCategoria";
+    
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Obtener ingresos por categoría
+public function obtenerIngresosPorCategoria($idUsuario)
+{
+    $sql = "
+        SELECT c.nombreCategoria, SUM(i.importe) AS total
+        FROM ingresos i
+        LEFT JOIN categorias_ingresos c ON i.idCategoria = c.idCategoria
+        WHERE i.idUser = :idUsuario
+        GROUP BY i.idCategoria";
+    
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

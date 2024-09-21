@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Editar Gasto</h2>
 
@@ -39,5 +37,3 @@
 
     <a href="index.php?ctl=verGastos" class="btn btn-secondary mt-3">Cancelar</a>
 </div>
-
-<?php include 'footer.php'; ?>

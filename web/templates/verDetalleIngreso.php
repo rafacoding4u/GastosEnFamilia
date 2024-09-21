@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Detalle del Ingreso</h2>
 
@@ -17,5 +15,3 @@
         <p>El ingreso no existe o no se encuentra disponible.</p>
     <?php endif; ?>
 </div>
-
-<?php include 'footer.php'; ?>

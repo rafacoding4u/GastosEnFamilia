@@ -35,23 +35,24 @@ class Controller
     }
 
     // Renderizar una vista con los parámetros dados
-    private function render($vista, $params = array())
-    {
-        ob_start();
-        extract($params);
-        require __DIR__ . '/../../web/templates/' . $vista;
-        $contenido = ob_get_clean();
-
-        // Cargar el menú si está disponible
+    // Renderizar una vista con los parámetros dados
+// Renderizar una vista con los parámetros dados
+private function render($vista, $params = array()) {
+    extract($params); // Extraer los parámetros
+    ob_start();
+    require __DIR__ . '/../../web/templates/' . $vista;
+    $contenido = ob_get_clean();
+    
+    // Verificar si el contenido fue generado correctamente
+    if (!empty($contenido)) {
         $menu = $this->cargaMenu();
-        if ($menu) {
-            require __DIR__ . '/../../web/templates/layout.php';
-        } else {
-            echo "Error: No se pudo cargar el menú.";
-            require __DIR__ . '/../../web/templates/layout.php';
-        }
+        require __DIR__ . '/../../web/templates/layout.php'; // Cargar layout y contenido
+    } else {
+        echo "Error: Contenido no disponible.";
     }
+}
 
+    
     // Página de inicio (landing page para usuarios no autenticados)
     public function home()
     {
@@ -104,6 +105,7 @@ class Controller
     public function salir()
     {
         session_start();  // Asegurarse de que la sesión está activa
+        session_regenerate_id(true); // Para prevenir ataques de fijación de sesión
         session_unset();  // Eliminar todas las variables de sesión
         session_destroy();  // Destruir la sesión
         header("Location: index.php?ctl=home");
@@ -118,57 +120,86 @@ class Controller
 
     // Iniciar sesión
     public function iniciarSesion()
-    {
-        $params = array(
-            'alias' => '',
-            'contrasenya' => ''
-        );
+{
+    // Inicializar parámetros
+    $params = array(
+        'alias' => '',
+        'contrasenya' => ''
+    );
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bIniciarSesion'])) {
-            $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
-            $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
-
-            $m = new GastosModelo();
-            $usuario = $m->consultarUsuario($alias);
-
-            if ($usuario) {
-                if (password_verify($contrasenya, $usuario['contrasenya'])) {
-                    $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
-                    $_SESSION['usuario'] = array(
-                        'id' => $usuario['idUser'],
-                        'nombre' => $usuario['nombre'],
-                        'nivel_usuario' => $usuario['nivel_usuario'],
-                        'email' => $usuario['email']
-                    );
-                    header('Location: index.php?ctl=inicio');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'Contraseña incorrecta.';
-                }
-            } else {
-                $params['mensaje'] = 'Usuario no encontrado.';
-            }
+    // Si es una solicitud POST, procesar el formulario de inicio de sesión
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bIniciarSesion'])) {
+        
+        // Verificar el token CSRF
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            die('Error: CSRF token inválido.');
         }
-        $this->render('formIniciarSesion.php', $params);
+
+        // Limpiar los datos del formulario para evitar inyecciones
+        $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
+        $contrasenya = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
+
+        // Consultar al usuario en la base de datos
+        $m = new GastosModelo();
+        $usuario = $m->consultarUsuario($alias);
+
+        // Si el usuario existe
+        if ($usuario) {
+            // Verificar la contraseña
+            if (password_verify($contrasenya, $usuario['contrasenya'])) {
+                // Regenerar el ID de sesión por seguridad
+                session_regenerate_id(true);
+
+                // Establecer los datos del usuario en la sesión
+                $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
+                $_SESSION['usuario'] = array(
+                    'id' => $usuario['idUser'],
+                    'nombre' => $usuario['nombre'],
+                    'nivel_usuario' => $usuario['nivel_usuario'],
+                    'email' => $usuario['email']
+                );
+
+                // Redirigir a la página de inicio
+                header('Location: index.php?ctl=inicio');
+                exit();
+            } else {
+                // Mensaje de error si la contraseña es incorrecta
+                $params['mensaje'] = 'Contraseña incorrecta.';
+            }
+        } else {
+            // Mensaje de error si el usuario no se encuentra
+            $params['mensaje'] = 'Usuario no encontrado.';
+        }
     }
+
+    // Generar token CSRF y almacenarlo en la sesión
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    $params['csrf_token'] = $_SESSION['csrf_token'];
+
+    // Renderizar el formulario de inicio de sesión
+    $this->render('formIniciarSesion.php', $params);
+}
+
 
     // Registro de usuario
     public function registro()
-    {
-        $params = array(
-            'nombre' => '',
-            'apellido' => '',
-            'alias' => '',
-            'contrasenya' => '',
-            'fecha_nacimiento' => '',
-            'email' => '',
-            'telefono' => '',
-            'nivel_usuario' => 'usuario',
-            'idFamilia' => null,
-            'idGrupo' => null,
-            'es_menor' => false
-        );
-        $errores = array();
+{
+    $params = array(
+        'nombre' => '',
+        'apellido' => '',
+        'alias' => '',
+        'contrasenya' => '',
+        'fecha_nacimiento' => '',
+        'email' => '',
+        'telefono' => '',
+        'nivel_usuario' => 'usuario',
+        'idFamilia' => null,
+        'idGrupo' => null,
+        'es_menor' => false
+    );
+    $errores = array();
 
         // Cargar grupos y familias existentes para el formulario
         $m = new GastosModelo();
@@ -376,45 +407,44 @@ class Controller
 
     // Ver Gastos
     public function verGastos()
-    {
-        $m = new GastosModelo();
+{
+    $m = new GastosModelo();
 
-        // Verificar si es un superadmin para permitir seleccionar filtros
-        if ($_SESSION['nivel_usuario'] === 'superadmin') {
-            $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos'; // Filtro por defecto "todos"
-            $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
+    // Parámetros de filtro
+    $fechaInicio = isset($_GET['fechaInicio']) ? recoge('fechaInicio') : null;
+    $fechaFin = isset($_GET['fechaFin']) ? recoge('fechaFin') : null;
+    $categoria = isset($_GET['categoria']) ? recoge('categoria') : null;
+    $origen = isset($_GET['origen']) ? recoge('origen') : null;
 
-            // Obtener gastos según el tipo de filtro
-            if ($tipo === 'todos') {
-                $gastos = $m->obtenerTodosGastos();
-            } elseif ($tipo === 'familia') {
-                $gastos = $m->obtenerGastosPorFamilia($idSeleccionado);
-            } elseif ($tipo === 'grupo') {
-                $gastos = $m->obtenerGastosPorGrupo($idSeleccionado);
-            } elseif ($tipo === 'usuario') {
-                $gastos = $m->obtenerGastosPorUsuario($idSeleccionado);
-            }
+    // Parámetros de paginación
+    $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+    $registrosPorPagina = 10;
+    $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-            // Obtener familias, grupos y usuarios para el selector
-            $familias = $m->obtenerFamilias();
-            $grupos = $m->obtenerGrupos();
-            $usuarios = $m->obtenerUsuarios();
-        } else {
-            // Obtener gastos del usuario actual o admin del grupo/familia
-            $gastos = $m->obtenerGastosPorUsuario($_SESSION['usuario']['id']);
-        }
+    // Obtener los gastos aplicando los filtros y la paginación
+    $gastos = $m->obtenerGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen, $offset, $registrosPorPagina);
 
-        $params = array(
-            'gastos' => $gastos,
-            'familias' => $familias ?? null,
-            'grupos' => $grupos ?? null,
-            'usuarios' => $usuarios ?? null,
-            'tipo' => $tipo ?? 'todos',
-            'idSeleccionado' => $idSeleccionado ?? null
-        );
+    // Obtener el número total de gastos para la paginación
+    $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
+    $totalPaginas = ceil($totalGastos / $registrosPorPagina);
 
-        $this->render('verGastos.php', $params);
-    }
+    // Pasar las categorías a la vista
+    $categorias = $m->obtenerCategoriasGastos();
+
+    $params = array(
+        'gastos' => $gastos,
+        'categorias' => $categorias,
+        'paginaActual' => $paginaActual,
+        'totalPaginas' => $totalPaginas,
+        'fechaInicio' => $fechaInicio,
+        'fechaFin' => $fechaFin,
+        'categoriaSeleccionada' => $categoria,
+        'origenSeleccionado' => $origen
+    );
+
+    $this->render('verGastos.php', $params);
+}
+
 
 
     // Ver Gastos de un Usuario Específico (para superadmin)
@@ -498,42 +528,57 @@ class Controller
     }
 
     // Ver Ingresos
-    public function verIngresos()
-    {
-        $m = new GastosModelo();
+public function verIngresos()
+{
+    $m = new GastosModelo();
 
-        if ($_SESSION['nivel_usuario'] === 'superadmin') {
-            $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos';
-            $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
+    // Obtener las categorías de ingresos para mostrarlas en la vista
+    $categorias = $m->obtenerCategoriasIngresos(); // Método para obtener las categorías de ingresos
 
-            if ($tipo === 'todos') {
-                $ingresos = $m->obtenerTodosIngresos();
-            } elseif ($tipo === 'familia') {
-                $ingresos = $m->obtenerIngresosPorFamilia($idSeleccionado);
-            } elseif ($tipo === 'grupo') {
-                $ingresos = $m->obtenerIngresosPorGrupo($idSeleccionado);
-            } elseif ($tipo === 'usuario') {
-                $ingresos = $m->obtenerIngresosPorUsuario($idSeleccionado);
-            }
+    if ($_SESSION['nivel_usuario'] === 'superadmin') {
+        $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'todos';
+        $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
 
-            $familias = $m->obtenerFamilias();
-            $grupos = $m->obtenerGrupos();
-            $usuarios = $m->obtenerUsuarios();
-        } else {
-            $ingresos = $m->obtenerIngresosPorUsuario($_SESSION['usuario']['id']);
+        if ($tipo === 'todos') {
+            $ingresos = $m->obtenerTodosIngresos();
+        } elseif ($tipo === 'familia') {
+            $ingresos = $m->obtenerIngresosPorFamilia($idSeleccionado);
+        } elseif ($tipo === 'grupo') {
+            $ingresos = $m->obtenerIngresosPorGrupo($idSeleccionado);
+        } elseif ($tipo === 'usuario') {
+            $ingresos = $m->obtenerIngresosPorUsuario($idSeleccionado);
         }
 
-        $params = array(
-            'ingresos' => $ingresos,
-            'familias' => $familias ?? null,
-            'grupos' => $grupos ?? null,
-            'usuarios' => $usuarios ?? null,
-            'tipo' => $tipo ?? 'todos',
-            'idSeleccionado' => $idSeleccionado ?? null
-        );
-
-        $this->render('verIngresos.php', $params);
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+        $usuarios = $m->obtenerUsuarios();
+    } else {
+        $ingresos = $m->obtenerIngresosPorUsuario($_SESSION['usuario']['id']);
     }
+
+    // Depuración (Puedes eliminar esto si ya no lo necesitas)
+    echo "<pre>";
+    print_r($ingresos); // Mostrar los datos de ingresos
+    print_r($categorias); // Mostrar las categorías de ingresos
+    echo "</pre>";
+    // Fin de la depuración
+
+    // Pasar las categorías a la vista junto con los ingresos
+    $params = array(
+        'ingresos' => $ingresos,
+        'categorias' => $categorias, // Asegúrate de pasar las categorías a la vista
+        'familias' => $familias ?? null,
+        'grupos' => $grupos ?? null,
+        'usuarios' => $usuarios ?? null,
+        'tipo' => $tipo ?? 'todos',
+        'idSeleccionado' => $idSeleccionado ?? null
+    );
+
+    $this->render('verIngresos.php', $params);
+}
+
+
+
     public function verDetalleIngreso()
     {
         if (isset($_GET['id'])) {
@@ -649,88 +694,85 @@ class Controller
     }
 
     public function verSituacion()
-{
-    $m = new GastosModelo();
-    $params = [];
+    {
+        $m = new GastosModelo();
+        $params = [];
 
-    // Obtener el tipo seleccionado (global, familia, grupo, usuario)
-    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
-    $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
+        // Obtener el tipo seleccionado (global, familia, grupo, usuario)
+        $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
+        $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
 
-    $params['tipo'] = $tipo;
+        $params['tipo'] = $tipo;
 
-    if ($tipo === 'global') {
-        // Obtener situación global
-        $situacion = $m->obtenerSituacionGlobal();
-        $params['situacion'] = $situacion;
+        if ($tipo === 'global') {
+            // Obtener situación global
+            $situacion = $m->obtenerSituacionGlobal();
+            $params['situacion'] = $situacion;
+        } elseif ($tipo === 'familia' && $idSeleccionado) {
+            // Obtener la situación financiera de una familia específica
+            $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
+            $params['situacion'] = $situacion;
 
-    } elseif ($tipo === 'familia' && $idSeleccionado) {
-        // Obtener la situación financiera de una familia específica
-        $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
-        $params['situacion'] = $situacion;
+            // Obtener los usuarios pertenecientes a la familia y sus totales
+            $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
+            foreach ($usuarios as &$usuario) {
+                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
-        // Obtener los usuarios pertenecientes a la familia y sus totales
-        $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
-        foreach ($usuarios as &$usuario) {
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+                // Obtener detalles de ingresos y gastos del usuario
+                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+            }
+            $params['usuarios'] = $usuarios;
+        } elseif ($tipo === 'grupo' && $idSeleccionado) {
+            // Obtener la situación financiera de un grupo específico
+            $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
+            $params['situacion'] = $situacion;
+
+            // Obtener los usuarios pertenecientes al grupo y sus totales
+            $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
+            foreach ($usuarios as &$usuario) {
+                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+                // Obtener detalles de ingresos y gastos del usuario
+                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+            }
+            $params['usuarios'] = $usuarios;
+        } elseif ($tipo === 'usuario' && $idSeleccionado) {
+            // Obtener la situación financiera de un usuario específico
+            $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
+            $params['situacion'] = $situacion;
+
+            // Obtener los detalles del usuario seleccionado
+            $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
             $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
-            // Obtener detalles de ingresos y gastos del usuario
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+            // Agregar detalles de ingresos y gastos al usuario
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
+
+            // Pasar el usuario con los detalles al parámetro de la vista
+            $params['usuarios'] = [$usuario];
         }
-        $params['usuarios'] = $usuarios;
 
-    } elseif ($tipo === 'grupo' && $idSeleccionado) {
-        // Obtener la situación financiera de un grupo específico
-        $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
-        $params['situacion'] = $situacion;
-
-        // Obtener los usuarios pertenecientes al grupo y sus totales
-        $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
-        foreach ($usuarios as &$usuario) {
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
-            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-
-            // Obtener detalles de ingresos y gastos del usuario
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+        // Cargar listas para el dropdown de familias, grupos y usuarios
+        if ($tipo === 'familia') {
+            $params['familias'] = $m->obtenerFamilias();
+        } elseif ($tipo === 'grupo') {
+            $params['grupos'] = $m->obtenerGrupos();
+        } elseif ($tipo === 'usuario') {
+            $params['usuariosLista'] = $m->obtenerUsuarios();  // Lista de usuarios para el dropdown
         }
-        $params['usuarios'] = $usuarios;
 
-    } elseif ($tipo === 'usuario' && $idSeleccionado) {
-        // Obtener la situación financiera de un usuario específico
-        $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
-        $params['situacion'] = $situacion;
-
-        // Obtener los detalles del usuario seleccionado
-        $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
-        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
-        $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
-        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-
-        // Agregar detalles de ingresos y gastos al usuario
-        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
-        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
-
-        // Pasar el usuario con los detalles al parámetro de la vista
-        $params['usuarios'] = [$usuario];
+        $params['idSeleccionado'] = $idSeleccionado;
+        $this->render('verSituacion.php', $params);
     }
-
-    // Cargar listas para el dropdown de familias, grupos y usuarios
-    if ($tipo === 'familia') {
-        $params['familias'] = $m->obtenerFamilias();
-    } elseif ($tipo === 'grupo') {
-        $params['grupos'] = $m->obtenerGrupos();
-    } elseif ($tipo === 'usuario') {
-        $params['usuariosLista'] = $m->obtenerUsuarios();  // Lista de usuarios para el dropdown
-    }
-
-    $params['idSeleccionado'] = $idSeleccionado;
-    $this->render('verSituacion.php', $params);
-}
 
     // Ver Situación Financiera con filtro
     public function verSituacionFiltrada()
@@ -823,17 +865,25 @@ class Controller
 
     // Gestión de Categorías de Gastos
     public function verCategoriasGastos()
-    {
-        $m = new GastosModelo();
-        $categorias = $m->obtenerCategoriasGastos();
+{
+    $m = new GastosModelo();
+    $categorias = $m->obtenerCategoriasGastos();
 
-        $params = array(
-            'categorias' => $categorias,
-            'mensaje' => 'Gestión de categorías de gastos'
-        );
+    // Depuración temporal
+    echo "<pre>";
+    print_r($categorias);
+    echo "</pre>";
 
-        $this->render('verCategoriasGastos.php', $params);
-    }
+    $params = array(
+        'categorias' => $categorias,
+        'mensaje' => !empty($categorias) ? 'Gestión de categorías de gastos' : 'No hay categorías disponibles'
+    );
+
+    $this->render('verCategoriasGastos.php', $params);
+}
+
+
+    
 
     public function insertarCategoriaGasto()
     {
@@ -1079,30 +1129,33 @@ class Controller
     }
 
     public function crearUsuario()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $m = new GastosModelo();
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $m = new GastosModelo();
 
-            // Recoger los datos del formulario
-            $nombre = recoge('nombre');
-            $apellido = recoge('apellido');
-            $alias = recoge('alias');
-            $email = recoge('email'); // Asegurarse de que recoge el email
-            $contrasenya = password_hash(recoge('contrasenya'), PASSWORD_DEFAULT);
-            $nivel_usuario = recoge('nivel_usuario');
-            $idFamilia = recoge('idFamilia') ?: null;
-            $idGrupo = recoge('idGrupo') ?: null;
+        // Recoger los datos del formulario
+        $nombre = recoge('nombre');
+        $apellido = recoge('apellido');
+        $alias = recoge('alias');
+        $email = recoge('email'); // Recoge el email correctamente
+        $contrasenya = password_hash(recoge('contrasenya'), PASSWORD_DEFAULT);
+        $nivel_usuario = recoge('nivel_usuario');
+        $fecha_nacimiento = recoge('fecha_nacimiento'); // Recoger la fecha de nacimiento
+        $telefono = recoge('telefono'); // Recoger el teléfono
+        $idFamilia = recoge('idFamilia') ?: null;
+        $idGrupo = recoge('idGrupo') ?: null;
 
-            // Insertar usuario en la base de datos
-            if ($m->insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $email, $idFamilia, $idGrupo)) {
-                header('Location: index.php?ctl=listarUsuarios');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo insertar el usuario. Inténtalo de nuevo.';
-                $this->render('formCrearUsuario.php', $params);
-            }
+        // Insertar usuario en la base de datos con los 10 parámetros
+        if ($m->insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
+            header('Location: index.php?ctl=listarUsuarios');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo insertar el usuario. Inténtalo de nuevo.';
+            $this->render('formCrearUsuario.php', $params);
         }
     }
+}
+
 
 
 
@@ -1197,4 +1250,29 @@ class Controller
 
         $this->render('formEditarUsuario.php', $params);
     }
+    public function dashboard()
+{
+    $m = new GastosModelo();
+
+    // Obtener el total de ingresos y gastos
+    $totalIngresos = $m->obtenerTotalIngresos($_SESSION['usuario']['id']);
+    $totalGastos = $m->obtenerTotalGastos($_SESSION['usuario']['id']);
+
+    // Obtener la distribución de gastos por categoría
+    $gastosPorCategoria = $m->obtenerGastosPorCategoria($_SESSION['usuario']['id']);
+
+    // Obtener la distribución de ingresos por categoría
+    $ingresosPorCategoria = $m->obtenerIngresosPorCategoria($_SESSION['usuario']['id']);
+
+    // Pasar los datos a la vista
+    $params = array(
+        'totalIngresos' => $totalIngresos,
+        'totalGastos' => $totalGastos,
+        'gastosPorCategoria' => $gastosPorCategoria,
+        'ingresosPorCategoria' => $ingresosPorCategoria
+    );
+
+    $this->render('dashboard.php', $params);
+}
+
 }

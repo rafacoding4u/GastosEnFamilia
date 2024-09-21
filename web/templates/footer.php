@@ -6,9 +6,8 @@
     <a href="index.php?ctl=contacto" class="text-muted">Contacto</a>
 </div>
 
+<!-- Elimina cualquier cierre de </body> y </html> aquí -->
 <!-- Scripts adicionales (si son necesarios) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
-</html>
 

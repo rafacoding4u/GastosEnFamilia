@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Crear Nuevo Grupo</h2>
 
@@ -15,6 +13,4 @@
         <button type="submit" name="bCrearGrupo" class="btn btn-primary">Crear Grupo</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>
 

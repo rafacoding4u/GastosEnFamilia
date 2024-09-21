@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Lista de Usuarios Registrados</h2>
     <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
@@ -67,5 +65,3 @@
         <p>No hay usuarios registrados.</p>
     <?php endif; ?>
 </div>
-
-<?php include 'footer.php'; ?>

@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Añadir Gasto</h2>
 
@@ -55,5 +53,3 @@
         <?php endif; ?>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

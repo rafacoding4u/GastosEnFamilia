@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Asignar Usuario a Familia o Grupo</h2>
 
@@ -34,5 +32,3 @@
         <button type="submit" name="bAsignarUsuario" class="btn btn-primary">Asignar Usuario</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

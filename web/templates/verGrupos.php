@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Lista de Grupos</h2>
 
@@ -39,5 +37,3 @@
         <p>No hay grupos registrados.</p>
     <?php endif; ?>
 </div>
-
-<?php include 'footer.php'; ?>

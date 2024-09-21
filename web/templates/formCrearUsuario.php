@@ -1,5 +1,3 @@
-<?php include 'layout.php'; ?>
-
 <div class="container p-4">
     <h2>Añadir Nuevo Usuario</h2>
     <form action="index.php?ctl=crearUsuario" method="POST">
@@ -23,6 +21,15 @@
             <input type="email" class="form-control" id="email" name="email" required>
         </div>
 
+        <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="text" name="telefono" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" class="form-control" required>
+        </div>
 
         <div class="form-group">
             <label for="contrasenya">Contraseña:</label>
@@ -61,5 +68,3 @@
         <button type="submit" class="btn btn-success">Añadir Usuario</button>
     </form>
 </div>
-
-<?php include 'footer.php'; ?>

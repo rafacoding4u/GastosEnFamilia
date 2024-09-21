@@ -22,12 +22,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de los usuarios -->
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard Financiero</a> <!-- Ver el dashboard financiero -->
+                </li>
                 <!-- Gestión de usuarios (solo para admins) -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Permite ver y gestionar todos los usuarios -->
                 </li>
-
                 <!-- Gestión de categorías de gastos e ingresos -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
@@ -35,7 +36,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
                 </li>
-
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Permite al administrador cerrar sesión -->

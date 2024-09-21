@@ -56,7 +56,6 @@
     <!-- Pie de página -->
     <footer class="footer bg-light text-center py-3">
         <?php include __DIR__ . '/footer.php'; ?>
-        <p class="text-muted">© 2024 Gastos En Familia. Todos los derechos reservados.</p>
     </footer>
 
     <!-- Scripts opcionales para Bootstrap y funcionalidades JS -->

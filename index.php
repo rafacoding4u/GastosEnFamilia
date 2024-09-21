@@ -49,6 +49,9 @@ $map = array(
 
     // Gestión financiera
     'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1),
+    
+    // Dashboard financiero
+    'dashboard' => array('controller' => 'Controller', 'action' => 'dashboard', 'nivel_usuario' => 1),
 
     // Gestión de categorías de ingresos y gastos
     'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
