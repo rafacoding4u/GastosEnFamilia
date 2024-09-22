@@ -8,37 +8,33 @@
             <ul class="navbar-nav">
                 <!-- Opciones del Administrador -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a> <!-- Permite ver todos los gastos del sistema -->
+                    <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a> <!-- Permite ver todos los ingresos del sistema -->
+                    <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a> <!-- Formulario para insertar un nuevo gasto -->
+                    <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a> <!-- Formulario para insertar un nuevo ingreso -->
+                    <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a> <!-- Ver la situación financiera de los usuarios -->
+                    <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard Financiero</a> <!-- Ver el dashboard financiero -->
+                    <a class="nav-link" href="index.php?ctl=estadoFinanciero">Estado Financiero</a> <!-- Dashboard ahora es Estado Financiero -->
                 </li>
-                <!-- Gestión de usuarios (solo para admins) -->
+                <!-- Gestión de categorías (el administrador no puede borrar categorías) -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a> <!-- Permite ver y gestionar todos los usuarios -->
-                </li>
-                <!-- Gestión de categorías de gastos e ingresos -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a> <!-- Gestionar categorías de gastos -->
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a> <!-- Gestionar categorías de ingresos -->
+                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
                 </li>
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a> <!-- Permite al administrador cerrar sesión -->
+                    <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                 </li>
             </ul>
         </div>

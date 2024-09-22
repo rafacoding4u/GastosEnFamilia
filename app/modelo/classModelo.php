@@ -231,24 +231,45 @@ class GastosModelo
         $stmt->execute();
         return $stmt->fetchColumn();
     }
-    // Obtener usuarios de una familia
+    // Obtener usuarios por familia
     public function obtenerUsuariosPorFamilia($idFamilia)
-    {
-        $sql = "SELECT * FROM usuarios WHERE idFamilia = :idFamilia";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    // Obtener usuarios de un grupo
-    public function obtenerUsuariosPorGrupo($idGrupo)
-    {
-        $sql = "SELECT * FROM usuarios WHERE idGrupo = :idGrupo";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+{
+    $sql = "SELECT * FROM usuarios WHERE idFamilia = :idFamilia";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idFamilia', $idFamilia);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+    // Obtener usuarios por grupo
+public function obtenerUsuariosPorGrupo($idGrupo)
+{
+    $sql = "SELECT * FROM usuarios WHERE idGrupo = :idGrupo";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idGrupo', $idGrupo);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+     // Añadir usuario a un grupo existente
+public function añadirUsuarioAGrupo($idUsuario, $idGrupo)
+{
+    $sql = "UPDATE usuarios SET idGrupo = :idGrupo WHERE idUser = :idUsuario";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idGrupo', $idGrupo);
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    return $stmt->execute();
+}
+
+     // Añadir usuario a una familia existente
+public function añadirUsuarioAFamilia($idUsuario, $idFamilia)
+{
+    $sql = "UPDATE usuarios SET idFamilia = :idFamilia WHERE idUser = :idUsuario";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idFamilia', $idFamilia);
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    return $stmt->execute();
+}
 
     // Insertar gasto para un usuario
     public function insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen)
@@ -315,14 +336,16 @@ class GastosModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function insertarFamilia($nombreFamilia, $passwordFamilia)
-    {
-        $sql = "INSERT INTO familias (nombre_familia, password) VALUES (:nombreFamilia, :password)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
-        $stmt->bindValue(':password', password_hash($passwordFamilia, PASSWORD_DEFAULT), PDO::PARAM_STR);
-        return $stmt->execute();
-    }
+    // Insertar una familia con contraseña encriptada
+public function insertarFamilia($nombreFamilia, $passwordFamilia)
+{
+    $sql = "INSERT INTO familias (nombre_familia, password) VALUES (:nombreFamilia, :password)";
+    $stmt = $this->conexion->prepare($sql);
+    $hashedPassword = password_hash($passwordFamilia, PASSWORD_DEFAULT);  // Encriptar la contraseña
+    $stmt->bindValue(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
+    $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+    return $stmt->execute();
+}
 
     public function actualizarFamilia($idFamilia, $nombreFamilia)
     {
@@ -390,14 +413,16 @@ class GastosModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function insertarGrupo($nombreGrupo, $passwordGrupo)
-    {
-        $sql = "INSERT INTO grupos (nombre_grupo, password) VALUES (:nombreGrupo, :password)";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreGrupo', $nombreGrupo, PDO::PARAM_STR);
-        $stmt->bindValue(':password', password_hash($passwordGrupo, PASSWORD_DEFAULT), PDO::PARAM_STR);
-        return $stmt->execute();
-    }
+    // Insertar un grupo con contraseña encriptada
+public function insertarGrupo($nombreGrupo, $passwordGrupo)
+{
+    $sql = "INSERT INTO grupos (nombre_grupo, password) VALUES (:nombreGrupo, :password)";
+    $stmt = $this->conexion->prepare($sql);
+    $hashedPassword = password_hash($passwordGrupo, PASSWORD_DEFAULT);  // Encriptar la contraseña
+    $stmt->bindValue(':nombreGrupo', $nombreGrupo, PDO::PARAM_STR);
+    $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+    return $stmt->execute();
+}
 
     public function actualizarGrupo($idGrupo, $nombreGrupo)
     {
@@ -729,6 +754,54 @@ public function obtenerIngresosPorCategoria($idUsuario)
     $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Obtener familias por administrador
+public function obtenerFamiliasPorAdministrador($idAdmin)
+{
+    $sql = "SELECT f.* FROM familias f 
+            JOIN administradores_familias af ON f.idFamilia = af.idFamilia
+            WHERE af.idAdmin = :idAdmin";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Obtener grupos por administrador
+public function obtenerGruposPorAdministrador($idAdmin)
+{
+    $sql = "SELECT g.* FROM grupos g 
+            JOIN administradores_grupos ag ON g.idGrupo = ag.idGrupo
+            WHERE ag.idAdmin = :idAdmin";
+    $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
+    $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Verificar la contraseña de una familia
+public function verificarPasswordFamilia($idFamilia, $passwordIntroducida)
+{
+    $sql = "SELECT password FROM familias WHERE idFamilia = :idFamilia";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+    $stmt->execute();
+    $passwordAlmacenada = $stmt->fetchColumn();
+
+    return password_verify($passwordIntroducida, $passwordAlmacenada);  // Verificar la contraseña
+}
+
+// Verificar la contraseña de un grupo
+public function verificarPasswordGrupo($idGrupo, $passwordIntroducida)
+{
+    $sql = "SELECT password FROM grupos WHERE idGrupo = :idGrupo";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+    $stmt->execute();
+    $passwordAlmacenada = $stmt->fetchColumn();
+
+    return password_verify($passwordIntroducida, $passwordAlmacenada);  // Verificar la contraseña
 }
 
 }

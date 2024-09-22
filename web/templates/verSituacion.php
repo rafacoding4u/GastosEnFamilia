@@ -1,59 +1,61 @@
 <div class="container p-4">
     <h2>Situación Financiera</h2>
 
-    <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
-        <form method="GET" action="index.php">
-            <input type="hidden" name="ctl" value="verSituacion">
+    <!-- Selección de tipo de situación -->
+    <form method="GET" action="index.php">
+        <input type="hidden" name="ctl" value="verSituacion">
 
-            <div class="form-group">
-                <label for="tipo">Ver situación de:</label>
-                <select name="tipo" id="tipo" class="form-control" onchange="this.form.submit()">
+        <div class="form-group">
+            <label for="tipo">Ver situación de:</label>
+            <select name="tipo" id="tipo" class="form-control" onchange="this.form.submit()">
+                <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
                     <option value="global" <?= $tipo === 'global' ? 'selected' : '' ?>>Global</option>
-                    <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
-                    <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
-                    <option value="usuario" <?= $tipo === 'usuario' ? 'selected' : '' ?>>Usuario</option>
+                <?php endif; ?>
+                <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
+                <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
+                <option value="usuario" <?= $tipo === 'usuario' ? 'selected' : '' ?>>Usuario</option>
+            </select>
+        </div>
+
+        <!-- Condicional para mostrar familias, grupos o usuarios según la selección -->
+        <?php if ($tipo === 'familia' && !empty($familias)): ?>
+            <div class="form-group">
+                <label for="idSeleccionado">Selecciona una familia:</label>
+                <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
+                    <?php foreach ($familias as $familia): ?>
+                        <option value="<?= $familia['idFamilia'] ?>" <?= $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($familia['nombre_familia']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
+        <?php elseif ($tipo === 'grupo' && !empty($grupos)): ?>
+            <div class="form-group">
+                <label for="idSeleccionado">Selecciona un grupo:</label>
+                <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
+                    <?php foreach ($grupos as $grupo): ?>
+                        <option value="<?= $grupo['idGrupo'] ?>" <?= $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php elseif ($tipo === 'usuario' && !empty($usuariosLista)): ?>
+            <div class="form-group">
+                <label for="idSeleccionado">Selecciona un usuario:</label>
+                <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
+                    <option value="todos" <?= $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
+                    <?php foreach ($usuariosLista as $usuario): ?>
+                        <option value="<?= $usuario['idUser'] ?>" <?= $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php endif; ?>
+    </form>
 
-            <?php if ($tipo === 'familia' && !empty($familias)): ?>
-                <div class="form-group">
-                    <label for="idSeleccionado">Selecciona una familia:</label>
-                    <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
-                        <?php foreach ($familias as $familia): ?>
-                            <option value="<?= $familia['idFamilia'] ?>" <?= $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($familia['nombre_familia']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php elseif ($tipo === 'grupo' && !empty($grupos)): ?>
-                <div class="form-group">
-                    <label for="idSeleccionado">Selecciona un grupo:</label>
-                    <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
-                        <?php foreach ($grupos as $grupo): ?>
-                            <option value="<?= $grupo['idGrupo'] ?>" <?= $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($grupo['nombre_grupo']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php elseif ($tipo === 'usuario' && !empty($usuariosLista)): ?>
-                <div class="form-group">
-                    <label for="idSeleccionado">Selecciona un usuario:</label>
-                    <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
-                        <option value="todos" <?= $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
-                        <?php foreach ($usuariosLista as $usuario): ?>
-                            <option value="<?= $usuario['idUser'] ?>" <?= $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php endif; ?>
-        </form>
-    <?php endif; ?>
-
-    <!-- Mostrar la situación financiera principal (Familia, Grupo o Usuario) -->
+    <!-- Resumen Financiero -->
     <?php if (!empty($situacion)): ?>
         <h4>Resumen Financiero</h4>
         <p>Total Ingresos: <span class="bg-success text-white px-2"><?= number_format($situacion['totalIngresos'], 2, ',', '.') ?> €</span></p>
@@ -67,7 +69,7 @@
         <p>No hay datos financieros disponibles.</p>
     <?php endif; ?>
 
-    <!-- Mostrar usuarios (si se selecciona familia, grupo o usuario específico) -->
+    <!-- Mostrar usuarios si los hay -->
     <?php if (isset($usuarios) && !empty($usuarios)): ?>
         <h4>Usuarios</h4>
         <table class="table table-bordered">
@@ -94,9 +96,18 @@
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
-                                Mostrar detalles
-                            </button>
+                            <!-- Control de visibilidad de acciones según el nivel de usuario -->
+                            <?php if ($_SESSION['nivel_usuario'] !== 'superadmin' && $usuario['nivel_usuario'] !== 'superadmin'): ?>
+                                <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
+                                    Mostrar detalles
+                                </button>
+                            <?php elseif ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
+                                <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
+                                    Mostrar detalles
+                                </button>
+                            <?php else: ?>
+                                <button class="btn btn-info" disabled>No disponible</button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <tr class="detalles-usuario" id="detallesUsuario<?= $usuario['idUser'] ?>" style="display: none;">
@@ -184,4 +195,3 @@
         });
     });
 </script>
-
