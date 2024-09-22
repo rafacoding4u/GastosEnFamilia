@@ -359,66 +359,96 @@ class Controller
     }
     // Editar Familia
     public function editarFamilia()
-    {
-        // Verificar si el usuario es superadmin
-        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-            $this->redireccionarError('Acceso denegado. Solo superadmin puede editar familias.');
+{
+    $m = new GastosModelo();
+
+    // Obtener el ID de la familia
+    if (isset($_GET['id'])) {
+        $familia = $m->obtenerFamiliaPorId($_GET['id']);
+        if (!$familia) {
+            $params['mensaje'] = 'Familia no encontrada.';
+            $this->listarFamilias();
             return;
         }
-        $m = new GastosModelo();
-        if (isset($_GET['id'])) {
-            $familia = $m->obtenerFamiliaPorId($_GET['id']);
-            if (!$familia) {
-                $params['mensaje'] = 'Familia no encontrada.';
-                $this->listarFamilias();
-                return;
-            }
-        }
-
-        $params = array(
-            'nombre_familia' => $familia['nombre_familia'],
-            'idFamilia' => $familia['idFamilia']
-        );
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarFamilia'])) {
-            $nombre_familia = recoge('nombre_familia');
-            $errores = array();
-
-            cTexto($nombre_familia, "nombre_familia", $errores);
-
-            if (empty($errores)) {
-                if ($m->actualizarFamilia($familia['idFamilia'], $nombre_familia)) {
-                    header('Location: index.php?ctl=listarFamilias');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo actualizar la familia.';
-                }
-            } else {
-                $params['errores'] = $errores;
-            }
-        }
-
-        $this->render('formEditarFamilia.php', $params);
     }
 
-    // Eliminar Familia
-    public function eliminarFamilia()
-    {
-        // Verificar si el usuario es superadmin
-        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-            $this->redireccionarError('Acceso denegado. Solo superadmin puede eliminar familias.');
+    // Comprobar si el usuario es superadmin o administrador de la familia
+    $esAdmin = false;
+
+    // Si el usuario no es superadmin, comprobar si es administrador de la familia
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $administradores = $m->obtenerAdministradoresFamilia($familia['idFamilia']);
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                $esAdmin = true;
+                break;
+            }
+        }
+
+        if (!$esAdmin) {
+            $this->redireccionarError('No tienes permiso para editar esta familia.');
             return;
         }
-        if (isset($_GET['id'])) {
-            $m = new GastosModelo();
-            if ($m->eliminarFamilia($_GET['id'])) {
+    }
+
+    $params = array(
+        'nombre_familia' => $familia['nombre_familia'],
+        'idFamilia' => $familia['idFamilia']
+    );
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarFamilia'])) {
+        $nombre_familia = recoge('nombre_familia');
+        $errores = array();
+
+        cTexto($nombre_familia, "nombre_familia", $errores);
+
+        if (empty($errores)) {
+            if ($m->actualizarFamilia($familia['idFamilia'], $nombre_familia)) {
                 header('Location: index.php?ctl=listarFamilias');
                 exit();
             } else {
-                $params['mensaje'] = 'No se pudo eliminar la familia.';
+                $params['mensaje'] = 'No se pudo actualizar la familia.';
             }
+        } else {
+            $params['errores'] = $errores;
         }
     }
+
+    $this->render('formEditarFamilia.php', $params);
+}
+
+
+    // Eliminar Familia
+    public function eliminarFamilia()
+{
+    // Verificar si el usuario es superadmin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo superadmin puede eliminar familias.');
+        return;
+    }
+
+    $idFamilia = recoge('id'); // Obtener el ID de la familia
+    $m = new GastosModelo();
+    
+    // Validar si hay usuarios asociados a esta familia
+    $usuariosAsociados = $m->obtenerUsuariosPorFamilia($idFamilia);
+    if (!empty($usuariosAsociados)) {
+        $this->redireccionarError('No se puede eliminar la familia. Hay usuarios asociados.');
+        return;
+    }
+
+    // Si no hay usuarios asociados, eliminar la familia
+    if ($m->eliminarFamilia($idFamilia)) {
+        header('Location: index.php?ctl=listarFamilias');
+        exit();
+    } else {
+        $this->redireccionarError('Error al eliminar la familia.');
+    }
+}
+
+
+
+
     public function unirseGrupoFamilia()
     {
         $tipo = recoge('tipo');
@@ -1189,6 +1219,119 @@ class Controller
             $this->render('formCrearGrupo.php', $params);
         }
     }
+    public function eliminarGrupo()
+{
+    // Verificar si el usuario es superadmin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo superadmin puede eliminar grupos.');
+        return;
+    }
+
+    $idGrupo = recoge('id'); // Obtener el ID del grupo
+    $m = new GastosModelo();
+    
+    // Validar si hay usuarios asociados a este grupo
+    $usuariosAsociados = $m->obtenerUsuariosPorGrupo($idGrupo);
+    if (!empty($usuariosAsociados)) {
+        $this->redireccionarError('No se puede eliminar el grupo. Hay usuarios asociados.');
+        return;
+    }
+    
+    // Validar si hay ingresos o gastos asociados a los usuarios del grupo
+    $ingresosAsociados = $m->obtenerIngresosPorGrupo($idGrupo);
+    $gastosAsociados = $m->obtenerGastosPorGrupo($idGrupo);
+    if (!empty($ingresosAsociados) || !empty($gastosAsociados)) {
+        $this->redireccionarError('No se puede eliminar el grupo. Hay ingresos o gastos asociados.');
+        return;
+    }
+
+    // Si no hay usuarios, ingresos o gastos asociados, eliminar el grupo
+    if ($m->eliminarGrupo($idGrupo)) {
+        header('Location: index.php?ctl=listarGrupos');
+        exit();
+    } else {
+        $this->redireccionarError('Error al eliminar el grupo.');
+    }
+}
+public function listarGrupos()
+{
+    $m = new GastosModelo();
+    
+    // Obtener todos los grupos
+    $grupos = $m->obtenerGrupos();
+    
+    // Parámetros a enviar a la vista
+    $params = array(
+        'grupos' => $grupos
+    );
+    
+    // Renderizar la vista listarGrupos.php
+    $this->render('listarGrupos.php', $params);
+}
+
+
+// Editar Grupo
+public function editarGrupo()
+{
+    $m = new GastosModelo();
+
+    // Obtener el ID del grupo
+    if (isset($_GET['id'])) {
+        $grupo = $m->obtenerGrupoPorId($_GET['id']);
+        if (!$grupo) {
+            $params['mensaje'] = 'Grupo no encontrado.';
+            $this->listarGrupos();
+            return;
+        }
+    }
+
+    // Comprobar si el usuario es superadmin o administrador del grupo
+    $esAdmin = false;
+
+    // Si el usuario no es superadmin, comprobar si es administrador del grupo
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $administradores = $m->obtenerAdministradoresGrupo($grupo['idGrupo']);
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                $esAdmin = true;
+                break;
+            }
+        }
+
+        if (!$esAdmin) {
+            $this->redireccionarError('No tienes permiso para editar este grupo.');
+            return;
+        }
+    }
+
+    $params = array(
+        'nombre_grupo' => $grupo['nombre_grupo'],
+        'idGrupo' => $grupo['idGrupo']
+    );
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarGrupo'])) {
+        $nombre_grupo = recoge('nombre_grupo');
+        $errores = array();
+
+        cTexto($nombre_grupo, "nombre_grupo", $errores);
+
+        if (empty($errores)) {
+            if ($m->actualizarGrupo($grupo['idGrupo'], $nombre_grupo)) {
+                header('Location: index.php?ctl=listarGrupos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo actualizar el grupo.';
+            }
+        } else {
+            $params['errores'] = $errores;
+        }
+    }
+
+    $this->render('formEditarGrupo.php', $params);
+}
+
+
+
 
     // Formulario para asignar un usuario a una familia o grupo
     public function formAsignarUsuario()
@@ -1301,104 +1444,237 @@ class Controller
 
     // Eliminar Usuario
     public function eliminarUsuario()
-    {
-        if (isset($_GET['id'])) {
-            $m = new GastosModelo();
-            $usuario = $m->obtenerUsuarioPorId($_GET['id']);
+{
+    // Verificar si el usuario es superadmin o admin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin' && $_SESSION['nivel_usuario'] !== 'admin') {
+        $this->redireccionarError('Acceso denegado. Solo administradores pueden eliminar usuarios.');
+        return;
+    }
 
-            // Verificar que no sea superadmin
-            if ($_SESSION['nivel_usuario'] === 'admin' && $usuario['nivel_usuario'] === 'superadmin') {
-                $this->redireccionarError('Acceso denegado. Los administradores no pueden eliminar superusuarios.');
-                return;
-            }
+    $idUsuario = recoge('id'); // Obtener el ID del usuario
+    $m = new GastosModelo();
+    
+    // Verificar si el usuario existe
+    $usuario = $m->obtenerUsuarioPorId($idUsuario);
+    if (!$usuario) {
+        $this->redireccionarError('Usuario no encontrado.');
+        return;
+    }
 
-            // Verificar que el usuario actual tenga permiso para eliminar usuarios
-            if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-                $this->redireccionarError('Acceso denegado. Solo superadmin puede eliminar usuarios.');
-                return;
-            }
+    // Eliminar los gastos asociados al usuario
+    $gastosEliminados = $m->eliminarGastosPorUsuario($idUsuario);
+    // Eliminar los ingresos asociados al usuario
+    $ingresosEliminados = $m->eliminarIngresosPorUsuario($idUsuario);
 
-            if ($m->eliminarUsuario($_GET['id'])) {
+    // Si se eliminaron correctamente los gastos e ingresos, eliminar el usuario
+    if ($gastosEliminados && $ingresosEliminados && $m->eliminarUsuario($idUsuario)) {
+        header('Location: index.php?ctl=listarUsuarios');
+        exit();
+    } else {
+        $this->redireccionarError('Error al eliminar el usuario o sus registros asociados.');
+    }
+}
+    // Editar Usuario
+    public function editarUsuario()
+{
+    $m = new GastosModelo();
+
+    if (isset($_GET['id'])) {
+        $usuario = $m->obtenerUsuarioPorId($_GET['id']);
+        if (!$usuario) {
+            $params['mensaje'] = 'Usuario no encontrado.';
+            $this->listarUsuarios();
+            return;
+        }
+    }
+
+    $familias = $m->obtenerFamilias();
+    $grupos = $m->obtenerGrupos();
+
+    $params = array(
+        'nombre' => $usuario['nombre'],
+        'apellido' => $usuario['apellido'],
+        'alias' => $usuario['alias'],
+        'email' => $usuario['email'],
+        'telefono' => $usuario['telefono'],
+        'idUser' => $usuario['idUser'],
+        'nivel_usuario' => $usuario['nivel_usuario'],
+        'idFamilia' => $usuario['idFamilia'],
+        'idGrupo' => $usuario['idGrupo'],
+        'familias' => $familias,
+        'grupos' => $grupos
+    );
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarUsuario'])) {
+        $nombre = recoge('nombre');
+        $apellido = recoge('apellido');
+        $alias = recoge('alias');
+        $email = recoge('email');
+        $telefono = recoge('telefono');
+        $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
+        $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
+        $nivel_usuario = $_SESSION['nivel_usuario'] === 'superadmin' ? recoge('nivel_usuario') : $usuario['nivel_usuario'];
+
+        $errores = array();
+
+        cTexto($nombre, "nombre", $errores);
+        cTexto($apellido, "apellido", $errores);
+        cUser($alias, "alias", $errores);
+        cEmail($email, $errores);
+        cTelefono($telefono, $errores);
+
+        // Validar que la familia y el grupo existen
+        if ($idFamilia && !$m->obtenerFamiliaPorId($idFamilia)) {
+            $errores['familia'] = 'La familia seleccionada no existe.';
+        }
+
+        if ($idGrupo && !$m->obtenerGrupoPorId($idGrupo)) {
+            $errores['grupo'] = 'El grupo seleccionado no existe.';
+        }
+
+        if (empty($errores)) {
+            if ($m->actualizarUsuario($usuario['idUser'], $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
             } else {
-                $params['mensaje'] = 'No se pudo eliminar el usuario.';
-                $this->listarUsuarios();
+                $params['mensaje'] = 'No se pudo actualizar el usuario.';
             }
+        } else {
+            $params['errores'] = $errores;
         }
     }
 
+    $this->render('formEditarUsuario.php', $params);
+}
 
-    // Editar Usuario
-    public function editarUsuario()
-    {
-        $m = new GastosModelo();
+// Eliminar administrador de una familia
+public function eliminarAdministradorDeFamilia()
+{
+    $idAdmin = recoge('idAdmin'); // ID del administrador
+    $idFamilia = recoge('idFamilia'); // ID de la familia
+    $m = new GastosModelo();
 
-        if (isset($_GET['id'])) {
-            $usuario = $m->obtenerUsuarioPorId($_GET['id']);
-            if (!$usuario) {
-                $this->redireccionarError('Usuario no encontrado.');
-                return;
-            }
+    // Verificar si el usuario es superadmin o si es un administrador válido
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
+        $esAdmin = false;
 
-            // Si el usuario actual es un admin, verificar que no esté intentando editar un superadmin
-            if ($_SESSION['nivel_usuario'] === 'admin' && $usuario['nivel_usuario'] === 'superadmin') {
-                $this->redireccionarError('Acceso denegado. Los administradores no pueden editar superusuarios.');
-                return;
-            }
-        }
-
-        $familias = $m->obtenerFamilias();
-        $grupos = $m->obtenerGrupos();
-
-        $params = array(
-            'nombre' => $usuario['nombre'],
-            'apellido' => $usuario['apellido'],
-            'alias' => $usuario['alias'],
-            'email' => $usuario['email'],
-            'telefono' => $usuario['telefono'],
-            'idUser' => $usuario['idUser'],
-            'nivel_usuario' => $usuario['nivel_usuario'], // Se pasa el nivel de usuario al formulario
-            'idFamilia' => $usuario['idFamilia'],
-            'idGrupo' => $usuario['idGrupo'],
-            'familias' => $familias,
-            'grupos' => $grupos
-        );
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarUsuario'])) {
-            $nombre = recoge('nombre');
-            $apellido = recoge('apellido');
-            $alias = recoge('alias');
-            $email = recoge('email');
-            $telefono = recoge('telefono');
-            $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
-            $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
-
-            // Solo superadmin puede cambiar el nivel del usuario
-            $nivel_usuario = $_SESSION['nivel_usuario'] === 'superadmin' ? recoge('nivel_usuario') : $usuario['nivel_usuario'];
-
-            $errores = array();
-
-            cTexto($nombre, "nombre", $errores);
-            cTexto($apellido, "apellido", $errores);
-            cUser($alias, "alias", $errores);
-            cEmail($email, $errores);
-            cTelefono($telefono, $errores);
-
-            if (empty($errores)) {
-                if ($m->actualizarUsuario($usuario['idUser'], $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
-                    header('Location: index.php?ctl=listarUsuarios');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo actualizar el usuario.';
-                }
-            } else {
-                $params['errores'] = $errores;
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                $esAdmin = true;
+                break;
             }
         }
 
-        $this->render('formEditarUsuario.php', $params);
+        if (!$esAdmin) {
+            $this->redireccionarError('No tienes permiso para eliminar administradores de esta familia.');
+            return;
+        }
     }
+
+    // Proceder a eliminar el administrador
+    if ($m->eliminarAdministradorDeFamilia($idAdmin, $idFamilia)) {
+        header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
+        exit();
+    } else {
+        $this->redireccionarError('Error al eliminar el administrador de la familia.');
+    }
+}
+// Eliminar administrador de un grupo
+public function eliminarAdministradorDeGrupo()
+{
+    $idAdmin = recoge('idAdmin'); // ID del administrador
+    $idGrupo = recoge('idGrupo'); // ID del grupo
+    $m = new GastosModelo();
+
+    // Verificar si el usuario es superadmin o si es un administrador válido
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
+        $esAdmin = false;
+
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                $esAdmin = true;
+                break;
+            }
+        }
+
+        if (!$esAdmin) {
+            $this->redireccionarError('No tienes permiso para eliminar administradores de este grupo.');
+            return;
+        }
+    }
+
+    // Proceder a eliminar el administrador
+    if ($m->eliminarAdministradorDeGrupo($idAdmin, $idGrupo)) {
+        header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
+        exit();
+    } else {
+        $this->redireccionarError('Error al eliminar el administrador del grupo.');
+    }
+}
+
+// Asignar administrador a una familia
+public function asignarAdministradorAFamilia()
+{
+    $idFamilia = recoge('idFamilia');
+    $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
+    $m = new GastosModelo();
+
+    // Verificar si el usuario es superadmin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
+        return;
+    }
+
+    // Verificar si el usuario ya es administrador de la familia
+    $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
+    foreach ($administradores as $admin) {
+        if ($admin['idUser'] === $idAdmin) {
+            $this->redireccionarError('El usuario ya es administrador de esta familia.');
+            return;
+        }
+    }
+
+    // Asignar al usuario como administrador de la familia
+    if ($m->añadirAdministradorAFamilia($idAdmin, $idFamilia)) {
+        header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
+        exit();
+    } else {
+        $this->redireccionarError('Error al asignar el administrador a la familia.');
+    }
+}
+
+// Asignar administrador a un grupo
+public function asignarAdministradorAGrupo()
+{
+    $idGrupo = recoge('idGrupo');
+    $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
+    $m = new GastosModelo();
+
+    // Verificar si el usuario es superadmin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
+        return;
+    }
+
+    // Verificar si el usuario ya es administrador del grupo
+    $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
+    foreach ($administradores as $admin) {
+        if ($admin['idUser'] === $idAdmin) {
+            $this->redireccionarError('El usuario ya es administrador de este grupo.');
+            return;
+        }
+    }
+
+    // Asignar al usuario como administrador del grupo
+    if ($m->añadirAdministradorAGrupo($idAdmin, $idGrupo)) {
+        header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
+        exit();
+    } else {
+        $this->redireccionarError('Error al asignar el administrador al grupo.');
+    }
+}
 
     public function dashboard()
     {
