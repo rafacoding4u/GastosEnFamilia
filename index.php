@@ -8,6 +8,9 @@ require_once __DIR__ . '/app/libs/bSeguridad.php';
 require_once __DIR__ . '/app/modelo/classModelo.php';
 require_once __DIR__ . '/app/controlador/Controller.php';
 
+// Definir la ruta para el archivo de log de errores
+ini_set('error_log', 'C:/xampp/htdocs/DWES/GastosEnFamilia/php-error.log');
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -85,7 +88,7 @@ $map = array(
 
     // Asignar usuarios a grupos y familias
     'formAsignarUsuario' => array('controller' => 'Controller', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
-    'asignarUsuario' => array('controller' => 'Controller', 'action' => 'asignarUsuario', 'nivel_usuario' => 2),
+    'asignarUsuarioFamiliaGrupo' => array('controller' => 'Controller', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2), // Nueva ruta para asignar usuarios
 
     // Probar la conexión a la base de datos
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),

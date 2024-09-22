@@ -7,6 +7,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <!-- Opciones del Administrador -->
+
+                <!-- Gastos e Ingresos -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
                 </li>
@@ -19,12 +21,29 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
                 </li>
+
+                <!-- Situación Financiera -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=estadoFinanciero">Estado Financiero</a> <!-- Dashboard ahora es Estado Financiero -->
+                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard</a>
                 </li>
+
+
+                <!-- Gestión de Familias y Grupos -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a>
+                </li>
+
+                <!-- Nueva opción: Asignar Usuarios a Familias/Grupos -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?ctl=asignarUsuarioFamiliaGrupo">Asignar Usuarios a Familias/Grupos</a>
+                </li>
+
                 <!-- Gestión de categorías (el administrador no puede borrar categorías) -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
@@ -32,6 +51,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
                 </li>
+
                 <!-- Cerrar Sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>

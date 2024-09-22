@@ -52,6 +52,8 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+        <?php else: ?>
+            <p>No hay datos disponibles para mostrar en esta sección.</p>
         <?php endif; ?>
     </form>
 

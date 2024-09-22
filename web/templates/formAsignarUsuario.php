@@ -1,34 +1,67 @@
 <div class="container p-4">
     <h2>Asignar Usuario a Familia o Grupo</h2>
 
-    <form action="index.php?ctl=asignarUsuario" method="post">
+    <!-- Formulario para asignar usuario -->
+    <form method="POST" action="index.php?ctl=asignarUsuarioFamiliaGrupo">
+        <!-- Selección de usuario -->
         <div class="form-group">
-            <label for="idUsuario">Seleccionar Usuario</label>
-            <select class="form-control" id="idUsuario" name="idUsuario" required>
+            <label for="idUsuario">Selecciona un Usuario:</label>
+            <select name="idUsuario" id="idUsuario" class="form-control">
                 <?php foreach ($usuarios as $usuario): ?>
-                    <option value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['nombre']) . ' ' . htmlspecialchars($usuario['apellido']) ?></option>
+                    <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
+                        <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
-        <div class="form-group">
-            <label for="idFamilia">Asignar a Familia (opcional)</label>
-            <select class="form-control" id="idFamilia" name="idFamilia">
-                <option value="">-- Ninguna --</option>
-                <?php foreach ($familias as $familia): ?>
-                    <option value="<?= $familia['idFamilia'] ?>"><?= htmlspecialchars($familia['nombre_familia']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="form-group">
 
-            <label for="idGrupo">Asignar a Grupo (opcional)</label>
-            <select class="form-control" id="idGrupo" name="idGrupo">
-                <option value="">-- Ninguno --</option>
-                <?php foreach ($grupos as $grupo): ?>
-                    <option value="<?= $grupo['idGrupo'] ?>"><?= htmlspecialchars($grupo['nombre_grupo']) ?></option>
+        <!-- Selección de tipo de vinculación (familia o grupo) -->
+        <div class="form-group">
+            <label for="tipoVinculo">Selecciona si es Familia o Grupo:</label>
+            <select name="tipoVinculo" id="tipoVinculo" class="form-control" onchange="toggleVinculoOptions()">
+                <option value="familia">Familia</option>
+                <option value="grupo">Grupo</option>
+            </select>
+        </div>
+
+        <!-- Desplegable de familias -->
+        <div class="form-group" id="familiasGroup" style="display: none;">
+            <label for="idFamilia">Selecciona una Familia:</label>
+            <select name="idFamilia" id="idFamilia" class="form-control">
+                <?php foreach ($familias as $familia): ?>
+                    <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
+                        <?= htmlspecialchars($familia['nombre_familia']) ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" name="bAsignarUsuario" class="btn btn-primary">Asignar Usuario</button>
+
+        <!-- Desplegable de grupos -->
+        <div class="form-group" id="gruposGroup" style="display: none;">
+            <label for="idGrupo">Selecciona un Grupo:</label>
+            <select name="idGrupo" id="idGrupo" class="form-control">
+                <?php foreach ($grupos as $grupo): ?>
+                    <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
+                        <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <!-- Campo para introducir la contraseña -->
+        <div class="form-group">
+            <label for="passwordGrupoFamilia">Introduce la contraseña para acceder al grupo o familia:</label>
+            <input type="password" name="passwordGrupoFamilia" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Asignar Usuario</button>
     </form>
 </div>
+
+<script>
+    function toggleVinculoOptions() {
+        var tipoVinculo = document.getElementById('tipoVinculo').value;
+        document.getElementById('familiasGroup').style.display = (tipoVinculo === 'familia') ? 'block' : 'none';
+        document.getElementById('gruposGroup').style.display = (tipoVinculo === 'grupo') ? 'block' : 'none';
+    }
+</script>

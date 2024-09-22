@@ -1,0 +1,590 @@
+[22-Sep-2024 19:19:09 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
+[22-Sep-2024 19:19:09 Europe/Berlin] DEBUG: ID Usuario -> , Tipo de Vínculo -> 
+[22-Sep-2024 19:19:09 Europe/Berlin] ERROR: Tipo de vínculo no válido -> 
+[22-Sep-2024 19:23:21 Europe/Berlin] PHP Warning:  require(C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador/../../web/templates/dashboard.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 44
+[22-Sep-2024 19:23:21 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador/../../web/templates/dashboard.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php:44
+Stack trace:
+#0 C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php(1827): Controller->render('dashboard.php', Array)
+#1 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->dashboard()
+#2 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 44
+[22-Sep-2024 19:23:30 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:23:30 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:23:30 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:23:30 Europe/Berlin] Situación Financiera Global: Array
+(
+    [totalIngresos] => 9086627.00
+    [totalGastos] => 6376072.65
+    [saldo] => 2710554.35
+)
+
+[22-Sep-2024 19:23:43 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 19:23:43 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:23:43 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:23:57 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 19:23:57 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 19:23:57 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:23:57 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+    [saldo] => 5408.00
+)
+
+[22-Sep-2024 19:24:03 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 19:24:03 Europe/Berlin] ID Seleccionado: 1
+[22-Sep-2024 19:24:03 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:24:03 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 9044067.00
+    [totalGastos] => 6370820.65
+    [saldo] => 2673246.35
+)
+
+[22-Sep-2024 19:24:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $fechaInicio in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 9
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $fechaFin in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 13
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $categoriaSeleccionada in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 22
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $categoriaSeleccionada in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 22
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $categoriaSeleccionada in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 22
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $categoriaSeleccionada in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 22
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $categoriaSeleccionada in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 22
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[22-Sep-2024 19:24:46 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[22-Sep-2024 19:25:04 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:25:04 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:25:04 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:25:04 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:25:04 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:25:04 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:25:12 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 19:25:12 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:25:12 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:25:12 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:25:12 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:25:12 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:25:27 Europe/Berlin] Tipo seleccionado: usuario
+[22-Sep-2024 19:25:27 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:25:27 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:25:27 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:25:27 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:25:27 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:30:39 Europe/Berlin] Tipo seleccionado: usuario
+[22-Sep-2024 19:30:39 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:30:39 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:30:39 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:30:39 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:30:39 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:30:57 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:30:57 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:30:57 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:30:57 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:30:57 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:30:57 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:30:58 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:30:58 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:30:58 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:30:59 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:30:59 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:30:59 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:31:05 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:31:05 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:31:05 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:31:05 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:31:05 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:31:05 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:33:37 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:33:37 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:33:37 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:33:37 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:33:37 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:33:37 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:35:10 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:35:10 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:35:10 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:35:10 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:35:10 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:35:10 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:35:13 Europe/Berlin] PHP Warning:  Undefined array key "balance" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\dashboard.php on line 7
+[22-Sep-2024 19:35:31 Europe/Berlin] PHP Warning:  Undefined array key "balance" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\dashboard.php on line 7
+[22-Sep-2024 19:46:45 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:46:45 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:46:45 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:46:45 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:46:45 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:46:45 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 19:46:54 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[22-Sep-2024 19:47:10 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 19:47:10 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:47:10 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:47:10 Europe/Berlin] Situación Financiera Global: Array
+(
+    [totalIngresos] => 9086627.00
+    [totalGastos] => 6376072.65
+    [saldo] => 2710554.35
+)
+
+[22-Sep-2024 19:47:29 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 19:47:29 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:47:29 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:47:32 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 19:47:32 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 19:47:32 Europe/Berlin] El usuario es de tipo 'superadmin'
+[22-Sep-2024 19:47:32 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+    [saldo] => 5408.00
+)
+
+[22-Sep-2024 19:54:05 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[22-Sep-2024 19:59:29 Europe/Berlin] Tipo seleccionado: usuario
+[22-Sep-2024 19:59:29 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 19:59:29 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 19:59:29 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 19:59:29 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 19:59:29 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 20:02:02 Europe/Berlin] Tipo seleccionado: usuario
+[22-Sep-2024 20:02:02 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:02:02 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:02:02 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:02:02 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 20:02:02 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 20:02:04 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 20:02:04 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:02:04 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:02:04 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:02:04 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 20:02:04 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 20:02:30 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 20:02:30 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:02:30 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:02:30 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:02:30 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+)
+
+[22-Sep-2024 20:02:30 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+)
+
+[22-Sep-2024 20:08:49 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[22-Sep-2024 20:36:48 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[22-Sep-2024 20:37:03 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 20:37:03 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:37:03 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:03 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:03 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:03 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:06 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 20:37:06 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:37:06 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:06 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:06 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:06 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:15 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 20:37:15 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:37:15 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:15 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:15 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:15 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:15 Europe/Berlin] Tipo: familia con ID seleccionado: 3
+[22-Sep-2024 20:37:15 Europe/Berlin] El usuario es administrador de la familia con ID 3
+[22-Sep-2024 20:37:15 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+    [saldo] => 5408.00
+)
+
+[22-Sep-2024 20:37:29 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 20:37:29 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:37:29 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:29 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:29 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:29 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:29 Europe/Berlin] Tipo: grupo con ID seleccionado: 3
+[22-Sep-2024 20:37:29 Europe/Berlin] El usuario es administrador del grupo con ID 3
+[22-Sep-2024 20:37:29 Europe/Berlin] Situación Financiera Grupo: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+)
+
+[22-Sep-2024 20:37:37 Europe/Berlin] Tipo seleccionado: usuario
+[22-Sep-2024 20:37:37 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:37:37 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:37 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:37 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:37 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:37 Europe/Berlin] Tipo: usuario con ID seleccionado: 3
+[22-Sep-2024 20:37:37 Europe/Berlin] Situación Financiera Usuario: Array
+(
+    [totalIngresos] => 3800.00
+    [totalGastos] => 770.00
+    [saldo] => 3030.00
+)
+
+[22-Sep-2024 20:37:52 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 20:37:52 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:37:52 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:52 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:52 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:52 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:58 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 20:37:58 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:37:58 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:37:58 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:37:58 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:58 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:37:58 Europe/Berlin] Tipo: grupo con ID seleccionado: 3
+[22-Sep-2024 20:37:58 Europe/Berlin] El usuario es administrador del grupo con ID 3
+[22-Sep-2024 20:37:58 Europe/Berlin] Situación Financiera Grupo: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+)
+
+[22-Sep-2024 20:38:10 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 20:38:10 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:38:10 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:38:10 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:38:10 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:38:10 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:38:10 Europe/Berlin] Tipo: familia con ID seleccionado: 3
+[22-Sep-2024 20:38:10 Europe/Berlin] El usuario es administrador de la familia con ID 3
+[22-Sep-2024 20:38:10 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+    [saldo] => 5408.00
+)
+
+[22-Sep-2024 20:38:43 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
+[22-Sep-2024 20:38:43 Europe/Berlin] DEBUG: ID Usuario -> , Tipo de Vínculo -> 
+[22-Sep-2024 20:38:43 Europe/Berlin] ERROR: Tipo de vínculo no válido -> 
+[22-Sep-2024 20:39:05 Europe/Berlin] Tipo seleccionado: global
+[22-Sep-2024 20:39:05 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:39:05 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:39:05 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:39:05 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:05 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:08 Europe/Berlin] Tipo seleccionado: grupo
+[22-Sep-2024 20:39:08 Europe/Berlin] ID Seleccionado: 
+[22-Sep-2024 20:39:08 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:39:08 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:39:08 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:08 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:12 Europe/Berlin] Tipo seleccionado: familia
+[22-Sep-2024 20:39:12 Europe/Berlin] ID Seleccionado: 3
+[22-Sep-2024 20:39:12 Europe/Berlin] El usuario es de tipo 'admin'
+[22-Sep-2024 20:39:12 Europe/Berlin] ID Usuario (admin): 43
+[22-Sep-2024 20:39:12 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:12 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => *14F1A8C42F8B6D4662BB3ED290FD37BF135FE45C
+        )
+
+)
+
+[22-Sep-2024 20:39:12 Europe/Berlin] Tipo: familia con ID seleccionado: 3
+[22-Sep-2024 20:39:12 Europe/Berlin] El usuario es administrador de la familia con ID 3
+[22-Sep-2024 20:39:12 Europe/Berlin] Situación Financiera Familia: Array
+(
+    [totalIngresos] => 7210.00
+    [totalGastos] => 1802.00
+    [saldo] => 5408.00
+)
+

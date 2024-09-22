@@ -1,34 +1,51 @@
 <div class="container p-4">
     <h2>Añadir Nuevo Usuario</h2>
+
+    <!-- Mostrar mensaje de error, si lo hay -->
+    <?php if (!empty($mensaje)): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($mensaje) ?></div>
+    <?php endif; ?>
+
+    <!-- Mostrar errores de validación -->
+    <?php if (!empty($errores)): ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errores as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
     <form action="index.php?ctl=crearUsuario" method="POST">
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" class="form-control" required>
+            <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($nombre ?? '') ?>" required>
         </div>
 
         <div class="form-group">
             <label for="apellido">Apellido:</label>
-            <input type="text" name="apellido" class="form-control" required>
+            <input type="text" name="apellido" class="form-control" value="<?= htmlspecialchars($apellido ?? '') ?>" required>
         </div>
 
         <div class="form-group">
             <label for="alias">Alias:</label>
-            <input type="text" name="alias" class="form-control" required>
+            <input type="text" name="alias" class="form-control" value="<?= htmlspecialchars($alias ?? '') ?>" required>
         </div>
 
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
         </div>
 
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
-            <input type="text" name="telefono" class="form-control" required>
+            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($telefono ?? '') ?>" required>
         </div>
 
         <div class="form-group">
             <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input type="date" name="fecha_nacimiento" class="form-control" required>
+            <input type="date" name="fecha_nacimiento" class="form-control" value="<?= htmlspecialchars($fecha_nacimiento ?? '') ?>" required>
         </div>
 
         <div class="form-group">
@@ -39,9 +56,9 @@
         <div class="form-group">
             <label for="nivel_usuario">Nivel de Usuario:</label>
             <select name="nivel_usuario" class="form-control" required>
-                <option value="usuario">Usuario</option>
-                <option value="admin">Administrador</option>
-                <option value="superadmin">Super Administrador</option>
+                <option value="usuario" <?= isset($nivel_usuario) && $nivel_usuario === 'usuario' ? 'selected' : '' ?>>Usuario</option>
+                <option value="admin" <?= isset($nivel_usuario) && $nivel_usuario === 'admin' ? 'selected' : '' ?>>Administrador</option>
+                <option value="superadmin" <?= isset($nivel_usuario) && $nivel_usuario === 'superadmin' ? 'selected' : '' ?>>Super Administrador</option>
             </select>
         </div>
 
@@ -50,7 +67,9 @@
             <select name="idFamilia" class="form-control">
                 <option value="">Sin familia</option>
                 <?php foreach ($familias as $familia): ?>
-                    <option value="<?= htmlspecialchars($familia['idFamilia']) ?>"><?= htmlspecialchars($familia['nombre_familia']) ?></option>
+                    <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idFamilia) && $idFamilia == $familia['idFamilia'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($familia['nombre_familia']) ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -60,7 +79,9 @@
             <select name="idGrupo" class="form-control">
                 <option value="">Sin grupo</option>
                 <?php foreach ($grupos as $grupo): ?>
-                    <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>"><?= htmlspecialchars($grupo['nombre_grupo']) ?></option>
+                    <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idGrupo) && $idGrupo == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>

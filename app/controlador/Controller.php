@@ -184,101 +184,112 @@ class Controller
     }
 
 
-    // Registro de usuario
-    public function registro()
-    {
-        $params = array(
-            'nombre' => '',
-            'apellido' => '',
-            'alias' => '',
-            'contrasenya' => '',
-            'fecha_nacimiento' => '',
-            'email' => '',
-            'telefono' => '',
-            'nivel_usuario' => 'usuario',
-            'idFamilia' => null,
-            'idGrupo' => null,
-            'es_menor' => false
-        );
-        $errores = array();
+// Registro de usuario
+public function registro()
+{
+    $params = array(
+        'nombre' => '',
+        'apellido' => '',
+        'alias' => '',
+        'contrasenya' => '',
+        'fecha_nacimiento' => '',
+        'email' => '',
+        'telefono' => '',
+        'nivel_usuario' => 'usuario',
+        'idFamilia' => null, // Inicializando la variable
+        'idGrupo' => null, // Inicializando la variable
+        'es_menor' => false
+    );
+    $errores = array();
 
-        // Cargar grupos y familias existentes para el formulario
-        $m = new GastosModelo();
+    // Cargar grupos y familias existentes para el formulario
+    $m = new GastosModelo();
+
+    if ($_SESSION['nivel_usuario'] === 'superadmin') {
         $familias = $m->obtenerFamilias();
         $grupos = $m->obtenerGrupos();
+    } elseif ($_SESSION['nivel_usuario'] === 'admin') {
+        $familias = $m->obtenerFamiliasPorAdministrador($_SESSION['usuario']['id']);
+        $grupos = $m->obtenerGruposPorAdministrador($_SESSION['usuario']['id']);
+    }
 
-        if (isset($_POST['bRegistro'])) {
-            $nombre = recoge('nombre');
-            $apellido = recoge('apellido');
-            $alias = recoge('alias');
-            $contrasenya = recoge('contrasenya');
-            $fecha_nacimiento = recoge('fecha_nacimiento');
-            $email = recoge('email');
-            $telefono = recoge('telefono');
-            $nivel_usuario = recoge('nivel_usuario');
-            $idGrupoFamilia = recoge('idGrupoFamilia');
-            $passwordFamiliaGrupo = recoge('passwordGrupoFamilia');
-            $nombreNuevo = recoge('nombre_nuevo');
-            $passwordNuevo = recoge('password_nuevo');
+    if (isset($_POST['bRegistro'])) {
+        $nombre = recoge('nombre');
+        $apellido = recoge('apellido');
+        $alias = recoge('alias');
+        $contrasenya = recoge('contrasenya');
+        $fecha_nacimiento = recoge('fecha_nacimiento');
+        $email = recoge('email');
+        $telefono = recoge('telefono');
+        $nivel_usuario = recoge('nivel_usuario');
+        $idGrupoFamilia = recoge('idGrupoFamilia');
+        $passwordFamiliaGrupo = recoge('passwordGrupoFamilia');
+        $nombreNuevo = recoge('nombre_nuevo');
+        $passwordNuevo = recoge('password_nuevo');
 
-            // Validar campos
-            cTexto($nombre, "nombre", $errores);
-            cTexto($apellido, "apellido", $errores);
-            cUser($alias, "alias", $errores);
-            cContrasenya($contrasenya, $errores);
-            cEmail($email, $errores);
-            cTelefono($telefono, $errores);
+        // Validar campos
+        cTexto($nombre, "nombre", $errores);
+        cTexto($apellido, "apellido", $errores);
+        cUser($alias, "alias", $errores);
+        cContrasenya($contrasenya, $errores);
+        cEmail($email, $errores);
+        cTelefono($telefono, $errores);
 
-            // Registro de usuario (comprobación de contraseñas de grupo o familia)
-            if (!empty($idGrupoFamilia)) {
-                if (strpos($idGrupoFamilia, 'grupo_') === 0) {
-                    $idGrupo = substr($idGrupoFamilia, 6);
-                    if (!$m->verificarPasswordGrupo($idGrupo, $passwordFamiliaGrupo)) {
-                        $errores['idGrupo'] = "La contraseña del grupo es incorrecta.";
-                    }
-                } elseif (strpos($idGrupoFamilia, 'familia_') === 0) {
-                    $idFamilia = substr($idGrupoFamilia, 8);
-                    if (!$m->verificarPasswordFamilia($idFamilia, $passwordFamiliaGrupo)) {
-                        $errores['idFamilia'] = "La contraseña de la familia es incorrecta.";
-                    }
+        // Inicializar las variables antes de usarlas
+        $idFamilia = null;
+        $idGrupo = null;
+
+        // Registro de usuario (comprobación de contraseñas de grupo o familia)
+        if (!empty($idGrupoFamilia)) {
+            if (strpos($idGrupoFamilia, 'grupo_') === 0) {
+                $idGrupo = substr($idGrupoFamilia, 6);
+                if (!$m->verificarPasswordGrupo($idGrupo, $passwordFamiliaGrupo)) {
+                    $errores['idGrupo'] = "La contraseña del grupo es incorrecta.";
                 }
-            }
-
-
-            // Verificar si está creando un nuevo grupo o familia
-            if (!empty($nombreNuevo) && !empty($passwordNuevo)) {
-                $hashedPasswordNuevo = password_hash($passwordNuevo, PASSWORD_DEFAULT);
-                if ($_POST['tipo_vinculo'] == 'grupo') {
-                    $idGrupo = $m->insertarGrupo($nombreNuevo, $hashedPasswordNuevo);
-                } elseif ($_POST['tipo_vinculo'] == 'familia') {
-                    $idFamilia = $m->insertarFamilia($nombreNuevo, $hashedPasswordNuevo);
-                }
-            }
-
-            if (empty($errores)) {
-                try {
-                    $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
-                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idGrupo, $idFamilia)) {
-                        $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
-                        header('Location: index.php?ctl=iniciarSesion');
-                        exit();
-                    } else {
-                        $params['mensaje'] = 'No se ha podido insertar el usuario. Revisa el formulario.';
-                    }
-                } catch (Exception $e) {
-                    error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logExcepcio.txt");
-                    header('Location: index.php?ctl=error');
-                } catch (Error $e) {
-                    error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logError.txt");
-                    header('Location: index.php?ctl=error');
+            } elseif (strpos($idGrupoFamilia, 'familia_') === 0) {
+                $idFamilia = substr($idGrupoFamilia, 8);
+                if (!$m->verificarPasswordFamilia($idFamilia, $passwordFamiliaGrupo)) {
+                    $errores['idFamilia'] = "La contraseña de la familia es incorrecta.";
                 }
             }
         }
 
-        $params['familias'] = $familias;
-        $params['grupos'] = $grupos;
-        $this->render('formRegistro.php', $params);
+        // Verificar si está creando un nuevo grupo o familia
+        if (!empty($nombreNuevo) && !empty($passwordNuevo)) {
+            $hashedPasswordNuevo = password_hash($passwordNuevo, PASSWORD_DEFAULT);
+            if ($_POST['tipo_vinculo'] == 'grupo') {
+                $idGrupo = $m->insertarGrupo($nombreNuevo, $hashedPasswordNuevo);
+            } elseif ($_POST['tipo_vinculo'] == 'familia') {
+                $idFamilia = $m->insertarFamilia($nombreNuevo, $hashedPasswordNuevo);
+            }
+        }
+
+        if (empty($errores)) {
+            try {
+                $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
+                if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idGrupo, $idFamilia)) {
+                    $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
+                    header('Location: index.php?ctl=iniciarSesion');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se ha podido insertar el usuario. Revisa el formulario.';
+                }
+            } catch (Exception $e) {
+                error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logExcepcio.txt");
+                header('Location: index.php?ctl=error');
+            } catch (Error $e) {
+                error_log($e->getMessage() . microtime() . PHP_EOL, 3, __DIR__ . "/../log/logError.txt");
+                header('Location: index.php?ctl=error');
+            }
+        }
     }
+
+    $params['familias'] = $familias;
+    $params['grupos'] = $grupos;
+    $this->render('formRegistro.php', $params);
+}
+
+
 
     // Formulario para crear una nueva familia
     public function formCrearFamilia()
@@ -802,86 +813,63 @@ class Controller
 
 
     public function verSituacion()
-    {
-        $m = new GastosModelo();
-        $params = [];
+{
+    $m = new GastosModelo();
+    $params = [];
 
-        // Obtener el tipo seleccionado (global, familia, grupo, usuario)
-        $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
-        $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
-        $params['tipo'] = $tipo;
+    // Obtener el tipo seleccionado (global, familia, grupo, usuario)
+    $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'global';
+    $idSeleccionado = isset($_GET['idSeleccionado']) ? $_GET['idSeleccionado'] : null;
+    $params['tipo'] = $tipo;
 
-        // Comprobar el nivel de usuario
-        if ($_SESSION['nivel_usuario'] === 'normal') {
-            // Usuario normal: solo puede ver su propia situación financiera
-            $idUsuario = $_SESSION['usuario']['id'];
-            $situacion = $m->obtenerSituacionFinanciera($idUsuario);
+    // Depuración: verificar tipo y ID seleccionado
+    error_log("Tipo seleccionado: " . $tipo);
+    error_log("ID Seleccionado: " . $idSeleccionado);
 
-            $usuario = $m->obtenerUsuarioPorId($idUsuario);
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
-            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+    // Comprobar el nivel de usuario
+    if ($_SESSION['nivel_usuario'] === 'normal') {
+        error_log("El usuario es de tipo 'normal'");
+        $idUsuario = $_SESSION['usuario']['id'];
+        $situacion = $m->obtenerSituacionFinanciera($idUsuario);
+        error_log("Situación Financiera obtenida: " . print_r($situacion, true));
 
-            // Agregar detalles de ingresos y gastos
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+        if ($situacion === false) {
+            error_log("Error: No se pudo obtener la situación financiera para el usuario con ID " . $idUsuario);
+        }
 
-            $params['usuarios'] = [$usuario];
-            $params['situacion'] = $situacion;
-        } elseif ($_SESSION['nivel_usuario'] === 'admin') {
-            // Administrador: puede ver la situación de las familias y grupos que gestiona
-            if ($tipo === 'familia' && $idSeleccionado) {
-                $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($_SESSION['usuario']['id']);
-                if (in_array($idSeleccionado, array_column($familiasAsignadas, 'idFamilia'))) {
-                    $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
-                    $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
-                    foreach ($usuarios as &$usuario) {
-                        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-                        $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
-                        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-                        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-                        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
-                    }
-                    $params['situacion'] = $situacion;
-                    $params['usuarios'] = $usuarios;
-                }
-            } elseif ($tipo === 'grupo' && $idSeleccionado) {
-                $gruposAsignados = $m->obtenerGruposPorAdministrador($_SESSION['usuario']['id']);
-                if (in_array($idSeleccionado, array_column($gruposAsignados, 'idGrupo'))) {
-                    $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
-                    $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
-                    foreach ($usuarios as &$usuario) {
-                        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
-                        $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
-                        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-                        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
-                        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
-                    }
-                    $params['situacion'] = $situacion;
-                    $params['usuarios'] = $usuarios;
-                }
-            } elseif ($tipo === 'usuario' && $idSeleccionado) {
-                $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
-                if ($usuario && $usuario['nivel_usuario'] !== 'superadmin') {
-                    $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
-                    $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
-                    $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
-                    $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-                    $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
-                    $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
-                    $params['usuarios'] = [$usuario];
-                    $params['situacion'] = $situacion;
-                }
-            }
-            $params['familias'] = $m->obtenerFamiliasPorAdministrador($_SESSION['usuario']['id']);
-            $params['grupos'] = $m->obtenerGruposPorAdministrador($_SESSION['usuario']['id']);
-        } elseif ($_SESSION['nivel_usuario'] === 'superadmin') {
-            // Superusuario: puede ver la situación global o por familia, grupo o usuario
-            if ($tipo === 'global') {
-                $situacion = $m->obtenerSituacionGlobal();
-                $params['situacion'] = $situacion;
-            } elseif ($tipo === 'familia' && $idSeleccionado) {
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        error_log("Usuario obtenido: " . print_r($usuario, true));
+
+        if ($usuario === false) {
+            error_log("Error: No se pudo obtener el usuario con ID " . $idUsuario);
+        }
+
+        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
+        $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
+        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
+        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+
+        $params['usuarios'] = [$usuario];
+        $params['situacion'] = $situacion;
+    } elseif ($_SESSION['nivel_usuario'] === 'admin') {
+        error_log("El usuario es de tipo 'admin'");
+        error_log("ID Usuario (admin): " . $_SESSION['usuario']['id']);
+
+        $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($_SESSION['usuario']['id']);
+        error_log("Familias Asignadas obtenidas: " . print_r($familiasAsignadas, true));
+
+        $gruposAsignados = $m->obtenerGruposPorAdministrador($_SESSION['usuario']['id']);
+        error_log("Grupos Asignados obtenidos: " . print_r($gruposAsignados, true));
+
+        if ($tipo === 'familia' && $idSeleccionado) {
+            error_log("Tipo: familia con ID seleccionado: " . $idSeleccionado);
+            if (in_array($idSeleccionado, array_column($familiasAsignadas, 'idFamilia'))) {
+                error_log("El usuario es administrador de la familia con ID " . $idSeleccionado);
                 $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
+                error_log("Situación Financiera Familia: " . print_r($situacion, true));
+
                 $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
                 foreach ($usuarios as &$usuario) {
                     $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
@@ -892,8 +880,16 @@ class Controller
                 }
                 $params['situacion'] = $situacion;
                 $params['usuarios'] = $usuarios;
-            } elseif ($tipo === 'grupo' && $idSeleccionado) {
+            } else {
+                error_log("El usuario no tiene permiso para ver la familia con ID " . $idSeleccionado);
+            }
+        } elseif ($tipo === 'grupo' && $idSeleccionado) {
+            error_log("Tipo: grupo con ID seleccionado: " . $idSeleccionado);
+            if (in_array($idSeleccionado, array_column($gruposAsignados, 'idGrupo'))) {
+                error_log("El usuario es administrador del grupo con ID " . $idSeleccionado);
                 $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
+                error_log("Situación Financiera Grupo: " . print_r($situacion, true));
+
                 $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
                 foreach ($usuarios as &$usuario) {
                     $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
@@ -904,9 +900,16 @@ class Controller
                 }
                 $params['situacion'] = $situacion;
                 $params['usuarios'] = $usuarios;
-            } elseif ($tipo === 'usuario' && $idSeleccionado) {
+            } else {
+                error_log("El usuario no tiene permiso para ver el grupo con ID " . $idSeleccionado);
+            }
+        } elseif ($tipo === 'usuario' && $idSeleccionado) {
+            error_log("Tipo: usuario con ID seleccionado: " . $idSeleccionado);
+            $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
+            if ($usuario && $usuario['nivel_usuario'] !== 'superadmin') {
                 $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
-                $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
+                error_log("Situación Financiera Usuario: " . print_r($situacion, true));
+
                 $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
                 $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
                 $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
@@ -915,15 +918,68 @@ class Controller
                 $params['usuarios'] = [$usuario];
                 $params['situacion'] = $situacion;
             }
+        }
+        $params['familias'] = $familiasAsignadas;
+        $params['grupos'] = $gruposAsignados;
+    } elseif ($_SESSION['nivel_usuario'] === 'superadmin') {
+        error_log("El usuario es de tipo 'superadmin'");
+        if ($tipo === 'global') {
+            $situacion = $m->obtenerSituacionGlobal();
+            error_log("Situación Financiera Global: " . print_r($situacion, true));
+            $params['situacion'] = $situacion;
+        } elseif ($tipo === 'familia' && $idSeleccionado) {
+            $situacion = $m->obtenerSituacionFinancieraFamilia($idSeleccionado);
+            error_log("Situación Financiera Familia: " . print_r($situacion, true));
 
-            $params['familias'] = $m->obtenerFamilias();
-            $params['grupos'] = $m->obtenerGrupos();
-            $params['usuariosLista'] = $m->obtenerUsuarios();  // Lista de usuarios para el dropdown
+            $usuarios = $m->obtenerUsuariosPorFamilia($idSeleccionado);
+            foreach ($usuarios as &$usuario) {
+                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+            }
+            $params['situacion'] = $situacion;
+            $params['usuarios'] = $usuarios;
+        } elseif ($tipo === 'grupo' && $idSeleccionado) {
+            $situacion = $m->obtenerSituacionFinancieraGrupo($idSeleccionado);
+            error_log("Situación Financiera Grupo: " . print_r($situacion, true));
+
+            $usuarios = $m->obtenerUsuariosPorGrupo($idSeleccionado);
+            foreach ($usuarios as &$usuario) {
+                $usuario['totalIngresos'] = $m->obtenerTotalIngresos($usuario['idUser']);
+                $usuario['totalGastos'] = $m->obtenerTotalGastos($usuario['idUser']);
+                $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+                $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($usuario['idUser']);
+                $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($usuario['idUser']);
+            }
+            $params['situacion'] = $situacion;
+            $params['usuarios'] = $usuarios;
+        } elseif ($tipo === 'usuario' && $idSeleccionado) {
+            $situacion = $m->obtenerSituacionFinanciera($idSeleccionado);
+            error_log("Situación Financiera Usuario: " . print_r($situacion, true));
+
+            $usuario = $m->obtenerUsuarioPorId($idSeleccionado);
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idSeleccionado);
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($idSeleccionado);
+            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idSeleccionado);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idSeleccionado);
+            $params['usuarios'] = [$usuario];
+            $params['situacion'] = $situacion;
         }
 
-        $params['idSeleccionado'] = $idSeleccionado;
-        $this->render('verSituacion.php', $params);
+        $params['familias'] = $m->obtenerFamilias();
+        $params['grupos'] = $m->obtenerGrupos();
+        $params['usuariosLista'] = $m->obtenerUsuarios();  // Lista de usuarios para el dropdown
     }
+
+    $params['idSeleccionado'] = $idSeleccionado;
+    $this->render('verSituacion.php', $params);
+}
+
+
+
 
 
     // Formulario para insertar gasto
@@ -1398,35 +1454,78 @@ public function editarGrupo()
     }
 
     public function crearUsuario()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $m = new GastosModelo();
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $m = new GastosModelo();
 
-            // Recoger los datos del formulario
-            $nombre = recoge('nombre');
-            $apellido = recoge('apellido');
-            $alias = recoge('alias');
-            $email = recoge('email'); // Recoge el email correctamente
-            $contrasenya = password_hash(recoge('contrasenya'), PASSWORD_DEFAULT);
-            $nivel_usuario = recoge('nivel_usuario');
-            $fecha_nacimiento = recoge('fecha_nacimiento'); // Recoger la fecha de nacimiento
-            $telefono = recoge('telefono'); // Recoger el teléfono
-            $idFamilia = recoge('idFamilia') ?: null;
-            $idGrupo = recoge('idGrupo') ?: null;
+        // Recoger los datos del formulario
+        $nombre = recoge('nombre');
+        $apellido = recoge('apellido');
+        $alias = recoge('alias');
+        $email = recoge('email');
+        $contrasenya = recoge('contrasenya');
+        $nivel_usuario = recoge('nivel_usuario');
+        $fecha_nacimiento = recoge('fecha_nacimiento');
+        $telefono = recoge('telefono');
+        $idFamilia = recoge('idFamilia') ?: null; // Asignar null si no se selecciona una familia
+        $idGrupo = recoge('idGrupo') ?: null; // Asignar null si no se selecciona un grupo
 
-            // Insertar usuario en la base de datos con los 10 parámetros
-            if ($m->insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
-                header('Location: index.php?ctl=listarUsuarios');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo insertar el usuario. Inténtalo de nuevo.';
-                $this->render('formCrearUsuario.php', $params);
-            }
+        $errores = [];
+
+        // Validar datos
+        cTexto($nombre, "nombre", $errores);
+        cTexto($apellido, "apellido", $errores);
+        cTexto($alias, "alias", $errores);
+        cEmail($email, $errores);
+        cContrasenya($contrasenya, $errores);
+        cTelefono($telefono, $errores); // Validar teléfono si es necesario
+
+        // Si hay errores, mostrar el formulario con los mensajes de error
+        if (!empty($errores)) {
+            $params = array(
+                'familias' => $m->obtenerFamilias(),
+                'grupos' => $m->obtenerGrupos(),
+                'mensaje' => 'Por favor corrige los errores:',
+                'errores' => $errores,
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'alias' => $alias,
+                'email' => $email,
+                'telefono' => $telefono,
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'idFamilia' => $idFamilia,
+                'idGrupo' => $idGrupo
+            );
+            $this->render('formCrearUsuario.php', $params);
+            return;
+        }
+
+        // Si no hay errores, proceder a la creación
+        $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
+
+        // Insertar usuario en la base de datos
+        if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
+            header('Location: index.php?ctl=listarUsuarios');
+            exit();
+        } else {
+            // Si falla la inserción, volver a mostrar el formulario con un mensaje de error
+            $params = array(
+                'mensaje' => 'No se pudo insertar el usuario. Inténtalo de nuevo.',
+                'familias' => $m->obtenerFamilias(),
+                'grupos' => $m->obtenerGrupos(),
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'alias' => $alias,
+                'email' => $email,
+                'telefono' => $telefono,
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'idFamilia' => $idFamilia,
+                'idGrupo' => $idGrupo
+            );
+            $this->render('formCrearUsuario.php', $params);
         }
     }
-
-
-
+}
 
     // Listar Usuarios
     public function listarUsuarios()
@@ -1675,6 +1774,77 @@ public function asignarAdministradorAGrupo()
         $this->redireccionarError('Error al asignar el administrador al grupo.');
     }
 }
+// Asignar usuarios normales a familias o grupos
+public function asignarUsuarioFamiliaGrupo()
+{
+    // Registro de depuración al entrar en el método
+    error_log("DEBUG: Entrando en asignarUsuarioFamiliaGrupo");
+    
+    // Instanciamos el modelo para realizar las operaciones
+    $m = new GastosModelo();
+    
+    // Recogemos los datos del formulario
+    $idUsuario = recoge('idUsuario');
+    $tipoVinculo = recoge('tipoVinculo');
+    $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
+    
+    // Registro de depuración de los valores recogidos
+    error_log("DEBUG: ID Usuario -> $idUsuario, Tipo de Vínculo -> $tipoVinculo");
+
+    // Verificamos si el tipo de vínculo es 'familia' o 'grupo' y gestionamos en consecuencia
+    if ($tipoVinculo === 'familia') {
+        // Recogemos el ID de la familia
+        $idFamilia = recoge('idFamilia');
+        error_log("DEBUG: ID Familia -> $idFamilia");
+
+        // Verificamos la contraseña de la familia
+        if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
+            // Registro en caso de error con la contraseña
+            error_log("ERROR: Contraseña incorrecta para la familia $idFamilia");
+            $this->redireccionarError('La contraseña de la familia es incorrecta.');
+            return;
+        }
+
+        // Intentamos asignar el usuario a la familia
+        if ($m->asignarUsuarioAFamilia($idUsuario, $idFamilia)) {
+            // Redirigimos a la vista de familias en caso de éxito
+            header('Location: index.php?ctl=listarFamilias');
+            exit();
+        } else {
+            // Registro en caso de error al asignar usuario
+            error_log("ERROR: No se pudo asignar el usuario a la familia.");
+            $this->redireccionarError('Error al asignar el usuario a la familia.');
+        }
+    } elseif ($tipoVinculo === 'grupo') {
+        // Recogemos el ID del grupo
+        $idGrupo = recoge('idGrupo');
+        error_log("DEBUG: ID Grupo -> $idGrupo");
+
+        // Verificamos la contraseña del grupo
+        if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
+            // Registro en caso de error con la contraseña
+            error_log("ERROR: Contraseña incorrecta para el grupo $idGrupo");
+            $this->redireccionarError('La contraseña del grupo es incorrecta.');
+            return;
+        }
+
+        // Intentamos asignar el usuario al grupo
+        if ($m->asignarUsuarioAGrupo($idUsuario, $idGrupo)) {
+            // Redirigimos a la vista de grupos en caso de éxito
+            header('Location: index.php?ctl=verGrupos');
+            exit();
+        } else {
+            // Registro en caso de error al asignar usuario
+            error_log("ERROR: No se pudo asignar el usuario al grupo.");
+            $this->redireccionarError('Error al asignar el usuario al grupo.');
+        }
+    } else {
+        // Registro en caso de tipo de vínculo no válido
+        error_log("ERROR: Tipo de vínculo no válido -> $tipoVinculo");
+        $this->redireccionarError('Tipo de vínculo no válido.');
+    }
+}
+
 
     public function dashboard()
     {
