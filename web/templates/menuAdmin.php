@@ -6,8 +6,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Opciones del Administrador -->
-
                 <!-- Gastos e Ingresos -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
@@ -27,24 +25,15 @@
                     <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=dashboard">Dashboard</a>
+                    <a class="nav-link" href="index.php?ctl=estadoFinanciero">Estado Financiero</a>
                 </li>
-
 
                 <!-- Gestión de Familias y Grupos -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a>
+                    <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuarios a Familias/Grupos</a>
                 </li>
 
-                <!-- Nueva opción: Asignar Usuarios a Familias/Grupos -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=asignarUsuarioFamiliaGrupo">Asignar Usuarios a Familias/Grupos</a>
-                </li>
-
-                <!-- Gestión de categorías (el administrador no puede borrar categorías) -->
+                <!-- Gestión de Categorías -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
                 </li>

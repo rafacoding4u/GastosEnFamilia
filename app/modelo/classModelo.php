@@ -31,6 +31,11 @@ class GastosModelo
         }
     }
 
+    public function getConexion() {
+        return $this->conexion;
+    }
+    
+
     // -------------------------------
     // Métodos relacionados con usuarios
     // -------------------------------

@@ -1390,26 +1390,32 @@ public function editarGrupo()
 
 
     // Formulario para asignar un usuario a una familia o grupo
-    public function formAsignarUsuario()
-    {
-        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-            header('Location: index.php?ctl=inicio');
-            exit();
-        }
-
-        $m = new GastosModelo();
-        $usuarios = $m->obtenerUsuarios();
-        $familias = $m->obtenerFamilias();
-        $grupos = $m->obtenerGrupos();
-
-        $params = array(
-            'usuarios' => $usuarios,
-            'familias' => $familias,
-            'grupos' => $grupos
-        );
-
-        $this->render('formAsignarUsuario.php', $params);
+public function formAsignarUsuario()
+{
+    // Permitir acceso a admin y superadmin
+    if ($_SESSION['nivel_usuario'] !== 'superadmin' && $_SESSION['nivel_usuario'] !== 'admin') {
+        header('Location: index.php?ctl=inicio');
+        exit();
     }
+
+    // Instanciar el modelo
+    $m = new GastosModelo();
+
+    // Obtener datos de usuarios, familias y grupos
+    $usuarios = $m->obtenerUsuarios();
+    $familias = $m->obtenerFamilias();
+    $grupos = $m->obtenerGrupos();
+
+    // Definir los parámetros que se enviarán a la vista
+    $params = array(
+        'usuarios' => $usuarios,
+        'familias' => $familias,
+        'grupos' => $grupos
+    );
+
+    // Renderizar la vista 'formAsignarUsuario.php' con los datos obtenidos
+    $this->render('formAsignarUsuario.php', $params);
+}
 
     // Asignar usuario a familia o grupo
     public function asignarUsuario()
@@ -1797,7 +1803,7 @@ public function asignarUsuarioFamiliaGrupo()
         $idFamilia = recoge('idFamilia');
         error_log("DEBUG: ID Familia -> $idFamilia");
 
-        // Verificamos la contraseña de la familia
+        // Verificamos la contraseña de la familia usando el método del modelo
         if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
             // Registro en caso de error con la contraseña
             error_log("ERROR: Contraseña incorrecta para la familia $idFamilia");
@@ -1820,7 +1826,7 @@ public function asignarUsuarioFamiliaGrupo()
         $idGrupo = recoge('idGrupo');
         error_log("DEBUG: ID Grupo -> $idGrupo");
 
-        // Verificamos la contraseña del grupo
+        // Verificamos la contraseña del grupo usando el método del modelo
         if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
             // Registro en caso de error con la contraseña
             error_log("ERROR: Contraseña incorrecta para el grupo $idGrupo");
@@ -1844,8 +1850,6 @@ public function asignarUsuarioFamiliaGrupo()
         $this->redireccionarError('Tipo de vínculo no válido.');
     }
 }
-
-
     public function dashboard()
     {
         $m = new GastosModelo();

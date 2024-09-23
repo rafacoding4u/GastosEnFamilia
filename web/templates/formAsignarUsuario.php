@@ -6,7 +6,7 @@
         <!-- Selección de usuario -->
         <div class="form-group">
             <label for="idUsuario">Selecciona un Usuario:</label>
-            <select name="idUsuario" id="idUsuario" class="form-control">
+            <select name="idUsuario" id="idUsuario" class="form-control" required>
                 <?php foreach ($usuarios as $usuario): ?>
                     <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
                         <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
@@ -18,7 +18,7 @@
         <!-- Selección de tipo de vinculación (familia o grupo) -->
         <div class="form-group">
             <label for="tipoVinculo">Selecciona si es Familia o Grupo:</label>
-            <select name="tipoVinculo" id="tipoVinculo" class="form-control" onchange="toggleVinculoOptions()">
+            <select name="tipoVinculo" id="tipoVinculo" class="form-control" required onchange="toggleVinculoOptions()">
                 <option value="familia">Familia</option>
                 <option value="grupo">Grupo</option>
             </select>
@@ -59,9 +59,20 @@
 </div>
 
 <script>
+    // Mostrar solo el campo relacionado con familia o grupo
     function toggleVinculoOptions() {
         var tipoVinculo = document.getElementById('tipoVinculo').value;
         document.getElementById('familiasGroup').style.display = (tipoVinculo === 'familia') ? 'block' : 'none';
         document.getElementById('gruposGroup').style.display = (tipoVinculo === 'grupo') ? 'block' : 'none';
+        
+        // Limpiar el campo no visible para evitar problemas en el envío
+        if (tipoVinculo === 'familia') {
+            document.getElementById('idGrupo').value = '';
+        } else {
+            document.getElementById('idFamilia').value = '';
+        }
     }
+
+    // Ejecutar la función al cargar la página para asegurar que el campo visible esté configurado correctamente
+    toggleVinculoOptions();
 </script>
