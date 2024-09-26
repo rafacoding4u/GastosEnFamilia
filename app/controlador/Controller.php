@@ -1045,51 +1045,37 @@ public function registro()
     }
 
     // Gestión de Categorías de Gastos
+    // Ver categorías de gastos
     public function verCategoriasGastos()
 {
-    // Verificar si el usuario tiene permisos para gestionar categorías
-    if ($_SESSION['nivel_usuario'] === 'usuario') {
-        $this->redireccionarError('Acceso denegado. No tienes permisos para ver o gestionar categorías de gastos.');
-        return;
-    }
-
     $m = new GastosModelo();
     $categorias = $m->obtenerCategoriasGastos();
 
-    // Depuración temporal
-    echo "<pre>";
-    print_r($categorias);  // Muestra las categorías obtenidas para depuración
-    echo "</pre>";
-
     $params = array(
         'categorias' => $categorias,
-        'mensaje' => !empty($categorias) ? 'Gestión de categorías de gastos' : 'No hay categorías disponibles'
+        'mensaje' => 'Gestión de categorías de gastos'
     );
 
     $this->render('verCategoriasGastos.php', $params);
 }
 
+
 public function insertarCategoriaGasto()
 {
-    // Verificar si el usuario tiene permisos de administrador
     if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
-        $this->redireccionarError('Acceso denegado. Solo administradores pueden insertar categorías de gastos.');
+        $this->redireccionarError('Acceso denegado.');
         return;
     }
 
-    // Verificar si se ha enviado el formulario
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
         $nombreCategoria = recoge('nombreCategoria');
         $m = new GastosModelo();
 
-        // Depuración: mostrar el nombre de la categoría recibido
-        echo "DEBUG: Nombre de la categoría recibida -> " . htmlspecialchars($nombreCategoria) . "<br>";
+        $nivelUsuario = $_SESSION['nivel_usuario']; // Nivel del usuario que crea la categoría
 
-        // Verificar que el nombre de la categoría no esté vacío
         if (empty($nombreCategoria)) {
             $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
-        } elseif ($m->insertarCategoriaGasto($nombreCategoria)) {
-            // Redirigir después de la inserción exitosa
+        } elseif ($m->insertarCategoriaGasto($nombreCategoria, $nivelUsuario)) {
             header('Location: index.php?ctl=verCategoriasGastos');
             exit();
         } else {
@@ -1097,85 +1083,78 @@ public function insertarCategoriaGasto()
         }
     }
 
-    // Volver a cargar la vista de categorías si hay algún problema
     $this->verCategoriasGastos();
 }
 
 
-    public function editarCategoriaGasto()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaGasto'])) {
-            $idCategoria = recoge('idCategoria');
-            $nombreCategoria = recoge('nombreCategoria');
-            $m = new GastosModelo();
 
-            if ($m->actualizarCategoriaGasto($idCategoria, $nombreCategoria)) {
-                header('Location: index.php?ctl=verCategoriasGastos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo actualizar la categoría de gasto.';
-            }
-        }
-        $this->verCategoriasGastos();
+
+public function actualizarCategoriaGasto()
+{
+    if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado.');
+        return;
     }
 
-    public function eliminarCategoriaGasto()
-    {
-        if (isset($_GET['id'])) {
-            $m = new GastosModelo();
-            if ($m->eliminarCategoriaGasto($_GET['id'])) {
-                header('Location: index.php?ctl=verCategoriasGastos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo eliminar la categoría de gasto.';
-            }
-        }
-    }
-    // Obtener el desglose de ingresos y gastos por familia o grupo
-    public function verDesglose()
-    {
-        $tipo = recoge('tipo');
-        $id = recoge('id');
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $idCategoria = recoge('idCategoria');
+        $nombreCategoria = recoge('nombreCategoria');
         $m = new GastosModelo();
 
-        if ($tipo === 'familia') {
-            $gastos = $m->obtenerGastosPorFamilia($id);
-            $ingresos = $m->obtenerIngresosPorFamilia($id);
-        } elseif ($tipo === 'grupo') {
-            $gastos = $m->obtenerGastosPorGrupo($id);
-            $ingresos = $m->obtenerIngresosPorGrupo($id);
-        } elseif ($tipo === 'usuario') {
-            $gastos = $m->obtenerGastosPorUsuario($id);
-            $ingresos = $m->obtenerIngresosPorUsuario($id);
+        if ($m->actualizarCategoriaGasto($idCategoria, $nombreCategoria)) {
+            header('Location: index.php?ctl=verCategoriasGastos');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo actualizar la categoría de gasto.';
+        }
+    }
+
+    $this->verCategoriasGastos();
+}
+
+
+public function eliminarCategoriaGasto()
+{
+    if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo administradores pueden eliminar categorías.');
+        return;
+    }
+
+    if (isset($_GET['id'])) {
+        $m = new GastosModelo();
+
+        // Verificar si la categoría está en uso antes de eliminarla
+        if ($m->categoriaEnUso($_GET['id'], 'gastos')) {
+            $params['mensaje'] = 'No se puede eliminar la categoría porque está en uso.';
+            $this->verCategoriasGastos();
+            return;
         }
 
-        $params = array(
-            'gastos' => $gastos,
-            'ingresos' => $ingresos
-        );
-
-        $this->render('verDesglose.php', $params);
+        if ($m->eliminarCategoriaGasto($_GET['id'])) {
+            header('Location: index.php?ctl=verCategoriasGastos');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo eliminar la categoría de gasto.';
+        }
     }
+}
+
 
 
     // Gestión de Categorías de Ingresos
     public function verCategoriasIngresos()
-    {
-        // Verificar si el usuario tiene permisos para gestionar categorías
-        if ($_SESSION['nivel_usuario'] === 'usuario') {
-            $this->redireccionarError('Acceso denegado. No tienes permisos para ver o gestionar categorías de ingresos.');
-            return;
-        }
-        $m = new GastosModelo();
-        $categorias = $m->obtenerCategoriasIngresos();
+{
+    $m = new GastosModelo();
+    $categorias = $m->obtenerCategoriasIngresos();
 
-        $params = array(
-            'categorias' => $categorias,
-            'mensaje' => 'Gestión de categorías de ingresos'
-        );
+    $params = array(
+        'categorias' => $categorias,
+        'mensaje' => 'Gestión de categorías de ingresos'
+    );
 
-        $this->render('verCategoriasIngresos.php', $params);
-    }
+    $this->render('verCategoriasIngresos.php', $params);
+}
+
 
     public function insertarCategoriaIngreso()
     {
@@ -1199,34 +1178,71 @@ public function insertarCategoriaGasto()
     }
 
     public function editarCategoriaIngreso()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
-            $idCategoria = recoge('idCategoria');
-            $nombreCategoria = recoge('nombreCategoria');
-            $m = new GastosModelo();
+{
+    $m = new GastosModelo();
 
-            if ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
-                header('Location: index.php?ctl=verCategoriasIngresos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
-            }
-        }
-        $this->verCategoriasIngresos();
+    // Verificar que el usuario tiene los permisos necesarios
+    if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo administradores pueden editar categorías de ingresos.');
+        return;
     }
 
-    public function eliminarCategoriaIngreso()
-    {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
+        $idCategoria = recoge('idCategoria');
+        $nombreCategoria = recoge('nombreCategoria');
+
+        // Verificar que el nombre de la categoría no está vacío
+        if (empty($nombreCategoria)) {
+            $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
+        } elseif ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
+            header('Location: index.php?ctl=verCategoriasIngresos');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
+        }
+    } else {
         if (isset($_GET['id'])) {
-            $m = new GastosModelo();
-            if ($m->eliminarCategoriaIngreso($_GET['id'])) {
-                header('Location: index.php?ctl=verCategoriasIngresos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo eliminar la categoría de ingreso.';
+            $categoria = $m->obtenerCategoriaIngresoPorId($_GET['id']);
+            if (!$categoria) {
+                $this->redireccionarError('Categoría no encontrada.');
+                return;
             }
+            $params['categoria'] = $categoria;
+            $this->render('formEditarCategoriaIngreso.php', $params);
+        } else {
+            $this->redireccionarError('Categoría no válida.');
         }
     }
+}
+
+public function eliminarCategoriaIngreso()
+{
+    $m = new GastosModelo();
+
+    // Verificar que el usuario tiene los permisos necesarios
+    if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo administradores pueden eliminar categorías de ingresos.');
+        return;
+    }
+
+    if (isset($_GET['id'])) {
+        // Verificar si la categoría está en uso antes de eliminarla
+        if ($m->categoriaIngresoEnUso($_GET['id'])) {
+            $this->redireccionarError('No se puede eliminar la categoría porque está en uso.');
+            return;
+        }
+
+        if ($m->eliminarCategoriaIngreso($_GET['id'])) {
+            header('Location: index.php?ctl=verCategoriasIngresos');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo eliminar la categoría de ingreso.';
+        }
+    } else {
+        $this->redireccionarError('Categoría no válida.');
+    }
+}
+
 
     // Gestión de Grupos
     public function verGrupos()

@@ -506,6 +506,7 @@ public function insertarGrupo($nombreGrupo, $passwordGrupo)
     // -------------------------------
     // Métodos relacionados con categorías
     // ------------------------------- 
+    // Obtener categorías de gastos
     public function obtenerCategoriasGastos()
 {
     try {
@@ -513,21 +514,21 @@ public function insertarGrupo($nombreGrupo, $passwordGrupo)
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        echo "Error en la consulta: " . $e->getMessage();
+        error_log("Error en la consulta: " . $e->getMessage());
         return [];
     }
 }
 
-public function insertarCategoriaGasto($nombreCategoria)
-{
+    
+    
+
+// Insertar nueva categoría de gasto
+public function insertarCategoriaGasto($nombreCategoria, $nivelUsuario) {
     try {
-        $sql = "INSERT INTO categorias_gastos (nombreCategoria) VALUES (:nombreCategoria)";
+        $sql = "INSERT INTO categorias_gastos (nombreCategoria, creado_por) VALUES (:nombreCategoria, :creadoPor)";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreCategoria', $nombreCategoria, PDO::PARAM_STR);
-
-        // Depuración: verificar la consulta SQL y el valor de la categoría
-        error_log("DEBUG: Ejecutando SQL -> $sql con nombreCategoria: $nombreCategoria");
-
+        $stmt->bindValue(':nombreCategoria', $nombreCategoria);
+        $stmt->bindValue(':creadoPor', $nivelUsuario); // Se guarda quién creó la categoría (admin o superadmin)
         return $stmt->execute();
     } catch (PDOException $e) {
         echo "Error al insertar la categoría: " . $e->getMessage();
@@ -536,29 +537,54 @@ public function insertarCategoriaGasto($nombreCategoria)
 }
 
 
-    public function actualizarCategoriaGasto($idCategoria, $nombreCategoria)
-    {
-        $sql = "UPDATE categorias_gastos SET nombreCategoria = :nombreCategoria WHERE idCategoria = :idCategoria";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreCategoria', $nombreCategoria, PDO::PARAM_STR);
-        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
-
-    public function eliminarCategoriaGasto($idCategoria)
-    {
-        $sql = "DELETE FROM categorias_gastos WHERE idCategoria = :idCategoria";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
-
-    public function obtenerCategoriasIngresos()
+// Actualizar categoría de gasto
+public function actualizarCategoriaGasto($idCategoria, $nombreCategoria)
 {
-    $sql = "SELECT * FROM categorias_ingresos"; // Asegúrate de que esta tabla exista en tu base de datos
-    $stmt = $this->conexion->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devolver las categorías como un array asociativo
+    $sql = "UPDATE categorias_gastos SET nombreCategoria = :nombreCategoria WHERE idCategoria = :idCategoria";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':nombreCategoria', $nombreCategoria, PDO::PARAM_STR);
+    $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+    return $stmt->execute();
 }
+
+
+// Verificar si una categoría está en uso
+public function categoriaEnUso($idCategoria, $tabla)
+{
+    // Dependiendo de la tabla (gastos o ingresos), verifica si la categoría está en uso
+    $sql = "SELECT COUNT(*) FROM $tabla WHERE idCategoria = :idCategoria";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+    $stmt->execute();
+    $count = $stmt->fetchColumn();
+
+    return $count > 0;
+}
+
+
+// Eliminar categoría de gasto solo si no está en uso
+public function eliminarCategoriaGasto($idCategoria)
+{
+    $sql = "DELETE FROM categorias_gastos WHERE idCategoria = :idCategoria";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+    return $stmt->execute();
+}
+
+
+
+public function obtenerCategoriasIngresos()
+{
+    try {
+        $sql = "SELECT * FROM categorias_ingresos";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en la consulta: " . $e->getMessage());
+        return [];
+    }
+}
+
 
     public function insertarCategoriaIngreso($nombreCategoria)
     {
@@ -569,21 +595,48 @@ public function insertarCategoriaGasto($nombreCategoria)
     }
 
     public function actualizarCategoriaIngreso($idCategoria, $nombreCategoria)
-    {
+{
+    try {
         $sql = "UPDATE categorias_ingresos SET nombreCategoria = :nombreCategoria WHERE idCategoria = :idCategoria";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombreCategoria', $nombreCategoria, PDO::PARAM_STR);
         $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
         return $stmt->execute();
+    } catch (PDOException $e) {
+        echo "Error al actualizar la categoría: " . $e->getMessage();
+        return false;
     }
+}
 
-    public function eliminarCategoriaIngreso($idCategoria)
-    {
+
+public function eliminarCategoriaIngreso($idCategoria)
+{
+    try {
         $sql = "DELETE FROM categorias_ingresos WHERE idCategoria = :idCategoria";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
         return $stmt->execute();
+    } catch (PDOException $e) {
+        echo "Error al eliminar la categoría: " . $e->getMessage();
+        return false;
     }
+}
+
+public function categoriaIngresoEnUso($idCategoria)
+{
+    try {
+        $sql = "SELECT COUNT(*) FROM ingresos WHERE idCategoria = :idCategoria";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    } catch (PDOException $e) {
+        echo "Error al verificar si la categoría está en uso: " . $e->getMessage();
+        return true; // Asumimos que está en uso si hay un error
+    }
+}
+
+
     // -------------------------------
     // Métodos relacionados con grupos
     // -------------------------------
@@ -949,4 +1002,19 @@ public function asignarUsuarioAGrupo($idUsuario, $idGrupo)
     $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
     return $stmt->execute();
 }
+
+public function obtenerCategoriaIngresoPorId($idCategoria)
+{
+    try {
+        $sql = "SELECT * FROM categorias_ingresos WHERE idCategoria = :idCategoria";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idCategoria', $idCategoria, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error al obtener la categoría: " . $e->getMessage();
+        return false;
+    }
+}
+
 }

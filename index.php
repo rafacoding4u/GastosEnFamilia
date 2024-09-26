@@ -59,8 +59,10 @@ $map = array(
     // Gestión de categorías de ingresos y gastos
     'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2), // Ruta agregada
     'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
-    'editarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 2),
+    'actualizarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
     'eliminarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 2),
+    'editarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
+
 
     'verCategoriasIngresos' => array('controller' => 'Controller', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 2),
     'insertarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 2),
