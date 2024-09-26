@@ -518,14 +518,23 @@ public function insertarGrupo($nombreGrupo, $passwordGrupo)
     }
 }
 
-
-    public function insertarCategoriaGasto($nombreCategoria)
-    {
+public function insertarCategoriaGasto($nombreCategoria)
+{
+    try {
         $sql = "INSERT INTO categorias_gastos (nombreCategoria) VALUES (:nombreCategoria)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombreCategoria', $nombreCategoria, PDO::PARAM_STR);
+
+        // Depuración: verificar la consulta SQL y el valor de la categoría
+        error_log("DEBUG: Ejecutando SQL -> $sql con nombreCategoria: $nombreCategoria");
+
         return $stmt->execute();
+    } catch (PDOException $e) {
+        echo "Error al insertar la categoría: " . $e->getMessage();
+        return false;
     }
+}
+
 
     public function actualizarCategoriaGasto($idCategoria, $nombreCategoria)
     {

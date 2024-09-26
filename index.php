@@ -57,7 +57,7 @@ $map = array(
     'dashboard' => array('controller' => 'Controller', 'action' => 'dashboard', 'nivel_usuario' => 1),
 
     // Gestión de categorías de ingresos y gastos
-    'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
+    'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2), // Ruta agregada
     'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
     'editarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 2),
     'eliminarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 2),
@@ -88,7 +88,7 @@ $map = array(
 
     // Asignar usuarios a grupos y familias
     'formAsignarUsuario' => array('controller' => 'Controller', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
-    'asignarUsuarioFamiliaGrupo' => array('controller' => 'Controller', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2), // Nueva ruta para asignar usuarios
+    'asignarUsuarioFamiliaGrupo' => array('controller' => 'Controller', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2),
 
     // Probar la conexión a la base de datos
     'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),

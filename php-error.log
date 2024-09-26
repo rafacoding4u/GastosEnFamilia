@@ -221,3 +221,46 @@
     [totalGastos] => 2402.00
 )
 
+[23-Sep-2024 20:20:30 Europe/Berlin] Tipo seleccionado: grupo
+[23-Sep-2024 20:20:30 Europe/Berlin] ID Seleccionado: 3
+[23-Sep-2024 20:20:30 Europe/Berlin] El usuario es de tipo 'admin'
+[23-Sep-2024 20:20:30 Europe/Berlin] ID Usuario (admin): 43
+[23-Sep-2024 20:20:30 Europe/Berlin] Familias Asignadas obtenidas: Array
+(
+    [0] => Array
+        (
+            [idFamilia] => 3
+            [nombre_familia] => OtraFamilia
+            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
+        )
+
+)
+
+[23-Sep-2024 20:20:30 Europe/Berlin] Grupos Asignados obtenidos: Array
+(
+    [0] => Array
+        (
+            [idGrupo] => 3
+            [nombre_grupo] => Erasmus
+            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
+        )
+
+)
+
+[23-Sep-2024 20:20:30 Europe/Berlin] Tipo: grupo con ID seleccionado: 3
+[23-Sep-2024 20:20:30 Europe/Berlin] El usuario es administrador del grupo con ID 3
+[23-Sep-2024 20:20:30 Europe/Berlin] Situación Financiera Grupo: Array
+(
+    [totalIngresos] => 12760.00
+    [totalGastos] => 2402.00
+)
+
+[26-Sep-2024 16:51:12 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[26-Sep-2024 17:00:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
+[26-Sep-2024 17:09:56 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`gastosencasa_bd`.`ingresos`, CONSTRAINT `ingresos_ibfk_2` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_ingresos` (`idCategoria`)) in C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php:585
+Stack trace:
+#0 C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php(585): PDOStatement->execute()
+#1 C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php(1222): GastosModelo->eliminarCategoriaIngreso('3')
+#2 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->eliminarCategoriaIngreso()
+#3 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php on line 585

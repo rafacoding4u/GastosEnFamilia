@@ -1046,52 +1046,61 @@ public function registro()
 
     // Gestión de Categorías de Gastos
     public function verCategoriasGastos()
-    {
-        // Verificar si el usuario tiene permisos para gestionar categorías
-        if ($_SESSION['nivel_usuario'] === 'usuario') {
-            $this->redireccionarError('Acceso denegado. No tienes permisos para ver o gestionar categorías de gastos.');
-            return;
-        }
+{
+    // Verificar si el usuario tiene permisos para gestionar categorías
+    if ($_SESSION['nivel_usuario'] === 'usuario') {
+        $this->redireccionarError('Acceso denegado. No tienes permisos para ver o gestionar categorías de gastos.');
+        return;
+    }
 
+    $m = new GastosModelo();
+    $categorias = $m->obtenerCategoriasGastos();
+
+    // Depuración temporal
+    echo "<pre>";
+    print_r($categorias);  // Muestra las categorías obtenidas para depuración
+    echo "</pre>";
+
+    $params = array(
+        'categorias' => $categorias,
+        'mensaje' => !empty($categorias) ? 'Gestión de categorías de gastos' : 'No hay categorías disponibles'
+    );
+
+    $this->render('verCategoriasGastos.php', $params);
+}
+
+public function insertarCategoriaGasto()
+{
+    // Verificar si el usuario tiene permisos de administrador
+    if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
+        $this->redireccionarError('Acceso denegado. Solo administradores pueden insertar categorías de gastos.');
+        return;
+    }
+
+    // Verificar si se ha enviado el formulario
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
+        $nombreCategoria = recoge('nombreCategoria');
         $m = new GastosModelo();
-        $categorias = $m->obtenerCategoriasGastos();
 
-        // Depuración temporal
-        echo "<pre>";
-        print_r($categorias);
-        echo "</pre>";
+        // Depuración: mostrar el nombre de la categoría recibido
+        echo "DEBUG: Nombre de la categoría recibida -> " . htmlspecialchars($nombreCategoria) . "<br>";
 
-        $params = array(
-            'categorias' => $categorias,
-            'mensaje' => !empty($categorias) ? 'Gestión de categorías de gastos' : 'No hay categorías disponibles'
-        );
-
-        $this->render('verCategoriasGastos.php', $params);
+        // Verificar que el nombre de la categoría no esté vacío
+        if (empty($nombreCategoria)) {
+            $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
+        } elseif ($m->insertarCategoriaGasto($nombreCategoria)) {
+            // Redirigir después de la inserción exitosa
+            header('Location: index.php?ctl=verCategoriasGastos');
+            exit();
+        } else {
+            $params['mensaje'] = 'No se pudo insertar la categoría de gasto.';
+        }
     }
 
+    // Volver a cargar la vista de categorías si hay algún problema
+    $this->verCategoriasGastos();
+}
 
-
-
-    public function insertarCategoriaGasto()
-    {
-        if ($_SESSION['nivel_usuario'] !== 'admin' && $_SESSION['nivel_usuario'] !== 'superadmin') {
-            $this->redireccionarError('Acceso denegado. Solo administradores pueden insertar categorías de gastos.');
-            return;
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
-            $nombreCategoria = recoge('nombreCategoria');
-            $m = new GastosModelo();
-
-            if ($m->insertarCategoriaGasto($nombreCategoria)) {
-                header('Location: index.php?ctl=verCategoriasGastos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo insertar la categoría de gasto.';
-            }
-        }
-        $this->verCategoriasGastos();
-    }
 
     public function editarCategoriaGasto()
     {

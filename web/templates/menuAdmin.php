@@ -35,10 +35,10 @@
 
                 <!-- Gestión de Categorías -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasGastos">Gestionar Categorías de Gastos</a>
+                    <a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?ctl=listarCategoriasIngresos">Gestionar Categorías de Ingresos</a>
+                    <a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a>
                 </li>
 
                 <!-- Cerrar Sesión -->
