@@ -6,101 +6,86 @@ require_once __DIR__ . '/app/libs/Config.php';
 require_once __DIR__ . '/app/libs/bGeneral.php';
 require_once __DIR__ . '/app/libs/bSeguridad.php';
 require_once __DIR__ . '/app/modelo/classModelo.php';
-require_once __DIR__ . '/app/controlador/Controller.php';
+
+// Incluimos los controladores necesarios
+require_once __DIR__ . '/app/controlador/AuthController.php';
+require_once __DIR__ . '/app/controlador/CategoriaController.php';
+require_once __DIR__ . '/app/controlador/FamiliaGrupoController.php';
+require_once __DIR__ . '/app/controlador/FinanzasController.php';
+require_once __DIR__ . '/app/controlador/SituacionFinancieraController.php';
+require_once __DIR__ . '/app/controlador/UsuarioController.php';
 
 // Definir la ruta para el archivo de log de errores
 ini_set('error_log', 'C:/xampp/htdocs/DWES/GastosEnFamilia/php-error.log');
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Configuración de errores basada en el modo debug
+if (Config::isDebug()) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1); // Mostrar los errores en pantalla
+} else {
+    error_reporting(0); // Ocultar los errores en producción
+    ini_set('display_errors', 0);
+}
 
 session_start();
-echo "DEBUG: Iniciando index.php <br>";
-echo '<pre>';
-print_r($_SESSION); // Muestra el contenido de la sesión para depuración
-echo '</pre>';
 
 // Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;
-    echo "DEBUG: Estableciendo nivel_usuario a 0 <br>";
 }
 
 // Define las rutas disponibles en la aplicación
 $map = array(
     // Rutas de inicio y autenticación
-    'home' => array('controller' => 'Controller', 'action' => 'home', 'nivel_usuario' => 0),
-    'inicio' => array('controller' => 'Controller', 'action' => 'inicio', 'nivel_usuario' => 1),
-    'salir' => array('controller' => 'Controller', 'action' => 'salir', 'nivel_usuario' => 1),
-    'error' => array('controller' => 'Controller', 'action' => 'error', 'nivel_usuario' => 0),
-    'iniciarSesion' => array('controller' => 'Controller', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
-    'registro' => array('controller' => 'Controller', 'action' => 'registro', 'nivel_usuario' => 0),
-
-    // Gestión de gastos
-    'verGastos' => array('controller' => 'Controller', 'action' => 'verGastos', 'nivel_usuario' => 1),
-    'formInsertarGasto' => array('controller' => 'Controller', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1),
-    'insertarGasto' => array('controller' => 'Controller', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
-    'editarGasto' => array('controller' => 'Controller', 'action' => 'editarGasto', 'nivel_usuario' => 1),
-    'eliminarGasto' => array('controller' => 'Controller', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
-
-    // Gestión de ingresos
-    'verIngresos' => array('controller' => 'Controller', 'action' => 'verIngresos', 'nivel_usuario' => 1),
-    'formInsertarIngreso' => array('controller' => 'Controller', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1),
-    'insertarIngreso' => array('controller' => 'Controller', 'action' => 'insertarIngreso', 'nivel_usuario' => 1),
-    'editarIngreso' => array('controller' => 'Controller', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
-    'eliminarIngreso' => array('controller' => 'Controller', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
-
-    // Gestión financiera
-    'verSituacion' => array('controller' => 'Controller', 'action' => 'verSituacion', 'nivel_usuario' => 1),
-    
-    // Dashboard financiero
-    'dashboard' => array('controller' => 'Controller', 'action' => 'dashboard', 'nivel_usuario' => 1),
-
-    // Gestión de categorías de ingresos y gastos
-    'verCategoriasGastos' => array('controller' => 'Controller', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2), // Ruta agregada
-    'insertarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
-    'actualizarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
-    'eliminarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 2),
-    'editarCategoriaGasto' => array('controller' => 'Controller', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
-
-
-    'verCategoriasIngresos' => array('controller' => 'Controller', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 2),
-    'insertarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 2),
-    'editarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 2),
-    'eliminarCategoriaIngreso' => array('controller' => 'Controller', 'action' => 'eliminarCategoriaIngreso', 'nivel_usuario' => 2),
+    'home' => array('controller' => 'AuthController', 'action' => 'home', 'nivel_usuario' => 0),
+    'inicio' => array('controller' => 'AuthController', 'action' => 'inicio', 'nivel_usuario' => 1),
+    'salir' => array('controller' => 'AuthController', 'action' => 'salir', 'nivel_usuario' => 1),
+    'error' => array('controller' => 'AuthController', 'action' => 'error', 'nivel_usuario' => 0),
+    'iniciarSesion' => array('controller' => 'AuthController', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
+    'registro' => array('controller' => 'AuthController', 'action' => 'registro', 'nivel_usuario' => 0),
 
     // Gestión de usuarios
-    'listarUsuarios' => array('controller' => 'Controller', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
-    'editarUsuario' => array('controller' => 'Controller', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
-    'eliminarUsuario' => array('controller' => 'Controller', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
+    'listarUsuarios' => array('controller' => 'UsuarioController', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
+    'editarUsuario' => array('controller' => 'UsuarioController', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
+    'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
+    'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
 
-    // Gestión de Familias y Grupos (Superadmin)
-    'listarFamilias' => array('controller' => 'Controller', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
-    'verGrupos' => array('controller' => 'Controller', 'action' => 'verGrupos', 'nivel_usuario' => 2),
+    // Gestión de categorías
+    'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
+    'insertarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
+    'actualizarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
+    'eliminarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 2),
 
-    // Rutas para familias y grupos
-    'formCrearFamilia' => array('controller' => 'Controller', 'action' => 'formCrearFamilia', 'nivel_usuario' => 2),
-    'crearFamilia' => array('controller' => 'Controller', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
-    'formCrearGrupo' => array('controller' => 'Controller', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
-    'crearGrupo' => array('controller' => 'Controller', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
+    // Gestión de familias y grupos
+    'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
+    'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
+    'formCrearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearFamilia', 'nivel_usuario' => 2),
+    'crearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
+    'formCrearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
+    'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
 
-    // Nueva ruta para crear usuario
-    'formCrearUsuario' => array('controller' => 'Controller', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2),
-    'crearUsuario' => array('controller' => 'Controller', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
+    // Gestión financiera
+    'verGastos' => array('controller' => 'FinanzasController', 'action' => 'verGastos', 'nivel_usuario' => 1),
+    'formInsertarGasto' => array('controller' => 'FinanzasController', 'action' => 'formInsertarGasto', 'nivel_usuario' => 1),
+    'insertarGasto' => array('controller' => 'FinanzasController', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
+    'editarGasto' => array('controller' => 'FinanzasController', 'action' => 'editarGasto', 'nivel_usuario' => 1),
+    'eliminarGasto' => array('controller' => 'FinanzasController', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
 
-    // Asignar usuarios a grupos y familias
-    'formAsignarUsuario' => array('controller' => 'Controller', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
-    'asignarUsuarioFamiliaGrupo' => array('controller' => 'Controller', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2),
+    'verIngresos' => array('controller' => 'FinanzasController', 'action' => 'verIngresos', 'nivel_usuario' => 1),
+    'formInsertarIngreso' => array('controller' => 'FinanzasController', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1),
+    'insertarIngreso' => array('controller' => 'FinanzasController', 'action' => 'insertarIngreso', 'nivel_usuario' => 1),
+    'editarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
+    'eliminarIngreso' => array('controller' => 'FinanzasController', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
 
-    // Probar la conexión a la base de datos
-    'probarConexionBD' => array('controller' => 'Controller', 'action' => 'probarConexionBD', 'nivel_usuario' => 0),
+    // Situación financiera
+    'verSituacion' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
+    'dashboard' => array('controller' => 'SituacionFinancieraController', 'action' => 'dashboard', 'nivel_usuario' => 1),
 );
 
 // Verificar si la ruta solicitada existe
 if (isset($_GET['ctl'])) {
     if (isset($map[$_GET['ctl']])) {
         $ruta = $_GET['ctl'];
-        echo "DEBUG: Ruta encontrada -> " . htmlspecialchars($ruta) . "<br>";
     } else {
         // Manejo de error 404 si la ruta no es válida
         header('Status: 404 Not Found');
@@ -108,30 +93,42 @@ if (isset($_GET['ctl'])) {
         exit;
     }
 } else {
-    // Si no hay ninguna ruta, la ruta por defecto será 'home'
     $ruta = 'home';
-    echo "DEBUG: Ruta por defecto -> home <br>";
 }
 
 $controlador = $map[$ruta];
-echo "DEBUG: Controlador -> " . htmlspecialchars($controlador['controller']) . "<br>";
-echo "DEBUG: Acción -> " . htmlspecialchars($controlador['action']) . "<br>";
 
 // Verificar si el método solicitado existe en el controlador
-if (method_exists($controlador['controller'], $controlador['action'])) {
-    // Comprobar el nivel de acceso del usuario
-    if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
-        echo "DEBUG: Llamando a la acción del controlador<br>";
-        call_user_func(array(new $controlador['controller'], $controlador['action']));
+try {
+    if (method_exists($controlador['controller'], $controlador['action'])) {
+        // Comprobar el nivel de acceso del usuario
+        if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
+            call_user_func(array(new $controlador['controller'], $controlador['action']));
+        } else {
+            call_user_func(array(new $controlador['controller'], 'inicio'));
+        }
     } else {
-        // Redirigir a 'inicio' si el usuario no tiene el nivel de acceso requerido
-        echo "DEBUG: Redirigiendo a inicio por nivel de usuario insuficiente<br>";
-        call_user_func(array(new $controlador['controller'], 'inicio'));
+        throw new Exception("El controlador o acción no existe.");
     }
-} else {
-    // Manejar el error si el controlador o el método no existen
-    header('Status: 404 Not Found');
-    echo '<html><body><h1>Error 404: El controlador <i>' . htmlspecialchars($controlador['controller']) . '->' . htmlspecialchars($controlador['action']) . '</i> no existe</h1></body></html>';
+} catch (Exception $e) {
+    if (Config::isDebug()) {
+        echo '<h2>Error: ' . $e->getMessage() . '</h2>';
+        echo '<pre>' . $e->getTraceAsString() . '</pre>';
+    } else {
+        error_log($e->getMessage());
+        echo '<h2>Ocurrió un error. Por favor, inténtalo más tarde.</h2>';
+    }
 }
 
 ob_end_flush(); // Finaliza el almacenamiento en búfer y envía la salida al navegador
+
+// Información de debug adicional
+if (Config::isDebug()) {
+    echo '<h3>Debug Information</h3>';
+    echo '<h4>Session Data:</h4>';
+    echo '<pre>' . print_r($_SESSION, true) . '</pre>';
+    echo '<h4>GET Parameters:</h4>';
+    echo '<pre>' . print_r($_GET, true) . '</pre>';
+    echo '<h4>POST Parameters:</h4>';
+    echo '<pre>' . print_r($_POST, true) . '</pre>';
+}

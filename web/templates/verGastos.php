@@ -1,6 +1,6 @@
 <!-- Filtros de búsqueda -->
 <form method="GET" action="index.php">
-    <input type="hidden" name="ctl" value="verGastos">
+    <input type="hidden" name="ctl" value="FinanzasController&action=verGastos">
 
     <div class="row">
         <!-- Filtro de fecha -->
@@ -45,7 +45,7 @@
 
 <!-- Botón para añadir un nuevo gasto -->
 <div class="mt-3 mb-3">
-    <a href="index.php?ctl=formInsertarGasto" class="btn btn-success">Añadir Gasto</a>
+    <a href="index.php?ctl=FinanzasController&action=formInsertarGasto" class="btn btn-success">Añadir Gasto</a>
 </div>
 
 <!-- Mostrar la lista de gastos -->
@@ -53,25 +53,25 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Categoría</th> <!-- Categoría primero -->
+                <th>Categoría</th>
                 <th>Importe</th>
                 <th>Fecha</th>
                 <th>Origen</th>
-                <th>Concepto</th> <!-- Concepto último -->
+                <th>Concepto</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($gastos as $gasto): ?>
                 <tr>
-                    <td><?= htmlspecialchars($gasto['nombreCategoria']) ?></td> <!-- Categoría primero -->
-                    <td><?= number_format($gasto['importe'], 2, ',', '.') ?> €</td> <!-- Formato de número -->
+                    <td><?= htmlspecialchars($gasto['nombreCategoria']) ?></td>
+                    <td><?= number_format($gasto['importe'], 2, ',', '.') ?> €</td>
                     <td><?= htmlspecialchars($gasto['fecha']) ?></td>
                     <td><?= htmlspecialchars($gasto['origen']) ?></td>
-                    <td><?= htmlspecialchars($gasto['concepto']) ?></td> <!-- Concepto último -->
+                    <td><?= htmlspecialchars($gasto['concepto']) ?></td>
                     <td>
-                            <a href="index.php?ctl=editarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="index.php?ctl=eliminarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este gasto?')">Eliminar</a>
+                        <a href="index.php?ctl=FinanzasController&action=editarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="index.php?ctl=FinanzasController&action=eliminarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este gasto?')">Eliminar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -87,7 +87,7 @@
         <ul class="pagination">
             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                 <li class="page-item <?= ($i == $paginaActual) ? 'active' : '' ?>">
-                    <a class="page-link" href="index.php?ctl=verGastos&pagina=<?= $i ?>">
+                    <a class="page-link" href="index.php?ctl=FinanzasController&action=verGastos&pagina=<?= $i ?>">
                         <?= $i ?>
                     </a>
                 </li>

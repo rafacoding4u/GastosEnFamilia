@@ -10,7 +10,7 @@
             <li class="list-group-item"><strong>Categoría:</strong> <?= htmlspecialchars($ingreso['nombreCategoria']) ?></li>
         </ul>
 
-        <a href="index.php?ctl=verIngresos" class="btn btn-primary mt-3">Volver a la lista</a>
+        <a href="index.php?ctl=FinanzasController&action=verIngresos" class="btn btn-primary mt-3">Volver a la lista</a>
     <?php else: ?>
         <p>El ingreso no existe o no se encuentra disponible.</p>
     <?php endif; ?>

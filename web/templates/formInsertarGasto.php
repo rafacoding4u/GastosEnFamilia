@@ -1,7 +1,8 @@
 <div class="container p-4">
     <h2>Añadir Gasto</h2>
 
-    <form action="index.php?ctl=insertarGasto" method="post">
+    <!-- Formulario para insertar gasto, enviando la solicitud al controlador adecuado -->
+    <form action="index.php?ctl=FinanzasController&action=insertarGasto" method="post">
         <!-- Campo para el concepto del gasto -->
         <div class="form-group">
             <label for="concepto">Concepto:</label>
@@ -41,6 +42,9 @@
             <label for="fecha">Fecha:</label>
             <input type="date" id="fecha" name="fecha" class="form-control" value="<?= date('Y-m-d') ?>" required>
         </div>
+
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
         <!-- Botón para enviar el formulario -->
         <button type="submit" name="bInsertarGasto" class="btn btn-primary mt-3">Añadir Gasto</button>

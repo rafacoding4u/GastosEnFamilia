@@ -10,7 +10,7 @@
             <li class="list-group-item"><strong>Categoría:</strong> <?= htmlspecialchars($gasto['nombreCategoria']) ?></li>
         </ul>
 
-        <a href="index.php?ctl=verGastos" class="btn btn-primary mt-3">Volver a la lista</a>
+        <a href="index.php?ctl=FinanzasController&action=verGastos" class="btn btn-primary mt-3">Volver a la lista</a>
     <?php else: ?>
         <p>El gasto no existe o no se encuentra disponible.</p>
     <?php endif; ?>

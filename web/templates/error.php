@@ -1,4 +1,4 @@
-<?php if (isset($_SESSION['error_mensaje'])): ?>
+<?php if (!empty($_SESSION['error_mensaje'])): ?>
     <div class="alert alert-danger">
         <?= htmlspecialchars($_SESSION['error_mensaje']) ?>
     </div>

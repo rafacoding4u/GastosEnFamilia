@@ -2,7 +2,7 @@
     <h2>Editar Categoría de Ingreso</h2>
 
     <!-- Formulario para editar categoría de ingresos -->
-    <form action="index.php?ctl=editarCategoriaIngreso" method="post">
+    <form action="index.php?ctl=actualizarCategoriaIngreso" method="post">
         <!-- Campo oculto para pasar el ID de la categoría -->
         <input type="hidden" name="idCategoria" value="<?= htmlspecialchars($categoria['idCategoria']) ?>">
 

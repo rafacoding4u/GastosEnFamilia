@@ -19,22 +19,46 @@
 
         <!-- Mostrar Balance -->
         <p><b>Balance:</b> 
-            <?= isset($params['balance']) && $params['balance'] !== null 
-                ? number_format(htmlspecialchars($params['balance']), 2, ',', '.') . ' €' 
-                : '<span class="text-muted">No disponible</span>' ?>
+            <span style="color: <?= isset($params['balance']) && $params['balance'] >= 0 ? 'green' : 'red'; ?>;">
+                <?= isset($params['balance']) && $params['balance'] !== null 
+                    ? number_format(htmlspecialchars($params['balance']), 2, ',', '.') . ' €' 
+                    : '<span class="text-muted">No disponible</span>' ?>
+            </span>
         </p>
 
-        <!-- Mensaje informativo si está definido -->
+        <!-- Mostrar mensaje personalizado -->
         <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
             <div class="alert alert-info mt-3">
                 <?= htmlspecialchars($params['mensaje']) ?>
             </div>
         <?php endif; ?>
 
-        <!-- Enlaces a otras funcionalidades si el usuario está autenticado -->
+        <!-- Menú condicional basado en el rol del usuario -->
         <div class="mt-4">
-            <a href="index.php?ctl=formInsertarIngreso" class="btn btn-success">Añadir Ingreso</a>
-            <a href="index.php?ctl=formInsertarGasto" class="btn btn-danger">Añadir Gasto</a>
+            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                <h4>Opciones para SuperAdministrador:</h4>
+                <ul>
+                    <li><a href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
+                    <li><a href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                    <li><a href="index.php?ctl=listarGrupos">Gestionar Grupos</a></li>
+                    <li><a href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
+                </ul>
+            <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
+                <h4>Opciones para Administrador:</h4>
+                <ul>
+                    <li><a href="index.php?ctl=verGastos">Ver Gastos</a></li>
+                    <li><a href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
+                    <li><a href="index.php?ctl=formCrearFamilia">Añadir Nueva Familia</a></li>
+                    <li><a href="index.php?ctl=formCrearGrupo">Añadir Nuevo Grupo</a></li>
+                </ul>
+            <?php else: ?>
+                <h4>Opciones para Usuario Regular:</h4>
+                <ul>
+                    <li><a href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a></li>
+                    <li><a href="index.php?ctl=formInsertarGasto">Añadir Gasto</a></li>
+                    <li><a href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                </ul>
+            <?php endif; ?>
         </div>
 
         <!-- Mensaje de advertencia si no hay datos financieros -->

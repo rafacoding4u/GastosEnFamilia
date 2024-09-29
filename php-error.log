@@ -1,785 +1,103 @@
 
-[23-Sep-2024 19:24:56 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
-[23-Sep-2024 19:24:56 Europe/Berlin] DEBUG: ID Usuario -> 26, Tipo de Vínculo -> familia
-[23-Sep-2024 19:24:56 Europe/Berlin] DEBUG: ID Familia -> 3
-[23-Sep-2024 19:24:56 Europe/Berlin] ERROR: Contraseña incorrecta para la familia 3
-[23-Sep-2024 19:57:16 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
-[23-Sep-2024 19:57:16 Europe/Berlin] DEBUG: ID Usuario -> 27, Tipo de Vínculo -> familia
-[23-Sep-2024 19:57:16 Europe/Berlin] DEBUG: ID Familia -> 3
-[23-Sep-2024 19:57:16 Europe/Berlin] ERROR: Contraseña incorrecta para la familia 3
-[23-Sep-2024 20:08:48 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
-[23-Sep-2024 20:08:48 Europe/Berlin] DEBUG: ID Usuario -> 27, Tipo de Vínculo -> familia
-[23-Sep-2024 20:08:48 Europe/Berlin] DEBUG: ID Familia -> 3
-[23-Sep-2024 20:09:04 Europe/Berlin] Tipo seleccionado: global
-[23-Sep-2024 20:09:04 Europe/Berlin] ID Seleccionado: 
-[23-Sep-2024 20:09:04 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:09:04 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:09:04 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:09:04 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:09:10 Europe/Berlin] Tipo seleccionado: grupo
-[23-Sep-2024 20:09:10 Europe/Berlin] ID Seleccionado: 
-[23-Sep-2024 20:09:10 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:09:10 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:09:10 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:09:10 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:09:13 Europe/Berlin] Tipo seleccionado: familia
-[23-Sep-2024 20:09:13 Europe/Berlin] ID Seleccionado: 3
-[23-Sep-2024 20:09:13 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:09:13 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:09:13 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:09:13 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:09:13 Europe/Berlin] Tipo: familia con ID seleccionado: 3
-[23-Sep-2024 20:09:13 Europe/Berlin] El usuario es administrador de la familia con ID 3
-[23-Sep-2024 20:09:13 Europe/Berlin] Situación Financiera Familia: Array
-(
-    [totalIngresos] => 15610.00
-    [totalGastos] => 2582.00
-    [saldo] => 13028.00
-)
-
-[23-Sep-2024 20:10:47 Europe/Berlin] DEBUG: Entrando en asignarUsuarioFamiliaGrupo
-[23-Sep-2024 20:10:47 Europe/Berlin] DEBUG: ID Usuario -> 29, Tipo de Vínculo -> grupo
-[23-Sep-2024 20:10:47 Europe/Berlin] DEBUG: ID Grupo -> 3
-[23-Sep-2024 20:10:50 Europe/Berlin] Tipo seleccionado: global
-[23-Sep-2024 20:10:50 Europe/Berlin] ID Seleccionado: 
-[23-Sep-2024 20:10:50 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:10:50 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:10:50 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:10:50 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:10:55 Europe/Berlin] Tipo seleccionado: grupo
-[23-Sep-2024 20:10:55 Europe/Berlin] ID Seleccionado: 
-[23-Sep-2024 20:10:55 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:10:55 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:10:55 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:10:55 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:11:02 Europe/Berlin] Tipo seleccionado: familia
-[23-Sep-2024 20:11:02 Europe/Berlin] ID Seleccionado: 3
-[23-Sep-2024 20:11:02 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:11:02 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:11:02 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:11:02 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:11:02 Europe/Berlin] Tipo: familia con ID seleccionado: 3
-[23-Sep-2024 20:11:02 Europe/Berlin] El usuario es administrador de la familia con ID 3
-[23-Sep-2024 20:11:02 Europe/Berlin] Situación Financiera Familia: Array
-(
-    [totalIngresos] => 15610.00
-    [totalGastos] => 2582.00
-    [saldo] => 13028.00
-)
-
-[23-Sep-2024 20:11:06 Europe/Berlin] Tipo seleccionado: grupo
-[23-Sep-2024 20:11:06 Europe/Berlin] ID Seleccionado: 3
-[23-Sep-2024 20:11:06 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:11:06 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:11:06 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:11:06 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:11:06 Europe/Berlin] Tipo: grupo con ID seleccionado: 3
-[23-Sep-2024 20:11:06 Europe/Berlin] El usuario es administrador del grupo con ID 3
-[23-Sep-2024 20:11:06 Europe/Berlin] Situación Financiera Grupo: Array
-(
-    [totalIngresos] => 12760.00
-    [totalGastos] => 2402.00
-)
-
-[23-Sep-2024 20:20:30 Europe/Berlin] Tipo seleccionado: grupo
-[23-Sep-2024 20:20:30 Europe/Berlin] ID Seleccionado: 3
-[23-Sep-2024 20:20:30 Europe/Berlin] El usuario es de tipo 'admin'
-[23-Sep-2024 20:20:30 Europe/Berlin] ID Usuario (admin): 43
-[23-Sep-2024 20:20:30 Europe/Berlin] Familias Asignadas obtenidas: Array
-(
-    [0] => Array
-        (
-            [idFamilia] => 3
-            [nombre_familia] => OtraFamilia
-            [password] => $2y$10$TslzSB9Rt0wYDbQblp2pY.2th3j.IuX/0D0cJpQ0zTCxlnNeLOika
-        )
-
-)
-
-[23-Sep-2024 20:20:30 Europe/Berlin] Grupos Asignados obtenidos: Array
-(
-    [0] => Array
-        (
-            [idGrupo] => 3
-            [nombre_grupo] => Erasmus
-            [password] => $2y$10$9oFhwXvscQEwbC/P.VPvQOvMvgzfIlAbIEWsD7C6tKHzpE.w7V4Q.
-        )
-
-)
-
-[23-Sep-2024 20:20:30 Europe/Berlin] Tipo: grupo con ID seleccionado: 3
-[23-Sep-2024 20:20:30 Europe/Berlin] El usuario es administrador del grupo con ID 3
-[23-Sep-2024 20:20:30 Europe/Berlin] Situación Financiera Grupo: Array
-(
-    [totalIngresos] => 12760.00
-    [totalGastos] => 2402.00
-)
-
-[26-Sep-2024 16:51:12 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
-[26-Sep-2024 17:00:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
-[26-Sep-2024 17:09:56 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`gastosencasa_bd`.`ingresos`, CONSTRAINT `ingresos_ibfk_2` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_ingresos` (`idCategoria`)) in C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php:585
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:53:57 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[27-Sep-2024 19:54:22 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+[29-Sep-2024 18:17:39 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class UsuarioController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
 Stack trace:
-#0 C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php(585): PDOStatement->execute()
-#1 C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php(1222): GastosModelo->eliminarCategoriaIngreso('3')
-#2 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->eliminarCategoriaIngreso()
-#3 {main}
-  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\modelo\classModelo.php on line 585
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:04:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:10:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method GastosModelo::obtenerCategoriaIngresoPorId() in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php:1197
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:17:41 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class SituacionFinancieraController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
 Stack trace:
-#0 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->editarCategoriaIngreso()
-#1 {main}
-  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1197
-[26-Sep-2024 18:10:45 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method GastosModelo::obtenerCategoriaIngresoPorId() in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php:1197
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:17:42 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class UsuarioController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
 Stack trace:
-#0 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->editarCategoriaIngreso()
-#1 {main}
-  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1197
-[26-Sep-2024 18:10:46 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method GastosModelo::obtenerCategoriaIngresoPorId() in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php:1197
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:18:46 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class UsuarioController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
 Stack trace:
-#0 C:\xampp\htdocs\DWES\GastosEnFamilia\index.php(123): Controller->editarCategoriaIngreso()
-#1 {main}
-  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1197
-[26-Sep-2024 18:10:55 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:10:55 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:11:22 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:11:22 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:11:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:11:31 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:11:31 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:01 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:15:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 18:15:10 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 40
-[26-Sep-2024 18:19:29 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:19:29 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:19:29 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:19:40 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:19:40 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:19:40 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:19:58 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 108
-[26-Sep-2024 18:20:09 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:20:09 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1057
-[26-Sep-2024 18:20:09 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:24:49 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:25:02 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:25:48 Europe/Berlin] PHP Warning:  Undefined array key "idFamilia" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1093
-[26-Sep-2024 18:25:48 Europe/Berlin] PHP Warning:  Undefined array key "idGrupo" in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\Controller.php on line 1093
-[26-Sep-2024 18:25:48 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:25:59 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:26:02 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 18:26:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 40
-[26-Sep-2024 18:26:08 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> admin
-[26-Sep-2024 18:43:39 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> usuario
-[26-Sep-2024 18:43:39 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:43:39 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:43:39 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:43:39 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:43:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:43:49 Europe/Berlin] DEBUG: idFamilia -> , idGrupo -> , nivel_usuario -> usuario
-[26-Sep-2024 18:43:49 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:43:49 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:43:49 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:43:49 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:46:54 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:46:54 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:46:54 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:46:54 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:47:06 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:47:06 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 18:47:06 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:47:06 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 18:49:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:20:00 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:20:00 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:20:00 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:20:00 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:20:02 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:20:02 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:20:02 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:20:02 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:20:15 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:12 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:16 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:21 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:26:21 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:26:21 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:26:21 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:24 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:27 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:26:27 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 14
-[26-Sep-2024 19:26:27 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:26:27 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 15
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 14
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 15
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:26:30 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 38
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 22
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 22
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 23
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 23
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:45:46 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:46:04 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 22
-[26-Sep-2024 19:46:04 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 22
-[26-Sep-2024 19:46:04 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 23
-[26-Sep-2024 19:46:04 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 23
-[26-Sep-2024 19:46:24 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 22
-[26-Sep-2024 19:46:24 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 22
-[26-Sep-2024 19:46:24 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 23
-[26-Sep-2024 19:46:24 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 23
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 22
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 22
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined variable $categoria in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 23
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 23
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 43
-[26-Sep-2024 19:46:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 46
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:40 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:52 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:47:54 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:48:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:04 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 19:49:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 19:49:08 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:07 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:47 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:48 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "creado_por" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 35
-[26-Sep-2024 20:01:50 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:02:03 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
-[26-Sep-2024 20:03:14 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasGastos.php on line 37
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:18:48 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class FinanzasController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:18:48 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class SituacionFinancieraController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:35:38 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class SituacionFinancieraController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:35:40 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class FinanzasController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 18:35:41 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class UsuarioController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:106
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 106
+[29-Sep-2024 19:32:05 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class SituacionFinancieraController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:113
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 113
+[29-Sep-2024 19:32:27 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class UsuarioController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:113
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 113
+[29-Sep-2024 19:32:31 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class FinanzasController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:113
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 113
+[29-Sep-2024 19:32:33 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: call_user_func(): Argument #1 ($callback) must be a valid callback, class SituacionFinancieraController does not have a method "inicio" in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php:113
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\DWES\GastosEnFamilia\index.php on line 113
+[29-Sep-2024 19:44:22 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 19:44:22 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:00:37 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:00:37 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:10:41 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:10:41 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:12:11 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:12:11 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:19:24 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:19:24 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:24:12 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:24:12 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35
+[29-Sep-2024 20:24:15 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 34
+[29-Sep-2024 20:24:15 Europe/Berlin] PHP Warning:  Undefined variable $origenSeleccionado in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verIngresos.php on line 35

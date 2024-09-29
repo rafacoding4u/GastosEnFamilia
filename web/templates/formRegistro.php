@@ -1,7 +1,7 @@
 <div class="container p-4">
     <h3>Registro de Usuario</h3>
 
-    <form action="index.php?ctl=registro" method="post">
+    <form action="index.php?ctl=UsuarioController&action=registro" method="post">
         <!-- Campo para el nombre -->
         <div class="form-group">
             <label for="nombre">Nombre:</label>
@@ -75,12 +75,12 @@
             <select id="idGrupoFamilia" name="idGrupoFamilia" class="form-control">
                 <optgroup label="Grupos">
                     <?php foreach ($grupos as $grupo): ?>
-                        <option value="grupo_<?= $grupo['idGrupo'] ?>"><?= $grupo['nombre_grupo'] ?></option>
+                        <option value="grupo_<?= htmlspecialchars($grupo['idGrupo']) ?>"><?= htmlspecialchars($grupo['nombre_grupo']) ?></option>
                     <?php endforeach; ?>
                 </optgroup>
                 <optgroup label="Familias">
                     <?php foreach ($familias as $familia): ?>
-                        <option value="familia_<?= $familia['idFamilia'] ?>"><?= $familia['nombre_familia'] ?></option>
+                        <option value="familia_<?= htmlspecialchars($familia['idFamilia']) ?>"><?= htmlspecialchars($familia['nombre_familia']) ?></option>
                     <?php endforeach; ?>
                 </optgroup>
             </select>
@@ -99,6 +99,9 @@
             <label for="password_nuevo">Contraseña del Nuevo Grupo/Familia:</label>
             <input type="password" id="password_nuevo" name="password_nuevo" class="form-control">
         </div>
+
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
         <!-- Botón de envío -->
         <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>

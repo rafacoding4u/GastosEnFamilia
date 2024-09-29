@@ -1,6 +1,6 @@
 <!-- Filtros de búsqueda -->
 <form method="GET" action="index.php">
-    <input type="hidden" name="ctl" value="verIngresos">
+    <input type="hidden" name="ctl" value="FinanzasController&action=verIngresos">
 
     <div class="row">
         <!-- Filtro de fecha -->
@@ -45,7 +45,7 @@
 
 <!-- Botón para añadir un nuevo ingreso -->
 <div class="mt-3 mb-3">
-    <a href="index.php?ctl=formInsertarIngreso" class="btn btn-success">Añadir Ingreso</a>
+    <a href="index.php?ctl=FinanzasController&action=formInsertarIngreso" class="btn btn-success">Añadir Ingreso</a>
 </div>
 
 <!-- Mostrar la lista de ingresos -->
@@ -83,8 +83,8 @@
                     <td><?= htmlspecialchars($ingreso['origen']) ?></td>
                     <td><?= htmlspecialchars($ingreso['concepto']) ?></td> <!-- Concepto último -->
                     <td>
-                        <a href="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="index.php?ctl=eliminarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este ingreso?')">Eliminar</a>
+                        <a href="index.php?ctl=FinanzasController&action=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="index.php?ctl=FinanzasController&action=eliminarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este ingreso?')">Eliminar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -101,7 +101,7 @@
         <ul class="pagination">
             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                 <li class="page-item <?= ($i == $paginaActual) ? 'active' : '' ?>">
-                    <a class="page-link" href="index.php?ctl=verIngresos&pagina=<?= $i ?>">
+                    <a class="page-link" href="index.php?ctl=FinanzasController&action=verIngresos&pagina=<?= $i ?>">
                         <?= $i ?>
                     </a>
                 </li>

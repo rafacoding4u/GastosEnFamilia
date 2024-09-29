@@ -19,4 +19,3 @@ if ($resultado && password_verify($contraseñaIntroducida, $resultado['password'
 } else {
     echo "La contraseña es incorrecta.";
 }
-?>

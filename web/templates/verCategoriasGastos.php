@@ -9,7 +9,7 @@
     <?php endif; ?>
 
     <!-- Formulario para agregar nueva categoría de gastos -->
-    <form action="index.php?ctl=insertarCategoriaGasto" method="post">
+    <form action="index.php?ctl=CategoriaController&action=insertarCategoriaGasto" method="post">
         <div class="form-group">
             <label for="nombreCategoria">Nueva Categoría de Gasto:</label>
             <input type="text" id="nombreCategoria" name="nombreCategoria" class="form-control" required>
@@ -33,9 +33,9 @@
                         <td>
                             <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
                                 <!-- Solo admins y superadmins pueden editar/eliminar -->
-                                <a href="index.php?ctl=editarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="index.php?ctl=CategoriaController&action=editarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
                                 <?php if (!$categoria['enUso']): ?>
-                                    <a href="index.php?ctl=eliminarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                                    <a href="index.php?ctl=CategoriaController&action=eliminarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-danger btn-sm">Eliminar</a>
                                 <?php else: ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Categoría en uso</button>
                                 <?php endif; ?>

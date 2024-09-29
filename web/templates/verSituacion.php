@@ -3,7 +3,7 @@
 
     <!-- Selección de tipo de situación -->
     <form method="GET" action="index.php">
-        <input type="hidden" name="ctl" value="verSituacion">
+        <input type="hidden" name="ctl" value="SituacionFinancieraController&action=verSituacion">
 
         <div class="form-group">
             <label for="tipo">Ver situación de:</label>

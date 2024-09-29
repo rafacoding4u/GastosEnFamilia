@@ -1,7 +1,7 @@
 <div class="container text-center p-4">
     <h3>Iniciar Sesión</h3>
 
-    <!-- Formulario para iniciar sesión, envía la solicitud al controlador de iniciar sesión -->
+    <!-- Formulario para iniciar sesión, envía la solicitud al controlador AuthController -->
     <form action="index.php?ctl=iniciarSesion" method="post">
         <!-- Campo de entrada para el alias (nombre de usuario) -->
         <div class="form-group">
@@ -29,3 +29,4 @@
         <?php endif; ?>
     </form>
 </div>
+

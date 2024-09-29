@@ -1016,5 +1016,81 @@ public function obtenerCategoriaIngresoPorId($idCategoria)
         return false;
     }
 }
+public function obtenerIngresosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
+{
+    $sql = "SELECT * FROM ingresos WHERE idUser = :idUsuario";
+    if ($fechaInicio) {
+        $sql .= " AND fecha >= :fechaInicio";
+    }
+    if ($fechaFin) {
+        $sql .= " AND fecha <= :fechaFin";
+    }
+    if ($categoria) {
+        $sql .= " AND idCategoria = :categoria";
+    }
+    if ($origen) {
+        $sql .= " AND origen = :origen";
+    }
+    $sql .= " LIMIT :offset, :limite";
+
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    if ($fechaInicio) $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+    if ($fechaFin) $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
+    if ($categoria) $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+    if ($origen) $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function contarIngresosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
+{
+    $sql = "SELECT COUNT(*) FROM ingresos WHERE idUser = :idUsuario";
+    if ($fechaInicio) {
+        $sql .= " AND fecha >= :fechaInicio";
+    }
+    if ($fechaFin) {
+        $sql .= " AND fecha <= :fechaFin";
+    }
+    if ($categoria) {
+        $sql .= " AND idCategoria = :categoria";
+    }
+    if ($origen) {
+        $sql .= " AND origen = :origen";
+    }
+
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    if ($fechaInicio) $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+    if ($fechaFin) $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
+    if ($categoria) $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+    if ($origen) $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
+
+public function actualizarIngreso($idIngreso, $importe, $categoria, $concepto, $origen)
+{
+    $sql = "UPDATE ingresos 
+            SET importe = :importe, idCategoria = :categoria, concepto = :concepto, origen = :origen 
+            WHERE idIngreso = :idIngreso";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':importe', $importe, PDO::PARAM_STR);
+    $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+    $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+    $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+    $stmt->bindValue(':idIngreso', $idIngreso, PDO::PARAM_INT);
+    return $stmt->execute();
+}
+
+public function eliminarIngreso($idIngreso)
+{
+    $sql = "DELETE FROM ingresos WHERE idIngreso = :idIngreso";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idIngreso', $idIngreso, PDO::PARAM_INT);
+    return $stmt->execute();
+}
 
 }

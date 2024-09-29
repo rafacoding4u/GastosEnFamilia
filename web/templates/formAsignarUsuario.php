@@ -2,7 +2,7 @@
     <h2>Asignar Usuario a Familia o Grupo</h2>
 
     <!-- Formulario para asignar usuario -->
-    <form method="POST" action="index.php?ctl=asignarUsuarioFamiliaGrupo">
+    <form method="POST" action="index.php?ctl=FamiliaGrupoController&action=asignarUsuarioFamiliaGrupo">
         <!-- Selección de usuario -->
         <div class="form-group">
             <label for="idUsuario">Selecciona un Usuario:</label>
@@ -53,6 +53,9 @@
             <label for="passwordGrupoFamilia">Introduce la contraseña para acceder al grupo o familia:</label>
             <input type="password" name="passwordGrupoFamilia" class="form-control" required>
         </div>
+
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
         <button type="submit" class="btn btn-primary">Asignar Usuario</button>
     </form>

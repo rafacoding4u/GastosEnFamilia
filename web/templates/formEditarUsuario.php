@@ -7,7 +7,7 @@
         </div>
     <?php endif; ?>
 
-    <form action="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($params['idUser']) ?>" method="POST">
+    <form action="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($params['idUser']) ?>" method="POST">
         <div class="form-group">
             <label for="nombre">Nombre</label>
             <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($params['nombre']) ?>" required>
@@ -37,7 +37,7 @@
         <div class="form-group">
             <label for="idFamilia">Familia</label>
             <select name="idFamilia" class="form-control">
-                <option value="">Sin Familia</option> <!-- Opción para no seleccionar familia -->
+                <option value="">Sin Familia</option>
                 <?php foreach ($params['familias'] as $familia): ?>
                     <option value="<?= $familia['idFamilia'] ?>" <?= ($familia['idFamilia'] == $params['idFamilia']) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($familia['nombre_familia']) ?>
@@ -50,7 +50,7 @@
         <div class="form-group">
             <label for="idGrupo">Grupo</label>
             <select name="idGrupo" class="form-control">
-                <option value="">Sin Grupo</option> <!-- Opción para no seleccionar grupo -->
+                <option value="">Sin Grupo</option>
                 <?php foreach ($params['grupos'] as $grupo): ?>
                     <option value="<?= $grupo['idGrupo'] ?>" <?= ($grupo['idGrupo'] == $params['idGrupo']) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($grupo['nombre_grupo']) ?>
@@ -59,16 +59,15 @@
             </select>
         </div>
 
-        <!-- nivel de acceso del usuario -->
+        <!-- Nivel de acceso del usuario -->
         <div class="form-group">
-    <label for="nivel_usuario">Nivel de Usuario</label>
-    <select name="nivel_usuario" class="form-control" id="nivel_usuario">
-        <option value="usuario" <?= ($nivel_usuario == 'usuario') ? 'selected' : '' ?>>Usuario</option>
-        <option value="admin" <?= ($nivel_usuario == 'admin') ? 'selected' : '' ?>>Administrador</option>
-        <option value="superadmin" <?= ($nivel_usuario == 'superadmin') ? 'selected' : '' ?>>Superusuario</option>
-    </select>
-</div>
-
+            <label for="nivel_usuario">Nivel de Usuario</label>
+            <select name="nivel_usuario" class="form-control" id="nivel_usuario">
+                <option value="usuario" <?= ($params['nivel_usuario'] == 'usuario') ? 'selected' : '' ?>>Usuario</option>
+                <option value="admin" <?= ($params['nivel_usuario'] == 'admin') ? 'selected' : '' ?>>Administrador</option>
+                <option value="superadmin" <?= ($params['nivel_usuario'] == 'superadmin') ? 'selected' : '' ?>>Superusuario</option>
+            </select>
+        </div>
 
         <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
     </form>

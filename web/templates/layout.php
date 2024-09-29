@@ -16,29 +16,43 @@
         <p>Aplicación para la gestión de finanzas familiares</p>
     </header>
 
-    <!-- Menú de navegación dinámico según el estado de autenticación -->
+    <!-- Menú de navegación siempre visible según el rol del usuario -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <?php 
-            if (isset($_SESSION['usuario'])):  // Verificar si el usuario está autenticado
-                if (isset($menu)) {
-                    $menuPath = __DIR__ . '/' . $menu;
-                    if (file_exists($menuPath)) {
-                        include $menuPath;  // Incluir el archivo de menú según el rol
-                    } else {
-                        echo "<div class='alert alert-danger'>Error: El archivo del menú '{$menu}' no fue encontrado en '{$menuPath}'.</div>";
-                    }
-                } else {
-                    echo "<div class='alert alert-warning'>Error: Menú no definido.</div>";
-                }
-            else:  // Menú básico para usuarios no autenticados
-            ?>
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=home">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=inicio">Inicio</a></li>
+                    <?php if (isset($_SESSION['usuario'])): ?>
+                        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                            <!-- Opciones del superadministrador -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarGrupos">Gestionar Grupos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
+                        <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
+                            <!-- Opciones del administrador -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formCrearFamilia">Añadir Nueva Familia</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formCrearGrupo">Añadir Nuevo Grupo</a></li>
+                        <?php else: ?>
+                            <!-- Opciones del usuario normal -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                        <?php endif; ?>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a></li>
+                    <?php else: ?>
+                        <!-- Opciones para usuarios no autenticados -->
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=home">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
+                    <?php endif; ?>
                 </ul>
-            <?php endif; ?>
+            </div>
         </div>
     </nav>
 

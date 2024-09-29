@@ -2,9 +2,12 @@
     <h2>Editar Categoría de Gasto</h2>
 
     <!-- Formulario para editar categoría de gastos -->
-    <form action="index.php?ctl=actualizarCategoriaGasto" method="post">
+    <form action="index.php?ctl=CategoriaController&action=actualizarCategoriaGasto" method="post">
         <!-- Campo oculto para pasar el ID de la categoría -->
         <input type="hidden" name="idCategoria" value="<?= htmlspecialchars($categoria['idCategoria']) ?>">
+
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
         <!-- Campo para el nombre de la categoría -->
         <div class="form-group">
