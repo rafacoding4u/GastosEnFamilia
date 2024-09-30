@@ -4,11 +4,12 @@
     <!-- Formulario de filtros -->
     <form action="index.php?ctl=verHistorialFinanzas" method="GET">
         <div class="row">
-            <!-- Filtro por fecha -->
+            <!-- Filtro por fecha de inicio -->
             <div class="col-md-4">
                 <label for="fechaInicio">Desde:</label>
                 <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="<?= htmlspecialchars($fechaInicio ?? '') ?>">
             </div>
+            <!-- Filtro por fecha de fin -->
             <div class="col-md-4">
                 <label for="fechaFin">Hasta:</label>
                 <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="<?= htmlspecialchars($fechaFin ?? '') ?>">
@@ -29,7 +30,7 @@
         </div>
 
         <div class="row mt-3">
-            <!-- Filtro por tipo de transacción -->
+            <!-- Filtro por tipo de transacción (ingreso o gasto) -->
             <div class="col-md-4">
                 <label for="tipoTransaccion">Tipo de Transacción:</label>
                 <select id="tipoTransaccion" name="tipoTransaccion" class="form-control">

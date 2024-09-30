@@ -1,7 +1,9 @@
 <div class="container p-4">
     <h2>Lista de Usuarios Registrados</h2>
-    <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
-        <a href="index.php?ctl=UsuarioController&action=formCrearUsuario" class="btn btn-success">Crear Usuario</a>
+
+    <!-- Botón para crear usuario (solo visible para superadmin) -->
+    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+        <a href="index.php?ctl=formCrearUsuario" class="btn btn-success mb-3">Crear Usuario</a>
     <?php endif; ?>
 
     <!-- Mostrar mensaje en caso de éxito o error -->
@@ -24,7 +26,9 @@
                     <th>Familia</th>
                     <th>Grupo</th>
                     <th>Tipo de Usuario</th>
-                    <th>Acciones</th>
+                    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                        <th>Acciones</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -46,14 +50,16 @@
                                 En Grupo
                             <?php endif; ?>
                         </td>
-                        <td>
-                            <div class="d-flex">
-                                <!-- Botón para editar el usuario -->
-                                <a href="index.php?ctl=UsuarioController&action=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
-                                <!-- Botón para eliminar el usuario -->
-                                <a href="index.php?ctl=UsuarioController&action=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
-                            </div>
-                        </td>
+                        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                            <td>
+                                <div class="d-flex">
+                                    <!-- Botón para editar el usuario -->
+                                    <a href="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
+                                    <!-- Botón para eliminar el usuario -->
+                                    <a href="index.php?ctl=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
+                                </div>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

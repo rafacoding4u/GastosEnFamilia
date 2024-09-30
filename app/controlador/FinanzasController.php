@@ -60,7 +60,7 @@ class FinanzasController
         $offset = ($paginaActual - 1) * $registrosPorPagina;
 
         // Obtener los ingresos aplicando los filtros y la paginación
-        $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $offset, $registrosPorPagina);
+        $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, null, $offset, $registrosPorPagina);
 
         // Obtener el número total de ingresos para la paginación
         $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria);
@@ -185,53 +185,42 @@ class FinanzasController
 
     // Editar Ingreso
     public function editarIngreso()
-{
-    $m = new GastosModelo();
+    {
+        $m = new GastosModelo();
 
-    // Verificar si se ha pasado un ID de ingreso
-    if (isset($_GET['id'])) {
-        $ingreso = $m->obtenerIngresoPorId($_GET['id']);
+        if (isset($_GET['id'])) {
+            $ingreso = $m->obtenerIngresoPorId($_GET['id']);
 
-        if (!$ingreso) {
-            // Redirigir si no se encuentra el ingreso
-            header('Location: index.php?ctl=verIngresos');
-            exit();
+            if (!$ingreso) {
+                header('Location: index.php?ctl=verIngresos');
+                exit();
+            }
         }
-    }
 
-    // Obtener las categorías de ingresos disponibles
-    $categorias = $m->obtenerCategoriasIngresos();
+        $categorias = $m->obtenerCategoriasIngresos();
 
-    // Parametros para la vista
-    $params = array(
-        'ingreso' => $ingreso,
-        'categorias' => $categorias
-    );
+        $params = array(
+            'ingreso' => $ingreso,
+            'categorias' => $categorias
+        );
 
-    // Verificar si se ha enviado el formulario
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarIngreso'])) {
-        // Recoger los valores del formulario
-        $concepto = recoge('concepto');
-        $importe = recoge('importe');
-        $fecha = recoge('fecha');
-        $origen = recoge('origen');
-        $categoria = recoge('categoria');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarIngreso'])) {
+            $concepto = recoge('concepto');
+            $importe = recoge('importe');
+            $fecha = recoge('fecha');
+            $origen = recoge('origen');
+            $categoria = recoge('categoria');
 
-        // Llamar a la función actualizarIngreso con los parámetros correctos
-        if ($m->actualizarIngreso($ingreso['idIngreso'], $concepto, $importe, $fecha, $origen, $categoria)) {
-            // Redirigir si se actualiza correctamente
-            header('Location: index.php?ctl=verIngresos');
-            exit();
-        } else {
-            // Mostrar un mensaje de error en caso de fallo
-            $params['mensaje'] = 'No se pudo actualizar el ingreso. Inténtalo de nuevo.';
+            if ($m->actualizarIngreso($ingreso['idIngreso'], $importe, $categoria, $concepto, $origen)) {
+                header('Location: index.php?ctl=verIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo actualizar el ingreso. Inténtalo de nuevo.';
+            }
         }
+
+        $this->render('formEditarIngreso.php', $params);
     }
-
-    // Renderizar la vista del formulario de edición
-    $this->render('formEditarIngreso.php', $params);
-}
-
 
     // Eliminar Gasto
     public function eliminarGasto()
@@ -241,8 +230,10 @@ class FinanzasController
             if ($m->eliminarGasto($_GET['id'])) {
                 header('Location: index.php?ctl=verGastos');
             } else {
-                $params['mensaje'] = 'No se pudo eliminar el gasto. Inténtalo de nuevo.';
-                $this->verGastos();
+                $params['mensaje'] = 'No se pudo eliminar el gasto.';
+                $this
+
+->verGastos();
             }
         }
     }
@@ -255,7 +246,7 @@ class FinanzasController
             if ($m->eliminarIngreso($_GET['id'])) {
                 header('Location: index.php?ctl=verIngresos');
             } else {
-                $params['mensaje'] = 'No se pudo eliminar el ingreso. Inténtalo de nuevo.';
+                $params['mensaje'] = 'No se pudo eliminar el ingreso.';
                 $this->verIngresos();
             }
         }

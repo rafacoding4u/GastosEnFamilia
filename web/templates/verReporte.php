@@ -33,7 +33,7 @@
                         <td><?= htmlspecialchars($transaccion['concepto']) ?></td>
                         <td><?= number_format($transaccion['importe'], 2, ',', '.') ?> €</td>
                         <td><?= htmlspecialchars($transaccion['nombreCategoria']) ?></td>
-                        <td><?= htmlspecialchars($transaccion['tipoTransaccion']) ?></td>
+                        <td><?= htmlspecialchars($transaccion['tipoTransaccion'] === 'ingreso' ? 'Ingreso' : 'Gasto') ?></td>
                         <td><?= htmlspecialchars($transaccion['origen']) ?></td>
                     </tr>
                 <?php endforeach; ?>

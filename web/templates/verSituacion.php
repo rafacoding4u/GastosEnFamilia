@@ -119,7 +119,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="col-concepto">Concepto</th>
+                                        <th>Concepto</th>
                                         <th>Importe</th>
                                         <th>Fecha</th>
                                         <th>Origen</th>
@@ -148,7 +148,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="col-concepto">Concepto</th>
+                                        <th>Concepto</th>
                                         <th>Importe</th>
                                         <th>Fecha</th>
                                         <th>Origen</th>

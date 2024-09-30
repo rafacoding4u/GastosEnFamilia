@@ -1,6 +1,7 @@
 <div class="container p-4">
     <h2>Metas Financieras</h2>
 
+    <!-- Verificar si hay metas registradas -->
     <?php if (!empty($metas)): ?>
         <table class="table table-bordered">
             <thead>
@@ -21,7 +22,7 @@
                         <td><?= htmlspecialchars($meta['fechaLimite']) ?></td>
                         <td>
                             <?php 
-                                $progreso = ($meta['montoAlcanzado'] / $meta['montoObjetivo']) * 100;
+                                $progreso = ($meta['montoObjetivo'] > 0) ? ($meta['montoAlcanzado'] / $meta['montoObjetivo']) * 100 : 0;
                                 $color = ($progreso >= 100) ? 'green' : 'blue';
                             ?>
                             <div class="progress">

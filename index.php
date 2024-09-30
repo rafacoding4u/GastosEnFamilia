@@ -34,7 +34,7 @@ if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;
 }
 
-// Define las rutas disponibles en la aplicación
+// Mapeo de rutas y sus controladores
 $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'AuthController', 'action' => 'home', 'nivel_usuario' => 0),
@@ -88,7 +88,7 @@ if (isset($_GET['ctl'])) {
         $ruta = $_GET['ctl'];
     } else {
         // Manejo de error 404 si la ruta no es válida
-        header('Status: 404 Not Found');
+        header('HTTP/1.0 404 Not Found');
         echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
         exit;
     }
@@ -105,7 +105,10 @@ try {
         if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
             call_user_func(array(new $controlador['controller'], $controlador['action']));
         } else {
-            call_user_func(array(new $controlador['controller'], 'inicio'));
+            // Redireccionar a una página de acceso denegado o página de inicio
+            header('HTTP/1.0 403 Forbidden');
+            echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
+            exit;
         }
     } else {
         throw new Exception("El controlador o acción no existe.");
@@ -122,13 +125,13 @@ try {
 
 ob_end_flush(); // Finaliza el almacenamiento en búfer y envía la salida al navegador
 
-// Información de debug adicional
+// Información de debug adicional (solo en modo debug)
 if (Config::isDebug()) {
-    echo '<h3>Debug Information</h3>';
-    echo '<h4>Session Data:</h4>';
+    echo '<h3>Información de Depuración</h3>';
+    echo '<h4>Datos de la sesión:</h4>';
     echo '<pre>' . print_r($_SESSION, true) . '</pre>';
-    echo '<h4>GET Parameters:</h4>';
+    echo '<h4>Parámetros GET:</h4>';
     echo '<pre>' . print_r($_GET, true) . '</pre>';
-    echo '<h4>POST Parameters:</h4>';
+    echo '<h4>Parámetros POST:</h4>';
     echo '<pre>' . print_r($_POST, true) . '</pre>';
 }

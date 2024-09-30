@@ -23,8 +23,13 @@
                         <td>
                             <!-- Barra de progreso -->
                             <div class="progress">
-                                <?php $progreso = min(100, ($meta['montoActual'] / $meta['montoObjetivo']) * 100); ?>
-                                <div class="progress-bar" role="progressbar" style="width: <?= $progreso ?>%;" aria-valuenow="<?= $progreso ?>" aria-valuemin="0" aria-valuemax="100"><?= number_format($progreso, 2) ?>%</div>
+                                <?php 
+                                    $progreso = ($meta['montoObjetivo'] > 0) ? min(100, ($meta['montoActual'] / $meta['montoObjetivo']) * 100) : 0;
+                                    $color = $progreso >= 100 ? 'green' : 'blue';
+                                ?>
+                                <div class="progress-bar" role="progressbar" style="width: <?= $progreso ?>%; background-color: <?= $color ?>;" aria-valuenow="<?= $progreso ?>" aria-valuemin="0" aria-valuemax="100">
+                                    <?= number_format($progreso, 2) ?>%
+                                </div>
                             </div>
                         </td>
                         <td><?= htmlspecialchars($meta['fechaLimite']) ?></td>

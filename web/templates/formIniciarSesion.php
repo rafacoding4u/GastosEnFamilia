@@ -6,13 +6,17 @@
         <!-- Campo de entrada para el alias (nombre de usuario) -->
         <div class="form-group">
             <label for="alias">Alias (Nombre de Usuario):</label>
-            <input type="text" id="alias" name="alias" class="form-control" required>
+            <input type="text" id="alias" name="alias" class="form-control" 
+                   required pattern="[A-Za-z0-9_]{4,20}" 
+                   title="El alias debe tener entre 4 y 20 caracteres alfanuméricos.">
         </div>
 
         <!-- Campo de entrada para la contraseña -->
         <div class="form-group">
             <label for="contrasenya">Contraseña:</label>
-            <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
+            <input type="password" id="contrasenya" name="contrasenya" class="form-control" 
+                   required minlength="6" 
+                   title="La contraseña debe tener al menos 6 caracteres.">
         </div>
 
         <!-- Campo oculto para el token CSRF -->
@@ -29,4 +33,3 @@
         <?php endif; ?>
     </form>
 </div>
-

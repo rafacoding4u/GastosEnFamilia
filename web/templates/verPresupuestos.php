@@ -35,8 +35,13 @@
                             </span>
                         </td>
                         <td>
-                            <a href="index.php?ctl=editarPresupuesto&id=<?= htmlspecialchars($presupuesto['idPresupuesto']) ?>" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="index.php?ctl=eliminarPresupuesto&id=<?= htmlspecialchars($presupuesto['idPresupuesto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este presupuesto?')">Eliminar</a>
+                            <!-- Solo mostrar botones de edición y eliminación a admin o superadmin -->
+                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+                                <a href="index.php?ctl=editarPresupuesto&id=<?= htmlspecialchars($presupuesto['idPresupuesto']) ?>" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="index.php?ctl=eliminarPresupuesto&id=<?= htmlspecialchars($presupuesto['idPresupuesto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este presupuesto?')">Eliminar</a>
+                            <?php else: ?>
+                                <span class="text-muted">Sin acciones</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

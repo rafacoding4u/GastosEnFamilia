@@ -35,7 +35,7 @@
 
         <!-- Menú condicional basado en el rol del usuario -->
         <div class="mt-4">
-            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+            <?php if ($_SESSION['usuario']['nivel_usuario'] == 2): ?>
                 <h4>Opciones para SuperAdministrador:</h4>
                 <ul>
                     <li><a href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
@@ -43,7 +43,7 @@
                     <li><a href="index.php?ctl=listarGrupos">Gestionar Grupos</a></li>
                     <li><a href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
                 </ul>
-            <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
+            <?php elseif ($_SESSION['usuario']['nivel_usuario'] == 1): ?>
                 <h4>Opciones para Administrador:</h4>
                 <ul>
                     <li><a href="index.php?ctl=verGastos">Ver Gastos</a></li>

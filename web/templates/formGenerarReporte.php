@@ -37,8 +37,8 @@
             </select>
         </div>
 
-        <!-- Filtro por usuario, familia o grupo (opcional según el rol del usuario) -->
-        <?php if ($_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['nivel_usuario'] === 'admin'): ?>
+        <!-- Filtro por usuario, familia o grupo (solo visible para admin o superadmin) -->
+        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
             <div class="form-group">
                 <label for="tipoFiltro">Filtrar por:</label>
                 <select id="tipoFiltro" name="tipoFiltro" class="form-control">
@@ -48,44 +48,56 @@
                     <option value="grupo">Grupo</option>
                 </select>
             </div>
+
+            <!-- Filtro por usuario -->
+            <div id="filtroUsuario" class="form-group" style="display:none;">
+                <label for="idUsuario">Seleccionar Usuario:</label>
+                <select id="idUsuario" name="idUsuario" class="form-control">
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
+                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Filtro por familia -->
+            <div id="filtroFamilia" class="form-group" style="display:none;">
+                <label for="idFamilia">Seleccionar Familia:</label>
+                <select id="idFamilia" name="idFamilia" class="form-control">
+                    <?php foreach ($familias as $familia): ?>
+                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
+                            <?= htmlspecialchars($familia['nombre_familia']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Filtro por grupo -->
+            <div id="filtroGrupo" class="form-group" style="display:none;">
+                <label for="idGrupo">Seleccionar Grupo:</label>
+                <select id="idGrupo" name="idGrupo" class="form-control">
+                    <?php foreach ($grupos as $grupo): ?>
+                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
+                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         <?php endif; ?>
 
-        <!-- Selección de usuario, familia o grupo -->
-        <div id="filtroUsuario" class="form-group" style="display:none;">
-            <label for="idUsuario">Seleccionar Usuario:</label>
-            <select id="idUsuario" name="idUsuario" class="form-control">
-                <?php foreach ($usuarios as $usuario): ?>
-                    <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
-                        <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div id="filtroFamilia" class="form-group" style="display:none;">
-            <label for="idFamilia">Seleccionar Familia:</label>
-            <select id="idFamilia" name="idFamilia" class="form-control">
-                <?php foreach ($familias as $familia): ?>
-                    <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
-                        <?= htmlspecialchars($familia['nombre_familia']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div id="filtroGrupo" class="form-group" style="display:none;">
-            <label for="idGrupo">Seleccionar Grupo:</label>
-            <select id="idGrupo" name="idGrupo" class="form-control">
-                <?php foreach ($grupos as $grupo): ?>
-                    <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
-                        <?= htmlspecialchars($grupo['nombre_grupo']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
         <!-- Botón para generar el reporte -->
         <button type="submit" class="btn btn-primary mt-3">Generar Reporte</button>
+
+        <!-- Mostrar mensaje de error si existe -->
+        <?php if (isset($mensaje)): ?>
+            <div class="alert alert-danger mt-3">
+                <?= htmlspecialchars($mensaje) ?>
+            </div>
+        <?php endif; ?>
     </form>
 </div>
 

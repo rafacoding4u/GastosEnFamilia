@@ -1,7 +1,7 @@
 <div class="container p-4">
     <h3>Registro de Usuario</h3>
 
-    <form action="index.php?ctl=UsuarioController&action=registro" method="post">
+    <form action="index.php?ctl=registro" method="post">
         <!-- Campo para el nombre -->
         <div class="form-group">
             <label for="nombre">Nombre:</label>
@@ -50,14 +50,19 @@
                    value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono']) : '' ?>" required>
         </div>
 
-        <!-- Selector de nivel de usuario -->
-        <div class="form-group">
-            <label for="nivel_usuario">Tipo de Usuario:</label>
-            <select id="nivel_usuario" name="nivel_usuario" class="form-control" required>
-                <option value="usuario" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'usuario' ? 'selected' : '' ?>>Usuario</option>
-                <option value="admin" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'admin' ? 'selected' : '' ?>>Administrador</option>
-            </select>
-        </div>
+        <!-- Selector de nivel de usuario (solo accesible para superadmin o admin) -->
+        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+            <div class="form-group">
+                <label for="nivel_usuario">Tipo de Usuario:</label>
+                <select id="nivel_usuario" name="nivel_usuario" class="form-control" required>
+                    <option value="usuario" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'usuario' ? 'selected' : '' ?>>Usuario</option>
+                    <option value="admin" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'admin' ? 'selected' : '' ?>>Administrador</option>
+                </select>
+            </div>
+        <?php else: ?>
+            <!-- Si el usuario no tiene permisos, forzar el nivel de usuario a 'usuario' -->
+            <input type="hidden" name="nivel_usuario" value="usuario">
+        <?php endif; ?>
 
         <!-- Selección de grupo o familia -->
         <div class="form-group">
