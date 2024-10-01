@@ -54,12 +54,12 @@ class CategoriaController
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
                 $nombreCategoria = recoge('nombreCategoria');
                 $m = new GastosModelo();
-                $nivelUsuario = $_SESSION['usuario']['nivel_usuario'];
+                $creadoPor = $_SESSION['usuario']['id']; // Guardamos el id del usuario que crea la categoría
 
                 if (empty($nombreCategoria)) {
                     $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
-                } elseif ($m->insertarCategoriaGasto($nombreCategoria, $nivelUsuario)) {
-                    error_log("Categoría de gasto '{$nombreCategoria}' creada por usuario de nivel {$nivelUsuario}.");
+                } elseif ($m->insertarCategoriaGasto($nombreCategoria, $creadoPor)) {
+                    error_log("Categoría de gasto '{$nombreCategoria}' creada por el usuario con id {$creadoPor}.");
                     header('Location: index.php?ctl=verCategoriasGastos');
                     exit();
                 } else {
@@ -87,9 +87,12 @@ class CategoriaController
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaIngreso'])) {
                 $nombreCategoria = recoge('nombreCategoria');
                 $m = new GastosModelo();
+                $creadoPor = $_SESSION['usuario']['id']; // Guardamos el id del usuario que crea la categoría
 
-                if ($m->insertarCategoriaIngreso($nombreCategoria)) {
-                    error_log("Categoría de ingreso '{$nombreCategoria}' creada.");
+                if (empty($nombreCategoria)) {
+                    $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
+                } elseif ($m->insertarCategoriaIngreso($nombreCategoria, $creadoPor)) {
+                    error_log("Categoría de ingreso '{$nombreCategoria}' creada por el usuario con id {$creadoPor}.");
                     header('Location: index.php?ctl=verCategoriasIngresos');
                     exit();
                 } else {
@@ -104,6 +107,7 @@ class CategoriaController
             $this->redireccionarError('Error al insertar la categoría de ingreso.');
         }
     }
+
 
     // Editar categoría de gasto
     public function editarCategoriaGasto()

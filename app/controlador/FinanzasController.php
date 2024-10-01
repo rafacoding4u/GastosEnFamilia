@@ -184,33 +184,46 @@ class FinanzasController
     }
 
     // Editar Ingreso
-    public function editarIngreso()
-    {
-        $m = new GastosModelo();
+public function editarIngreso()
+{
+    $m = new GastosModelo();
 
-        if (isset($_GET['id'])) {
-            $ingreso = $m->obtenerIngresoPorId($_GET['id']);
+    // Validar si se proporciona un ID válido
+    if (isset($_GET['id'])) {
+        $ingreso = $m->obtenerIngresoPorId($_GET['id']);
 
-            if (!$ingreso) {
-                header('Location: index.php?ctl=verIngresos');
-                exit();
-            }
+        // Si el ingreso no existe, redirigir
+        if (!$ingreso) {
+            header('Location: index.php?ctl=verIngresos');
+            exit();
         }
+    } else {
+        // Si no se proporciona un ID, redirigir a la lista de ingresos
+        header('Location: index.php?ctl=verIngresos');
+        exit();
+    }
 
-        $categorias = $m->obtenerCategoriasIngresos();
+    // Obtener las categorías de ingresos disponibles
+    $categorias = $m->obtenerCategoriasIngresos();
 
-        $params = array(
-            'ingreso' => $ingreso,
-            'categorias' => $categorias
-        );
+    $params = array(
+        'ingreso' => $ingreso,
+        'categorias' => $categorias
+    );
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarIngreso'])) {
-            $concepto = recoge('concepto');
-            $importe = recoge('importe');
-            $fecha = recoge('fecha');
-            $origen = recoge('origen');
-            $categoria = recoge('categoria');
+    // Verificar si se ha enviado el formulario para editar
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarIngreso'])) {
+        $concepto = recoge('concepto');
+        $importe = recoge('importe');
+        $fecha = recoge('fecha');
+        $origen = recoge('origen');
+        $categoria = recoge('idCategoria'); // Asegurarse de recoger correctamente 'idCategoria'
 
+        // Validar si el ID de categoría es válido
+        if (empty($categoria)) {
+            $params['mensaje'] = 'La categoría es obligatoria.';
+        } else {
+            // Actualizar el ingreso si los datos son válidos
             if ($m->actualizarIngreso($ingreso['idIngreso'], $importe, $categoria, $concepto, $origen)) {
                 header('Location: index.php?ctl=verIngresos');
                 exit();
@@ -218,9 +231,12 @@ class FinanzasController
                 $params['mensaje'] = 'No se pudo actualizar el ingreso. Inténtalo de nuevo.';
             }
         }
-
-        $this->render('formEditarIngreso.php', $params);
     }
+
+    // Renderizar el formulario de edición con los parámetros
+    $this->render('formEditarIngreso.php', $params);
+}
+
 
     // Eliminar Gasto
     public function eliminarGasto()

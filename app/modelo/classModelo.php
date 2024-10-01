@@ -1070,9 +1070,11 @@ public function contarIngresosFiltrados($idUsuario, $fechaInicio = null, $fechaF
     $stmt->execute();
     return $stmt->fetchColumn();
 }
-
 public function actualizarIngreso($idIngreso, $importe, $categoria, $concepto, $origen)
 {
+    // Registrar el valor de idCategoria antes de ejecutar la consulta
+    error_log("Actualizando ingreso con idCategoria: " . $categoria);
+    
     $sql = "UPDATE ingresos 
             SET importe = :importe, idCategoria = :categoria, concepto = :concepto, origen = :origen 
             WHERE idIngreso = :idIngreso";
@@ -1082,8 +1084,10 @@ public function actualizarIngreso($idIngreso, $importe, $categoria, $concepto, $
     $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
     $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
     $stmt->bindValue(':idIngreso', $idIngreso, PDO::PARAM_INT);
+    
     return $stmt->execute();
 }
+
 
 public function eliminarIngreso($idIngreso)
 {

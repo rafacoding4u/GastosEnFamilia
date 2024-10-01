@@ -5,7 +5,7 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'usuario' || $_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
         <!-- Formulario para editar ingreso -->
-        <form action="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" method="post">
+        <form action="index.php?ctl=actualizarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" method="post">
             <!-- Campo para el concepto del ingreso -->
             <div class="form-group">
                 <label for="concepto">Concepto:</label>

@@ -70,11 +70,12 @@ $map = array(
     'insertarGasto' => array('controller' => 'FinanzasController', 'action' => 'insertarGasto', 'nivel_usuario' => 1),
     'editarGasto' => array('controller' => 'FinanzasController', 'action' => 'editarGasto', 'nivel_usuario' => 1),
     'eliminarGasto' => array('controller' => 'FinanzasController', 'action' => 'eliminarGasto', 'nivel_usuario' => 1),
-
+    'actualizarGasto' => array('controller' => 'FinanzasController', 'action' => 'editarGasto', 'nivel_usuario' => 1),
     'verIngresos' => array('controller' => 'FinanzasController', 'action' => 'verIngresos', 'nivel_usuario' => 1),
     'formInsertarIngreso' => array('controller' => 'FinanzasController', 'action' => 'formInsertarIngreso', 'nivel_usuario' => 1),
     'insertarIngreso' => array('controller' => 'FinanzasController', 'action' => 'insertarIngreso', 'nivel_usuario' => 1),
     'editarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
+    'actualizarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'eliminarIngreso' => array('controller' => 'FinanzasController', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
 
     // Situación financiera
