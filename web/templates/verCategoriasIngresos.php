@@ -33,20 +33,22 @@
                     <tr>
                         <td><?= htmlspecialchars($categoria['nombreCategoria']); ?></td>
                         <td>
-                            <!-- Verificar si el usuario es admin o superadmin para mostrar las opciones de edición/eliminación -->
                             <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
                                 <a href="index.php?ctl=editarCategoriaIngreso&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
-                                <?php if (!$categoria['enUso']): ?>
+
+                                <?php if (!$categoria['enUso'] || $categoria['creadaPorUsuario']): ?>
                                     <a href="index.php?ctl=eliminarCategoriaIngreso&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta categoría?')">Eliminar</a>
                                 <?php else: ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Categoría en uso</button>
                                 <?php endif; ?>
+
                             <?php else: ?>
                                 <button class="btn btn-secondary btn-sm" disabled>No permitido</button>
                             <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
+
             <?php else: ?>
                 <tr>
                     <td colspan="2">No hay categorías de ingresos registradas.</td>

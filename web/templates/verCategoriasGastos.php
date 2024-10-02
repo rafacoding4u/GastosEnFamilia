@@ -37,8 +37,8 @@
                             <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
                                 <a href="index.php?ctl=editarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
 
-                                <!-- Comprobar si 'enUso' existe antes de usarlo -->
-                                <?php if (!isset($categoria['enUso']) || !$categoria['enUso']): ?>
+                                <!-- Mostrar "Categoría en uso" o permitir eliminar -->
+                                <?php if (!$categoria['enUso']): ?>
                                     <a href="index.php?ctl=eliminarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta categoría?')">Eliminar</a>
                                 <?php else: ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Categoría en uso</button>

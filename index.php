@@ -50,11 +50,19 @@ $map = array(
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
 
-    // Gestión de categorías
-    'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 2),
-    'insertarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 2),
-    'actualizarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 2),
-    'eliminarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 2),
+    // Gestión de categorías gastos
+    'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 1),
+    'insertarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaGasto', 'nivel_usuario' => 1),
+    'actualizarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 1),
+    'eliminarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 1),
+    'editarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 1),
+
+    // Gestión de categorías ingresos
+    'verCategoriasIngresos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 1),
+    'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
+    'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
+    'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
+    'eliminarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaIngreso', 'nivel_usuario' => 1),
 
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),

@@ -60,3 +60,120 @@ Stack trace:
 [01-Oct-2024 19:27:20 Europe/Berlin] Administrador viendo situación financiera.
 [01-Oct-2024 19:27:38 Europe/Berlin] Administrador viendo situación financiera.
 [01-Oct-2024 19:27:46 Europe/Berlin] Administrador viendo situación financiera.
+[02-Oct-2024 09:48:50 Europe/Berlin] Usuario con alias Padre_OtraFamilia ha iniciado sesión correctamente.
+[02-Oct-2024 09:49:03 Europe/Berlin] Administrador viendo situación financiera.
+[02-Oct-2024 09:50:42 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:42 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:50:43 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] Categoría de ingreso 'nueva categoría ingreso' creada por el usuario con id 43.
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:54:23 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 09:56:56 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarCategoriaIngreso.php on line 13
+[02-Oct-2024 10:15:54 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarCategoriaIngreso.php on line 13
+[02-Oct-2024 11:04:15 Europe/Berlin] Usuario con alias Padre_OtraFamilia ha iniciado sesión correctamente.
+[02-Oct-2024 11:04:25 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:25 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:27 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:29 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:31 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:04:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] Categoría de ingreso 'nueva cate ingreso' actualizada.
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:18:32 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:20:33 Europe/Berlin] PHP Warning:  Undefined array key "enUso" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\verCategoriasIngresos.php on line 39
+[02-Oct-2024 11:23:46 Europe/Berlin] Categoría de ingreso 'Nueva5' actualizada.
+[02-Oct-2024 11:24:13 Europe/Berlin] Categoría de ingreso 'Otra nueva categoría Ingreso' creada por el usuario con id 43.
+[02-Oct-2024 11:36:02 Europe/Berlin] Categoría de ingreso con ID: 9 eliminada.
+[02-Oct-2024 11:36:09 Europe/Berlin] Categoría de ingreso con ID: 8 eliminada.
+[02-Oct-2024 11:36:26 Europe/Berlin] Categoría de ingreso con ID: 7 eliminada.
+[02-Oct-2024 11:37:15 Europe/Berlin] Categoría de ingreso 'MásNuevas' creada por el usuario con id 43.
+[02-Oct-2024 11:37:24 Europe/Berlin] Categoría de ingreso 'MáNuevas' actualizada.
+[02-Oct-2024 11:37:29 Europe/Berlin] Categoría de ingreso con ID: 10 eliminada.
+[02-Oct-2024 11:37:39 Europe/Berlin] Categoría de ingreso 'Salarios' actualizada.
+[02-Oct-2024 11:53:42 Europe/Berlin] Categoría de gasto 'para borrar' creada por el usuario con id 43.
+[02-Oct-2024 12:18:16 Europe/Berlin] Categoría de gasto 'borrar' actualizada.
+[02-Oct-2024 12:18:21 Europe/Berlin] Categoría de gasto con ID: 24 eliminada.
+[02-Oct-2024 12:18:30 Europe/Berlin] Categoría de gasto 'Otro' actualizada.
+[02-Oct-2024 12:18:37 Europe/Berlin] Categoría de gasto 'Otros' actualizada.
+[02-Oct-2024 12:19:40 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 8
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 8
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 12
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 12
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 18
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 18
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:41 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 26
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 37
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 37
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 38
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 38
+[02-Oct-2024 12:19:42 Europe/Berlin] PHP Warning:  Undefined variable $ingreso in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 45
+[02-Oct-2024 12:19:43 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 45
+[02-Oct-2024 12:19:43 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formEditarGasto.php on line 49
+[02-Oct-2024 12:29:11 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formInsertarIngreso.php on line 50
+[02-Oct-2024 12:30:05 Europe/Berlin] Actualizando ingreso con idCategoria: 5
+[02-Oct-2024 12:30:43 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp\htdocs\DWES\GastosEnFamilia\web\templates\formInsertarIngreso.php on line 50
+[02-Oct-2024 12:31:14 Europe/Berlin] Actualizando ingreso con idCategoria: 3
+[02-Oct-2024 12:31:24 Europe/Berlin] Administrador viendo situación financiera.
+[02-Oct-2024 12:31:29 Europe/Berlin] Administrador viendo situación financiera.

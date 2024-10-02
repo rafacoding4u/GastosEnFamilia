@@ -5,12 +5,13 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
     
         <!-- Formulario para editar categoría de ingresos -->
-        <form action="index.php?ctl=CategoriaController&action=actualizarCategoriaIngreso" method="post">
+        <form action="index.php?ctl=actualizarCategoriaIngreso" method="post">
             <!-- Campo oculto para pasar el ID de la categoría -->
             <input type="hidden" name="idCategoria" value="<?= htmlspecialchars($categoria['idCategoria']) ?>">
 
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+
 
             <!-- Campo para el nombre de la categoría -->
             <div class="form-group">

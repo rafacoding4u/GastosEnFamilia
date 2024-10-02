@@ -207,8 +207,9 @@ public function editarIngreso()
     $categorias = $m->obtenerCategoriasIngresos();
 
     $params = array(
-        'ingreso' => $ingreso,
-        'categorias' => $categorias
+        'ingreso' => $ingreso,  // Asegurarse de que se pasa el ingreso a la vista
+        'categorias' => $categorias,
+        'csrf_token' => $_SESSION['csrf_token'],  // Añadir el token CSRF a los parámetros
     );
 
     // Verificar si se ha enviado el formulario para editar
