@@ -177,3 +177,25 @@ Stack trace:
 [02-Oct-2024 12:31:14 Europe/Berlin] Actualizando ingreso con idCategoria: 3
 [02-Oct-2024 12:31:24 Europe/Berlin] Administrador viendo situación financiera.
 [02-Oct-2024 12:31:29 Europe/Berlin] Administrador viendo situación financiera.
+[02-Oct-2024 12:46:14 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 12:46:14 Europe/Berlin] Sesión cerrada exitosamente.
+[02-Oct-2024 12:46:22 Europe/Berlin] Usuario con alias Padre_OtraFamilia ha iniciado sesión correctamente.
+[02-Oct-2024 12:46:43 Europe/Berlin] Administrador viendo situación financiera.
+[02-Oct-2024 13:07:19 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 13:07:19 Europe/Berlin] Sesión cerrada exitosamente.
+[02-Oct-2024 13:07:26 Europe/Berlin] Usuario con alias Abuelo_Otrafamilia ha iniciado sesión correctamente.
+[02-Oct-2024 13:07:33 Europe/Berlin] Superadmin viendo situación financiera.
+[02-Oct-2024 13:07:38 Europe/Berlin] Superadmin viendo situación financiera.
+[02-Oct-2024 13:07:45 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 13:07:45 Europe/Berlin] Sesión cerrada exitosamente.
+[02-Oct-2024 13:07:51 Europe/Berlin] Usuario con alias Padre_OtraFamilia ha iniciado sesión correctamente.
+[02-Oct-2024 13:13:42 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 13:13:43 Europe/Berlin] Sesión cerrada exitosamente.
+[02-Oct-2024 13:13:49 Europe/Berlin] Usuario con alias Padre_OtraFamilia ha iniciado sesión correctamente.
+[02-Oct-2024 13:14:59 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 13:15:00 Europe/Berlin] Sesión cerrada exitosamente.
+[02-Oct-2024 13:15:06 Europe/Berlin] Usuario con alias rafam ha iniciado sesión correctamente.
+[02-Oct-2024 13:15:28 Europe/Berlin] Superadmin viendo situación financiera.
+[02-Oct-2024 13:15:33 Europe/Berlin] Superadmin viendo situación financiera.
+[02-Oct-2024 13:15:53 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\DWES\GastosEnFamilia\app\controlador\AuthController.php on line 99
+[02-Oct-2024 13:15:54 Europe/Berlin] Sesión cerrada exitosamente.

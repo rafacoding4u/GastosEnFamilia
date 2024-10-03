@@ -11,13 +11,15 @@
                 <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
                     <option value="global" <?= $tipo === 'global' ? 'selected' : '' ?>>Global</option>
                 <?php endif; ?>
-                <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
-                <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
+                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins ?>
+                    <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
+                    <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
+                <?php endif; ?>
                 <option value="usuario" <?= $tipo === 'usuario' ? 'selected' : '' ?>>Usuario</option>
             </select>
         </div>
 
-        <!-- Condicional para mostrar familias, grupos o usuarios según la selección -->
+        <!-- Mostrar selección de familias o grupos según el tipo y rol -->
         <?php if ($tipo === 'familia' && !empty($familias)): ?>
             <div class="form-group">
                 <label for="idSeleccionado">Selecciona una familia:</label>
@@ -71,8 +73,8 @@
         <p>No hay datos financieros disponibles.</p>
     <?php endif; ?>
 
-    <!-- Mostrar usuarios si los hay -->
-    <?php if (isset($usuarios) && !empty($usuarios)): ?>
+    <!-- Mostrar usuarios si los hay y si el rol lo permite -->
+    <?php if ($_SESSION['nivel_usuario'] === 'superadmin' && isset($usuarios) && !empty($usuarios)): ?>
         <h4>Usuarios</h4>
         <table class="table table-bordered">
             <thead>
@@ -98,18 +100,9 @@
                             </span>
                         </td>
                         <td>
-                            <!-- Control de visibilidad de acciones según el nivel de usuario -->
-                            <?php if ($_SESSION['nivel_usuario'] !== 'superadmin' && $usuario['nivel_usuario'] !== 'superadmin'): ?>
-                                <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
-                                    Mostrar detalles
-                                </button>
-                            <?php elseif ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
-                                <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
-                                    Mostrar detalles
-                                </button>
-                            <?php else: ?>
-                                <button class="btn btn-info" disabled>No disponible</button>
-                            <?php endif; ?>
+                            <button class="btn btn-info toggle-details" data-id="<?= $usuario['idUser'] ?>">
+                                Mostrar detalles
+                            </button>
                         </td>
                     </tr>
                     <tr class="detalles-usuario" id="detallesUsuario<?= $usuario['idUser'] ?>" style="display: none;">

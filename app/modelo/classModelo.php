@@ -70,7 +70,6 @@ class GastosModelo
 
     public function insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia = null, $idGrupo = null)
     {
-        // Verificar que el usuario esté asignado a una familia o grupo
         if (empty($idFamilia) && empty($idGrupo)) {
             throw new Exception('El usuario debe estar asignado a una familia o un grupo.');
         }

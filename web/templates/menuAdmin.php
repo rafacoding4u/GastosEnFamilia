@@ -6,10 +6,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['nivel_usuario'] === 1): ?>
+            <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
                     <!-- Opciones del administrador -->
-
-                    <!-- Gastos e Ingresos -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
                     </li>
@@ -22,47 +20,34 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
                     </li>
-
-                    <!-- Presupuestos -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formCrearPresupuesto">Añadir Presupuesto</a>
                     </li>
-
-                    <!-- Metas Financieras -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formCrearMeta">Añadir Meta Financiera</a>
                     </li>
-
-                    <!-- Situación Financiera -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
                     </li>
-
-                    <!-- Gestión de Familias y Grupos -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuarios a Familias/Grupos</a>
                     </li>
-
-                    <!-- Gestión de Categorías -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a>
                     </li>
-
-                    <!-- Cerrar Sesión -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                     </li>
                 <?php else: ?>
-                    <!-- Si no es administrador, redirigir al inicio de sesión -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a>
                     </li>
@@ -71,3 +56,60 @@
         </div>
     </div>
 </nav>
+
+<!-- Resumen financiero -->
+<div class="container mt-4">
+    <h4>Resumen Financiero</h4>
+    <?php
+    // Llamar a la función para obtener la situación financiera del usuario
+    $situacion = (new GastosModelo())->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+    ?>
+    <div class="card">
+        <div class="card-header">
+            <strong>Total Ingresos:</strong> <?= number_format($situacion['totalIngresos'], 2, ',', '.') ?> €
+        </div>
+        <div class="card-header">
+            <strong>Total Gastos:</strong> <?= number_format($situacion['totalGastos'], 2, ',', '.') ?> €
+        </div>
+        <div class="card-header">
+            <strong>Saldo:</strong>
+            <span style="color: <?= $situacion['saldo'] > 0 ? 'green' : ($situacion['saldo'] < 0 ? 'red' : 'gray') ?>;">
+                <?= number_format($situacion['saldo'], 2, ',', '.') ?> €
+            </span>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-info toggle-details">Mostrar detalles</button>
+            <div class="details-section" style="display: none;">
+                <h5>Detalles de Ingresos</h5>
+                <ul>
+                    <?php foreach ($situacion['detalles_ingresos'] as $ingreso): ?>
+                        <li>
+                            <?= htmlspecialchars($ingreso['concepto']) ?>: <?= number_format($ingreso['importe'], 2, ',', '.') ?> € (<?= htmlspecialchars($ingreso['fecha']) ?>)
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <h5>Detalles de Gastos</h5>
+                <ul>
+                    <?php foreach ($situacion['detalles_gastos'] as $gasto): ?>
+                        <li>
+                            <?= htmlspecialchars($gasto['concepto']) ?>: <?= number_format($gasto['importe'], 2, ',', '.') ?> € (<?= htmlspecialchars($gasto['fecha']) ?>)
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.toggle-details').addEventListener('click', function () {
+        const detailsSection = document.querySelector('.details-section');
+        if (detailsSection.style.display === 'none') {
+            detailsSection.style.display = 'block';
+            this.textContent = 'Ocultar detalles';
+        } else {
+            detailsSection.style.display = 'none';
+            this.textContent = 'Mostrar detalles';
+        }
+    });
+</script>
