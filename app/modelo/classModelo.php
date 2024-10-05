@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../libs/Config.php';
 
 class GastosModelo
 {
@@ -8,9 +9,11 @@ class GastosModelo
     public function __construct()
     {
         try {
-            $dsn = "mysql:host=localhost;dbname=gastosencasa_bd";
-            $usuario = "root";
-            $contrasenya = "";
+            // Usamos los métodos estáticos de la clase Config para obtener los valores
+            $dsn = "mysql:host=" . Config::getDbHost() . ";dbname=" . Config::getDbName() . ";charset=" . Config::getDbCharset();
+            $usuario = Config::getDbUser();
+            $contrasenya = Config::getDbPass();
+
             $this->conexion = new PDO($dsn, $usuario, $contrasenya);
             $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conexion->exec("SET NAMES 'utf8'");
@@ -19,6 +22,7 @@ class GastosModelo
             exit();
         }
     }
+
 
     public function pruebaConexion()
     {
@@ -350,7 +354,8 @@ class GastosModelo
 
     public function obtenerFamilias()
     {
-        $sql = "SELECT idFamilia, nombre_familia FROM familias";
+        // Asegúrate de seleccionar el campo 'password'
+        $sql = "SELECT idFamilia, nombre_familia, password FROM familias";
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -429,7 +434,8 @@ class GastosModelo
 
     public function obtenerGrupos()
     {
-        $sql = "SELECT idGrupo, nombre_grupo FROM grupos";
+        // Asegúrate de seleccionar el campo 'password'
+        $sql = "SELECT idGrupo, nombre_grupo, password FROM grupos";
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -51,28 +51,40 @@ class AuthController
                 $m = new GastosModelo();
                 $usuario = $m->consultarUsuario($alias);
 
-                // Verificar la contraseña usando la función unificada
-                if ($usuario && comprobarhash($contrasenya, $usuario['contrasenya'])) {
-                    session_regenerate_id(true); // Proteger contra ataque de fijación de sesión
-
-                    // Establecer los datos del usuario en la sesión
-                    $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
-                    $_SESSION['usuario'] = array(
-                        'id' => $usuario['idUser'],
-                        'nombre' => $usuario['nombre'],
-                        'nivel_usuario' => $usuario['nivel_usuario'],
-                        'email' => $usuario['email'],
-                        'idFamilia' => $usuario['idFamilia'],
-                        'idGrupo' => $usuario['idGrupo']
-                    );
-
-                    error_log("Usuario con alias {$alias} ha iniciado sesión correctamente.");
-
-                    header('Location: index.php?ctl=inicio');
-                    exit();
+                // Verificar que el usuario existe
+                if (!$usuario) {
+                    $params['mensaje'] = 'Alias incorrecto.';
+                    error_log("Intento fallido de inicio de sesión para el alias {$alias}: usuario no encontrado.");
                 } else {
-                    $params['mensaje'] = 'Usuario o contraseña incorrectos.';
-                    error_log("Intento fallido de inicio de sesión para el alias {$alias}.");
+                    // Comprobación específica para superadmin
+                    if ($usuario['nivel_usuario'] == 'superadmin') {
+                        error_log("Iniciando sesión con superadmin: {$alias}");
+                    }
+
+                    // Verificar la contraseña usando la función unificada
+                    if (comprobarhash($contrasenya, $usuario['contrasenya'])) {
+                        session_regenerate_id(true); // Proteger contra ataque de fijación de sesión
+
+                        // Establecer los datos del usuario en la sesión
+                        $_SESSION['nivel_usuario'] = $usuario['nivel_usuario'];
+                        $_SESSION['usuario'] = array(
+                            'id' => $usuario['idUser'],
+                            'nombre' => $usuario['nombre'],
+                            'nivel_usuario' => $usuario['nivel_usuario'],
+                            'email' => $usuario['email'],
+                            'idFamilia' => $usuario['idFamilia'],
+                            'idGrupo' => $usuario['idGrupo']
+                        );
+
+                        error_log("Usuario con alias {$alias} ha iniciado sesión correctamente.");
+
+                        // Redirigir al inicio
+                        header('Location: index.php?ctl=inicio');
+                        exit();
+                    } else {
+                        $params['mensaje'] = 'Usuario o contraseña incorrectos.';
+                        error_log("Intento fallido de inicio de sesión para el alias {$alias}: contraseña incorrecta.");
+                    }
                 }
             } catch (Exception $e) {
                 error_log("Error en iniciarSesion(): " . $e->getMessage());

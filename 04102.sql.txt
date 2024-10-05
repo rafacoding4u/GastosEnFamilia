@@ -1,0 +1,77 @@
+
+-- AUTO_INCREMENT de la tabla familias
+ALTER TABLE familias
+  MODIFY idFamilia int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla gastos
+ALTER TABLE gastos
+  MODIFY idGasto int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla grupos
+ALTER TABLE grupos
+  MODIFY idGrupo int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla ingresos
+ALTER TABLE ingresos
+  MODIFY idIngreso int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla refranes
+ALTER TABLE refranes
+  MODIFY idRefran int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla situacion
+ALTER TABLE situacion
+  MODIFY idSituacion int(11) NOT NULL AUTO_INCREMENT;
+
+-- AUTO_INCREMENT de la tabla usuarios
+ALTER TABLE usuarios
+  MODIFY idUser int(11) NOT NULL AUTO_INCREMENT;
+
+-- Restricciones para tablas volcadas
+-- Filtros para la tabla administradores_familias
+ALTER TABLE administradores_familias
+  ADD CONSTRAINT administradores_familias_ibfk_1 FOREIGN KEY (idAdmin) REFERENCES usuarios (idUser) ON DELETE CASCADE,
+  ADD CONSTRAINT administradores_familias_ibfk_2 FOREIGN KEY (idFamilia) REFERENCES familias (idFamilia) ON DELETE CASCADE;
+
+-- Filtros para la tabla administradores_grupos
+ALTER TABLE administradores_grupos
+  ADD CONSTRAINT administradores_grupos_ibfk_1 FOREIGN KEY (idAdmin) REFERENCES usuarios (idUser) ON DELETE CASCADE,
+  ADD CONSTRAINT administradores_grupos_ibfk_2 FOREIGN KEY (idGrupo) REFERENCES grupos (idGrupo) ON DELETE CASCADE;
+
+-- Filtros para la tabla categorias_gastos
+ALTER TABLE categorias_gastos
+  ADD CONSTRAINT fk_categorias_gastos_usuario FOREIGN KEY (creado_por) REFERENCES usuarios (idUser);
+
+-- Filtros para la tabla categorias_ingresos
+ALTER TABLE categorias_ingresos
+  ADD CONSTRAINT fk_categorias_ingresos_usuario FOREIGN KEY (creado_por) REFERENCES usuarios (idUser);
+
+-- Filtros para la tabla envio_refranes
+ALTER TABLE envio_refranes
+  ADD CONSTRAINT envio_refranes_ibfk_1 FOREIGN KEY (idRefran) REFERENCES refranes (idRefran),
+  ADD CONSTRAINT envio_refranes_ibfk_2 FOREIGN KEY (idUser) REFERENCES usuarios (idUser);
+
+-- Filtros para la tabla gastos
+ALTER TABLE gastos
+  ADD CONSTRAINT gastos_ibfk_1 FOREIGN KEY (idUser) REFERENCES usuarios (idUser) ON DELETE SET NULL,
+  ADD CONSTRAINT gastos_ibfk_2 FOREIGN KEY (idCategoria) REFERENCES categorias_gastos (idCategoria);
+
+-- Filtros para la tabla ingresos
+ALTER TABLE ingresos
+  ADD CONSTRAINT ingresos_ibfk_1 FOREIGN KEY (idUser) REFERENCES usuarios (idUser) ON DELETE SET NULL,
+  ADD CONSTRAINT ingresos_ibfk_2 FOREIGN KEY (idCategoria) REFERENCES categorias_ingresos (idCategoria);
+
+-- Filtros para la tabla situacion
+ALTER TABLE situacion
+  ADD CONSTRAINT situacion_ibfk_1 FOREIGN KEY (idUser) REFERENCES usuarios (idUser);
+
+-- Filtros para la tabla usuarios
+ALTER TABLE usuarios
+  ADD CONSTRAINT fk_familia FOREIGN KEY (idFamilia) REFERENCES familias (idFamilia) ON DELETE SET NULL,
+  ADD CONSTRAINT fk_grupo FOREIGN KEY (idGrupo) REFERENCES grupos (idGrupo) ON DELETE SET NULL;
+
+COMMIT;
+
+SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT;
+SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS;
+SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION;

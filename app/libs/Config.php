@@ -3,7 +3,7 @@
 class Config {
     private static $db_host = 'localhost';
     private static $db_user = 'root';
-    private static $db_pass = '';
+    private static $db_pass = 'Ladilla7890@2'; // Ajusta esta contraseña si tu usuario root la tiene configurada
     private static $db_name = 'gastosencasa_bd';
     private static $db_charset = 'utf8';
 
@@ -18,15 +18,14 @@ class Config {
      */
     public static function getConexion() {
         try {
-            $conexion = new PDO(
-                'mysql:host=' . self::$db_host . ';dbname=' . self::$db_name . ';charset=' . self::$db_charset,
-                self::$db_user,
-                self::$db_pass,
-                array(
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-                )
-            );
+            $dsn = 'mysql:host=' . self::$db_host . ';dbname=' . self::$db_name . ';charset=' . self::$db_charset;
+            $opciones = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false // Recomendado para prevenir inyecciones SQL
+            ];
+
+            $conexion = new PDO($dsn, self::$db_user, self::$db_pass, $opciones);
             return $conexion;
         } catch (PDOException $e) {
             self::manejarError($e);
@@ -76,5 +75,26 @@ class Config {
      */
     public static function setDebugMode($debug_mode) {
         self::$debug = $debug_mode;
+    }
+
+    // Métodos para obtener los valores privados
+    public static function getDbUser() {
+        return self::$db_user;
+    }
+
+    public static function getDbPass() {
+        return self::$db_pass;
+    }
+
+    public static function getDbHost() {
+        return self::$db_host;
+    }
+
+    public static function getDbName() {
+        return self::$db_name;
+    }
+
+    public static function getDbCharset() {
+        return self::$db_charset;
     }
 }
