@@ -73,4 +73,4 @@ foreach ($usuarios as $usuario) {
 }
 
 echo "Contraseñas de usuarios, familias y grupos actualizadas correctamente a la contraseña temporal.";
-?>
+

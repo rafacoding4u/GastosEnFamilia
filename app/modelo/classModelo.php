@@ -148,23 +148,26 @@ class GastosModelo
     // Métodos relacionados con ingresos y gastos
     // -------------------------------
 
+    // Obtener el total de ingresos para un usuario
     public function obtenerTotalIngresos($idUsuario)
     {
-        $sql = "SELECT SUM(importe) AS totalIngresos FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalIngresos FROM ingresos WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $stmt->fetchColumn();  // Devuelve directamente el valor total
     }
 
+    // Obtener el total de gastos para un usuario
     public function obtenerTotalGastos($idUsuario)
     {
-        $sql = "SELECT SUM(importe) AS totalGastos FROM gastos WHERE idUser = :idUsuario";
+        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalGastos FROM gastos WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $stmt->fetchColumn();  // Devuelve directamente el valor total
     }
+
 
     // Obtener los gastos de un usuario
     public function obtenerGastosPorUsuario($idUsuario, $offset = 0, $limite = 10)

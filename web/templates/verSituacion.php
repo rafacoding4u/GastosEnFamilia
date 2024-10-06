@@ -11,7 +11,8 @@
                 <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
                     <option value="global" <?= $tipo === 'global' ? 'selected' : '' ?>>Global</option>
                 <?php endif; ?>
-                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins ?>
+                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins 
+                ?>
                     <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
                     <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
                 <?php endif; ?>
@@ -64,14 +65,15 @@
         <h4>Resumen Financiero</h4>
         <p>Total Ingresos: <span class="bg-success text-white px-2"><?= number_format($situacion['totalIngresos'], 2, ',', '.') ?> €</span></p>
         <p>Total Gastos: <span class="bg-danger text-white px-2"><?= number_format($situacion['totalGastos'], 2, ',', '.') ?> €</span></p>
-        <p>Saldo: 
-            <span class="px-2" style="color: white; background-color: <?= $situacion['totalIngresos'] - $situacion['totalGastos'] > 0 ? 'green' : ($situacion['totalIngresos'] - $situacion['totalGastos'] < 0 ? 'red' : 'gray') ?>;">
+        <p>Saldo:
+            <span class="px-2" style="color: white; background-color: <?= $situacion['totalIngresos'] - $situacion['totalGastos'] > 0 ? 'green' : 'red' ?>;">
                 <?= number_format($situacion['totalIngresos'] - $situacion['totalGastos'], 2, ',', '.') ?> €
             </span>
         </p>
     <?php else: ?>
         <p>No hay datos financieros disponibles.</p>
     <?php endif; ?>
+
 
     <!-- Mostrar usuarios si los hay y si el rol lo permite -->
     <?php if ($_SESSION['nivel_usuario'] === 'superadmin' && isset($usuarios) && !empty($usuarios)): ?>

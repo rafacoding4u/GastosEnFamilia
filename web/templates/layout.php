@@ -51,7 +51,7 @@
                         <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
 
                     <!-- Opciones para Usuario Normal -->
-                    <?php else: ?>
+                    <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'usuario'): ?>
                         <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a></li>
                         <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a></li>
                         <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>

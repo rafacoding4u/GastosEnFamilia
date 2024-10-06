@@ -48,25 +48,30 @@ class SituacionFinancieraController
 
     // Función para ver la situación financiera de un administrador
     private function verSituacionAdmin($m, $tipo, $idSeleccionado, &$params)
-    {
-        try {
-            $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($_SESSION['usuario']['id']);
-            $gruposAsignados = $m->obtenerGruposPorAdministrador($_SESSION['usuario']['id']);
-            $params['familias'] = $familiasAsignadas;
-            $params['grupos'] = $gruposAsignados;
+{
+    try {
+        $idAdmin = $_SESSION['usuario']['id'];  // Obtener el ID del administrador
+        $params['situacion'] = $m->obtenerSituacionFinanciera($idAdmin);  // Calcular la situación financiera del admin
 
-            if ($tipo === 'familia' && $idSeleccionado) {
-                $this->verSituacionFamilia($m, $idSeleccionado, $params);
-            } elseif ($tipo === 'grupo' && $idSeleccionado) {
-                $this->verSituacionGrupo($m, $idSeleccionado, $params);
-            } elseif ($tipo === 'usuario' && $idSeleccionado) {
-                $this->verSituacionUsuario($m, $idSeleccionado, $params);
-            }
-        } catch (Exception $e) {
-            error_log("Error en verSituacionAdmin(): " . $e->getMessage());
-            $this->redireccionarError('Error al obtener la situación financiera del administrador.');
+        // Si el administrador tiene familias o grupos asignados, se muestran también
+        $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($idAdmin);
+        $gruposAsignados = $m->obtenerGruposPorAdministrador($idAdmin);
+        $params['familias'] = $familiasAsignadas;
+        $params['grupos'] = $gruposAsignados;
+
+        if ($tipo === 'familia' && $idSeleccionado) {
+            $this->verSituacionFamilia($m, $idSeleccionado, $params);
+        } elseif ($tipo === 'grupo' && $idSeleccionado) {
+            $this->verSituacionGrupo($m, $idSeleccionado, $params);
+        } elseif ($tipo === 'usuario' && $idSeleccionado) {
+            $this->verSituacionUsuario($m, $idSeleccionado, $params);
         }
+    } catch (Exception $e) {
+        error_log("Error en verSituacionAdmin(): " . $e->getMessage());
+        $this->redireccionarError('Error al obtener la situación financiera del administrador.');
     }
+}
+
 
     // Función para ver la situación financiera de un superadmin
     private function verSituacionSuperadmin($m, $tipo, $idSeleccionado, &$params)
