@@ -1,6 +1,7 @@
 <?php
 require_once 'app/libs/bSeguridad.php';
 require_once 'app/libs/bGeneral.php';
+require_once 'app/modelo/classModelo.php'; // Asegúrate de que la clase del modelo esté bien referenciada
 
 class AuthController
 {
@@ -55,6 +56,8 @@ class AuthController
                 if (!$usuario) {
                     $params['mensaje'] = 'Alias incorrecto.';
                     error_log("Intento fallido de inicio de sesión para el alias {$alias}: usuario no encontrado.");
+                    // Registrar acceso denegado
+                    $this->registrarAcceso(null, 'acceso_denegado');
                 } else {
                     // Comprobación específica para superadmin
                     if ($usuario['nivel_usuario'] == 'superadmin') {
@@ -78,12 +81,17 @@ class AuthController
 
                         error_log("Usuario con alias {$alias} ha iniciado sesión correctamente.");
 
+                        // Registrar inicio de sesión exitoso
+                        $this->registrarAcceso($usuario['idUser'], 'login');
+
                         // Redirigir al inicio
                         header('Location: index.php?ctl=inicio');
                         exit();
                     } else {
                         $params['mensaje'] = 'Usuario o contraseña incorrectos.';
                         error_log("Intento fallido de inicio de sesión para el alias {$alias}: contraseña incorrecta.");
+                        // Registrar acceso denegado
+                        $this->registrarAcceso(null, 'acceso_denegado');
                     }
                 }
             } catch (Exception $e) {
@@ -107,7 +115,10 @@ class AuthController
     {
         try {
             // Asegurar que la sesión existe antes de cerrarla
-            if (session_status() === PHP_SESSION_ACTIVE) {
+            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['usuario'])) {
+                // Registrar el cierre de sesión
+                $this->registrarAcceso($_SESSION['usuario']['id'], 'logout');
+
                 session_start();
                 session_regenerate_id(true); // Generar un nuevo ID de sesión
                 session_unset(); // Eliminar todas las variables de sesión
@@ -146,6 +157,19 @@ class AuthController
             header('Location: index.php?ctl=home');
             exit();
         }
+    }
+
+    // Método para registrar acceso en la tabla de auditoría
+    private function registrarAcceso($idUser, $accion)
+    {
+        $m = new GastosModelo();
+
+        // Si no hay usuario (por ejemplo, en caso de acceso denegado)
+        if ($idUser === null) {
+            $idUser = 'NULL';
+        }
+
+        $m->registrarAcceso($idUser, $accion);
     }
 
     // Método para renderizar las vistas

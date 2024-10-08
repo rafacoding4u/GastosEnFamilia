@@ -1,6 +1,7 @@
 <?php
 require_once 'app/libs/bSeguridad.php';
 require_once 'app/libs/bGeneral.php';
+require_once 'app/modelo/classModelo.php'; // Asegúrate de incluir correctamente el modelo
 
 class UsuarioController
 {
@@ -280,4 +281,65 @@ class UsuarioController
             ($usuario['idFamilia'] == $_SESSION['usuario']['idFamilia'] ||
              $usuario['idGrupo'] == $_SESSION['usuario']['idGrupo']));
     }
+
+    // Obtener una configuración
+    public function obtenerConfiguracion($clave, $idUser = null)
+    {
+        $m = new GastosModelo();
+        return $m->consultarConfiguracion($clave, $idUser);
+    }
+
+    // Guardar o actualizar una configuración
+    public function guardarConfiguracion($clave, $valor, $idUser = null)
+    {
+        $m = new GastosModelo();
+        return $m->guardarConfiguracion($clave, $valor, $idUser);
+    }
+
+    // Archivar accesos antiguos
+    public function archivarAccesosAntiguos()
+    {
+        try {
+            $m = new GastosModelo();
+
+            // Archivar accesos anteriores a 1 año
+            $m->archivarAccesosAntiguos();
+
+            // Mensaje de confirmación
+            echo "Los accesos antiguos han sido archivados correctamente y la tabla ha sido limpiada.";
+        } catch (Exception $e) {
+            error_log("Error al archivar accesos antiguos: " . $e->getMessage());
+            echo "Ocurrió un error al archivar los accesos.";
+        }
+    }
+    public function guardarPreferencias()
+    {
+        try {
+            $m = new GastosModelo();
+    
+            // Recoger las preferencias enviadas
+            $resultadosPorPaginaGastos = recoge('resultados_por_pagina_gastos');
+            $resultadosPorPaginaIngresos = recoge('resultados_por_pagina_ingresos');
+    
+            // Guardar las configuraciones en la base de datos (si están definidas)
+            if ($resultadosPorPaginaGastos) {
+                $m->guardarConfiguracion('resultados_por_pagina_gastos', $resultadosPorPaginaGastos, $_SESSION['usuario']['id']);
+            }
+            if ($resultadosPorPaginaIngresos) {
+                $m->guardarConfiguracion('resultados_por_pagina_ingresos', $resultadosPorPaginaIngresos, $_SESSION['usuario']['id']);
+            }
+    
+            $_SESSION['mensaje_exito'] = 'Preferencias guardadas correctamente.';
+            header('Location: index.php?ctl=verPreferencias');
+            exit();
+    
+        } catch (Exception $e) {
+            error_log("Error en guardarPreferencias(): " . $e->getMessage());
+            $_SESSION['error_mensaje'] = 'No se pudieron guardar las preferencias. Inténtalo de nuevo.';
+            header('Location: index.php?ctl=verPreferencias');
+            exit();
+        }
+    }
+    
+
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-10-2024 a las 21:02:30
+-- Tiempo de generación: 08-10-2024 a las 18:22:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -28,6 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `administradores_familias` (
+  `id` int(11) NOT NULL,
   `idAdmin` int(11) NOT NULL,
   `idFamilia` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -36,28 +37,10 @@ CREATE TABLE `administradores_familias` (
 -- Volcado de datos para la tabla `administradores_familias`
 --
 
-INSERT INTO `administradores_familias` (`idAdmin`, `idFamilia`) VALUES
-(2, 1),
-(3, 2),
-(4, 3);
-
---
--- Disparadores `administradores_familias`
---
-DELIMITER $$
-CREATE TRIGGER `before_insert_administradores_familias` BEFORE INSERT ON `administradores_familias` FOR EACH ROW BEGIN
-  -- Validar si el administrador existe
-  IF (SELECT COUNT(*) FROM usuarios WHERE idUser = NEW.idAdmin) = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El administrador no existe';
-  END IF;
-
-  -- Validar si la familia existe
-  IF (SELECT COUNT(*) FROM familias WHERE idFamilia = NEW.idFamilia) = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La familia no existe';
-  END IF;
-END
-$$
-DELIMITER ;
+INSERT INTO `administradores_familias` (`id`, `idAdmin`, `idFamilia`) VALUES
+(1, 2, 1),
+(2, 3, 2),
+(3, 4, 3);
 
 -- --------------------------------------------------------
 
@@ -158,59 +141,154 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 (39, 'UPDATE', 'usuarios', 8, '8', '2024-10-06 18:58:24'),
 (40, 'UPDATE', 'usuarios', 4, '4', '2024-10-06 18:58:28'),
 (41, 'UPDATE', 'usuarios', 2, '2', '2024-10-06 18:58:59'),
-(42, 'UPDATE', 'usuarios', 8, '8', '2024-10-06 18:59:17');
+(42, 'UPDATE', 'usuarios', 8, '8', '2024-10-06 18:59:17'),
+(43, 'INSERT', 'gastos', 14, '2', '2024-10-06 19:09:40'),
+(44, 'INSERT', 'gastos', 15, '2', '2024-10-06 19:10:45'),
+(45, 'UPDATE', 'gastos', 1, '2', '2024-10-06 19:12:47'),
+(46, 'DELETE', 'gastos', 1, '2', '2024-10-06 19:12:49'),
+(47, 'INSERT', 'categorias', 15, '2', '2024-10-07 08:41:30'),
+(48, 'INSERT', 'categorias', 16, '2', '2024-10-07 08:41:30'),
+(49, 'UPDATE', 'usuarios', 1, '1', '2024-10-07 15:08:10'),
+(50, 'UPDATE', 'usuarios', 3, '3', '2024-10-07 15:08:10'),
+(51, 'UPDATE', 'usuarios', 4, '4', '2024-10-07 15:08:10'),
+(52, 'UPDATE', 'usuarios', 9, '9', '2024-10-07 15:08:10'),
+(53, 'UPDATE', 'usuarios', 10, '10', '2024-10-07 15:08:10'),
+(54, 'UPDATE', 'usuarios', 11, '11', '2024-10-07 15:08:10'),
+(55, 'UPDATE', 'usuarios', 12, '12', '2024-10-07 15:08:10'),
+(56, 'UPDATE', 'usuarios', 13, '13', '2024-10-07 15:08:10'),
+(57, 'UPDATE', 'usuarios', 1, '1', '2024-10-07 15:13:07'),
+(58, 'UPDATE', 'usuarios', 3, '3', '2024-10-07 15:13:07'),
+(59, 'UPDATE', 'usuarios', 4, '4', '2024-10-07 15:13:07'),
+(60, 'UPDATE', 'usuarios', 5, '5', '2024-10-07 15:13:07'),
+(61, 'UPDATE', 'usuarios', 6, '6', '2024-10-07 15:13:07'),
+(62, 'UPDATE', 'usuarios', 7, '7', '2024-10-07 15:13:07'),
+(63, 'UPDATE', 'usuarios', 8, '8', '2024-10-07 15:13:07'),
+(64, 'UPDATE', 'usuarios', 12, '12', '2024-10-07 15:13:07'),
+(65, 'UPDATE', 'usuarios', 13, '13', '2024-10-07 15:13:07'),
+(66, 'UPDATE', 'usuarios', 1, '1', '2024-10-07 15:15:09'),
+(67, 'UPDATE', 'usuarios', 3, '3', '2024-10-07 15:15:09'),
+(68, 'UPDATE', 'usuarios', 4, '4', '2024-10-07 15:15:09'),
+(69, 'UPDATE', 'usuarios', 5, '5', '2024-10-07 15:15:09'),
+(70, 'UPDATE', 'usuarios', 6, '6', '2024-10-07 15:15:09'),
+(71, 'UPDATE', 'usuarios', 7, '7', '2024-10-07 15:15:09'),
+(72, 'UPDATE', 'usuarios', 8, '8', '2024-10-07 15:15:09'),
+(73, 'UPDATE', 'usuarios', 12, '12', '2024-10-07 15:15:09'),
+(74, 'UPDATE', 'usuarios', 13, '13', '2024-10-07 15:15:09'),
+(75, 'UPDATE', 'usuarios', 1, '1', '2024-10-07 15:18:14'),
+(76, 'UPDATE', 'usuarios', 3, '3', '2024-10-07 15:18:14'),
+(77, 'UPDATE', 'usuarios', 4, '4', '2024-10-07 15:18:14'),
+(78, 'UPDATE', 'usuarios', 5, '5', '2024-10-07 15:18:14'),
+(79, 'UPDATE', 'usuarios', 6, '6', '2024-10-07 15:18:14'),
+(80, 'UPDATE', 'usuarios', 7, '7', '2024-10-07 15:18:14'),
+(81, 'UPDATE', 'usuarios', 8, '8', '2024-10-07 15:18:14'),
+(82, 'UPDATE', 'usuarios', 12, '12', '2024-10-07 15:18:14'),
+(83, 'UPDATE', 'usuarios', 13, '13', '2024-10-07 15:18:14'),
+(84, 'UPDATE', 'usuarios', 1, '1', '2024-10-07 15:19:48'),
+(85, 'UPDATE', 'usuarios', 3, '3', '2024-10-07 15:19:48'),
+(86, 'UPDATE', 'usuarios', 4, '4', '2024-10-07 15:19:48'),
+(87, 'UPDATE', 'usuarios', 5, '5', '2024-10-07 15:19:48'),
+(88, 'UPDATE', 'usuarios', 6, '6', '2024-10-07 15:19:48'),
+(89, 'UPDATE', 'usuarios', 7, '7', '2024-10-07 15:19:48'),
+(90, 'UPDATE', 'usuarios', 8, '8', '2024-10-07 15:19:48'),
+(91, 'UPDATE', 'usuarios', 12, '12', '2024-10-07 15:19:48'),
+(92, 'UPDATE', 'usuarios', 13, '13', '2024-10-07 15:19:48'),
+(93, 'UPDATE', 'gastos', 4, '2', '2024-10-07 16:06:24'),
+(94, 'UPDATE', 'gastos', 9, '3', '2024-10-07 16:06:24'),
+(95, 'UPDATE', 'gastos', 14, '2', '2024-10-07 16:06:24'),
+(96, 'UPDATE', 'gastos', 15, '2', '2024-10-07 16:06:24');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categorias_gastos`
+-- Estructura de tabla para la tabla `auditoria_accesos`
 --
 
-CREATE TABLE `categorias_gastos` (
-  `idCategoria` int(11) NOT NULL,
-  `nombreCategoria` varchar(100) NOT NULL,
-  `creado_por` int(11) DEFAULT NULL,
-  `estado_categoria` enum('activo','inactivo') DEFAULT 'activo'
+CREATE TABLE `auditoria_accesos` (
+  `idAcceso` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `accion` varchar(255) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `categorias_gastos`
+-- Volcado de datos para la tabla `auditoria_accesos`
 --
 
-INSERT INTO `categorias_gastos` (`idCategoria`, `nombreCategoria`, `creado_por`, `estado_categoria`) VALUES
-(1, 'Comida', 1, 'activo'),
-(2, 'Transporte', 1, 'activo'),
-(3, 'Vivienda', 1, 'activo'),
-(4, 'Alquiler', 1, 'activo'),
-(5, 'Compras', 1, 'activo'),
-(7, 'Ocio', 1, 'activo'),
-(8, 'Educación', 1, 'activo');
+INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
+(1, 2, 'logout', '2024-10-07 13:34:25'),
+(2, 2, 'login', '2024-10-07 13:34:32');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categorias_ingresos`
+-- Estructura de tabla para la tabla `auditoria_accesos_archivo`
 --
 
-CREATE TABLE `categorias_ingresos` (
+CREATE TABLE `auditoria_accesos_archivo` (
+  `idAcceso` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `accion` varchar(255) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
   `idCategoria` int(11) NOT NULL,
   `nombreCategoria` varchar(100) NOT NULL,
   `creado_por` int(11) DEFAULT NULL,
-  `estado_categoria` enum('activo','inactivo') DEFAULT 'activo'
+  `estado_categoria` enum('activo','inactivo') DEFAULT 'activo',
+  `tipo_categoria` enum('gasto','ingreso') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `categorias_ingresos`
+-- Volcado de datos para la tabla `categorias`
 --
 
-INSERT INTO `categorias_ingresos` (`idCategoria`, `nombreCategoria`, `creado_por`, `estado_categoria`) VALUES
-(2, 'Intereses', 1, 'activo'),
-(3, 'Regalos', 1, 'activo'),
-(4, 'Salario', 1, 'activo'),
-(5, 'Venta', 1, 'activo'),
-(6, 'Inversiones', 1, 'activo'),
-(7, 'Premios', 1, 'activo'),
-(8, 'Otros', 1, 'activo');
+INSERT INTO `categorias` (`idCategoria`, `nombreCategoria`, `creado_por`, `estado_categoria`, `tipo_categoria`) VALUES
+(2, 'Transporte', 1, 'activo', 'gasto'),
+(3, 'Vivienda', 1, 'activo', 'gasto'),
+(4, 'Alquiler', 1, 'activo', 'gasto'),
+(5, 'Compras', 1, 'activo', 'gasto'),
+(6, 'Ocio', 1, 'activo', 'gasto'),
+(7, 'Educación', 1, 'activo', 'gasto'),
+(8, 'Intereses', 1, 'activo', 'ingreso'),
+(9, 'Regalos', 1, 'activo', 'ingreso'),
+(10, 'Salario', 1, 'activo', 'ingreso'),
+(11, 'Venta', 1, 'activo', 'ingreso'),
+(12, 'Inversiones', 1, 'activo', 'ingreso'),
+(13, 'Premios', 1, 'activo', 'ingreso'),
+(14, 'Otros', 1, 'activo', 'ingreso'),
+(15, 'Servicios', 2, 'activo', 'gasto'),
+(16, 'Dividendos', 2, 'activo', 'ingreso');
+
+--
+-- Disparadores `categorias`
+--
+DELIMITER $$
+CREATE TRIGGER `auditar_categoria_insert` AFTER INSERT ON `categorias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('INSERT', 'categorias', NEW.idCategoria, NEW.creado_por, NOW());
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `configuraciones`
+--
+
+CREATE TABLE `configuraciones` (
+  `idConfig` int(11) NOT NULL,
+  `clave_config` varchar(100) DEFAULT NULL,
+  `valor_config` text DEFAULT NULL,
+  `idUser` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -295,14 +373,14 @@ DELIMITER ;
 
 CREATE TABLE `gastos` (
   `idGasto` int(11) NOT NULL,
-  `idUser` int(11) DEFAULT NULL,
+  `idUser` int(11) NOT NULL,
   `importe` decimal(10,2) NOT NULL,
-  `idCategoria` int(11) DEFAULT NULL,
+  `idCategoria` int(11) NOT NULL,
   `origen` enum('banco','efectivo','tarjeta','transferencia','otro') NOT NULL,
   `concepto` varchar(100) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  `idGrupo` int(11) DEFAULT NULL,
-  `idFamilia` int(11) DEFAULT NULL
+  `idGrupo` int(11) NOT NULL,
+  `idFamilia` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -310,19 +388,20 @@ CREATE TABLE `gastos` (
 --
 
 INSERT INTO `gastos` (`idGasto`, `idUser`, `importe`, `idCategoria`, `origen`, `concepto`, `fecha`, `idGrupo`, `idFamilia`) VALUES
-(1, 2, 500.00, 1, 'banco', 'Compra de comida', '2024-10-03 22:00:00', NULL, NULL),
-(2, 2, 100.00, 2, 'efectivo', 'Transporte público', '2024-10-03 22:00:00', NULL, NULL),
-(3, 2, 300.00, 3, 'banco', 'Pago del alquiler', '2024-10-03 22:00:00', NULL, NULL),
-(4, 2, 420.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-21 23:00:00', NULL, NULL),
-(5, 2, 120.15, 2, 'banco', 'Compra de supermercado', '2021-04-14 22:00:00', NULL, NULL),
-(6, 2, 90.00, 3, 'banco', 'Transporte mensual', '2021-04-19 22:00:00', NULL, NULL),
-(7, 2, 50.50, 4, 'efectivo', 'Ocio y entretenimiento', '2021-05-21 22:00:00', NULL, NULL),
-(8, 2, 200.00, 5, 'banco', 'Pago de estudios', '2021-06-11 22:00:00', NULL, NULL),
-(9, 3, 450.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-24 23:00:00', NULL, NULL),
-(10, 3, 100.15, 2, 'banco', 'Compra de supermercado', '2021-04-17 22:00:00', NULL, NULL),
-(11, 3, 85.00, 3, 'banco', 'Transporte mensual', '2021-04-22 22:00:00', NULL, NULL),
-(12, 3, 60.50, 4, 'efectivo', 'Cine y entretenimiento', '2021-05-24 22:00:00', NULL, NULL),
-(13, 3, 220.00, 5, 'banco', 'Matrícula estudios', '2021-06-14 22:00:00', NULL, NULL);
+(2, 2, 100.00, 2, 'efectivo', 'Transporte público', '2024-10-03 22:00:00', 0, 0),
+(3, 2, 300.00, 3, 'banco', 'Pago del alquiler', '2024-10-03 22:00:00', 0, 0),
+(4, 2, 420.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-21 23:00:00', 0, 0),
+(5, 2, 120.15, 2, 'banco', 'Compra de supermercado', '2021-04-14 22:00:00', 0, 0),
+(6, 2, 90.00, 3, 'banco', 'Transporte mensual', '2021-04-19 22:00:00', 0, 0),
+(7, 2, 50.50, 4, 'efectivo', 'Ocio y entretenimiento', '2021-05-21 22:00:00', 0, 0),
+(8, 2, 200.00, 5, 'banco', 'Pago de estudios', '2021-06-11 22:00:00', 0, 0),
+(9, 3, 450.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-24 23:00:00', 0, 0),
+(10, 3, 100.15, 2, 'banco', 'Compra de supermercado', '2021-04-17 22:00:00', 0, 0),
+(11, 3, 85.00, 3, 'banco', 'Transporte mensual', '2021-04-22 22:00:00', 0, 0),
+(12, 3, 60.50, 4, 'efectivo', 'Cine y entretenimiento', '2021-05-24 22:00:00', 0, 0),
+(13, 3, 220.00, 5, 'banco', 'Matrícula estudios', '2021-06-14 22:00:00', 0, 0),
+(14, 2, 150.50, 1, 'efectivo', 'Compra de libros', '2024-10-06 19:09:40', 1, 1),
+(15, 2, 150.50, 1, 'efectivo', 'Compra de libros', '2024-10-06 19:10:45', 1, 1);
 
 --
 -- Disparadores `gastos`
@@ -388,24 +467,11 @@ $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `verificar_consistencia_gasto` BEFORE INSERT ON `gastos` FOR EACH ROW BEGIN
-  DECLARE familia_invalida INT;
-  DECLARE grupo_invalido INT;
-
-  -- Verificar que el usuario pertenece a la familia
-  SELECT COUNT(*) INTO familia_invalida
-  FROM usuarios
-  WHERE idUser = NEW.idUser AND idFamilia = NEW.idFamilia;
-
-  -- Verificar que el usuario pertenece al grupo
-  SELECT COUNT(*) INTO grupo_invalido
-  FROM usuarios
-  WHERE idUser = NEW.idUser AND idGrupo = NEW.idGrupo;
-
-  -- Si el usuario no está asociado correctamente, se cancela la operación
-  IF familia_invalida = 0 OR grupo_invalido = 0 THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Inconsistencia detectada: El usuario no está asociado correctamente a la familia o grupo.';
-  END IF;
+    -- Verificar que el gasto no sea negativo
+    IF NEW.importe < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El importe del gasto no puede ser negativo';
+    END IF;
 END
 $$
 DELIMITER ;
@@ -523,8 +589,8 @@ CREATE TABLE `ingresos` (
   `origen` enum('banco','efectivo','tarjeta','transferencia','otro') NOT NULL,
   `concepto` varchar(100) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  `idGrupo` int(11) DEFAULT NULL,
-  `idFamilia` int(11) DEFAULT NULL
+  `idGrupo` int(11) NOT NULL,
+  `idFamilia` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -532,19 +598,19 @@ CREATE TABLE `ingresos` (
 --
 
 INSERT INTO `ingresos` (`idIngreso`, `idUser`, `importe`, `idCategoria`, `origen`, `concepto`, `fecha`, `idGrupo`, `idFamilia`) VALUES
-(1, 2, 1000.00, NULL, 'banco', 'Salario', '2024-10-03 22:00:00', NULL, NULL),
-(2, 2, 50.00, 2, 'efectivo', 'Intereses', '2024-10-03 22:00:00', NULL, NULL),
-(3, 2, 200.00, 3, 'banco', 'Regalo de cumpleaños', '2024-10-03 22:00:00', NULL, NULL),
-(4, 2, 1200.55, NULL, 'banco', 'Salario mensual', '2021-02-12 23:00:00', NULL, NULL),
-(5, 2, 2450.75, 2, 'efectivo', 'Venta de coche', '2020-08-08 22:00:00', NULL, NULL),
-(6, 2, 110.40, 3, 'efectivo', 'Inversiones', '2021-05-09 22:00:00', NULL, NULL),
-(7, 2, 90.30, 4, 'banco', 'Premio concurso', '2021-06-10 22:00:00', NULL, NULL),
-(8, 2, 250.00, 5, 'banco', 'Otros ingresos', '2021-07-11 22:00:00', NULL, NULL),
-(9, 3, 1300.55, NULL, 'banco', 'Salario mensual', '2021-02-13 23:00:00', NULL, NULL),
-(10, 3, 2250.75, 2, 'efectivo', 'Venta de moto', '2020-08-10 22:00:00', NULL, NULL),
-(11, 3, 210.40, 3, 'efectivo', 'Inversiones', '2021-05-13 22:00:00', NULL, NULL),
-(12, 3, 190.30, 4, 'banco', 'Premio torneo', '2021-06-13 22:00:00', NULL, NULL),
-(13, 3, 350.00, 5, 'banco', 'Otros ingresos', '2021-07-14 22:00:00', NULL, NULL);
+(1, 2, 1000.00, NULL, 'banco', 'Salario', '2024-10-03 22:00:00', 0, 0),
+(2, 2, 50.00, 2, 'efectivo', 'Intereses', '2024-10-03 22:00:00', 0, 0),
+(3, 2, 200.00, 3, 'banco', 'Regalo de cumpleaños', '2024-10-03 22:00:00', 0, 0),
+(4, 2, 1200.55, NULL, 'banco', 'Salario mensual', '2021-02-12 23:00:00', 0, 0),
+(5, 2, 2450.75, 2, 'efectivo', 'Venta de coche', '2020-08-08 22:00:00', 0, 0),
+(6, 2, 110.40, 3, 'efectivo', 'Inversiones', '2021-05-09 22:00:00', 0, 0),
+(7, 2, 90.30, 4, 'banco', 'Premio concurso', '2021-06-10 22:00:00', 0, 0),
+(8, 2, 250.00, 5, 'banco', 'Otros ingresos', '2021-07-11 22:00:00', 0, 0),
+(9, 3, 1300.55, NULL, 'banco', 'Salario mensual', '2021-02-13 23:00:00', 0, 0),
+(10, 3, 2250.75, 2, 'efectivo', 'Venta de moto', '2020-08-10 22:00:00', 0, 0),
+(11, 3, 210.40, 3, 'efectivo', 'Inversiones', '2021-05-13 22:00:00', 0, 0),
+(12, 3, 190.30, 4, 'banco', 'Premio torneo', '2021-06-13 22:00:00', 0, 0),
+(13, 3, 350.00, 5, 'banco', 'Otros ingresos', '2021-07-14 22:00:00', 0, 0);
 
 --
 -- Disparadores `ingresos`
@@ -648,6 +714,22 @@ CREATE TRIGGER `verificar_ingreso_familia_grupo` BEFORE INSERT ON `ingresos` FOR
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `news_letter_envios`
+--
+
+CREATE TABLE `news_letter_envios` (
+  `idEnvio` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `fecha_envio` timestamp NOT NULL DEFAULT current_timestamp(),
+  `idRefran` int(11) NOT NULL,
+  `saldo_total` decimal(10,2) NOT NULL,
+  `gastos_totales` decimal(10,2) NOT NULL,
+  `ingresos_totales` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -818,6 +900,30 @@ INSERT INTO `refranes` (`idRefran`, `refran`, `autor`, `pais`, `fecha_ultimo_uso
 (146, 'Sarna con gusto no pica', 'Desconocido', 'España', '2024-10-04 12:26:39', NULL, '2024-10-04 12:26:39'),
 (147, 'Soldado avisado no muere en guerra', 'Desconocido', 'España', '2024-10-04 12:26:39', NULL, '2024-10-04 12:26:39'),
 (148, 'Sobre gustos no hay nada escrito', 'Desconocido', 'España', '2024-10-04 12:26:39', NULL, '2024-10-04 12:26:39');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `roles`
+--
+
+CREATE TABLE `roles` (
+  `idRol` int(11) NOT NULL,
+  `nombreRol` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `roles_permisos`
+--
+
+CREATE TABLE `roles_permisos` (
+  `idPermiso` int(11) NOT NULL,
+  `idRol` int(11) DEFAULT NULL,
+  `nombrePermiso` varchar(255) DEFAULT NULL,
+  `tipoPermiso` enum('leer','escribir','eliminar') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1005,8 +1111,8 @@ DELIMITER ;
 -- Indices de la tabla `administradores_familias`
 --
 ALTER TABLE `administradores_familias`
-  ADD PRIMARY KEY (`idAdmin`,`idFamilia`),
-  ADD KEY `idFamilia` (`idFamilia`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idAdmin` (`idAdmin`,`idFamilia`);
 
 --
 -- Indices de la tabla `administradores_grupos`
@@ -1022,21 +1128,33 @@ ALTER TABLE `auditoria`
   ADD PRIMARY KEY (`idAuditoria`);
 
 --
--- Indices de la tabla `categorias_gastos`
+-- Indices de la tabla `auditoria_accesos`
 --
-ALTER TABLE `categorias_gastos`
-  ADD PRIMARY KEY (`idCategoria`),
-  ADD UNIQUE KEY `nombreCategoria` (`nombreCategoria`),
-  ADD UNIQUE KEY `unique_nombre_categoria_gasto` (`nombreCategoria`,`creado_por`),
-  ADD KEY `fk_categorias_gastos_usuario` (`creado_por`);
+ALTER TABLE `auditoria_accesos`
+  ADD PRIMARY KEY (`idAcceso`),
+  ADD KEY `idx_acceso_user_fecha` (`idUser`,`fecha`);
 
 --
--- Indices de la tabla `categorias_ingresos`
+-- Indices de la tabla `auditoria_accesos_archivo`
 --
-ALTER TABLE `categorias_ingresos`
+ALTER TABLE `auditoria_accesos_archivo`
+  ADD PRIMARY KEY (`idAcceso`),
+  ADD KEY `idx_acceso_user_fecha` (`idUser`,`fecha`);
+
+--
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
   ADD PRIMARY KEY (`idCategoria`),
-  ADD UNIQUE KEY `unique_nombre_categoria_ingreso` (`nombreCategoria`,`creado_por`),
-  ADD KEY `fk_categorias_ingresos_usuario` (`creado_por`);
+  ADD UNIQUE KEY `nombreCategoria` (`nombreCategoria`,`creado_por`,`tipo_categoria`),
+  ADD KEY `creado_por` (`creado_por`);
+
+--
+-- Indices de la tabla `configuraciones`
+--
+ALTER TABLE `configuraciones`
+  ADD PRIMARY KEY (`idConfig`),
+  ADD UNIQUE KEY `clave_config` (`clave_config`);
 
 --
 -- Indices de la tabla `envio_refranes`
@@ -1064,10 +1182,7 @@ ALTER TABLE `gastos`
   ADD KEY `idCategoria` (`idCategoria`),
   ADD KEY `fk_gasto_familia` (`idFamilia`),
   ADD KEY `fk_gasto_grupo` (`idGrupo`),
-  ADD KEY `idx_gastos_fecha_importe` (`fecha`,`importe`),
-  ADD KEY `idx_gastos_concepto` (`concepto`),
-  ADD KEY `idx_gastos_fecha` (`fecha`),
-  ADD KEY `idx_gastos_importe_fecha` (`importe`,`fecha`);
+  ADD KEY `idx_gastos_fecha_importe_concepto` (`fecha`,`importe`,`concepto`);
 
 --
 -- Indices de la tabla `grupos`
@@ -1086,18 +1201,40 @@ ALTER TABLE `ingresos`
   ADD PRIMARY KEY (`idIngreso`),
   ADD KEY `idUser` (`idUser`),
   ADD KEY `idCategoria` (`idCategoria`),
-  ADD KEY `fk_ingreso_familia` (`idFamilia`),
-  ADD KEY `fk_ingreso_grupo` (`idGrupo`),
   ADD KEY `idx_ingresos_fecha_importe` (`fecha`,`importe`),
   ADD KEY `idx_ingresos_concepto` (`concepto`),
   ADD KEY `idx_ingresos_fecha` (`fecha`),
-  ADD KEY `idx_ingresos_importe_fecha` (`importe`,`fecha`);
+  ADD KEY `idx_ingresos_importe_fecha` (`importe`,`fecha`),
+  ADD KEY `fk_ingreso_familia` (`idFamilia`),
+  ADD KEY `fk_ingreso_grupo` (`idGrupo`),
+  ADD KEY `idx_ingresos_fecha_importe_concepto` (`fecha`,`importe`,`concepto`);
+
+--
+-- Indices de la tabla `news_letter_envios`
+--
+ALTER TABLE `news_letter_envios`
+  ADD PRIMARY KEY (`idEnvio`),
+  ADD KEY `idUser` (`idUser`),
+  ADD KEY `idRefran` (`idRefran`);
 
 --
 -- Indices de la tabla `refranes`
 --
 ALTER TABLE `refranes`
   ADD PRIMARY KEY (`idRefran`);
+
+--
+-- Indices de la tabla `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`idRol`);
+
+--
+-- Indices de la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  ADD PRIMARY KEY (`idPermiso`),
+  ADD KEY `fk_rol` (`idRol`);
 
 --
 -- Indices de la tabla `situacion`
@@ -1123,7 +1260,8 @@ ALTER TABLE `usuarios`
   ADD KEY `idx_usuarios_email` (`email`),
   ADD KEY `idx_usuarios_nombre` (`nombre`),
   ADD KEY `idx_usuarios_apellido` (`apellido`),
-  ADD KEY `idx_usuarios_familia_grupo` (`idFamilia`,`idGrupo`);
+  ADD KEY `idx_usuarios_familia_grupo` (`idFamilia`,`idGrupo`),
+  ADD KEY `idx_idUser` (`idUser`);
 
 --
 -- Indices de la tabla `usuarios_familias`
@@ -1144,22 +1282,40 @@ ALTER TABLE `usuarios_grupos`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `administradores_familias`
+--
+ALTER TABLE `administradores_familias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
--- AUTO_INCREMENT de la tabla `categorias_gastos`
+-- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
-ALTER TABLE `categorias_gastos`
-  MODIFY `idCategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `auditoria_accesos`
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `categorias_ingresos`
+-- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
 --
-ALTER TABLE `categorias_ingresos`
-  MODIFY `idCategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+ALTER TABLE `auditoria_accesos_archivo`
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `idCategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT de la tabla `configuraciones`
+--
+ALTER TABLE `configuraciones`
+  MODIFY `idConfig` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `envio_refranes`
@@ -1177,7 +1333,7 @@ ALTER TABLE `familias`
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos`
@@ -1192,10 +1348,28 @@ ALTER TABLE `ingresos`
   MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
+-- AUTO_INCREMENT de la tabla `news_letter_envios`
+--
+ALTER TABLE `news_letter_envios`
+  MODIFY `idEnvio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `refranes`
 --
 ALTER TABLE `refranes`
   MODIFY `idRefran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
+
+--
+-- AUTO_INCREMENT de la tabla `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `idRol` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `situacion`
@@ -1214,13 +1388,6 @@ ALTER TABLE `usuarios`
 --
 
 --
--- Filtros para la tabla `administradores_familias`
---
-ALTER TABLE `administradores_familias`
-  ADD CONSTRAINT `fk_admin_familia_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_admin_familia_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE CASCADE;
-
---
 -- Filtros para la tabla `administradores_grupos`
 --
 ALTER TABLE `administradores_grupos`
@@ -1228,16 +1395,16 @@ ALTER TABLE `administradores_grupos`
   ADD CONSTRAINT `fk_admin_grupo_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `categorias_gastos`
+-- Filtros para la tabla `auditoria_accesos`
 --
-ALTER TABLE `categorias_gastos`
-  ADD CONSTRAINT `fk_categorias_gastos_usuario` FOREIGN KEY (`creado_por`) REFERENCES `usuarios` (`idUser`);
+ALTER TABLE `auditoria_accesos`
+  ADD CONSTRAINT `fk_user_acceso` FOREIGN KEY (`idUser`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `categorias_ingresos`
+-- Filtros para la tabla `categorias`
 --
-ALTER TABLE `categorias_ingresos`
-  ADD CONSTRAINT `fk_categorias_ingresos_usuario` FOREIGN KEY (`creado_por`) REFERENCES `usuarios` (`idUser`);
+ALTER TABLE `categorias`
+  ADD CONSTRAINT `categorias_ibfk_1` FOREIGN KEY (`creado_por`) REFERENCES `usuarios` (`idUser`);
 
 --
 -- Filtros para la tabla `envio_refranes`
@@ -1250,19 +1417,30 @@ ALTER TABLE `envio_refranes`
 -- Filtros para la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  ADD CONSTRAINT `fk_gasto_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_gasto_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL,
-  ADD CONSTRAINT `gastos_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `usuarios` (`idUser`) ON DELETE SET NULL,
-  ADD CONSTRAINT `gastos_ibfk_2` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_gastos` (`idCategoria`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_gasto_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_gasto_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
-  ADD CONSTRAINT `fk_ingreso_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_ingreso_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL,
-  ADD CONSTRAINT `ingresos_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `usuarios` (`idUser`) ON DELETE SET NULL,
-  ADD CONSTRAINT `ingresos_ibfk_2` FOREIGN KEY (`idCategoria`) REFERENCES `categorias_ingresos` (`idCategoria`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_ingreso_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ingreso_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ingresos_categoria` FOREIGN KEY (`idCategoria`) REFERENCES `categorias` (`idCategoria`) ON DELETE SET NULL,
+  ADD CONSTRAINT `ingresos_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `usuarios` (`idUser`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `news_letter_envios`
+--
+ALTER TABLE `news_letter_envios`
+  ADD CONSTRAINT `news_letter_envios_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE,
+  ADD CONSTRAINT `news_letter_envios_ibfk_2` FOREIGN KEY (`idRefran`) REFERENCES `refranes` (`idRefran`);
+
+--
+-- Filtros para la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  ADD CONSTRAINT `fk_rol` FOREIGN KEY (`idRol`) REFERENCES `roles` (`idRol`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `situacion`
@@ -1274,8 +1452,8 @@ ALTER TABLE `situacion`
 -- Filtros para la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD CONSTRAINT `fk_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_usuario_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_usuario_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `usuarios_familias`
