@@ -18,57 +18,55 @@
 
     <!-- Menú de navegación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <!-- Enlace al Inicio para todos los usuarios -->
-                <li class="nav-item"><a class="nav-link" href="index.php?ctl=inicio">Inicio</a></li>
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <!-- Enlace al Inicio para todos los usuarios -->
+                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=inicio">Inicio</a></li>
 
-                <?php if (isset($_SESSION['usuario'])): ?>
-                    <!-- Opciones para Superadmin -->
-                    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Gestionar Presupuestos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetasGlobales">Ver Metas Globales</a></li>
-
-                    <!-- Opciones para Admin -->
-                    <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
-
-                    <!-- Opciones para Usuario Normal -->
-                    <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'usuario'): ?>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
+                    <!-- Verificación de sesión activa -->
+                    <?php if (isset($_SESSION['usuario'])): ?>
+                        <!-- Opciones según el rol del usuario -->
+                        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Gestionar Presupuestos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetasGlobales">Ver Metas Globales</a></li>
+                            <!-- Nueva opción: Asignar Usuario a Familia o Grupo -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuario a Familia o Grupo</a></li>
+                        <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
+                        <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'usuario'): ?>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
+                        <?php endif; ?>
+                        <!-- Enlace para cerrar sesión -->
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a></li>
+                    <?php else: ?>
+                        <!-- Opciones para usuarios no autenticados -->
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
                     <?php endif; ?>
-
-                    <!-- Enlace de Cerrar Sesión para todos los usuarios autenticados -->
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a></li>
-                <?php else: ?>
-                    <!-- Opciones para usuarios no autenticados -->
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
-                <?php endif; ?>
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <!-- Contenido principal de la página -->
     <main class="container py-4">

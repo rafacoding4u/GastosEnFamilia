@@ -34,7 +34,7 @@ if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;
 }
 
-// Mapeo de rutas y sus controladores
+// Mapeo de rutas y sus controladores, incluyendo las opciones de SuperUsuario
 $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'AuthController', 'action' => 'home', 'nivel_usuario' => 0),
@@ -71,6 +71,12 @@ $map = array(
     'crearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
     'formCrearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
     'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
+
+    // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
+    'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
+    // En la parte del mapeo de rutas en $map
+    'asignarUsuarioFamiliaGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2),
+
 
     // Gestión financiera
     'verGastos' => array('controller' => 'FinanzasController', 'action' => 'verGastos', 'nivel_usuario' => 1),

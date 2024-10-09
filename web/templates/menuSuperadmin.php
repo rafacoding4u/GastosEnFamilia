@@ -46,6 +46,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a>
                     </li>
+                    
+                    <!-- Nueva opción: Asignar Usuario a Familia o Grupo -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuario a Familia o Grupo</a>
+                    </li>
 
                     <!-- Opciones avanzadas de Superadmin -->
                     <li class="nav-item">

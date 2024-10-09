@@ -128,20 +128,28 @@ class SituacionFinancieraController
 
     // Función para calcular la situación financiera de un usuario
     private function calcularSituacionUsuario($m, $idUsuario)
-    {
-        try {
-            $usuario = $m->obtenerUsuarioPorId($idUsuario);
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
-            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
-            return $usuario;
-        } catch (Exception $e) {
-            error_log("Error en calcularSituacionUsuario(): " . $e->getMessage());
-            $this->redireccionarError('Error al calcular la situación financiera del usuario.');
-        }
+{
+    try {
+        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
+        $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
+        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+
+        // Mensajes de depuración para comprobar los valores
+        error_log("Usuario: " . $idUsuario);
+        error_log("Total Ingresos: " . $usuario['totalIngresos']);
+        error_log("Total Gastos: " . $usuario['totalGastos']);
+        error_log("Saldo: " . $usuario['saldo']);
+
+        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
+        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+        return $usuario;
+    } catch (Exception $e) {
+        error_log("Error en calcularSituacionUsuario(): " . $e->getMessage());
+        $this->redireccionarError('Error al calcular la situación financiera del usuario.');
     }
+}
+
 
     // Función para calcular la situación financiera de varios usuarios (para familias y grupos)
     private function calcularSituacionUsuarios($m, &$usuarios)

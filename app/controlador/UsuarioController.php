@@ -340,6 +340,92 @@ class UsuarioController
             exit();
         }
     }
-    
+    public function formCrearUsuario()
+{
+    $m = new GastosModelo();
+
+    // Obtener familias y grupos para asignar al nuevo usuario
+    $familias = $m->obtenerFamilias();
+    $grupos = $m->obtenerGrupos();
+
+    $params = array(
+        'familias' => $familias,
+        'grupos' => $grupos,
+        'mensaje' => ''
+    );
+
+    $this->render('formCrearUsuario.php', $params);
+}
+public function crearUsuario()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $m = new GastosModelo();
+
+        // Recoger los datos del formulario
+        $nombre = recoge('nombre');
+        $apellido = recoge('apellido');
+        $alias = recoge('alias');
+        $email = recoge('email');
+        $contrasenya = recoge('contrasenya');
+        $nivel_usuario = recoge('nivel_usuario');
+        $fecha_nacimiento = recoge('fecha_nacimiento');
+        $telefono = recoge('telefono');
+        $idFamilia = recoge('idFamilia') ?: null;
+        $idGrupo = recoge('idGrupo') ?: null;
+
+        $errores = [];
+
+        // Validar datos
+        cTexto($nombre, "nombre", $errores);
+        cTexto($apellido, "apellido", $errores);
+        cTexto($alias, "alias", $errores);
+        cEmail($email, $errores);
+        cContrasenya($contrasenya, $errores);
+        cTelefono($telefono, $errores);
+
+        if (!empty($errores)) {
+            $params = array(
+                'familias' => $m->obtenerFamilias(),
+                'grupos' => $m->obtenerGrupos(),
+                'mensaje' => 'Por favor corrige los errores:',
+                'errores' => $errores,
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'alias' => $alias,
+                'email' => $email,
+                'telefono' => $telefono,
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'idFamilia' => $idFamilia,
+                'idGrupo' => $idGrupo
+            );
+            $this->render('formCrearUsuario.php', $params);
+            return;
+        }
+
+        $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
+
+        // Insertar usuario en la base de datos
+        if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
+            header('Location: index.php?ctl=listarUsuarios');
+            exit();
+        } else {
+            $params = array(
+                'mensaje' => 'No se pudo insertar el usuario. Inténtalo de nuevo.',
+                'familias' => $m->obtenerFamilias(),
+                'grupos' => $m->obtenerGrupos(),
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'alias' => $alias,
+                'email' => $email,
+                'telefono' => $telefono,
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'idFamilia' => $idFamilia,
+                'idGrupo' => $idGrupo
+            );
+            $this->render('formCrearUsuario.php', $params);
+        }
+    }
+}
+
 
 }

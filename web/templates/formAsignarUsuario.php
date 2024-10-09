@@ -5,7 +5,7 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
     
         <!-- Formulario para asignar usuario -->
-        <form method="POST" action="index.php?ctl=FamiliaGrupoController&action=asignarUsuarioFamiliaGrupo">
+        <form method="POST" action="index.php?ctl=asignarUsuarioFamiliaGrupo">
 
             <!-- Selección de usuario -->
             <div class="form-group">

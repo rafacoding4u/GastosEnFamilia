@@ -69,7 +69,7 @@
             <tbody>
                 <?php foreach ($gastos as $gasto): ?>
                     <tr>
-                        <td><?= htmlspecialchars($gasto['nombreCategoria']) ?></td>
+                    <td><?= htmlspecialchars($gasto['nombreCategoria'] ?? 'Sin categoría') ?></td>
                         <td><?= number_format($gasto['importe'], 2, ',', '.') ?> €</td>
                         <td><?= htmlspecialchars($gasto['fecha']) ?></td>
                         <td><?= htmlspecialchars($gasto['origen']) ?></td>

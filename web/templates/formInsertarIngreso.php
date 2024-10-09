@@ -47,7 +47,7 @@
             </div>
 
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
             <!-- Botón para enviar el formulario -->
             <button type="submit" name="bInsertarIngreso" class="btn btn-primary mt-3">Añadir Ingreso</button>

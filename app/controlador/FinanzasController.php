@@ -88,6 +88,30 @@ class FinanzasController
         $this->render('verIngresos.php', $params);
     }
 
+    // Ver situación financiera del usuario
+    public function verSituacionFinanciera()
+    {
+        $m = new GastosModelo();
+        $idUsuario = $_SESSION['usuario']['id'];
+
+        // Obtener el total de ingresos y gastos
+        $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
+        $totalGastos = $m->obtenerTotalGastos($idUsuario);
+
+        // Calcular saldo
+        $saldo = $totalIngresos - $totalGastos;
+
+        // Preparar los parámetros para la vista
+        $params = array(
+            'totalIngresos' => $totalIngresos,
+            'totalGastos' => $totalGastos,
+            'saldo' => $saldo
+        );
+
+        // Renderizar la vista de situación financiera
+        $this->render('verSituacionFinanciera.php', $params);
+    }
+
     // Generar NewsLetter y almacenar el envío
     public function generarNewsLetter($idUser)
     {
@@ -164,8 +188,13 @@ class FinanzasController
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
+            // Asegurarse de pasar idFamilia y idGrupo desde la sesión del usuario
+            $idFamilia = $_SESSION['usuario']['idFamilia'];
+            $idGrupo = $_SESSION['usuario']['idGrupo'];
+            $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el gasto
+
             $m = new GastosModelo();
-            if ($m->insertarGasto($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
+            if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verGastos');
                 exit();
             } else {
@@ -184,8 +213,13 @@ class FinanzasController
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
+            // Obtener idFamilia y idGrupo desde la sesión del usuario
+            $idFamilia = $_SESSION['usuario']['idFamilia'];
+            $idGrupo = $_SESSION['usuario']['idGrupo'];
+            $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el ingreso
+
             $m = new GastosModelo();
-            if ($m->insertarIngreso($_SESSION['usuario']['id'], $monto, $categoria, $concepto, $origen)) {
+            if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verIngresos');
                 exit();
             } else {

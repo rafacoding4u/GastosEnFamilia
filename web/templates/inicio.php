@@ -5,36 +5,36 @@
 
         <!-- Mostrar Total Ingresos -->
         <p><b>Total Ingresos:</b> 
-            <?= isset($params['totalIngresos']) && $params['totalIngresos'] !== null 
-                ? number_format(htmlspecialchars($params['totalIngresos']), 2, ',', '.') . ' €' 
+            <?= isset($totalIngresos) && $totalIngresos !== null 
+                ? number_format(htmlspecialchars($totalIngresos), 2, ',', '.') . ' €' 
                 : '<span class="text-muted">No disponible</span>' ?>
         </p>
 
         <!-- Mostrar Total Gastos -->
         <p><b>Total Gastos:</b> 
-            <?= isset($params['totalGastos']) && $params['totalGastos'] !== null 
-                ? number_format(htmlspecialchars($params['totalGastos']), 2, ',', '.') . ' €' 
+            <?= isset($totalGastos) && $totalGastos !== null 
+                ? number_format(htmlspecialchars($totalGastos), 2, ',', '.') . ' €' 
                 : '<span class="text-muted">No disponible</span>' ?>
         </p>
 
         <!-- Mostrar Balance -->
         <p><b>Balance:</b> 
-            <span style="color: <?= isset($params['balance']) && $params['balance'] >= 0 ? 'green' : 'red'; ?>;">
-                <?= isset($params['balance']) && $params['balance'] !== null 
-                    ? number_format(htmlspecialchars($params['balance']), 2, ',', '.') . ' €' 
+            <span style="color: <?= isset($saldo) && $saldo >= 0 ? 'green' : 'red'; ?>;">
+                <?= isset($saldo) && $saldo !== null 
+                    ? number_format(htmlspecialchars($saldo), 2, ',', '.') . ' €' 
                     : '<span class="text-muted">No disponible</span>' ?>
             </span>
         </p>
 
         <!-- Mostrar mensaje personalizado -->
-        <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
+        <?php if (isset($mensaje) && !empty($mensaje)): ?>
             <div class="alert alert-info mt-3">
-                <?= htmlspecialchars($params['mensaje']) ?>
+                <?= htmlspecialchars($mensaje) ?>
             </div>
         <?php endif; ?>
 
         <!-- Mensaje de advertencia si no hay datos financieros -->
-        <?php if (!isset($params['totalIngresos']) && !isset($params['totalGastos']) && !isset($params['balance'])): ?>
+        <?php if ($totalIngresos == 0 && $totalGastos == 0 && $saldo == 0): ?>
             <div class="alert alert-warning mt-3">
                 No se encontraron datos financieros. Por favor, añade ingresos y gastos para ver tu situación financiera.
             </div>
@@ -46,9 +46,9 @@
         <p>Para gestionar tus ingresos y gastos, por favor <a href="index.php?ctl=iniciarSesion">inicia sesión</a> o <a href="index.php?ctl=registro">regístrate</a>.</p>
 
         <!-- Mensaje adicional si hay alguno -->
-        <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
+        <?php if (isset($mensaje) && !empty($mensaje)): ?>
             <div class="alert alert-info mt-3">
-                <?= htmlspecialchars($params['mensaje']) ?>
+                <?= htmlspecialchars($mensaje) ?>
             </div>
         <?php endif; ?>
     <?php endif; ?>
