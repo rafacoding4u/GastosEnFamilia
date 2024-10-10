@@ -49,6 +49,8 @@ $map = array(
     'editarUsuario' => array('controller' => 'UsuarioController', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
+    'actualizarUsuario' => array('controller' => 'UsuarioController', 'action' => 'actualizarUsuario', 'nivel_usuario' => 2),
+    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2), // Añadida la ruta faltante
 
     // Gestión de categorías gastos
     'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 1),
@@ -71,12 +73,14 @@ $map = array(
     'crearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
     'formCrearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
     'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
+    'editarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarFamilia', 'nivel_usuario' => 2),
+    'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
+
+
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
-    // En la parte del mapeo de rutas en $map
     'asignarUsuarioFamiliaGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2),
-
 
     // Gestión financiera
     'verGastos' => array('controller' => 'FinanzasController', 'action' => 'verGastos', 'nivel_usuario' => 1),

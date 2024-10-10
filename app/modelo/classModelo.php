@@ -81,12 +81,15 @@ class GastosModelo
 
     public function insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia = null, $idGrupo = null)
     {
+        // Si no hay familia ni grupo, lo consideramos usuario individual
         if (empty($idFamilia) && empty($idGrupo)) {
-            throw new Exception('El usuario debe estar asignado a una familia o un grupo.');
+            $idFamilia = null;
+            $idGrupo = null;
         }
 
         $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, idFamilia, idGrupo) 
             VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :idFamilia, :idGrupo)";
+
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
@@ -96,10 +99,12 @@ class GastosModelo
         $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia !== null ? $idFamilia : null, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo !== null ? $idGrupo : null, PDO::PARAM_INT);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
+
     public function obtenerUsuarios()
     {
         $sql = "SELECT u.*, 
@@ -123,15 +128,17 @@ class GastosModelo
 
     public function actualizarUsuario($idUsuario, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia = null, $idGrupo = null)
     {
-        // Verificar que el usuario esté asignado a una familia o grupo
+        // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
         if (empty($idFamilia) && empty($idGrupo)) {
-            throw new Exception('El usuario debe estar asignado a una familia o un grupo.');
+            $idFamilia = null;
+            $idGrupo = null;
         }
 
         $sql = "UPDATE usuarios 
             SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, telefono = :telefono, 
                 nivel_usuario = :nivel_usuario, idFamilia = :idFamilia, idGrupo = :idGrupo
             WHERE idUser = :idUsuario";
+
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
@@ -139,11 +146,13 @@ class GastosModelo
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
         $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia !== null ? $idFamilia : null, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo !== null ? $idGrupo : null, PDO::PARAM_INT);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
+
 
 
 
@@ -392,6 +401,7 @@ class GastosModelo
         return $stmt->execute();
     }
 
+
     public function actualizarFamilia($idFamilia, $nombreFamilia)
     {
         $sql = "UPDATE familias SET nombre_familia = :nombreFamilia WHERE idFamilia = :idFamilia";
@@ -401,6 +411,8 @@ class GastosModelo
         return $stmt->execute();
     }
 
+
+
     // Eliminar una familia
     public function eliminarFamilia($idFamilia)
     {
@@ -409,6 +421,7 @@ class GastosModelo
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
 
     // Obtener gastos por familia
     public function obtenerGastosPorFamilia($idFamilia)
@@ -431,13 +444,21 @@ class GastosModelo
     // Actualizar familia y/o grupo asignado a un usuario
     public function actualizarUsuarioFamiliaGrupo($idUsuario, $idFamilia = null, $idGrupo = null)
     {
+        // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
+        if (empty($idFamilia) && empty($idGrupo)) {
+            $idFamilia = null;
+            $idGrupo = null;
+        }
+
         $sql = "UPDATE usuarios SET idFamilia = :idFamilia, idGrupo = :idGrupo WHERE idUser = :idUsuario";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->bindValue(':idFamilia', $idFamilia ? $idFamilia : null, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo ? $idGrupo : null, PDO::PARAM_INT);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
+
 
 
     // -------------------------------
@@ -997,6 +1018,16 @@ class GastosModelo
         return $stmt->execute();
     }
 
+    public function obtenerIdFamiliaPorNombre($nombre_familia)
+    {
+        $sql = "SELECT idFamilia FROM familias WHERE nombre_familia = :nombre_familia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':nombre_familia', $nombre_familia, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn(); // Devolver solo la columna idFamilia
+    }
+
+
     // Eliminar un administrador de un grupo
     public function eliminarAdministradorDeGrupo($idAdmin, $idGrupo)
     {
@@ -1192,6 +1223,14 @@ class GastosModelo
             return null;
         }
     }
+
+    public function obtenerAdministradores()
+    {
+        $sql = "SELECT idUser, nombre, apellido FROM usuarios WHERE nivel_usuario = 'admin'";
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devuelve todos los administradores como un array asociativo
+    }
+
 
     // Método para obtener el resumen financiero del usuario
     public function obtenerResumenFinancieroUsuario($idUsuario)

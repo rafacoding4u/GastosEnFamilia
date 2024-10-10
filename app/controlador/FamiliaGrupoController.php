@@ -12,53 +12,72 @@ class FamiliaGrupoController
                 $this->redireccionarError('Acceso denegado. Solo superadmin puede crear familias.');
                 return;
             }
-            $this->render('formCrearFamilia.php');
+
+            // Obtener los usuarios administradores registrados
+            $m = new GastosModelo();
+            $administradores = $m->obtenerAdministradores();  // Aquí asumimos que existe un método para obtener los administradores
+
+            // Enviar la lista de administradores a la vista
+            $params = [
+                'administradores' => $administradores
+            ];
+
+            $this->render('formCrearFamilia.php', $params);
         } catch (Exception $e) {
             error_log("Error en formCrearFamilia(): " . $e->getMessage());
             $this->redireccionarError('Error al mostrar el formulario de creación de familia.');
         }
     }
 
+
     // Crear una nueva familia
     public function crearFamilia()
-    {
-        try {
-            if (!esSuperadmin()) {
-                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear familias.');
-                return;
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bCrearFamilia'])) {
-                $nombre_familia = recoge('nombre_familia');
-                $password_familia = recoge('password_familia');
-
-                $errores = array();
-                cTexto($nombre_familia, "nombre_familia", $errores);
-                cContrasenya($password_familia, $errores);
-
-                if (empty($errores)) {
-                    $m = new GastosModelo();
-                    $hashedPassword = encriptar($password_familia);
-
-                    if ($m->insertarFamilia($nombre_familia, $hashedPassword)) {
-                        error_log("Familia '{$nombre_familia}' creada correctamente.");
-                        header('Location: index.php?ctl=listarFamilias');
-                        exit();
-                    } else {
-                        $params['mensaje'] = 'No se pudo crear la familia.';
-                        error_log("Fallo al crear la familia: '{$nombre_familia}'.");
-                    }
-                } else {
-                    $params['errores'] = $errores;
-                }
-
-                $this->render('formCrearFamilia.php', $params);
-            }
-        } catch (Exception $e) {
-            error_log("Error en crearFamilia(): " . $e->getMessage());
-            $this->redireccionarError('Error al crear la familia.');
+{
+    try {
+        if (!esSuperadmin()) {
+            $this->redireccionarError('Acceso denegado. Solo superadmin puede crear familias.');
+            return;
         }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bCrearFamilia'])) {
+            $nombre_familia = recoge('nombre_familia');
+            $password_familia = recoge('password_familia');
+            $id_admin = recoge('id_admin'); // Recoger el administrador seleccionado
+
+            $errores = array();
+            cTexto($nombre_familia, "nombre_familia", $errores);
+            cContrasenya($password_familia, $errores);
+
+            if (empty($errores)) {
+                $m = new GastosModelo();
+                $hashedPassword = encriptar($password_familia);
+
+                if ($m->insertarFamilia($nombre_familia, $hashedPassword)) {
+                    // Obtener el ID de la familia recién creada
+                    $idFamilia = $m->obtenerIdFamiliaPorNombre($nombre_familia);
+
+                    // Asignar el administrador seleccionado a la nueva familia
+                    $m->añadirAdministradorAFamilia($id_admin, $idFamilia);
+
+                    error_log("Familia '{$nombre_familia}' creada correctamente.");
+                    header('Location: index.php?ctl=listarFamilias');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se pudo crear la familia.';
+                    error_log("Fallo al crear la familia: '{$nombre_familia}'.");
+                }
+            } else {
+                $params['errores'] = $errores;
+            }
+
+            $this->render('formCrearFamilia.php', $params);
+        }
+    } catch (Exception $e) {
+        error_log("Error en crearFamilia(): " . $e->getMessage());
+        $this->redireccionarError('Error al crear la familia.');
     }
+}
+
 
     // Formulario para crear un nuevo grupo
     public function formCrearGrupo()
@@ -169,36 +188,19 @@ class FamiliaGrupoController
                 }
             }
 
-            $esAdmin = esSuperadmin();
-
-            if (!$esAdmin) {
-                $administradores = $m->obtenerAdministradoresFamilia($familia['idFamilia']);
-                foreach ($administradores as $admin) {
-                    if ($admin['idUser'] === $_SESSION['usuario']['id']) {
-                        $esAdmin = true;
-                        break;
-                    }
-                }
-
-                if (!$esAdmin) {
-                    $this->redireccionarError('No tienes permiso para editar esta familia.');
-                    return;
-                }
-            }
-
-            $params = array(
-                'nombre_familia' => $familia['nombre_familia'],
-                'idFamilia' => $familia['idFamilia']
-            );
+            $usuarios = $m->obtenerUsuarios(); // Obtener los usuarios para seleccionar el administrador
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarFamilia'])) {
                 $nombre_familia = recoge('nombre_familia');
+                $idAdmin = recoge('idAdmin'); // Recoger el nuevo administrador seleccionado
                 $errores = array();
 
                 cTexto($nombre_familia, "nombre_familia", $errores);
 
                 if (empty($errores)) {
                     if ($m->actualizarFamilia($familia['idFamilia'], $nombre_familia)) {
+                        $m->añadirAdministradorAFamilia($idAdmin, $familia['idFamilia']);
+
                         error_log("Familia '{$nombre_familia}' actualizada correctamente.");
                         header('Location: index.php?ctl=listarFamilias');
                         exit();
@@ -211,12 +213,20 @@ class FamiliaGrupoController
                 }
             }
 
+            $params = array(
+                'nombre_familia' => $familia['nombre_familia'],
+                'idFamilia' => $familia['idFamilia'],
+                'usuarios' => $usuarios,
+                'idAdmin' => $familia['idAdmin'] ?? null
+            );
+
             $this->render('formEditarFamilia.php', $params);
         } catch (Exception $e) {
             error_log("Error en editarFamilia(): " . $e->getMessage());
             $this->redireccionarError('Error al editar la familia.');
         }
     }
+
 
     // Editar Grupo
     public function editarGrupo()
@@ -282,7 +292,6 @@ class FamiliaGrupoController
         }
     }
 
-    // Eliminar Familia
     public function eliminarFamilia()
     {
         try {
@@ -291,28 +300,32 @@ class FamiliaGrupoController
                 return;
             }
 
-            $idFamilia = recoge('id');
-            $m = new GastosModelo();
+            if (isset($_GET['id'])) {
+                $idFamilia = $_GET['id'];
+                $m = new GastosModelo();
 
-            $usuariosAsociados = $m->obtenerUsuariosPorFamilia($idFamilia);
-            if (!empty($usuariosAsociados)) {
-                $this->redireccionarError('No se puede eliminar la familia. Hay usuarios asociados.');
-                return;
-            }
+                // Verifica si hay usuarios asociados a la familia
+                $usuariosAsociados = $m->obtenerUsuariosPorFamilia($idFamilia);
+                if (!empty($usuariosAsociados)) {
+                    $this->redireccionarError('No se puede eliminar la familia. Hay usuarios asociados.');
+                    return;
+                }
 
-            if ($m->eliminarFamilia($idFamilia)) {
-                error_log("Familia con ID {$idFamilia} eliminada correctamente.");
-                header('Location: index.php?ctl=listarFamilias');
-                exit();
+                if ($m->eliminarFamilia($idFamilia)) {
+                    header('Location: index.php?ctl=listarFamilias');
+                    exit();
+                } else {
+                    $this->redireccionarError('Error al eliminar la familia.');
+                }
             } else {
-                $this->redireccionarError('Error al eliminar la familia.');
-                error_log("Fallo al eliminar la familia con ID: {$idFamilia}.");
+                $this->redireccionarError('Familia no encontrada.');
             }
         } catch (Exception $e) {
             error_log("Error en eliminarFamilia(): " . $e->getMessage());
             $this->redireccionarError('Error al eliminar la familia.');
         }
     }
+
 
     // Eliminar Grupo
     public function eliminarGrupo()
@@ -369,230 +382,229 @@ class FamiliaGrupoController
         exit();
     }
     public function formAsignarUsuario()
-{
-    // Permitir acceso a admin y superadmin
-    if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && $_SESSION['usuario']['nivel_usuario'] !== 'admin') {
-        header('Location: index.php?ctl=inicio');
-        exit();
+    {
+        // Permitir acceso a admin y superadmin
+        if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && $_SESSION['usuario']['nivel_usuario'] !== 'admin') {
+            header('Location: index.php?ctl=inicio');
+            exit();
+        }
+
+        // Instanciar el modelo
+        $m = new GastosModelo();
+
+        // Obtener datos de usuarios, familias y grupos
+        $usuarios = $m->obtenerUsuarios();
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+
+        // Definir los parámetros que se enviarán a la vista
+        $params = array(
+            'usuarios' => $usuarios,
+            'familias' => $familias,
+            'grupos' => $grupos
+        );
+
+        // Renderizar la vista 'formAsignarUsuario.php' con los datos obtenidos
+        $this->render('formAsignarUsuario.php', $params);
     }
 
-    // Instanciar el modelo
-    $m = new GastosModelo();
 
-    // Obtener datos de usuarios, familias y grupos
-    $usuarios = $m->obtenerUsuarios();
-    $familias = $m->obtenerFamilias();
-    $grupos = $m->obtenerGrupos();
+    // Eliminar administrador de una familia
+    public function eliminarAdministradorDeFamilia()
+    {
+        $idAdmin = recoge('idAdmin'); // ID del administrador
+        $idFamilia = recoge('idFamilia'); // ID de la familia
+        $m = new GastosModelo();
 
-    // Definir los parámetros que se enviarán a la vista
-    $params = array(
-        'usuarios' => $usuarios,
-        'familias' => $familias,
-        'grupos' => $grupos
-    );
+        // Verificar si el usuario es superadmin o si es un administrador válido
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
+            $esAdmin = false;
 
-    // Renderizar la vista 'formAsignarUsuario.php' con los datos obtenidos
-    $this->render('formAsignarUsuario.php', $params);
-}
+            foreach ($administradores as $admin) {
+                if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                    $esAdmin = true;
+                    break;
+                }
+            }
 
-
-// Eliminar administrador de una familia
-public function eliminarAdministradorDeFamilia()
-{
-    $idAdmin = recoge('idAdmin'); // ID del administrador
-    $idFamilia = recoge('idFamilia'); // ID de la familia
-    $m = new GastosModelo();
-
-    // Verificar si el usuario es superadmin o si es un administrador válido
-    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-        $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
-        $esAdmin = false;
-
-        foreach ($administradores as $admin) {
-            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
-                $esAdmin = true;
-                break;
+            if (!$esAdmin) {
+                $this->redireccionarError('No tienes permiso para eliminar administradores de esta familia.');
+                return;
             }
         }
 
-        if (!$esAdmin) {
-            $this->redireccionarError('No tienes permiso para eliminar administradores de esta familia.');
-            return;
+        // Proceder a eliminar el administrador
+        if ($m->eliminarAdministradorDeFamilia($idAdmin, $idFamilia)) {
+            header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
+            exit();
+        } else {
+            $this->redireccionarError('Error al eliminar el administrador de la familia.');
         }
     }
+    // Eliminar administrador de un grupo
+    public function eliminarAdministradorDeGrupo()
+    {
+        $idAdmin = recoge('idAdmin'); // ID del administrador
+        $idGrupo = recoge('idGrupo'); // ID del grupo
+        $m = new GastosModelo();
 
-    // Proceder a eliminar el administrador
-    if ($m->eliminarAdministradorDeFamilia($idAdmin, $idFamilia)) {
-        header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
-        exit();
-    } else {
-        $this->redireccionarError('Error al eliminar el administrador de la familia.');
-    }
-}
-// Eliminar administrador de un grupo
-public function eliminarAdministradorDeGrupo()
-{
-    $idAdmin = recoge('idAdmin'); // ID del administrador
-    $idGrupo = recoge('idGrupo'); // ID del grupo
-    $m = new GastosModelo();
+        // Verificar si el usuario es superadmin o si es un administrador válido
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
+            $esAdmin = false;
 
-    // Verificar si el usuario es superadmin o si es un administrador válido
-    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-        $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
-        $esAdmin = false;
+            foreach ($administradores as $admin) {
+                if ($admin['idUser'] === $_SESSION['usuario']['id']) {
+                    $esAdmin = true;
+                    break;
+                }
+            }
 
-        foreach ($administradores as $admin) {
-            if ($admin['idUser'] === $_SESSION['usuario']['id']) {
-                $esAdmin = true;
-                break;
+            if (!$esAdmin) {
+                $this->redireccionarError('No tienes permiso para eliminar administradores de este grupo.');
+                return;
             }
         }
 
-        if (!$esAdmin) {
-            $this->redireccionarError('No tienes permiso para eliminar administradores de este grupo.');
-            return;
+        // Proceder a eliminar el administrador
+        if ($m->eliminarAdministradorDeGrupo($idAdmin, $idGrupo)) {
+            header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
+            exit();
+        } else {
+            $this->redireccionarError('Error al eliminar el administrador del grupo.');
         }
     }
 
-    // Proceder a eliminar el administrador
-    if ($m->eliminarAdministradorDeGrupo($idAdmin, $idGrupo)) {
-        header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
-        exit();
-    } else {
-        $this->redireccionarError('Error al eliminar el administrador del grupo.');
-    }
-}
-
-// Asignar administrador a una familia
-public function asignarAdministradorAFamilia()
-{
-    $idFamilia = recoge('idFamilia');
-    $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
-    $m = new GastosModelo();
-
-    // Verificar si el usuario es superadmin
-    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-        $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
-        return;
-    }
-
-    // Verificar si el usuario ya es administrador de la familia
-    $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
-    foreach ($administradores as $admin) {
-        if ($admin['idUser'] === $idAdmin) {
-            $this->redireccionarError('El usuario ya es administrador de esta familia.');
-            return;
-        }
-    }
-
-    // Asignar al usuario como administrador de la familia
-    if ($m->añadirAdministradorAFamilia($idAdmin, $idFamilia)) {
-        header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
-        exit();
-    } else {
-        $this->redireccionarError('Error al asignar el administrador a la familia.');
-    }
-}
-
-// Asignar administrador a un grupo
-public function asignarAdministradorAGrupo()
-{
-    $idGrupo = recoge('idGrupo');
-    $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
-    $m = new GastosModelo();
-
-    // Verificar si el usuario es superadmin
-    if ($_SESSION['nivel_usuario'] !== 'superadmin') {
-        $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
-        return;
-    }
-
-    // Verificar si el usuario ya es administrador del grupo
-    $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
-    foreach ($administradores as $admin) {
-        if ($admin['idUser'] === $idAdmin) {
-            $this->redireccionarError('El usuario ya es administrador de este grupo.');
-            return;
-        }
-    }
-
-    // Asignar al usuario como administrador del grupo
-    if ($m->añadirAdministradorAGrupo($idAdmin, $idGrupo)) {
-        header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
-        exit();
-    } else {
-        $this->redireccionarError('Error al asignar el administrador al grupo.');
-    }
-}
-// Asignar usuarios normales a familias o grupos
-public function asignarUsuarioFamiliaGrupo()
-{
-    // Registro de depuración al entrar en el método
-    error_log("DEBUG: Entrando en asignarUsuarioFamiliaGrupo");
-    
-    // Instanciamos el modelo para realizar las operaciones
-    $m = new GastosModelo();
-    
-    // Recogemos los datos del formulario
-    $idUsuario = recoge('idUsuario');
-    $tipoVinculo = recoge('tipoVinculo');
-    $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
-    
-    // Registro de depuración de los valores recogidos
-    error_log("DEBUG: ID Usuario -> $idUsuario, Tipo de Vínculo -> $tipoVinculo");
-
-    // Verificamos si el tipo de vínculo es 'familia' o 'grupo' y gestionamos en consecuencia
-    if ($tipoVinculo === 'familia') {
-        // Recogemos el ID de la familia
+    // Asignar administrador a una familia
+    public function asignarAdministradorAFamilia()
+    {
         $idFamilia = recoge('idFamilia');
-        error_log("DEBUG: ID Familia -> $idFamilia");
+        $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
+        $m = new GastosModelo();
 
-        // Verificamos la contraseña de la familia usando el método del modelo
-        if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
-            // Registro en caso de error con la contraseña
-            error_log("ERROR: Contraseña incorrecta para la familia $idFamilia");
-            $this->redireccionarError('La contraseña de la familia es incorrecta.');
+        // Verificar si el usuario es superadmin
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
             return;
         }
 
-        // Intentamos asignar el usuario a la familia
-        if ($m->asignarUsuarioAFamilia($idUsuario, $idFamilia)) {
-            // Redirigimos a la vista de familias en caso de éxito
-            header('Location: index.php?ctl=listarFamilias');
-            exit();
-        } else {
-            // Registro en caso de error al asignar usuario
-            error_log("ERROR: No se pudo asignar el usuario a la familia.");
-            $this->redireccionarError('Error al asignar el usuario a la familia.');
-        }
-    } elseif ($tipoVinculo === 'grupo') {
-        // Recogemos el ID del grupo
-        $idGrupo = recoge('idGrupo');
-        error_log("DEBUG: ID Grupo -> $idGrupo");
-
-        // Verificamos la contraseña del grupo usando el método del modelo
-        if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
-            // Registro en caso de error con la contraseña
-            error_log("ERROR: Contraseña incorrecta para el grupo $idGrupo");
-            $this->redireccionarError('La contraseña del grupo es incorrecta.');
-            return;
+        // Verificar si el usuario ya es administrador de la familia
+        $administradores = $m->obtenerAdministradoresFamilia($idFamilia);
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $idAdmin) {
+                $this->redireccionarError('El usuario ya es administrador de esta familia.');
+                return;
+            }
         }
 
-        // Intentamos asignar el usuario al grupo
-        if ($m->asignarUsuarioAGrupo($idUsuario, $idGrupo)) {
-            // Redirigimos a la vista de grupos en caso de éxito
-            header('Location: index.php?ctl=verGrupos');
+        // Asignar al usuario como administrador de la familia
+        if ($m->añadirAdministradorAFamilia($idAdmin, $idFamilia)) {
+            header('Location: index.php?ctl=verFamilia&id=' . $idFamilia);
             exit();
         } else {
-            // Registro en caso de error al asignar usuario
-            error_log("ERROR: No se pudo asignar el usuario al grupo.");
-            $this->redireccionarError('Error al asignar el usuario al grupo.');
+            $this->redireccionarError('Error al asignar el administrador a la familia.');
         }
-    } else {
-        // Registro en caso de tipo de vínculo no válido
-        error_log("ERROR: Tipo de vínculo no válido -> $tipoVinculo");
-        $this->redireccionarError('Tipo de vínculo no válido.');
     }
-}
 
+    // Asignar administrador a un grupo
+    public function asignarAdministradorAGrupo()
+    {
+        $idGrupo = recoge('idGrupo');
+        $idAdmin = recoge('idAdmin'); // ID del usuario que se convertirá en administrador
+        $m = new GastosModelo();
+
+        // Verificar si el usuario es superadmin
+        if ($_SESSION['nivel_usuario'] !== 'superadmin') {
+            $this->redireccionarError('Acceso denegado. Solo superadmin puede asignar administradores.');
+            return;
+        }
+
+        // Verificar si el usuario ya es administrador del grupo
+        $administradores = $m->obtenerAdministradoresGrupo($idGrupo);
+        foreach ($administradores as $admin) {
+            if ($admin['idUser'] === $idAdmin) {
+                $this->redireccionarError('El usuario ya es administrador de este grupo.');
+                return;
+            }
+        }
+
+        // Asignar al usuario como administrador del grupo
+        if ($m->añadirAdministradorAGrupo($idAdmin, $idGrupo)) {
+            header('Location: index.php?ctl=verGrupo&id=' . $idGrupo);
+            exit();
+        } else {
+            $this->redireccionarError('Error al asignar el administrador al grupo.');
+        }
+    }
+    // Asignar usuarios normales a familias o grupos
+    public function asignarUsuarioFamiliaGrupo()
+    {
+        // Registro de depuración al entrar en el método
+        error_log("DEBUG: Entrando en asignarUsuarioFamiliaGrupo");
+
+        // Instanciamos el modelo para realizar las operaciones
+        $m = new GastosModelo();
+
+        // Recogemos los datos del formulario
+        $idUsuario = recoge('idUsuario');
+        $tipoVinculo = recoge('tipoVinculo');
+        $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
+
+        // Registro de depuración de los valores recogidos
+        error_log("DEBUG: ID Usuario -> $idUsuario, Tipo de Vínculo -> $tipoVinculo");
+
+        // Verificamos si el tipo de vínculo es 'familia' o 'grupo' y gestionamos en consecuencia
+        if ($tipoVinculo === 'familia') {
+            // Recogemos el ID de la familia
+            $idFamilia = recoge('idFamilia');
+            error_log("DEBUG: ID Familia -> $idFamilia");
+
+            // Verificamos la contraseña de la familia usando el método del modelo
+            if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
+                // Registro en caso de error con la contraseña
+                error_log("ERROR: Contraseña incorrecta para la familia $idFamilia");
+                $this->redireccionarError('La contraseña de la familia es incorrecta.');
+                return;
+            }
+
+            // Intentamos asignar el usuario a la familia
+            if ($m->asignarUsuarioAFamilia($idUsuario, $idFamilia)) {
+                // Redirigimos a la vista de familias en caso de éxito
+                header('Location: index.php?ctl=listarFamilias');
+                exit();
+            } else {
+                // Registro en caso de error al asignar usuario
+                error_log("ERROR: No se pudo asignar el usuario a la familia.");
+                $this->redireccionarError('Error al asignar el usuario a la familia.');
+            }
+        } elseif ($tipoVinculo === 'grupo') {
+            // Recogemos el ID del grupo
+            $idGrupo = recoge('idGrupo');
+            error_log("DEBUG: ID Grupo -> $idGrupo");
+
+            // Verificamos la contraseña del grupo usando el método del modelo
+            if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
+                // Registro en caso de error con la contraseña
+                error_log("ERROR: Contraseña incorrecta para el grupo $idGrupo");
+                $this->redireccionarError('La contraseña del grupo es incorrecta.');
+                return;
+            }
+
+            // Intentamos asignar el usuario al grupo
+            if ($m->asignarUsuarioAGrupo($idUsuario, $idGrupo)) {
+                // Redirigimos a la vista de grupos en caso de éxito
+                header('Location: index.php?ctl=verGrupos');
+                exit();
+            } else {
+                // Registro en caso de error al asignar usuario
+                error_log("ERROR: No se pudo asignar el usuario al grupo.");
+                $this->redireccionarError('Error al asignar el usuario al grupo.');
+            }
+        } else {
+            // Registro en caso de tipo de vínculo no válido
+            error_log("ERROR: Tipo de vínculo no válido -> $tipoVinculo");
+            $this->redireccionarError('Tipo de vínculo no válido.');
+        }
+    }
 }

@@ -1,31 +1,25 @@
 <div class="container p-4">
-    <h2>Crear Nueva Familia</h2>
+    <h2>Editar Familia</h2>
 
     <!-- Verificar permisos del usuario -->
-    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
-        <!-- Formulario para crear una nueva familia -->
-        <form action="index.php?ctl=crearFamilia" method="POST">
+        <!-- Formulario para editar una familia -->
+        <form action="index.php?ctl=editarFamilia&id=<?= htmlspecialchars($params['idFamilia'] ?? '') ?>" method="POST">
             <!-- Nombre de la familia -->
             <div class="form-group">
                 <label for="nombre_familia">Nombre de la Familia</label>
-                <input type="text" class="form-control" id="nombre_familia" name="nombre_familia" required>
+                <input type="text" class="form-control" id="nombre_familia" name="nombre_familia" value="<?= htmlspecialchars($params['nombre_familia'] ?? '') ?>" required>
             </div>
 
-            <!-- Contraseña de la familia -->
+            <!-- Selección de Administrador -->
             <div class="form-group">
-                <label for="password_familia">Contraseña de la Familia</label>
-                <input type="password" class="form-control" id="password_familia" name="password_familia" required>
-            </div>
-
-            <!-- Selección de administrador -->
-            <div class="form-group">
-                <label for="id_admin">Seleccionar Administrador</label>
-                <select class="form-control" id="id_admin" name="id_admin" required>
+                <label for="idAdmin">Asignar Administrador a la Familia</label>
+                <select name="idAdmin" id="idAdmin" class="form-control" required>
                     <option value="">Seleccione un administrador</option>
-                    <?php foreach ($administradores as $admin): ?>
-                        <option value="<?= htmlspecialchars($admin['idUser']) ?>">
-                            <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= $usuario['idUser'] == $params['idAdmin'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -48,12 +42,12 @@
             <!-- Mostrar mensajes de éxito -->
             <?php if (isset($mensaje)): ?>
                 <div class="alert alert-info">
-                    <?= htmlspecialchars($mensaje) ?>
+                    <?= htmlspecialchars($mensaje ?? '') ?>
                 </div>
             <?php endif; ?>
 
             <!-- Botón para enviar el formulario -->
-            <button type="submit" name="bCrearFamilia" class="btn btn-primary">Crear Familia</button>
+            <button type="submit" name="bEditarFamilia" class="btn btn-primary">Guardar cambios</button>
         </form>
 
     <?php else: ?>

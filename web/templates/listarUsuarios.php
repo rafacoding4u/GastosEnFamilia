@@ -42,13 +42,17 @@
                         <td><?= htmlspecialchars($usuario['nombre_familia'] ?? 'Sin Familia') ?></td>
                         <td><?= htmlspecialchars($usuario['nombre_grupo'] ?? 'Sin Grupo') ?></td>
                         <td>
-                            <?php if ($usuario['idFamilia'] == null && $usuario['idGrupo'] == null): ?>
-                                Individual
-                            <?php elseif ($usuario['idFamilia'] != null): ?>
-                                Familiar
-                            <?php elseif ($usuario['idGrupo'] != null): ?>
-                                En Grupo
-                            <?php endif; ?>
+                            <?php 
+                                if ($usuario['idFamilia'] == null && $usuario['idGrupo'] == null) {
+                                    echo "Individual";
+                                } elseif ($usuario['idFamilia'] != null && $usuario['idGrupo'] != null) {
+                                    echo "Familiar y en Grupo";
+                                } elseif ($usuario['idFamilia'] != null) {
+                                    echo "Familiar";
+                                } elseif ($usuario['idGrupo'] != null) {
+                                    echo "En Grupo";
+                                }
+                            ?>
                         </td>
                         <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
                             <td>

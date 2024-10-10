@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="index.php?ctl=UsuarioController&action=actualizarUsuario&id=<?= htmlspecialchars($params['idUser']) ?>" method="POST">
+        <form action="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($params['idUser']) ?>" method="POST">
             <!-- Nombre -->
             <div class="form-group">
                 <label for="nombre">Nombre</label>
@@ -79,7 +79,8 @@
             </div>
 
             <!-- Token CSRF para la seguridad -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
+
 
             <!-- Botón para guardar los cambios -->
             <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>

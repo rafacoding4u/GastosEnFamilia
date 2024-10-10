@@ -59,7 +59,7 @@
             </div>
 
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
 
             <button type="submit" class="btn btn-primary">Asignar Usuario</button>
         </form>

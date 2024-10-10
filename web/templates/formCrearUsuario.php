@@ -20,7 +20,8 @@
             </div>
         <?php endif; ?>
 
-        <form action="index.php?ctl=UsuarioController&action=crearUsuario" method="POST">
+        <!-- El formulario ahora apunta correctamente a la ruta crearUsuario -->
+        <form action="index.php?ctl=crearUsuario" method="POST">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($nombre ?? '') ?>" required>
@@ -95,7 +96,7 @@
             </div>
 
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '') ?>">
 
             <button type="submit" class="btn btn-success">Añadir Usuario</button>
         </form>
