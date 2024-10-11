@@ -61,13 +61,16 @@ $map = array(
 
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
-    'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
+    'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2), // Ruta añadida
     'formCrearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearFamilia', 'nivel_usuario' => 2),
     'crearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
     'formCrearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
     'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
     'editarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarFamilia', 'nivel_usuario' => 2),
+    'editarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarGrupo', 'nivel_usuario' => 2), // Añadido para editar grupo
     'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
+    'eliminarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarGrupo', 'nivel_usuario' => 2), // Añadido para eliminar grupo
+    'verGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2), // Nueva ruta añadida
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),

@@ -5,7 +5,8 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
         <!-- Formulario para crear un nuevo grupo -->
-        <form action="index.php?ctl=FamiliaGrupoController&action=crearGrupo" method="post">
+        <form action="index.php?ctl=crearGrupo" method="post">
+
             <!-- Nombre del grupo -->
             <div class="form-group">
                 <label for="nombre_grupo">Nombre del Grupo</label>
@@ -18,8 +19,26 @@
                 <input type="password" class="form-control" id="password_grupo" name="password_grupo" required>
             </div>
 
+            <!-- Mostrar administradores si existen -->
+            <?php if (isset($params['administradores']) && is_array($params['administradores'])): ?>
+                <div class="form-group">
+                    <label for="id_admin">Seleccionar Administrador</label>
+                    <select class="form-control" id="id_admin" name="id_admin" required>
+                        <?php foreach ($params['administradores'] as $admin): ?>
+                            <option value="<?= htmlspecialchars($admin['idUser']) ?>">
+                                <?= htmlspecialchars($admin['nombre']) . ' ' . htmlspecialchars($admin['apellido']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-warning">
+                    No se encontraron administradores disponibles.
+                </div>
+            <?php endif; ?>
+
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
 
             <!-- Mostrar posibles errores -->
             <?php if (isset($errores) && !empty($errores)): ?>

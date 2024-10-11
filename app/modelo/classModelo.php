@@ -280,11 +280,12 @@ class GastosModelo
     public function obtenerUsuariosPorGrupo($idGrupo)
     {
         $sql = "SELECT * FROM usuarios WHERE idGrupo = :idGrupo";
-        $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
-        $stmt->bindParam(':idGrupo', $idGrupo);
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     // Añadir usuario a un grupo existente
     public function añadirUsuarioAGrupo($idUsuario, $idGrupo)
@@ -403,28 +404,28 @@ class GastosModelo
 
 
     public function actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)
-{
-    try {
-        // Verificar que idAdmin no sea NULL
-        if (empty($idAdmin)) {
-            throw new Exception("El administrador no puede ser nulo o vacío.");
+    {
+        try {
+            // Verificar que idAdmin no sea NULL
+            if (empty($idAdmin)) {
+                throw new Exception("El administrador no puede ser nulo o vacío.");
+            }
+
+            $db = $this->getConexion();
+
+            // Preparar la consulta para actualizar el nombre y el administrador de la familia
+            $stmt = $db->prepare("UPDATE familias SET nombre_familia = :nombreFamilia, idAdmin = :idAdmin WHERE idFamilia = :idFamilia");
+            $stmt->bindParam(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
+            $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+
+            // Ejecutar la consulta
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al actualizar la familia: " . $e->getMessage());
+            return false;
         }
-
-        $db = $this->getConexion();
-
-        // Preparar la consulta para actualizar el nombre y el administrador de la familia
-        $stmt = $db->prepare("UPDATE familias SET nombre_familia = :nombreFamilia, idAdmin = :idAdmin WHERE idFamilia = :idFamilia");
-        $stmt->bindParam(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
-        $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
-        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-
-        // Ejecutar la consulta
-        return $stmt->execute();
-    } catch (PDOException $e) {
-        error_log("Error al actualizar la familia: " . $e->getMessage());
-        return false;
     }
-}
 
 
     // Eliminar una familia
@@ -496,6 +497,7 @@ class GastosModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
     // Insertar un grupo con contraseña encriptada
     public function insertarGrupo($nombreGrupo, $passwordGrupo)
     {
@@ -507,6 +509,7 @@ class GastosModelo
         return $stmt->execute();
     }
 
+
     public function actualizarGrupo($idGrupo, $nombreGrupo)
     {
         $sql = "UPDATE grupos SET nombre_grupo = :nombreGrupo WHERE idGrupo = :idGrupo";
@@ -516,6 +519,7 @@ class GastosModelo
         return $stmt->execute();
     }
 
+
     public function eliminarGrupo($idGrupo)
     {
         $sql = "DELETE FROM grupos WHERE idGrupo = :idGrupo";
@@ -523,19 +527,21 @@ class GastosModelo
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
     // Obtener la situación financiera de un grupo
     public function obtenerSituacionFinancieraGrupo($idGrupo)
     {
         $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
-            FROM usuarios u 
-            LEFT JOIN ingresos i ON u.idUser = i.idUser 
-            LEFT JOIN gastos g ON u.idUser = g.idUser 
-            WHERE u.idGrupo = :idGrupo";
+        FROM usuarios u 
+        LEFT JOIN ingresos i ON u.idUser = i.idUser 
+        LEFT JOIN gastos g ON u.idUser = g.idUser 
+        WHERE u.idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     // Obtener gastos por grupo
     public function obtenerGastosPorGrupo($idGrupo)
     {
@@ -979,6 +985,7 @@ class GastosModelo
         return false;
     }
 
+
     public function obtenerAdministradoresFamilia($idFamilia)
     {
         $sql = "SELECT u.* FROM usuarios u 
@@ -993,13 +1000,14 @@ class GastosModelo
     public function obtenerAdministradoresGrupo($idGrupo)
     {
         $sql = "SELECT u.* FROM usuarios u 
-            JOIN administradores_grupos ag ON u.idUser = ag.idAdmin
-            WHERE ag.idGrupo = :idGrupo";
+        JOIN administradores_grupos ag ON u.idUser = ag.idAdmin
+        WHERE ag.idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     // Añadir administrador a una familia
     public function añadirAdministradorAFamilia($idAdmin, $idFamilia)
@@ -1020,6 +1028,7 @@ class GastosModelo
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
 
 
     // Eliminar un administrador de una familia
@@ -1051,6 +1060,7 @@ class GastosModelo
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
 
 
     // Eliminar todos los gastos de un usuario
@@ -1102,13 +1112,14 @@ class GastosModelo
 
         // Insertar en usuarios_grupos si no existe
         $sqlGrupo = "INSERT INTO usuarios_grupos (idUser, idGrupo) 
-                     VALUES (:idUsuario, :idGrupo) 
-                     ON DUPLICATE KEY UPDATE idGrupo = :idGrupo";
+                 VALUES (:idUsuario, :idGrupo) 
+                 ON DUPLICATE KEY UPDATE idGrupo = :idGrupo";
         $stmtGrupo = $this->conexion->prepare($sqlGrupo);
         $stmtGrupo->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmtGrupo->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmtGrupo->execute();
     }
+
 
 
     public function obtenerCategoriaIngresoPorId($idCategoria)

@@ -6,34 +6,32 @@ class FamiliaGrupoController
 {
     // Formulario para crear una nueva familia
     public function formCrearFamilia()
-{
-    try {
-        if (!esSuperadmin()) {
-            $this->redireccionarError('Acceso denegado. Solo superadmin puede crear familias.');
-            return;
+    {
+        try {
+            if (!esSuperadmin()) {
+                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear familias.');
+                return;
+            }
+
+            // Obtener los usuarios administradores registrados
+            $m = new GastosModelo();
+            $administradores = $m->obtenerAdministradores(); // Asegúrate de que este método existe y está implementado correctamente
+
+            // Generar un token CSRF y almacenarlo en la sesión
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+            // Enviar la lista de administradores y el token CSRF a la vista
+            $params = [
+                'administradores' => $administradores,  // Pasar la lista de administradores a la vista
+                'csrf_token' => $_SESSION['csrf_token']
+            ];
+
+            $this->render('formCrearFamilia.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en formCrearFamilia(): " . $e->getMessage());
+            $this->redireccionarError('Error al mostrar el formulario de creación de familia.');
         }
-
-        // Obtener los usuarios administradores registrados
-        $m = new GastosModelo();
-        $administradores = $m->obtenerAdministradores(); // Asegúrate de que este método existe y está implementado correctamente
-
-        // Generar un token CSRF y almacenarlo en la sesión
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
-        // Enviar la lista de administradores y el token CSRF a la vista
-        $params = [
-            'administradores' => $administradores,  // Pasar la lista de administradores a la vista
-            'csrf_token' => $_SESSION['csrf_token']
-        ];
-
-        $this->render('formCrearFamilia.php', $params);
-    } catch (Exception $e) {
-        error_log("Error en formCrearFamilia(): " . $e->getMessage());
-        $this->redireccionarError('Error al mostrar el formulario de creación de familia.');
     }
-}
-
-
 
     // Crear una nueva familia
     public function crearFamilia()
@@ -89,21 +87,35 @@ class FamiliaGrupoController
         }
     }
 
-
     // Formulario para crear un nuevo grupo
     public function formCrearGrupo()
-    {
-        try {
-            if (!esSuperadmin()) {
-                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear grupos.');
-                return;
-            }
-            $this->render('formCrearGrupo.php');
-        } catch (Exception $e) {
-            error_log("Error en formCrearGrupo(): " . $e->getMessage());
-            $this->redireccionarError('Error al mostrar el formulario de creación de grupo.');
+{
+    try {
+        if (!esSuperadmin()) {
+            $this->redireccionarError('Acceso denegado. Solo superadmin puede crear grupos.');
+            return;
         }
+
+        // Obtener los usuarios administradores registrados
+        $m = new GastosModelo();
+        $administradores = $m->obtenerAdministradores();
+
+        // Generar un token CSRF y almacenarlo en la sesión
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+        // Pasar los administradores y el token CSRF a la vista
+        $params = [
+            'administradores' => $administradores,
+            'csrf_token' => $_SESSION['csrf_token']
+        ];
+
+        $this->render('formCrearGrupo.php', $params);
+    } catch (Exception $e) {
+        error_log("Error en formCrearGrupo(): " . $e->getMessage());
+        $this->redireccionarError('Error al mostrar el formulario de creación de grupo.');
     }
+}
+
 
     // Crear un nuevo grupo
     public function crearGrupo()
@@ -167,22 +179,23 @@ class FamiliaGrupoController
 
     // Listar Grupos
     public function listarGrupos()
-    {
-        try {
-            $m = new GastosModelo();
-            $grupos = $m->obtenerGrupos();
+{
+    try {
+        $m = new GastosModelo();
+        $grupos = $m->obtenerGrupos();
 
-            $params = array(
-                'grupos' => $grupos,
-                'mensaje' => 'Lista de grupos registrados'
-            );
+        $params = array(
+            'grupos' => $grupos,
+            'mensaje' => 'Lista de grupos registrados'
+        );
 
-            $this->render('listarGrupos.php', $params);
-        } catch (Exception $e) {
-            error_log("Error en listarGrupos(): " . $e->getMessage());
-            $this->redireccionarError('Error al listar los grupos.');
-        }
+        $this->render('listarGrupos.php', $params);
+    } catch (Exception $e) {
+        error_log("Error en listarGrupos(): " . $e->getMessage());
+        $this->redireccionarError('Error al listar los grupos.');
     }
+}
+
 
     // Editar Familia
     public function editarFamilia()

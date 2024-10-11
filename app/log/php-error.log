@@ -91,4 +91,53 @@ Acceso denegado para la ruta: inicio[11-Oct-2024 17:06:22 Europe/Berlin] Inician
 [11-Oct-2024 18:29:53 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
 [11-Oct-2024 18:29:53 Europe/Berlin] Error: No se encontró la familia con ID 17.
 [11-Oct-2024 19:05:17 Europe/Berlin] Familia 'Otra Familia más' creada correctamente.
-Ruta no encontrada: verGrupos
+Ruta no encontrada: verGruposRuta no encontrada: verGruposRuta no encontrada: verGrupos[11-Oct-2024 19:54:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 19:54:32 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 19:56:38 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 19:56:39 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+Ruta no encontrada: verAuditoria[11-Oct-2024 19:56:56 Europe/Berlin] Superadmin viendo situación financiera.
+Ruta no encontrada: SituacionFinancieraController&action=verSituacion[11-Oct-2024 19:57:02 Europe/Berlin] Superadmin viendo situación financiera.
+Ruta no encontrada: verCategoriasIngresosRuta no encontrada: verCategoriasIngresosRuta no encontrada: verGrupos[11-Oct-2024 19:59:43 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 19:59:44 Europe/Berlin] Sesión cerrada exitosamente.
+Acceso denegado para la ruta: inicio[11-Oct-2024 19:59:54 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 19:59:54 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+Ruta no encontrada: verGrupos[11-Oct-2024 20:03:26 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarGrupo.php on line 19
+[11-Oct-2024 20:03:26 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarGrupo.php on line 19
+[11-Oct-2024 20:03:26 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarGrupo.php on line 28
+[11-Oct-2024 20:03:26 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarGrupo.php on line 28
+[11-Oct-2024 20:03:31 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:03:32 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:03:32 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:03:32 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:04:53 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 20:04:54 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 20:05:01 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 20:05:01 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 20:05:06 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:05:06 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:05:06 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:05:06 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:07:15 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:07:15 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:07:15 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:07:15 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:07:17 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:07:17 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:07:17 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:07:17 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:08:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 20:08:17 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 20:08:24 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 20:08:24 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 20:08:32 Europe/Berlin] PHP Warning:  Undefined array key "administradores" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:08:32 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 25
+[11-Oct-2024 20:08:32 Europe/Berlin] PHP Warning:  Undefined array key "csrf_token" in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+[11-Oct-2024 20:08:32 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearGrupo.php on line 34
+Ruta no encontrada: FamiliaGrupoControllerRuta no encontrada: FamiliaGrupoControllerRuta no encontrada: FamiliaGrupoController[11-Oct-2024 20:16:07 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 20:16:07 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 20:16:13 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 20:16:13 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 20:17:00 Europe/Berlin] Error en crearGrupo(): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 20:46:16 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 20:46:16 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 20:46:54 Europe/Berlin] Error en crearGrupo(): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
