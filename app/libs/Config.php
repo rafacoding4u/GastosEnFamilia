@@ -10,7 +10,7 @@ class Config {
     private static $debug = true; // Cambia a 'false' en producción
 
     // Path para el archivo de log
-    private static $log_file = __DIR__ . '/../log/logExcepcio.txt';
+    private static $log_file = __DIR__ . '/../log/logExcepcio.txt'; // Unificamos en un solo archivo
 
     /**
      * Obtiene la conexión a la base de datos.
@@ -35,18 +35,16 @@ class Config {
 
     /**
      * Maneja errores de conexión y otros errores en base al estado de depuración.
-     * @param PDOException $e La excepción capturada.
+     * @param Exception $e La excepción capturada.
      */
     public static function manejarError($e) {
-        $mensaje_error = "Error en la conexión a la base de datos: " . $e->getMessage();
+        $mensaje_error = "Error: " . $e->getMessage();
         if (self::$debug) {
-            // Si está en modo debug, muestra el error en pantalla
-            die($mensaje_error);
-        } else {
-            // Si está en producción, registra el error en el archivo de log y muestra un mensaje genérico
-            self::registrarError($mensaje_error);
-            die("Ocurrió un problema. Inténtalo más tarde.");
+            // Si está en modo debug, mostrar el error en pantalla
+            echo "<h2>{$mensaje_error}</h2>";
         }
+        // Registrar el error en el archivo de log, incluso en modo debug
+        self::registrarError($mensaje_error);
     }
 
     /**
@@ -58,6 +56,11 @@ class Config {
         $log_message = "[{$fecha}] {$mensaje}" . PHP_EOL;
 
         // Escribir el error en el archivo de log
+        if (!file_exists(self::$log_file)) {
+            // Crear el archivo si no existe
+            file_put_contents(self::$log_file, '', LOCK_EX);
+        }
+
         error_log($log_message, 3, self::$log_file);
     }
 

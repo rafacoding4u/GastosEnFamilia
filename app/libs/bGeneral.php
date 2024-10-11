@@ -27,10 +27,11 @@ function recoge(string $var) {
     return $tmp;
 }
 
-function cTexto(string $text, string $campo, array &$errores, int $max = 30, int $min = 1, bool $espacios = TRUE, bool $case = TRUE): bool {
-    $case = ($case === TRUE) ? "i" : "";
-    $espacios = ($espacios === TRUE) ? " " : "";
-    if ((preg_match("/^[a-zñ$espacios]{" . $min . "," . $max . "}$/u$case", sinTildes($text)))) {
+function cTexto(string $text, string $campo, array &$errores, int $max = 100, int $min = 1, bool $espacios = TRUE, bool $case = TRUE): bool {
+    // Ajustar para permitir mayúsculas, minúsculas, tildes y espacios
+    $case = ($case === TRUE) ? "i" : ""; // No hacer distinción entre mayúsculas y minúsculas
+    $espacios = ($espacios === TRUE) ? " " : ""; // Incluir espacios si están permitidos
+    if ((preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ$espacios]{" . $min . "," . $max . "}$/u$case", $text))) {
         return true;
     }
     $errores[$campo] = "Error en el campo $campo";

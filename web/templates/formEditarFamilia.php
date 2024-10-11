@@ -9,7 +9,7 @@
             <!-- Nombre de la familia -->
             <div class="form-group">
                 <label for="nombre_familia">Nombre de la Familia</label>
-                <input type="text" class="form-control" id="nombre_familia" name="nombre_familia" value="<?= htmlspecialchars($params['nombre_familia'] ?? '') ?>" required>
+                <input type="text" class="form-control" id="nombre_familia" name="nombre_familia" value="<?= htmlspecialchars($params['nombreFamilia'] ?? '') ?>" required>
             </div>
 
             <!-- Selección de Administrador -->
@@ -17,11 +17,15 @@
                 <label for="idAdmin">Asignar Administrador a la Familia</label>
                 <select name="idAdmin" id="idAdmin" class="form-control" required>
                     <option value="">Seleccione un administrador</option>
-                    <?php foreach ($usuarios as $usuario): ?>
-                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= $usuario['idUser'] == $params['idAdmin'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($usuarios) && is_array($usuarios)): ?>
+                        <?php foreach ($usuarios as $usuario): ?>
+                            <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= $usuario['idUser'] == $params['idAdmin'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No hay usuarios disponibles</option>
+                    <?php endif; ?>
                 </select>
             </div>
 

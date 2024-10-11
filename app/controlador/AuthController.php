@@ -136,40 +136,53 @@ class AuthController
 
     // Método de inicio para usuarios autenticados
     public function inicio()
-{
-    try {
-        // Asegurarse de que el usuario está autenticado
-        if (!isset($_SESSION['usuario']) || $_SESSION['nivel_usuario'] == 0) {
-            throw new Exception('Usuario no autenticado.');
+    {
+        try {
+            // Asegurarse de que el usuario está autenticado
+            if (!isset($_SESSION['usuario']) || $_SESSION['nivel_usuario'] == 0) {
+                throw new Exception('Usuario no autenticado.');
+            }
+
+            $m = new GastosModelo();
+            $idUsuario = $_SESSION['usuario']['id'];
+
+            // Obtener el total de ingresos y gastos del usuario
+            $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
+            $totalGastos = $m->obtenerTotalGastos($idUsuario);
+            $saldo = $totalIngresos - $totalGastos;
+
+            // Mensaje de bienvenida personalizado según el usuario autenticado
+            $params = array(
+                'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
+                'totalIngresos' => $totalIngresos,
+                'totalGastos' => $totalGastos,
+                'saldo' => $saldo,
+                'nivel_usuario' => $_SESSION['nivel_usuario'],
+                'fecha' => date('d-m-Y')
+            );
+
+            // Renderizar la vista de inicio
+            $this->render('inicio.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en inicio(): " . $e->getMessage());
+            header('Location: index.php?ctl=home');
+            exit();
         }
-
-        $m = new GastosModelo();
-        $idUsuario = $_SESSION['usuario']['id'];
-
-        // Obtener el total de ingresos y gastos del usuario
-        $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
-        $totalGastos = $m->obtenerTotalGastos($idUsuario);
-        $saldo = $totalIngresos - $totalGastos;
-
-        // Mensaje de bienvenida personalizado según el usuario autenticado
-        $params = array(
-            'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
-            'totalIngresos' => $totalIngresos,
-            'totalGastos' => $totalGastos,
-            'saldo' => $saldo,
-            'nivel_usuario' => $_SESSION['nivel_usuario'],
-            'fecha' => date('d-m-Y')
-        );
-
-        // Renderizar la vista de inicio
-        $this->render('inicio.php', $params);
-    } catch (Exception $e) {
-        error_log("Error en inicio(): " . $e->getMessage());
-        header('Location: index.php?ctl=home');
-        exit();
     }
-}
 
+    // Método de manejo de errores
+    public function error()
+    {
+        try {
+            $params = array(
+                'mensaje' => 'Ha ocurrido un error. Por favor, intenta de nuevo más tarde.'
+            );
+            $this->render('error.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en el manejo de errores: " . $e->getMessage());
+            echo 'Ocurrió un problema grave. Intente más tarde.';
+        }
+    }
 
     // Método para registrar acceso en la tabla de auditoría
     private function registrarAcceso($idUser, $accion)

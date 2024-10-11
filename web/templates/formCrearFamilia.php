@@ -23,11 +23,16 @@
                 <label for="id_admin">Seleccionar Administrador</label>
                 <select class="form-control" id="id_admin" name="id_admin" required>
                     <option value="">Seleccione un administrador</option>
-                    <?php foreach ($administradores as $admin): ?>
-                        <option value="<?= htmlspecialchars($admin['idUser']) ?>">
-                            <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <!-- Verificar si la variable 'administradores' existe y es un array antes de usarla -->
+                    <?php if (isset($administradores) && is_array($administradores)): ?>
+                        <?php foreach ($administradores as $admin): ?>
+                            <option value="<?= htmlspecialchars($admin['idUser']) ?>">
+                                <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No hay administradores disponibles</option>
+                    <?php endif; ?>
                 </select>
             </div>
 

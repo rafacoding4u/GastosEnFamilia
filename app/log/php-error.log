@@ -1,0 +1,94 @@
+[11-Oct-2024 14:29:04 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:29:04 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:29:07 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:29:07 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:29:19 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 14:29:20 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 14:29:25 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 14:29:25 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 14:29:30 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:29:30 Europe/Berlin] Error: No se encontró la familia con ID 1.
+[11-Oct-2024 14:29:31 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:29:31 Europe/Berlin] Error: No se encontró la familia con ID 1.
+[11-Oct-2024 14:30:07 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:30:07 Europe/Berlin] Error: No se encontró la familia con ID 1.
+[11-Oct-2024 14:30:10 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:30:10 Europe/Berlin] Error: No se encontró la familia con ID 1.
+[11-Oct-2024 14:30:17 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 14:30:18 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 14:31:47 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 14:31:47 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 14:31:53 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:31:53 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:31:59 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:32:00 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:32:02 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:32:02 Europe/Berlin] Error: No se encontró la familia con ID 10.
+[11-Oct-2024 14:32:03 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:32:03 Europe/Berlin] Error: No se encontró la familia con ID 11.
+[11-Oct-2024 14:32:05 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nombre' in 'field list'
+[11-Oct-2024 14:32:05 Europe/Berlin] Error: No se encontró la familia con ID 1.
+[11-Oct-2024 14:49:06 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 14:49:06 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:49:08 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 14:49:08 Europe/Berlin] Error: No se encontró la familia con ID 9.
+[11-Oct-2024 14:49:14 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 14:49:14 Europe/Berlin] Error: No se encontró la familia con ID 10.
+[11-Oct-2024 14:49:15 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 14:49:15 Europe/Berlin] Error: No se encontró la familia con ID 11.
+[11-Oct-2024 14:50:43 Europe/Berlin] PHP Warning:  Undefined variable $administradores in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearFamilia.php on line 26
+[11-Oct-2024 14:50:44 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearFamilia.php on line 26
+[11-Oct-2024 14:51:27 Europe/Berlin] PHP Warning:  Undefined variable $administradores in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearFamilia.php on line 26
+[11-Oct-2024 14:51:27 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formCrearFamilia.php on line 26
+[11-Oct-2024 15:03:23 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 15:03:23 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 15:03:31 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 15:03:31 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 15:04:03 Europe/Berlin] Familia 'Ortíz' creada correctamente.
+[11-Oct-2024 15:04:09 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 15:04:09 Europe/Berlin] Error: No se encontró la familia con ID 12.
+[11-Oct-2024 15:23:17 Europe/Berlin] PHP Warning:  Undefined variable $usuarios in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarFamilia.php on line 20
+[11-Oct-2024 15:23:17 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarFamilia.php on line 20
+[11-Oct-2024 15:23:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 15:23:22 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 15:23:33 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 15:23:33 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 15:23:37 Europe/Berlin] PHP Warning:  Undefined variable $usuarios in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarFamilia.php on line 20
+[11-Oct-2024 15:23:37 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp2\htdocs\PROY\GastosEnFamilia\web\templates\formEditarFamilia.php on line 20
+[11-Oct-2024 15:26:38 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 15:26:38 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 15:26:46 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 15:26:47 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 15:26:57 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 15:27:24 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 15:27:36 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 15:42:52 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 15:42:52 Europe/Berlin] Sesión cerrada exitosamente.
+[11-Oct-2024 15:42:59 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 15:42:59 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 15:43:23 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 15:43:47 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 15:47:29 Europe/Berlin] Familia 'Super Familia' creada correctamente.
+[11-Oct-2024 15:50:02 Europe/Berlin] Familia 'Super Guay' creada correctamente.
+[11-Oct-2024 15:50:15 Europe/Berlin] Error al actualizar la familia: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'usuario' cannot be null
+[11-Oct-2024 16:05:01 Europe/Berlin] Familia 'PruebaFamiliaNueva' creada correctamente.
+[11-Oct-2024 17:05:22 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 17:05:22 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 17:05:34 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 17:05:34 Europe/Berlin] Error: No se encontró la familia con ID 14.
+[11-Oct-2024 17:06:04 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp2\htdocs\PROY\GastosEnFamilia\app\controlador\AuthController.php on line 122
+[11-Oct-2024 17:06:04 Europe/Berlin] Sesión cerrada exitosamente.
+Acceso denegado para la ruta: inicio[11-Oct-2024 17:06:22 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[11-Oct-2024 17:06:22 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+[11-Oct-2024 17:07:27 Europe/Berlin] Familia 'Familia juan' creada correctamente.
+[11-Oct-2024 17:07:34 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 17:07:34 Europe/Berlin] Error: No se encontró la familia con ID 16.
+[11-Oct-2024 18:29:11 Europe/Berlin] Familia 'Famila paraProbar' creada correctamente.
+[11-Oct-2024 18:29:16 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 18:29:16 Europe/Berlin] Error: No se encontró la familia con ID 17.
+[11-Oct-2024 18:29:20 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 18:29:20 Europe/Berlin] Error: No se encontró la familia con ID 16.
+[11-Oct-2024 18:29:53 Europe/Berlin] Error al consultar la familia por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'idAdmin' in 'field list'
+[11-Oct-2024 18:29:53 Europe/Berlin] Error: No se encontró la familia con ID 17.
+[11-Oct-2024 19:05:17 Europe/Berlin] Familia 'Otra Familia más' creada correctamente.
+Ruta no encontrada: verGrupos

@@ -16,7 +16,7 @@ require_once __DIR__ . '/app/controlador/SituacionFinancieraController.php';
 require_once __DIR__ . '/app/controlador/UsuarioController.php';
 
 // Definir la ruta para el archivo de log de errores
-ini_set('error_log', 'C:/xampp/htdocs/DWES/GastosEnFamilia/php-error.log');
+ini_set('error_log', __DIR__ . '/app/log/php-error.log'); // Verificamos la ruta correcta del archivo de log
 
 // Configuración de errores basada en el modo debug
 if (Config::isDebug()) {
@@ -50,7 +50,7 @@ $map = array(
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
     'actualizarUsuario' => array('controller' => 'UsuarioController', 'action' => 'actualizarUsuario', 'nivel_usuario' => 2),
-    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2), // Añadida la ruta faltante
+    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2),
 
     // Gestión de categorías gastos
     'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 1),
@@ -58,13 +58,6 @@ $map = array(
     'actualizarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaGasto', 'nivel_usuario' => 1),
     'eliminarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 1),
     'editarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 1),
-
-    // Gestión de categorías ingresos
-    'verCategoriasIngresos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 1),
-    'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
-    'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
-    'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
-    'eliminarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaIngreso', 'nivel_usuario' => 1),
 
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
@@ -75,8 +68,6 @@ $map = array(
     'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
     'editarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarFamilia', 'nivel_usuario' => 2),
     'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
-
-
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
@@ -109,6 +100,7 @@ if (isset($_GET['ctl'])) {
         // Manejo de error 404 si la ruta no es válida
         header('HTTP/1.0 404 Not Found');
         echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
+        error_log("Ruta no encontrada: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
         exit;
     }
 } else {
@@ -127,17 +119,18 @@ try {
             // Redireccionar a una página de acceso denegado o página de inicio
             header('HTTP/1.0 403 Forbidden');
             echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
+            error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
             exit;
         }
     } else {
-        throw new Exception("El controlador o acción no existe.");
+        throw new Exception("El controlador o acción no existe: {$controlador['controller']} -> {$controlador['action']}");
     }
 } catch (Exception $e) {
     if (Config::isDebug()) {
         echo '<h2>Error: ' . $e->getMessage() . '</h2>';
         echo '<pre>' . $e->getTraceAsString() . '</pre>';
     } else {
-        error_log($e->getMessage());
+        error_log($e->getMessage(), 3, __DIR__ . '/app/log/php-error.log');
         echo '<h2>Ocurrió un error. Por favor, inténtalo más tarde.</h2>';
     }
 }

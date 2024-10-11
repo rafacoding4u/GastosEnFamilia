@@ -402,15 +402,29 @@ class GastosModelo
     }
 
 
-    public function actualizarFamilia($idFamilia, $nombreFamilia)
-    {
-        $sql = "UPDATE familias SET nombre_familia = :nombreFamilia WHERE idFamilia = :idFamilia";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
+    public function actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)
+{
+    try {
+        // Verificar que idAdmin no sea NULL
+        if (empty($idAdmin)) {
+            throw new Exception("El administrador no puede ser nulo o vacío.");
+        }
 
+        $db = $this->getConexion();
+
+        // Preparar la consulta para actualizar el nombre y el administrador de la familia
+        $stmt = $db->prepare("UPDATE familias SET nombre_familia = :nombreFamilia, idAdmin = :idAdmin WHERE idFamilia = :idFamilia");
+        $stmt->bindParam(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
+        $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+
+        // Ejecutar la consulta
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Error al actualizar la familia: " . $e->getMessage());
+        return false;
+    }
+}
 
 
     // Eliminar una familia
@@ -1326,5 +1340,23 @@ class GastosModelo
         $sql = "SELECT idUser, email FROM usuarios";
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function consultarFamiliaPorId($idFamilia)
+    {
+        try {
+            // Conexión a la base de datos
+            $db = $this->getConexion();
+
+            // Consulta para obtener la información de la familia por su ID
+            $stmt = $db->prepare("SELECT idFamilia, nombre_familia, idAdmin FROM familias WHERE idFamilia = :idFamilia");
+            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmt->execute();
+
+            // Retornar el resultado de la consulta
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al consultar la familia por ID: " . $e->getMessage());
+            return false;
+        }
     }
 }
