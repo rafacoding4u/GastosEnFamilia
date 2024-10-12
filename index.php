@@ -69,8 +69,11 @@ $map = array(
     'editarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 1),
 
     // Gestión de categorías ingresos
-
-
+    'verCategoriasIngresos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 1),
+    'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
+    'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
+    'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
+    
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
     'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
@@ -101,17 +104,11 @@ $map = array(
     'editarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'actualizarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'eliminarIngreso' => array('controller' => 'FinanzasController', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
-    'verCategoriasIngresos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 1),
-    'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
-    'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
-    'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
-
 
     // Situación financiera
     'verSituacion' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
     'dashboard' => array('controller' => 'SituacionFinancieraController', 'action' => 'dashboard', 'nivel_usuario' => 1),
     'SituacionFinancieraController' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
-
 );
 
 // Verificar si la ruta solicitada existe
@@ -122,7 +119,7 @@ if (isset($_GET['ctl'])) {
     } else {
         // Manejo de error 404 si la ruta no es válida
         header('HTTP/1.0 404 Not Found');
-        error_log("Ruta no encontrada: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
+        error_log("Ruta no encontrada: " . htmlspecialchars($_GET['ctl'] ?? ''), 3, __DIR__ . '/app/log/php-error.log');
         echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
         exit;
     }

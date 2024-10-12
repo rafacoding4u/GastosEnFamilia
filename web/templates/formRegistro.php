@@ -6,21 +6,21 @@
         <div class="form-group">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" class="form-control" 
-                   value="<?= isset($params['nombre']) ? htmlspecialchars($params['nombre']) : '' ?>" required>
+                   value="<?= isset($params['nombre']) ? htmlspecialchars($params['nombre'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el apellido -->
         <div class="form-group">
             <label for="apellido">Apellido:</label>
             <input type="text" id="apellido" name="apellido" class="form-control" 
-                   value="<?= isset($params['apellido']) ? htmlspecialchars($params['apellido']) : '' ?>" required>
+                   value="<?= isset($params['apellido']) ? htmlspecialchars($params['apellido'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el alias (nombre de usuario) -->
         <div class="form-group">
             <label for="alias">Alias (Nombre de Usuario):</label>
             <input type="text" id="alias" name="alias" class="form-control" 
-                   value="<?= isset($params['alias']) ? htmlspecialchars($params['alias']) : '' ?>" required>
+                   value="<?= isset($params['alias']) ? htmlspecialchars($params['alias'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para la contraseña -->
@@ -33,36 +33,22 @@
         <div class="form-group">
             <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
             <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" 
-                   value="<?= isset($params['fecha_nacimiento']) ? htmlspecialchars($params['fecha_nacimiento']) : '' ?>" required>
+                   value="<?= isset($params['fecha_nacimiento']) ? htmlspecialchars($params['fecha_nacimiento'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el correo electrónico -->
         <div class="form-group">
             <label for="email">Correo Electrónico:</label>
             <input type="email" id="email" name="email" class="form-control" 
-                   value="<?= isset($params['email']) ? htmlspecialchars($params['email']) : '' ?>" required>
+                   value="<?= isset($params['email']) ? htmlspecialchars($params['email'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el teléfono -->
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
             <input type="text" id="telefono" name="telefono" class="form-control" 
-                   value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono']) : '' ?>" required>
+                   value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
-
-        <!-- Selector de nivel de usuario (solo accesible para superadmin o admin) -->
-        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
-            <div class="form-group">
-                <label for="nivel_usuario">Tipo de Usuario:</label>
-                <select id="nivel_usuario" name="nivel_usuario" class="form-control" required>
-                    <option value="usuario" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'usuario' ? 'selected' : '' ?>>Usuario</option>
-                    <option value="admin" <?= isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'admin' ? 'selected' : '' ?>>Administrador</option>
-                </select>
-            </div>
-        <?php else: ?>
-            <!-- Si el usuario no tiene permisos, forzar el nivel de usuario a 'usuario' -->
-            <input type="hidden" name="nivel_usuario" value="usuario">
-        <?php endif; ?>
 
         <!-- Selección de grupo o familia -->
         <div class="form-group">
@@ -70,6 +56,8 @@
             <select id="tipo_vinculo" name="tipo_vinculo" class="form-control" required>
                 <option value="grupo">Grupo</option>
                 <option value="familia">Familia</option>
+                <option value="crear_familia">Crear nueva familia</option>
+                <option value="crear_grupo">Crear nuevo grupo</option>
                 <option value="individual">Usuario individual (sin grupo o familia)</option>
             </select>
         </div>
@@ -79,14 +67,22 @@
             <label for="idGrupoFamilia">Seleccionar Grupo o Familia:</label>
             <select id="idGrupoFamilia" name="idGrupoFamilia" class="form-control">
                 <optgroup label="Grupos">
-                    <?php foreach ($grupos as $grupo): ?>
-                        <option value="grupo_<?= htmlspecialchars($grupo['idGrupo']) ?>"><?= htmlspecialchars($grupo['nombre_grupo']) ?></option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($grupos)) : ?>
+                        <?php foreach ($grupos as $grupo): ?>
+                            <option value="grupo_<?= htmlspecialchars($grupo['idGrupo'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($grupo['nombre_grupo'], ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="" disabled>No hay grupos disponibles</option>
+                    <?php endif; ?>
                 </optgroup>
                 <optgroup label="Familias">
-                    <?php foreach ($familias as $familia): ?>
-                        <option value="familia_<?= htmlspecialchars($familia['idFamilia']) ?>"><?= htmlspecialchars($familia['nombre_familia']) ?></option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($familias)) : ?>
+                        <?php foreach ($familias as $familia): ?>
+                            <option value="familia_<?= htmlspecialchars($familia['idFamilia'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($familia['nombre_familia'], ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="" disabled>No hay familias disponibles</option>
+                    <?php endif; ?>
                 </optgroup>
             </select>
         </div>
@@ -106,7 +102,11 @@
         </div>
 
         <!-- Campo oculto para el token CSRF -->
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+        <?php if (isset($params['csrf_token'])): ?>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+        <?php else: ?>
+            <input type="hidden" name="csrf_token" value="">
+        <?php endif; ?>
 
         <!-- Botón de envío -->
         <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>
@@ -116,7 +116,7 @@
             <div class="alert alert-danger mt-3">
                 <ul>
                     <?php foreach ($errores as $error): ?>
-                        <li><?= htmlspecialchars($error) ?></li>
+                        <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -125,7 +125,7 @@
         <!-- Mostrar mensaje de éxito -->
         <?php if (isset($params['mensaje'])): ?>
             <div class="alert alert-success mt-3">
-                <?= htmlspecialchars($params['mensaje']) ?>
+                <?= htmlspecialchars($params['mensaje'], ENT_QUOTES, 'UTF-8') ?>
             </div>
         <?php endif; ?>
     </form>
@@ -141,14 +141,14 @@
             selectGrupoFamilia.style.display = 'block';
             passwordGrupoFamilia.style.display = 'block';
             crearGrupoFamilia.style.display = 'none';
+        } else if (this.value === 'crear_familia' || this.value === 'crear_grupo') {
+            selectGrupoFamilia.style.display = 'none';
+            passwordGrupoFamilia.style.display = 'none';
+            crearGrupoFamilia.style.display = 'block';
         } else if (this.value === 'individual') {
             selectGrupoFamilia.style.display = 'none';
             passwordGrupoFamilia.style.display = 'none';
             crearGrupoFamilia.style.display = 'none';
-        } else {
-            selectGrupoFamilia.style.display = 'none';
-            passwordGrupoFamilia.style.display = 'none';
-            crearGrupoFamilia.style.display = 'block';
         }
     });
 </script>

@@ -510,7 +510,8 @@ class GastosModelo
     }
 
 
-    public function actualizarGrupo($idGrupo, $nombreGrupo, $idAdmin) {
+    public function actualizarGrupo($idGrupo, $nombreGrupo, $idAdmin)
+    {
         $sql = "UPDATE grupos SET nombre_grupo = :nombreGrupo, idAdmin = :idAdmin WHERE idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombreGrupo', $nombreGrupo, PDO::PARAM_STR);
@@ -518,7 +519,7 @@ class GastosModelo
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    
+
 
 
     public function eliminarGrupo($idGrupo)
@@ -988,39 +989,39 @@ class GastosModelo
 
 
     public function obtenerAdministradoresFamilia($idFamilia)
-{
-    try {
-        $sql = "SELECT u.* FROM usuarios u 
+    {
+        try {
+            $sql = "SELECT u.* FROM usuarios u 
                 JOIN administradores_familias af ON u.idUser = af.idAdmin
                 WHERE af.idFamilia = :idFamilia";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // Registra el error si ocurre
-        Config::registrarError("Error al obtener administradores de la familia $idFamilia: " . $e->getMessage());
-        return false;
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Registra el error si ocurre
+            Config::registrarError("Error al obtener administradores de la familia $idFamilia: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
     public function obtenerAdministradoresGrupo($idGrupo)
-{
-    try {
-        $sql = "SELECT u.* FROM usuarios u 
+    {
+        try {
+            $sql = "SELECT u.* FROM usuarios u 
                 JOIN administradores_grupos ag ON u.idUser = ag.idAdmin
                 WHERE ag.idGrupo = :idGrupo";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // Registra el error si ocurre
-        Config::registrarError("Error al obtener administradores del grupo $idGrupo: " . $e->getMessage());
-        return false;
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Registra el error si ocurre
+            Config::registrarError("Error al obtener administradores del grupo $idGrupo: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
 
@@ -1384,5 +1385,37 @@ class GastosModelo
             error_log("Error al consultar la familia por ID: " . $e->getMessage());
             return false;
         }
+    }
+    public function obtenerIdGrupoPorNombre($nombreGrupo)
+    {
+        try {
+            $sql = "SELECT idGrupo FROM grupos WHERE nombre_grupo = :nombreGrupo";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':nombreGrupo', $nombreGrupo, PDO::PARAM_STR);
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado ? $resultado['idGrupo'] : false;
+        } catch (Exception $e) {
+            error_log("Error al obtener el ID del grupo por nombre: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function existeFamilia($idFamilia)
+    {
+        $sql = "SELECT COUNT(*) FROM familias WHERE idFamilia = :idFamilia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idFamilia', $idFamilia);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeGrupo($idGrupo)
+    {
+        $sql = "SELECT COUNT(*) FROM grupos WHERE idGrupo = :idGrupo";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idGrupo', $idGrupo);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 }

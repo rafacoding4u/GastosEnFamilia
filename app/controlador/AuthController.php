@@ -171,18 +171,121 @@ class AuthController
     }
 
     // Método de manejo de errores
-    public function error()
-    {
+    public function registro()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
-            $params = array(
-                'mensaje' => 'Ha ocurrido un error. Por favor, intenta de nuevo más tarde.'
-            );
-            $this->render('error.php', $params);
+            // Inicializamos el modelo aquí
+            $m = new GastosModelo();
+
+            // Verificar el token CSRF
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                throw new Exception('CSRF token inválido.');
+            }
+
+            // Recoger y validar los datos del formulario
+            $nombre = htmlspecialchars(recoge('nombre'), ENT_QUOTES, 'UTF-8');
+            $apellido = htmlspecialchars(recoge('apellido'), ENT_QUOTES, 'UTF-8');
+            $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
+            $email = filter_var(recoge('email'), FILTER_VALIDATE_EMAIL);
+            $telefono = htmlspecialchars(recoge('telefono'), ENT_QUOTES, 'UTF-8');
+            $password = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
+            $fechaNacimiento = recoge('fecha_nacimiento');
+            $tipoVinculo = recoge('tipo_vinculo'); // Pertenecer a grupo, familia, individual, o crear nueva familia/grupo
+
+            // Validar que todos los campos requeridos están completos
+            if (!$email || empty($password) || empty($nombre) || empty($alias)) {
+                throw new Exception('Todos los campos son obligatorios.');
+            }
+
+            // Encriptar la contraseña
+            $passwordEncriptada = password_hash($password, PASSWORD_BCRYPT);
+
+            // Variable para el nivel de usuario
+            $nivel_usuario = 'usuario'; // Por defecto es usuario normal
+
+            // Lógica para familia/grupo nuevo o existente
+            if ($tipoVinculo === 'crear_familia') {
+                // Crear nueva familia
+                $nombreFamilia = recoge('nombre_nuevo');
+                $passwordFamilia = password_hash(recoge('password_nuevo'), PASSWORD_BCRYPT);
+                $m->insertarFamilia($nombreFamilia, $passwordFamilia);
+                $idFamilia = $m->obtenerIdFamiliaPorNombre($nombreFamilia);
+
+                // Asignar al usuario como administrador
+                $nivel_usuario = 'admin';
+                $m->asignarUsuarioAFamilia($idFamilia, $alias);
+            } elseif ($tipoVinculo === 'crear_grupo') {
+                // Crear nuevo grupo
+                $nombreGrupo = recoge('nombre_nuevo');
+                $passwordGrupo = password_hash(recoge('password_nuevo'), PASSWORD_BCRYPT);
+                $m->insertarGrupo($nombreGrupo, $passwordGrupo);
+                $idGrupo = $m->obtenerIdGrupoPorNombre($nombreGrupo);
+
+                // Asignar al usuario como administrador
+                $nivel_usuario = 'admin';
+                $m->asignarUsuarioAGrupo($idGrupo, $alias);
+            } elseif ($tipoVinculo === 'familia' || $tipoVinculo === 'grupo') {
+                // Pertenecer a una familia o grupo existente
+                $idGrupoFamilia = recoge('idGrupoFamilia');
+                $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
+                
+                // Validar la contraseña del grupo o familia
+                if (strpos($idGrupoFamilia, 'familia_') === 0) {
+                    $idFamilia = str_replace('familia_', '', $idGrupoFamilia);
+                    if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
+                        throw new Exception('Contraseña de la familia incorrecta.');
+                    }
+                    $m->asignarUsuarioAFamilia($idFamilia, $alias);
+                } elseif (strpos($idGrupoFamilia, 'grupo_') === 0) {
+                    $idGrupo = str_replace('grupo_', '', $idGrupoFamilia);
+                    if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
+                        throw new Exception('Contraseña del grupo incorrecta.');
+                    }
+                    $m->asignarUsuarioAGrupo($idGrupo, $alias);
+                }
+            }
+
+            // Insertar el nuevo usuario con el nivel determinado
+            $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono);
+
+            if ($usuarioRegistrado) {
+                // Redirigir al inicio de sesión tras el registro exitoso
+                header('Location: index.php?ctl=iniciarSesion');
+                exit();
+            } else {
+                throw new Exception('Error al registrar el usuario.');
+            }
         } catch (Exception $e) {
-            error_log("Error en el manejo de errores: " . $e->getMessage());
-            echo 'Ocurrió un problema grave. Intente más tarde.';
+            error_log("Error en registro(): " . $e->getMessage());
+            $params['mensaje'] = 'Error al registrarse. Inténtelo de nuevo.';
+
+            // Inicializar el modelo aquí también si ocurre un error
+            if (!isset($m)) {
+                $m = new GastosModelo();
+            }
+
+            // Volver a cargar los grupos y familias en caso de error
+            $params['familias'] = $m->obtenerFamilias();
+            $params['grupos'] = $m->obtenerGrupos();
+            $this->render('formRegistro.php', $params);
         }
+    } else {
+        // Generar token CSRF
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        // Obtener grupos y familias del modelo y pasarlos al formulario
+        $m = new GastosModelo();
+        $params['csrf_token'] = $_SESSION['csrf_token'];
+        $params['familias'] = $m->obtenerFamilias();
+        $params['grupos'] = $m->obtenerGrupos();
+
+        $this->render('formRegistro.php', $params);
     }
+}
+
 
     // Método para registrar acceso en la tabla de auditoría
     private function registrarAcceso($idUser, $accion)
@@ -211,4 +314,5 @@ class AuthController
             header('Location: index.php?ctl=error');
         }
     }
+    
 }

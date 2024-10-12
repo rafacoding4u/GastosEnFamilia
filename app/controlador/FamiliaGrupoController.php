@@ -680,4 +680,20 @@ class FamiliaGrupoController
             $this->redireccionarError('Tipo de vínculo no válido.');
         }
     }
+    public function crearFamiliaDesdeRegistro($nombreFamilia, $passwordFamilia)
+    {
+        $m = new GastosModelo();
+        $hashedPassword = password_hash($passwordFamilia, PASSWORD_BCRYPT);
+        $idFamilia = $m->insertarFamilia($nombreFamilia, $hashedPassword);
+        return $idFamilia;
+    }
+
+    public function crearGrupoDesdeRegistro($nombreGrupo, $passwordGrupo)
+    {
+        $m = new GastosModelo();
+        $hashedPassword = password_hash($passwordGrupo, PASSWORD_BCRYPT);
+        $idGrupo = $m->insertarGrupo($nombreGrupo, $hashedPassword);
+        return $idGrupo;
+    }
+    
 }
