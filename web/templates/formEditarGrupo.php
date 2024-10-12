@@ -5,7 +5,7 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
         <!-- Formulario para editar un grupo -->
-        <form action="index.php?ctl=FamiliaGrupoController&action=editarGrupo&id=<?= htmlspecialchars($params['idGrupo']) ?>" method="post">
+        <form action="index.php?ctl=editarGrupo&id=<?= htmlspecialchars($params['idGrupo']) ?>" method="post">
             <!-- Nombre del grupo -->
             <div class="form-group">
                 <label for="nombre_grupo">Nombre del Grupo</label>
@@ -16,11 +16,15 @@
             <div class="form-group">
                 <label for="id_admin">Seleccionar Administrador del Grupo</label>
                 <select class="form-control" id="id_admin" name="id_admin" required>
-                    <?php foreach ($params['administradores'] as $admin): ?>
-                        <option value="<?= htmlspecialchars($admin['idUser']) ?>" <?= $params['idAdmin'] == $admin['idUser'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($params['administradores'])): ?>
+                        <?php foreach ($params['administradores'] as $admin): ?>
+                            <option value="<?= htmlspecialchars($admin['idUser']) ?>" <?= $params['idAdminActual'] == $admin['idUser'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No se encontraron administradores disponibles</option>
+                    <?php endif; ?>
                 </select>
             </div>
 
@@ -28,10 +32,10 @@
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
             <!-- Mostrar posibles errores -->
-            <?php if (isset($errores) && !empty($errores)): ?>
+            <?php if (isset($params['errores']) && !empty($params['errores'])): ?>
                 <div class="alert alert-danger">
                     <ul>
-                        <?php foreach ($errores as $error): ?>
+                        <?php foreach ($params['errores'] as $error): ?>
                             <li><?= htmlspecialchars($error) ?></li>
                         <?php endforeach; ?>
                     </ul>
@@ -39,9 +43,9 @@
             <?php endif; ?>
 
             <!-- Mostrar mensajes de éxito -->
-            <?php if (isset($mensaje)): ?>
+            <?php if (isset($params['mensaje'])): ?>
                 <div class="alert alert-info">
-                    <?= htmlspecialchars($mensaje) ?>
+                    <?= htmlspecialchars($params['mensaje']) ?>
                 </div>
             <?php endif; ?>
 

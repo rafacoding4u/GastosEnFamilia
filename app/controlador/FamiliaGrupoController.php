@@ -56,8 +56,10 @@ class FamiliaGrupoController
                 $id_admin = recoge('id_admin');
 
                 $errores = array();
-                cTexto($nombre_familia, "nombre_familia", $errores);
-                cContrasenya($password_familia, $errores);
+
+                // Validamos el nombre de la familia usando cUser para permitir letras, números y espacios
+                cUser($nombre_familia, "nombre_familia", $errores, 100, 1, true); // Permitimos espacios
+                cContrasenya($password_familia, $errores); // Validamos la contraseña
 
                 if (empty($errores)) {
                     $m = new GastosModelo();
@@ -87,34 +89,35 @@ class FamiliaGrupoController
         }
     }
 
+
     // Formulario para crear un nuevo grupo
     public function formCrearGrupo()
-{
-    try {
-        if (!esSuperadmin()) {
-            $this->redireccionarError('Acceso denegado. Solo superadmin puede crear grupos.');
-            return;
+    {
+        try {
+            if (!esSuperadmin()) {
+                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear grupos.');
+                return;
+            }
+
+            // Obtener los usuarios administradores registrados
+            $m = new GastosModelo();
+            $administradores = $m->obtenerAdministradores();
+
+            // Generar un token CSRF y almacenarlo en la sesión
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+            // Pasar los administradores y el token CSRF a la vista
+            $params = [
+                'administradores' => $administradores,
+                'csrf_token' => $_SESSION['csrf_token']
+            ];
+
+            $this->render('formCrearGrupo.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en formCrearGrupo(): " . $e->getMessage());
+            $this->redireccionarError('Error al mostrar el formulario de creación de grupo.');
         }
-
-        // Obtener los usuarios administradores registrados
-        $m = new GastosModelo();
-        $administradores = $m->obtenerAdministradores();
-
-        // Generar un token CSRF y almacenarlo en la sesión
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
-        // Pasar los administradores y el token CSRF a la vista
-        $params = [
-            'administradores' => $administradores,
-            'csrf_token' => $_SESSION['csrf_token']
-        ];
-
-        $this->render('formCrearGrupo.php', $params);
-    } catch (Exception $e) {
-        error_log("Error en formCrearGrupo(): " . $e->getMessage());
-        $this->redireccionarError('Error al mostrar el formulario de creación de grupo.');
     }
-}
 
 
     // Crear un nuevo grupo
@@ -131,8 +134,10 @@ class FamiliaGrupoController
                 $password_grupo = recoge('password_grupo');
 
                 $errores = array();
-                cTexto($nombre_grupo, "nombre_grupo", $errores);
-                cContrasenya($password_grupo, $errores);
+
+                // Usamos cUser para validar el nombre del grupo, permitiendo números y espacios
+                cUser($nombre_grupo, "nombre_grupo", $errores, 100, 1, true); // Permitimos espacios en el nombre del grupo
+                cContrasenya($password_grupo, $errores); // Validamos la contraseña
 
                 if (empty($errores)) {
                     $m = new GastosModelo();
@@ -158,6 +163,7 @@ class FamiliaGrupoController
         }
     }
 
+
     // Listar Familias
     public function listarFamilias()
     {
@@ -179,100 +185,99 @@ class FamiliaGrupoController
 
     // Listar Grupos
     public function listarGrupos()
-{
-    try {
-        $m = new GastosModelo();
-        $grupos = $m->obtenerGrupos();
+    {
+        try {
+            $m = new GastosModelo();
+            $grupos = $m->obtenerGrupos();
 
-        $params = array(
-            'grupos' => $grupos,
-            'mensaje' => 'Lista de grupos registrados'
-        );
+            $params = array(
+                'grupos' => $grupos,
+                'mensaje' => 'Lista de grupos registrados'
+            );
 
-        $this->render('listarGrupos.php', $params);
-    } catch (Exception $e) {
-        error_log("Error en listarGrupos(): " . $e->getMessage());
-        $this->redireccionarError('Error al listar los grupos.');
+            $this->render('listarGrupos.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en listarGrupos(): " . $e->getMessage());
+            $this->redireccionarError('Error al listar los grupos.');
+        }
     }
-}
 
 
     // Editar Familia
     public function editarFamilia()
-{
-    $m = new GastosModelo();
+    {
+        $m = new GastosModelo();
 
-    // Validar que el usuario esté autenticado y tenga el nivel necesario
-    if ($_SESSION['nivel_usuario'] < 2) {
-        header("Location: index.php?ctl=error");
-        exit();
-    }
-
-    // Obtener el ID de la familia a editar
-    $idFamilia = recoge('id');
-
-    // Si es una solicitud POST, procesar el formulario
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        try {
-            // Verificar el token CSRF
-            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                throw new Exception('CSRF token inválido.');
-            }
-
-            // Limpiar los datos recibidos
-            $nombreFamilia = htmlspecialchars(recoge('nombre_familia'), ENT_QUOTES, 'UTF-8');
-            $idAdmin = recoge('idAdmin');
-
-            // Validar que se haya seleccionado un administrador
-            if (empty($idAdmin)) {
-                throw new Exception('Debe seleccionar un administrador.');
-            }
-
-            // Llamar al modelo para actualizar la familia
-            if ($m->actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)) {
-                // Redirigir o mostrar mensaje de éxito
-                header('Location: index.php?ctl=listarFamilias');
-                exit();
-            } else {
-                $params['mensaje'] = 'Error al actualizar la familia. Inténtelo de nuevo.';
-            }
-
-        } catch (Exception $e) {
-            error_log("Error al editar la familia: " . $e->getMessage());
-            $params['mensaje'] = 'Error al editar la familia: ' . $e->getMessage();
-        }
-    } else {
-        // Generar el token CSRF si aún no existe
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-
-        // Obtener los datos actuales de la familia
-        $familia = $m->consultarFamiliaPorId($idFamilia);
-
-        // Obtener la lista de todos los usuarios
-        $usuarios = $m->obtenerUsuarios();
-
-        // Verificar si se encontró la familia
-        if (!$familia) {
-            error_log("Error: No se encontró la familia con ID {$idFamilia}.");
-            $_SESSION['error_mensaje'] = "No se encontró la familia.";
-            header('Location: index.php?ctl=listarFamilias');
+        // Validar que el usuario esté autenticado y tenga el nivel necesario
+        if ($_SESSION['nivel_usuario'] < 2) {
+            header("Location: index.php?ctl=error");
             exit();
         }
 
-        $params = array(
-            'idFamilia' => $idFamilia,
-            'nombreFamilia' => $familia['nombre_familia'],  // Usar 'nombre_familia' en lugar de 'nombre'
-            'idAdmin' => $familia['idAdmin'],
-            'usuarios' => $usuarios,  // Aquí añadimos la lista de usuarios
-            'csrf_token' => $_SESSION['csrf_token']
-        );
+        // Obtener el ID de la familia a editar
+        $idFamilia = recoge('id');
 
-        // Mostrar el formulario de edición
-        $this->render('formEditarFamilia.php', $params);
+        // Si es una solicitud POST, procesar el formulario
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Verificar el token CSRF
+                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                    throw new Exception('CSRF token inválido.');
+                }
+
+                // Limpiar los datos recibidos
+                $nombreFamilia = htmlspecialchars(recoge('nombre_familia'), ENT_QUOTES, 'UTF-8');
+                $idAdmin = recoge('idAdmin');
+
+                // Validar que se haya seleccionado un administrador
+                if (empty($idAdmin)) {
+                    throw new Exception('Debe seleccionar un administrador.');
+                }
+
+                // Llamar al modelo para actualizar la familia
+                if ($m->actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)) {
+                    // Redirigir o mostrar mensaje de éxito
+                    header('Location: index.php?ctl=listarFamilias');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'Error al actualizar la familia. Inténtelo de nuevo.';
+                }
+            } catch (Exception $e) {
+                error_log("Error al editar la familia: " . $e->getMessage());
+                $params['mensaje'] = 'Error al editar la familia: ' . $e->getMessage();
+            }
+        } else {
+            // Generar el token CSRF si aún no existe
+            if (empty($_SESSION['csrf_token'])) {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
+
+            // Obtener los datos actuales de la familia
+            $familia = $m->consultarFamiliaPorId($idFamilia);
+
+            // Obtener la lista de todos los usuarios
+            $usuarios = $m->obtenerUsuarios();
+
+            // Verificar si se encontró la familia
+            if (!$familia) {
+                error_log("Error: No se encontró la familia con ID {$idFamilia}.");
+                $_SESSION['error_mensaje'] = "No se encontró la familia.";
+                header('Location: index.php?ctl=listarFamilias');
+                exit();
+            }
+
+            $params = array(
+                'idFamilia' => $idFamilia,
+                'nombreFamilia' => $familia['nombre_familia'],  // Usar 'nombre_familia' en lugar de 'nombre'
+                'idAdmin' => $familia['idAdmin'],
+                'usuarios' => $usuarios,  // Aquí añadimos la lista de usuarios
+                'csrf_token' => $_SESSION['csrf_token']
+            );
+
+            // Mostrar el formulario de edición
+            $this->render('formEditarFamilia.php', $params);
+        }
     }
-}
 
     // Editar Grupo
     public function editarGrupo()
@@ -306,20 +311,37 @@ class FamiliaGrupoController
                 }
             }
 
+            // Obtener todos los administradores disponibles para el select
+            $m = new GastosModelo();
+            $administradoresDisponibles = $m->obtenerAdministradores();
+
+            // Generar el token CSRF
+            $csrf_token = generarTokenCSRF();
+
+            // Pasar el nombre del grupo, el ID del grupo y los administradores disponibles a la vista
             $params = array(
                 'nombre_grupo' => $grupo['nombre_grupo'],
-                'idGrupo' => $grupo['idGrupo']
+                'idGrupo' => $grupo['idGrupo'],
+                'administradores' => $administradoresDisponibles,
+                'idAdminActual' => $grupo['idAdmin'], // ID del administrador actual
+                'csrf_token' => $csrf_token // Token CSRF
             );
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarGrupo'])) {
                 $nombre_grupo = recoge('nombre_grupo');
+                $id_admin = recoge('id_admin');
                 $errores = array();
 
+                // Validación de los campos
                 cTexto($nombre_grupo, "nombre_grupo", $errores);
+                if (empty($id_admin)) {
+                    $errores[] = "Debes seleccionar un administrador válido.";
+                }
 
                 if (empty($errores)) {
-                    if ($m->actualizarGrupo($grupo['idGrupo'], $nombre_grupo)) {
-                        error_log("Grupo '{$nombre_grupo}' actualizado correctamente.");
+                    // Actualizar el grupo con el nombre y el administrador asignado
+                    if ($m->actualizarGrupo($grupo['idGrupo'], $nombre_grupo, $id_admin)) {
+                        error_log("Grupo '{$nombre_grupo}' actualizado correctamente con el administrador ID: {$id_admin}.");
                         header('Location: index.php?ctl=listarGrupos');
                         exit();
                     } else {
@@ -330,13 +352,14 @@ class FamiliaGrupoController
                     $params['errores'] = $errores;
                 }
             }
-
+            // Renderizar la vista con el formulario de edición del grupo
             $this->render('formEditarGrupo.php', $params);
         } catch (Exception $e) {
             error_log("Error en editarGrupo(): " . $e->getMessage());
             $this->redireccionarError('Error al editar el grupo.');
         }
     }
+
 
     public function eliminarFamilia()
     {

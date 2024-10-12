@@ -510,14 +510,15 @@ class GastosModelo
     }
 
 
-    public function actualizarGrupo($idGrupo, $nombreGrupo)
-    {
-        $sql = "UPDATE grupos SET nombre_grupo = :nombreGrupo WHERE idGrupo = :idGrupo";
+    public function actualizarGrupo($idGrupo, $nombreGrupo, $idAdmin) {
+        $sql = "UPDATE grupos SET nombre_grupo = :nombreGrupo, idAdmin = :idAdmin WHERE idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nombreGrupo', $nombreGrupo, PDO::PARAM_STR);
+        $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    
 
 
     public function eliminarGrupo($idGrupo)
@@ -987,26 +988,40 @@ class GastosModelo
 
 
     public function obtenerAdministradoresFamilia($idFamilia)
-    {
+{
+    try {
         $sql = "SELECT u.* FROM usuarios u 
-            JOIN administradores_familias af ON u.idUser = af.idAdmin
-            WHERE af.idFamilia = :idFamilia";
+                JOIN administradores_familias af ON u.idUser = af.idAdmin
+                WHERE af.idFamilia = :idFamilia";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Registra el error si ocurre
+        Config::registrarError("Error al obtener administradores de la familia $idFamilia: " . $e->getMessage());
+        return false;
     }
+}
+
 
     public function obtenerAdministradoresGrupo($idGrupo)
-    {
+{
+    try {
         $sql = "SELECT u.* FROM usuarios u 
-        JOIN administradores_grupos ag ON u.idUser = ag.idAdmin
-        WHERE ag.idGrupo = :idGrupo";
+                JOIN administradores_grupos ag ON u.idUser = ag.idAdmin
+                WHERE ag.idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Registra el error si ocurre
+        Config::registrarError("Error al obtener administradores del grupo $idGrupo: " . $e->getMessage());
+        return false;
     }
+}
+
 
 
     // Añadir administrador a una familia

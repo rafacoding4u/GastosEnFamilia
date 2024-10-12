@@ -22,9 +22,11 @@ ini_set('error_log', __DIR__ . '/app/log/php-error.log'); // Verificamos la ruta
 if (Config::isDebug()) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1); // Mostrar los errores en pantalla
+    error_log("Modo debug activo, mostrando errores en pantalla", 3, __DIR__ . '/app/log/php-error.log');
 } else {
     error_reporting(0); // Ocultar los errores en producción
     ini_set('display_errors', 0);
+    error_log("Modo producción activo, ocultando errores en pantalla", 3, __DIR__ . '/app/log/php-error.log');
 }
 
 session_start();
@@ -32,6 +34,7 @@ session_start();
 // Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['nivel_usuario'])) {
     $_SESSION['nivel_usuario'] = 0;
+    error_log("Nivel de usuario no definido, asignado a 0", 3, __DIR__ . '/app/log/php-error.log');
 }
 
 // Mapeo de rutas y sus controladores, incluyendo las opciones de SuperUsuario
@@ -61,16 +64,17 @@ $map = array(
 
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
-    'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2), // Ruta añadida
+    'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
     'formCrearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearFamilia', 'nivel_usuario' => 2),
     'crearFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearFamilia', 'nivel_usuario' => 2),
     'formCrearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearGrupo', 'nivel_usuario' => 2),
     'crearGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearGrupo', 'nivel_usuario' => 2),
     'editarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarFamilia', 'nivel_usuario' => 2),
-    'editarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarGrupo', 'nivel_usuario' => 2), // Añadido para editar grupo
+    'editarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'editarGrupo', 'nivel_usuario' => 2),
     'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
-    'eliminarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarGrupo', 'nivel_usuario' => 2), // Añadido para eliminar grupo
-    'verGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2), // Nueva ruta añadida
+    'eliminarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarGrupo', 'nivel_usuario' => 2),
+    'verGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
+
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
@@ -99,15 +103,17 @@ $map = array(
 if (isset($_GET['ctl'])) {
     if (isset($map[$_GET['ctl']])) {
         $ruta = $_GET['ctl'];
+        error_log("Ruta encontrada: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
     } else {
         // Manejo de error 404 si la ruta no es válida
         header('HTTP/1.0 404 Not Found');
-        echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
         error_log("Ruta no encontrada: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
+        echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
         exit;
     }
 } else {
     $ruta = 'home';
+    error_log("Ruta por defecto 'home' asignada", 3, __DIR__ . '/app/log/php-error.log');
 }
 
 $controlador = $map[$ruta];
@@ -117,18 +123,20 @@ try {
     if (method_exists($controlador['controller'], $controlador['action'])) {
         // Comprobar el nivel de acceso del usuario
         if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
+            error_log("Ejecutando acción: {$controlador['action']} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
             call_user_func(array(new $controlador['controller'], $controlador['action']));
         } else {
             // Redireccionar a una página de acceso denegado o página de inicio
             header('HTTP/1.0 403 Forbidden');
-            echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
             error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
+            echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
             exit;
         }
     } else {
         throw new Exception("El controlador o acción no existe: {$controlador['controller']} -> {$controlador['action']}");
     }
 } catch (Exception $e) {
+    error_log("Error capturado: " . $e->getMessage(), 3, __DIR__ . '/app/log/php-error.log');
     if (Config::isDebug()) {
         echo '<h2>Error: ' . $e->getMessage() . '</h2>';
         echo '<pre>' . $e->getTraceAsString() . '</pre>';

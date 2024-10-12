@@ -40,11 +40,12 @@ class Config {
     public static function manejarError($e) {
         $mensaje_error = "Error: " . $e->getMessage();
         if (self::$debug) {
-            // Si está en modo debug, mostrar el error en pantalla
+            // Mostrar el error en pantalla si está en modo debug
             echo "<h2>{$mensaje_error}</h2>";
         }
-        // Registrar el error en el archivo de log, incluso en modo debug
+        // Registrar el error en el archivo de log siempre
         self::registrarError($mensaje_error);
+        error_log($mensaje_error, 3, self::$log_file);  // Asegúrate de siempre registrar en el archivo
     }
 
     /**

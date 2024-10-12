@@ -38,11 +38,14 @@ function cTexto(string $text, string $campo, array &$errores, int $max = 100, in
     return false;
 }
 
-function cUser(string $text, string $campo, array &$errores, int $max = 30, int $min = 1): bool {
-    if ((preg_match("/^[a-zA-Z0-9_]{" . $min . "," . $max . "}$/u", sinTildes($text)))) {
+function cUser(string $text, string $campo, array &$errores, int $max = 30, int $min = 1, bool $permitir_espacios = true): bool {
+    // Incluir espacios si están permitidos
+    $espacios = $permitir_espacios ? " " : "_"; 
+    // Validar que el texto solo contenga letras, números y espacios o guiones bajos
+    if ((preg_match("/^[a-zA-Z0-9$espacios]{" . $min . "," . $max . "}$/u", sinTildes($text)))) {
         return true;
     }
-    $errores[$campo] = "Error en el campo $campo";
+    $errores[$campo] = "Error en el campo $campo. Solo se permiten letras, números y espacios.";
     return false;
 }
 

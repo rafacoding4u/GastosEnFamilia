@@ -57,4 +57,13 @@ function esUsuarioNormal() {
     return isset($_SESSION['usuario']) && $_SESSION['usuario']['nivel_usuario'] == 'usuario';
 }
 
-?>
+function generarTokenCSRF() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start(); // Iniciar sesión si no está ya iniciada
+    }
+    // Genera un token aleatorio si no está ya generado
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
