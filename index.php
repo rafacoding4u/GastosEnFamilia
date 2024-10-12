@@ -16,20 +16,26 @@ require_once __DIR__ . '/app/controlador/SituacionFinancieraController.php';
 require_once __DIR__ . '/app/controlador/UsuarioController.php';
 
 // Definir la ruta para el archivo de log de errores
-ini_set('error_log', __DIR__ . '/app/log/php-error.log'); // Verificamos la ruta correcta del archivo de log
+ini_set('error_log', __DIR__ . '/app/log/php-error.log');
 
 // Configuración de errores basada en el modo debug
 if (Config::isDebug()) {
     error_reporting(E_ALL);
-    ini_set('display_errors', 1); // Mostrar los errores en pantalla
+    ini_set('display_errors', 1);
     error_log("Modo debug activo, mostrando errores en pantalla", 3, __DIR__ . '/app/log/php-error.log');
 } else {
-    error_reporting(0); // Ocultar los errores en producción
+    error_reporting(0);
     ini_set('display_errors', 0);
     error_log("Modo producción activo, ocultando errores en pantalla", 3, __DIR__ . '/app/log/php-error.log');
 }
 
-session_start();
+// Verificar si la sesión ya está iniciada antes de llamar a session_start()
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+    error_log("Sesión iniciada", 3, __DIR__ . '/app/log/php-error.log');
+} else {
+    error_log("Sesión ya activa, no se vuelve a iniciar", 3, __DIR__ . '/app/log/php-error.log');
+}
 
 // Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['nivel_usuario'])) {
@@ -62,6 +68,9 @@ $map = array(
     'eliminarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'eliminarCategoriaGasto', 'nivel_usuario' => 1),
     'editarCategoriaGasto' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaGasto', 'nivel_usuario' => 1),
 
+    // Gestión de categorías ingresos
+
+
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
     'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
@@ -74,7 +83,6 @@ $map = array(
     'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
     'eliminarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarGrupo', 'nivel_usuario' => 2),
     'verGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
-
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
@@ -93,10 +101,17 @@ $map = array(
     'editarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'actualizarIngreso' => array('controller' => 'FinanzasController', 'action' => 'editarIngreso', 'nivel_usuario' => 1),
     'eliminarIngreso' => array('controller' => 'FinanzasController', 'action' => 'eliminarIngreso', 'nivel_usuario' => 1),
+    'verCategoriasIngresos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasIngresos', 'nivel_usuario' => 1),
+    'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
+    'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
+    'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
+
 
     // Situación financiera
     'verSituacion' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
     'dashboard' => array('controller' => 'SituacionFinancieraController', 'action' => 'dashboard', 'nivel_usuario' => 1),
+    'SituacionFinancieraController' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
+
 );
 
 // Verificar si la ruta solicitada existe
@@ -120,20 +135,20 @@ $controlador = $map[$ruta];
 
 // Verificar si el método solicitado existe en el controlador
 try {
-    if (method_exists($controlador['controller'], $controlador['action'])) {
-        // Comprobar el nivel de acceso del usuario
-        if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
-            error_log("Ejecutando acción: {$controlador['action']} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
-            call_user_func(array(new $controlador['controller'], $controlador['action']));
-        } else {
-            // Redireccionar a una página de acceso denegado o página de inicio
-            header('HTTP/1.0 403 Forbidden');
-            error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
-            echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
-            exit;
-        }
+    if (isset($_GET['action']) && method_exists($controlador['controller'], $_GET['action'])) {
+        $action = $_GET['action'];
     } else {
-        throw new Exception("El controlador o acción no existe: {$controlador['controller']} -> {$controlador['action']}");
+        $action = $controlador['action'];  // Acción por defecto si no está definida en la URL
+    }
+
+    if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
+        error_log("Ejecutando acción: {$action} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
+        call_user_func(array(new $controlador['controller'], $action));
+    } else {
+        header('HTTP/1.0 403 Forbidden');
+        error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
+        echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
+        exit;
     }
 } catch (Exception $e) {
     error_log("Error capturado: " . $e->getMessage(), 3, __DIR__ . '/app/log/php-error.log');

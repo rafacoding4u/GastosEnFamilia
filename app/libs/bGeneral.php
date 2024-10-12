@@ -197,6 +197,3 @@ function validarEdad(string $fecha_nacimiento, array &$errores): bool {
     }
     return true;
 }
-
-
-?>

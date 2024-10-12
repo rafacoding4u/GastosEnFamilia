@@ -280,6 +280,7 @@ class FamiliaGrupoController
     }
 
     // Editar Grupo
+    // Editar Grupo
     public function editarGrupo()
     {
         try {
@@ -312,7 +313,6 @@ class FamiliaGrupoController
             }
 
             // Obtener todos los administradores disponibles para el select
-            $m = new GastosModelo();
             $administradoresDisponibles = $m->obtenerAdministradores();
 
             // Generar el token CSRF
@@ -332,8 +332,9 @@ class FamiliaGrupoController
                 $id_admin = recoge('id_admin');
                 $errores = array();
 
-                // Validación de los campos
-                cTexto($nombre_grupo, "nombre_grupo", $errores);
+                // Validación del nombre de grupo utilizando cUser (que permite números, letras y guiones bajos)
+                cUser($nombre_grupo, "nombre_grupo", $errores);
+
                 if (empty($id_admin)) {
                     $errores[] = "Debes seleccionar un administrador válido.";
                 }
@@ -352,6 +353,7 @@ class FamiliaGrupoController
                     $params['errores'] = $errores;
                 }
             }
+
             // Renderizar la vista con el formulario de edición del grupo
             $this->render('formEditarGrupo.php', $params);
         } catch (Exception $e) {
@@ -359,6 +361,7 @@ class FamiliaGrupoController
             $this->redireccionarError('Error al editar el grupo.');
         }
     }
+
 
 
     public function eliminarFamilia()

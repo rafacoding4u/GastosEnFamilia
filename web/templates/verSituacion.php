@@ -3,7 +3,8 @@
 
     <!-- Selección de tipo de situación -->
     <form method="GET" action="index.php">
-        <input type="hidden" name="ctl" value="SituacionFinancieraController&action=verSituacion">
+        <input type="hidden" name="ctl" value="SituacionFinancieraController">
+        <input type="hidden" name="action" value="verSituacion">
 
         <div class="form-group">
             <label for="tipo">Ver situación de:</label>
@@ -11,8 +12,7 @@
                 <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
                     <option value="global" <?= $tipo === 'global' ? 'selected' : '' ?>>Global</option>
                 <?php endif; ?>
-                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins 
-                ?>
+                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins ?>
                     <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
                     <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
                 <?php endif; ?>
@@ -26,7 +26,7 @@
                 <label for="idSeleccionado">Selecciona una familia:</label>
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
                     <?php foreach ($familias as $familia): ?>
-                        <option value="<?= $familia['idFamilia'] ?>" <?= $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
+                        <option value="<?= $familia['idFamilia'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($familia['nombre_familia']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -37,7 +37,7 @@
                 <label for="idSeleccionado">Selecciona un grupo:</label>
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
                     <?php foreach ($grupos as $grupo): ?>
-                        <option value="<?= $grupo['idGrupo'] ?>" <?= $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                        <option value="<?= $grupo['idGrupo'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($grupo['nombre_grupo']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -47,9 +47,9 @@
             <div class="form-group">
                 <label for="idSeleccionado">Selecciona un usuario:</label>
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
-                    <option value="todos" <?= $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
+                    <option value="todos" <?= isset($idSeleccionado) && $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
                     <?php foreach ($usuariosLista as $usuario): ?>
-                        <option value="<?= $usuario['idUser'] ?>" <?= $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
+                        <option value="<?= $usuario['idUser'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -63,11 +63,11 @@
     <!-- Resumen Financiero -->
     <?php if (!empty($situacion)): ?>
         <h4>Resumen Financiero</h4>
-        <p>Total Ingresos: <span class="bg-success text-white px-2"><?= number_format($situacion['totalIngresos'], 2, ',', '.') ?> €</span></p>
-        <p>Total Gastos: <span class="bg-danger text-white px-2"><?= number_format($situacion['totalGastos'], 2, ',', '.') ?> €</span></p>
+        <p>Total Ingresos: <span class="bg-success text-white px-2"><?= number_format($situacion['totalIngresos'] ?? 0, 2, ',', '.') ?> €</span></p>
+        <p>Total Gastos: <span class="bg-danger text-white px-2"><?= number_format($situacion['totalGastos'] ?? 0, 2, ',', '.') ?> €</span></p>
         <p>Saldo:
-            <span class="px-2" style="color: white; background-color: <?= $situacion['totalIngresos'] - $situacion['totalGastos'] > 0 ? 'green' : 'red' ?>;">
-                <?= number_format($situacion['totalIngresos'] - $situacion['totalGastos'], 2, ',', '.') ?> €
+            <span class="px-2" style="color: white; background-color: <?= ($situacion['totalIngresos'] ?? 0) - ($situacion['totalGastos'] ?? 0) > 0 ? 'green' : 'red' ?>;">
+                <?= number_format(($situacion['totalIngresos'] ?? 0) - ($situacion['totalGastos'] ?? 0), 2, ',', '.') ?> €
             </span>
         </p>
     <?php else: ?>
