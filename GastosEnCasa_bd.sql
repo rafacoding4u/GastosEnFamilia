@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-10-2024 a las 18:22:51
+-- Tiempo de generación: 12-10-2024 a las 18:55:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -39,8 +39,16 @@ CREATE TABLE `administradores_familias` (
 
 INSERT INTO `administradores_familias` (`id`, `idAdmin`, `idFamilia`) VALUES
 (1, 2, 1),
-(2, 3, 2),
-(3, 4, 3);
+(5, 2, 10),
+(6, 2, 11),
+(7, 2, 12),
+(9, 2, 14),
+(10, 2, 15),
+(4, 16, 9),
+(8, 16, 13),
+(11, 16, 16),
+(12, 16, 19),
+(13, 17, 20);
 
 -- --------------------------------------------------------
 
@@ -50,17 +58,16 @@ INSERT INTO `administradores_familias` (`id`, `idAdmin`, `idFamilia`) VALUES
 
 CREATE TABLE `administradores_grupos` (
   `idAdmin` int(11) NOT NULL,
-  `idGrupo` int(11) NOT NULL
+  `idGrupo` int(11) NOT NULL,
+  `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `administradores_grupos`
 --
 
-INSERT INTO `administradores_grupos` (`idAdmin`, `idGrupo`) VALUES
-(2, 1),
-(3, 2),
-(4, 3);
+INSERT INTO `administradores_grupos` (`idAdmin`, `idGrupo`, `id`) VALUES
+(2, 1, 1);
 
 --
 -- Disparadores `administradores_grupos`
@@ -195,7 +202,170 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 (93, 'UPDATE', 'gastos', 4, '2', '2024-10-07 16:06:24'),
 (94, 'UPDATE', 'gastos', 9, '3', '2024-10-07 16:06:24'),
 (95, 'UPDATE', 'gastos', 14, '2', '2024-10-07 16:06:24'),
-(96, 'UPDATE', 'gastos', 15, '2', '2024-10-07 16:06:24');
+(96, 'UPDATE', 'gastos', 15, '2', '2024-10-07 16:06:24'),
+(97, 'UPDATE', 'gastos', 2, '2', '2024-10-08 17:19:53'),
+(98, 'UPDATE', 'gastos', 3, '2', '2024-10-08 17:19:53'),
+(99, 'UPDATE', 'gastos', 4, '2', '2024-10-08 17:19:53'),
+(100, 'UPDATE', 'gastos', 5, '2', '2024-10-08 17:19:53'),
+(101, 'UPDATE', 'gastos', 6, '2', '2024-10-08 17:19:53'),
+(102, 'UPDATE', 'gastos', 7, '2', '2024-10-08 17:19:53'),
+(103, 'UPDATE', 'gastos', 8, '2', '2024-10-08 17:19:53'),
+(104, 'UPDATE', 'ingresos', 1, '2', '2024-10-08 17:20:53'),
+(105, 'UPDATE', 'ingresos', 2, '2', '2024-10-08 17:20:53'),
+(106, 'UPDATE', 'ingresos', 3, '2', '2024-10-08 17:20:53'),
+(107, 'UPDATE', 'ingresos', 4, '2', '2024-10-08 17:20:53'),
+(108, 'UPDATE', 'ingresos', 5, '2', '2024-10-08 17:20:53'),
+(109, 'UPDATE', 'ingresos', 6, '2', '2024-10-08 17:20:53'),
+(110, 'UPDATE', 'ingresos', 7, '2', '2024-10-08 17:20:53'),
+(111, 'UPDATE', 'ingresos', 8, '2', '2024-10-08 17:20:53'),
+(112, 'UPDATE', 'gastos', 9, '3', '2024-10-08 17:22:01'),
+(113, 'UPDATE', 'gastos', 10, '3', '2024-10-08 17:22:24'),
+(114, 'UPDATE', 'gastos', 11, '3', '2024-10-08 17:24:28'),
+(115, 'UPDATE', 'gastos', 12, '3', '2024-10-08 17:24:28'),
+(116, 'UPDATE', 'gastos', 13, '3', '2024-10-08 17:24:28'),
+(117, 'UPDATE', 'ingresos', 9, '3', '2024-10-08 17:24:42'),
+(118, 'UPDATE', 'ingresos', 10, '3', '2024-10-08 17:24:42'),
+(119, 'UPDATE', 'ingresos', 11, '3', '2024-10-08 17:24:42'),
+(120, 'UPDATE', 'ingresos', 12, '3', '2024-10-08 17:24:42'),
+(121, 'UPDATE', 'ingresos', 13, '3', '2024-10-08 17:24:42'),
+(122, 'UPDATE', 'usuarios', 3, '3', '2024-10-08 17:43:14'),
+(123, 'UPDATE', 'usuarios', 4, '4', '2024-10-08 17:43:14'),
+(124, 'INSERT', 'gastos', 16, '3', '2024-10-08 17:43:32'),
+(125, 'INSERT', 'ingresos', 15, '4', '2024-10-08 17:46:09'),
+(126, 'INSERT', 'gastos', 17, '2', '2024-10-08 17:57:28'),
+(127, 'INSERT', 'ingresos', 16, '3', '2024-10-08 17:57:43'),
+(128, 'UPDATE', 'ingresos', 1, '2', '2024-10-08 18:23:01'),
+(129, 'UPDATE', 'ingresos', 4, '2', '2024-10-08 18:23:01'),
+(130, 'UPDATE', 'ingresos', 9, '3', '2024-10-08 18:23:01'),
+(131, 'UPDATE', 'usuarios', 2, '2', '2024-10-08 18:47:47'),
+(132, 'DELETE', 'usuarios', 3, '3', '2024-10-08 19:34:46'),
+(133, 'DELETE', 'usuarios', 4, '4', '2024-10-08 19:34:52'),
+(134, 'DELETE', 'gastos', 2, '2', '2024-10-08 19:37:50'),
+(135, 'DELETE', 'gastos', 3, '2', '2024-10-08 19:37:50'),
+(136, 'DELETE', 'gastos', 4, '2', '2024-10-08 19:37:50'),
+(137, 'DELETE', 'gastos', 5, '2', '2024-10-08 19:37:50'),
+(138, 'DELETE', 'gastos', 6, '2', '2024-10-08 19:37:50'),
+(139, 'DELETE', 'gastos', 7, '2', '2024-10-08 19:37:50'),
+(140, 'DELETE', 'gastos', 8, '2', '2024-10-08 19:37:50'),
+(141, 'DELETE', 'gastos', 9, '3', '2024-10-08 19:37:50'),
+(142, 'DELETE', 'gastos', 10, '3', '2024-10-08 19:37:50'),
+(143, 'DELETE', 'gastos', 11, '3', '2024-10-08 19:37:50'),
+(144, 'DELETE', 'gastos', 12, '3', '2024-10-08 19:37:50'),
+(145, 'DELETE', 'gastos', 13, '3', '2024-10-08 19:37:50'),
+(146, 'DELETE', 'gastos', 14, '2', '2024-10-08 19:37:50'),
+(147, 'DELETE', 'gastos', 15, '2', '2024-10-08 19:37:50'),
+(148, 'DELETE', 'gastos', 16, '3', '2024-10-08 19:37:50'),
+(149, 'DELETE', 'gastos', 17, '2', '2024-10-08 19:37:50'),
+(150, 'DELETE', 'ingresos', 1, '2', '2024-10-08 19:38:10'),
+(151, 'DELETE', 'ingresos', 2, '2', '2024-10-08 19:38:10'),
+(152, 'DELETE', 'ingresos', 3, '2', '2024-10-08 19:38:10'),
+(153, 'DELETE', 'ingresos', 4, '2', '2024-10-08 19:38:10'),
+(154, 'DELETE', 'ingresos', 5, '2', '2024-10-08 19:38:10'),
+(155, 'DELETE', 'ingresos', 6, '2', '2024-10-08 19:38:10'),
+(156, 'DELETE', 'ingresos', 7, '2', '2024-10-08 19:38:10'),
+(157, 'DELETE', 'ingresos', 8, '2', '2024-10-08 19:38:10'),
+(158, 'UPDATE', 'ingresos', 9, '2', '2024-10-08 19:39:40'),
+(159, 'UPDATE', 'ingresos', 10, '2', '2024-10-08 19:39:54'),
+(160, 'UPDATE', 'ingresos', 11, '2', '2024-10-08 19:40:05'),
+(161, 'UPDATE', 'ingresos', 13, '2', '2024-10-08 19:40:18'),
+(162, 'UPDATE', 'ingresos', 12, '2', '2024-10-08 19:40:31'),
+(163, 'UPDATE', 'ingresos', 15, '2', '2024-10-08 19:40:42'),
+(164, 'UPDATE', 'ingresos', 16, '2', '2024-10-08 19:40:54'),
+(165, 'DELETE', 'ingresos', 9, '2', '2024-10-08 19:41:13'),
+(166, 'DELETE', 'ingresos', 10, '2', '2024-10-08 19:41:13'),
+(167, 'DELETE', 'ingresos', 11, '2', '2024-10-08 19:41:13'),
+(168, 'DELETE', 'ingresos', 12, '2', '2024-10-08 19:41:13'),
+(169, 'DELETE', 'ingresos', 13, '2', '2024-10-08 19:41:13'),
+(170, 'DELETE', 'ingresos', 15, '2', '2024-10-08 19:41:13'),
+(171, 'DELETE', 'ingresos', 16, '2', '2024-10-08 19:41:13'),
+(172, 'DELETE', 'usuarios', 12, '12', '2024-10-08 19:49:41'),
+(173, 'DELETE', 'usuarios', 13, '13', '2024-10-08 19:49:41'),
+(174, 'UPDATE', 'usuarios', 1, '1', '2024-10-08 19:52:33'),
+(175, 'UPDATE', 'usuarios', 1, '1', '2024-10-08 19:52:40'),
+(176, 'UPDATE', 'usuarios', 1, '1', '2024-10-08 20:09:40'),
+(177, 'UPDATE', 'usuarios', 1, '1', '2024-10-08 20:09:52'),
+(178, 'INSERT', 'categorias', 17, '2', '2024-10-08 20:23:39'),
+(179, 'INSERT', 'categorias', 18, '2', '2024-10-08 20:23:53'),
+(180, 'INSERT', 'categorias', 19, '2', '2024-10-08 20:24:02'),
+(181, 'INSERT', 'categorias', 20, '2', '2024-10-08 20:24:08'),
+(182, 'INSERT', 'categorias', 23, '2', '2024-10-08 20:25:51'),
+(183, 'INSERT', 'categorias', 24, '2', '2024-10-08 20:26:00'),
+(184, 'INSERT', 'categorias', 25, '2', '2024-10-08 20:26:05'),
+(185, 'INSERT', 'categorias', 26, '2', '2024-10-08 20:26:09'),
+(186, 'INSERT', 'categorias', 29, '2', '2024-10-08 20:49:33'),
+(187, 'INSERT', 'categorias', 30, '2', '2024-10-08 20:49:41'),
+(188, 'INSERT', 'categorias', 31, '2', '2024-10-08 20:49:46'),
+(189, 'INSERT', 'categorias', 32, '2', '2024-10-08 20:49:56'),
+(190, 'INSERT', 'gastos', 18, '2', '2024-10-08 20:59:42'),
+(191, 'INSERT', 'gastos', 19, '2', '2024-10-08 21:00:25'),
+(192, 'INSERT', 'gastos', 20, '2', '2024-10-08 21:00:54'),
+(193, 'INSERT', 'gastos', 21, '2', '2024-10-08 21:01:19'),
+(194, 'INSERT', 'ingresos', 17, '2', '2024-10-08 21:04:31'),
+(195, 'INSERT', 'ingresos', 18, '2', '2024-10-08 21:05:12'),
+(196, 'INSERT', 'ingresos', 19, '2', '2024-10-08 21:05:42'),
+(197, 'INSERT', 'ingresos', 20, '2', '2024-10-08 21:06:05'),
+(198, 'UPDATE', 'usuarios', 1, '1', '2024-10-08 23:53:27'),
+(199, 'UPDATE', 'usuarios', 1, '1', '2024-10-10 14:06:43'),
+(200, 'UPDATE', 'usuarios', 11, '11', '2024-10-10 14:49:32'),
+(201, 'INSERT', 'usuarios', 15, '15', '2024-10-10 16:24:33'),
+(202, 'INSERT', 'usuarios', 15, '15', '2024-10-10 16:24:33'),
+(203, 'INSERT', 'usuarios', 15, 'sistema', '2024-10-10 16:24:33'),
+(204, 'UPDATE', 'usuarios', 15, '15', '2024-10-10 16:30:27'),
+(205, 'DELETE', 'usuarios', 15, '15', '2024-10-10 16:30:38'),
+(206, 'INSERT', 'usuarios', 16, '16', '2024-10-10 16:31:32'),
+(207, 'INSERT', 'usuarios', 16, '16', '2024-10-10 16:31:32'),
+(208, 'INSERT', 'usuarios', 16, 'sistema', '2024-10-10 16:31:32'),
+(209, 'UPDATE', 'usuarios', 16, '16', '2024-10-10 16:31:43'),
+(210, 'INSERT', 'familias', 7, 'sistema', '2024-10-10 17:12:31'),
+(211, 'delete', 'familias', 7, '', '2024-10-10 17:48:13'),
+(212, 'INSERT', 'familias', 8, 'sistema', '2024-10-10 17:49:13'),
+(213, 'delete', 'familias', 8, '', '2024-10-10 18:12:47'),
+(214, 'INSERT', 'familias', 9, 'sistema', '2024-10-10 18:32:53'),
+(215, 'INSERT', 'familias', 10, 'sistema', '2024-10-11 08:04:44'),
+(216, 'INSERT', 'familias', 11, 'sistema', '2024-10-11 11:10:25'),
+(217, 'delete', 'familias', 9, '', '2024-10-11 12:50:17'),
+(218, 'delete', 'familias', 10, '', '2024-10-11 12:50:20'),
+(219, 'delete', 'familias', 11, '', '2024-10-11 12:50:23'),
+(220, 'INSERT', 'familias', 12, 'sistema', '2024-10-11 13:04:03'),
+(221, 'delete', 'familias', 12, '', '2024-10-11 13:46:21'),
+(222, 'INSERT', 'familias', 13, 'sistema', '2024-10-11 13:47:29'),
+(223, 'delete', 'familias', 13, '', '2024-10-11 13:49:41'),
+(224, 'INSERT', 'familias', 14, 'sistema', '2024-10-11 13:50:02'),
+(225, 'INSERT', 'familias', 15, 'sistema', '2024-10-11 14:05:01'),
+(226, 'delete', 'familias', 14, '', '2024-10-11 15:05:55'),
+(227, 'delete', 'familias', 15, '', '2024-10-11 15:05:58'),
+(228, 'INSERT', 'familias', 16, 'sistema', '2024-10-11 15:07:27'),
+(229, 'INSERT', 'familias', 17, 'sistema', '2024-10-11 16:29:11'),
+(230, 'INSERT', 'familias', 18, 'sistema', '2024-10-11 17:01:50'),
+(231, 'UPDATE', 'familias', 18, 'sistema', '2024-10-11 17:02:16'),
+(232, 'UPDATE', 'familias', 18, 'sistema', '2024-10-11 17:03:47'),
+(233, 'UPDATE', 'familias', 17, 'sistema', '2024-10-11 17:04:10'),
+(234, 'UPDATE', 'familias', 18, 'sistema', '2024-10-11 17:04:21'),
+(235, 'INSERT', 'familias', 19, 'sistema', '2024-10-11 17:05:17'),
+(236, 'UPDATE', 'familias', 19, 'sistema', '2024-10-11 17:05:30'),
+(237, 'INSERT', 'usuarios', 17, '17', '2024-10-12 11:13:29'),
+(238, 'INSERT', 'usuarios', 17, '17', '2024-10-12 11:13:29'),
+(239, 'INSERT', 'usuarios', 17, 'sistema', '2024-10-12 11:13:29'),
+(240, 'INSERT', 'grupos', 9, 'Sistema', '2024-10-12 11:58:29'),
+(241, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:20:59'),
+(242, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:21:29'),
+(243, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:21:46'),
+(244, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:22:01'),
+(245, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:23:12'),
+(246, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-12 12:57:39'),
+(247, 'INSERT', 'grupos', 10, 'Sistema', '2024-10-12 12:58:27'),
+(248, 'INSERT', 'familias', 20, 'sistema', '2024-10-12 12:59:39'),
+(249, 'UPDATE', 'familias', 20, 'sistema', '2024-10-12 12:59:49'),
+(250, 'UPDATE', 'grupos', 10, 'Sistema', '2024-10-12 14:09:48'),
+(251, 'DELETE', 'grupos', 10, '', '2024-10-12 14:09:55'),
+(252, 'INSERT', 'grupos', 11, 'Sistema', '2024-10-12 14:10:06'),
+(253, 'INSERT', 'categorias', 33, '1', '2024-10-12 16:32:52'),
+(254, 'INSERT', 'categorias', 35, '1', '2024-10-12 16:33:49'),
+(255, 'INSERT', 'categorias', 36, '1', '2024-10-12 16:48:43'),
+(256, 'INSERT', 'categorias', 37, '1', '2024-10-12 16:49:14'),
+(257, 'INSERT', 'categorias', 38, '1', '2024-10-12 16:50:23'),
+(258, 'INSERT', 'categorias', 39, '1', '2024-10-12 16:50:41'),
+(259, 'UPDATE', 'usuarios', 17, '17', '2024-10-12 16:53:00');
 
 -- --------------------------------------------------------
 
@@ -216,7 +386,137 @@ CREATE TABLE `auditoria_accesos` (
 
 INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 (1, 2, 'logout', '2024-10-07 13:34:25'),
-(2, 2, 'login', '2024-10-07 13:34:32');
+(2, 2, 'login', '2024-10-07 13:34:32'),
+(3, 2, 'login', '2024-10-08 17:01:30'),
+(4, 2, 'logout', '2024-10-08 17:21:03'),
+(5, 2, 'login', '2024-10-08 17:21:08'),
+(6, 2, 'login', '2024-10-08 17:48:00'),
+(7, 2, 'logout', '2024-10-08 17:48:10'),
+(10, 6, 'login', '2024-10-08 17:48:25'),
+(11, 6, 'logout', '2024-10-08 17:48:28'),
+(12, 1, 'login', '2024-10-08 17:48:35'),
+(13, 1, 'logout', '2024-10-08 17:48:53'),
+(14, 2, 'login', '2024-10-08 17:48:58'),
+(15, 2, 'logout', '2024-10-08 17:58:48'),
+(16, 2, 'login', '2024-10-08 17:58:52'),
+(17, 2, 'logout', '2024-10-08 18:06:37'),
+(18, 2, 'login', '2024-10-08 18:06:41'),
+(19, 2, 'logout', '2024-10-08 18:09:06'),
+(20, 2, 'login', '2024-10-08 18:09:15'),
+(21, 2, 'logout', '2024-10-08 18:09:39'),
+(22, 2, 'login', '2024-10-08 18:10:55'),
+(23, 2, 'logout', '2024-10-08 19:32:55'),
+(24, 1, 'login', '2024-10-08 19:33:01'),
+(25, 2, 'login', '2024-10-08 20:21:45'),
+(26, 2, 'logout', '2024-10-08 20:22:21'),
+(27, 2, 'login', '2024-10-08 20:22:30'),
+(28, 2, 'logout', '2024-10-08 20:52:25'),
+(29, 1, 'login', '2024-10-08 20:52:32'),
+(30, 1, 'logout', '2024-10-08 20:55:02'),
+(31, 2, 'login', '2024-10-08 20:55:08'),
+(32, 2, 'logout', '2024-10-08 21:40:22'),
+(33, 2, 'login', '2024-10-08 21:40:27'),
+(34, 2, 'logout', '2024-10-08 21:54:40'),
+(35, 1, 'login', '2024-10-08 22:22:02'),
+(36, 1, 'logout', '2024-10-08 23:41:19'),
+(37, 1, 'login', '2024-10-08 23:41:26'),
+(38, 1, 'logout', '2024-10-08 23:44:37'),
+(39, 1, 'login', '2024-10-08 23:44:43'),
+(40, 1, 'logout', '2024-10-08 23:48:51'),
+(41, 1, 'login', '2024-10-08 23:48:56'),
+(42, 1, 'logout', '2024-10-08 23:54:04'),
+(43, 2, 'login', '2024-10-08 23:54:10'),
+(44, 2, 'logout', '2024-10-08 23:55:13'),
+(45, 1, 'login', '2024-10-10 14:05:42'),
+(46, 1, 'logout', '2024-10-10 14:49:07'),
+(47, 1, 'login', '2024-10-10 14:49:13'),
+(48, 1, 'logout', '2024-10-10 15:04:48'),
+(49, 1, 'login', '2024-10-10 15:04:53'),
+(50, 1, 'logout', '2024-10-10 17:12:07'),
+(51, 1, 'login', '2024-10-10 17:12:13'),
+(52, 1, 'logout', '2024-10-10 17:27:59'),
+(53, 1, 'login', '2024-10-10 17:28:05'),
+(54, 1, 'logout', '2024-10-10 17:37:25'),
+(55, 1, 'login', '2024-10-10 17:37:32'),
+(56, 1, 'logout', '2024-10-10 18:12:34'),
+(57, 1, 'login', '2024-10-10 18:12:40'),
+(58, 1, 'login', '2024-10-11 06:55:13'),
+(59, 1, 'logout', '2024-10-11 07:24:50'),
+(60, 1, 'login', '2024-10-11 07:24:57'),
+(61, 1, 'logout', '2024-10-11 07:59:49'),
+(62, 2, 'login', '2024-10-11 07:59:55'),
+(63, 2, 'logout', '2024-10-11 08:00:08'),
+(64, 1, 'login', '2024-10-11 08:00:13'),
+(65, 1, 'logout', '2024-10-11 08:38:34'),
+(66, 1, 'login', '2024-10-11 08:38:40'),
+(67, 1, 'logout', '2024-10-11 11:01:46'),
+(68, 1, 'login', '2024-10-11 11:01:52'),
+(69, 1, 'logout', '2024-10-11 11:23:43'),
+(70, 1, 'login', '2024-10-11 11:23:50'),
+(71, 1, 'logout', '2024-10-11 11:28:36'),
+(72, 1, 'login', '2024-10-11 11:28:42'),
+(73, 1, 'logout', '2024-10-11 11:33:47'),
+(74, 1, 'login', '2024-10-11 11:33:56'),
+(75, 1, 'logout', '2024-10-11 12:15:48'),
+(76, 1, 'login', '2024-10-11 12:15:56'),
+(77, 1, 'logout', '2024-10-11 12:29:19'),
+(78, 1, 'login', '2024-10-11 12:29:25'),
+(79, 1, 'logout', '2024-10-11 12:30:17'),
+(80, 1, 'login', '2024-10-11 12:31:47'),
+(81, 1, 'logout', '2024-10-11 13:03:23'),
+(82, 1, 'login', '2024-10-11 13:03:31'),
+(83, 1, 'logout', '2024-10-11 13:23:22'),
+(84, 1, 'login', '2024-10-11 13:23:33'),
+(85, 1, 'logout', '2024-10-11 13:26:38'),
+(86, 1, 'login', '2024-10-11 13:26:47'),
+(87, 1, 'logout', '2024-10-11 13:42:52'),
+(88, 1, 'login', '2024-10-11 13:42:59'),
+(89, 1, 'login', '2024-10-11 15:05:22'),
+(90, 1, 'logout', '2024-10-11 15:06:04'),
+(91, 1, 'login', '2024-10-11 15:06:22'),
+(92, 1, 'logout', '2024-10-11 17:54:32'),
+(93, 1, 'login', '2024-10-11 17:56:39'),
+(94, 1, 'logout', '2024-10-11 17:59:43'),
+(95, 1, 'login', '2024-10-11 17:59:54'),
+(96, 1, 'logout', '2024-10-11 18:04:53'),
+(97, 1, 'login', '2024-10-11 18:05:01'),
+(98, 1, 'logout', '2024-10-11 18:08:16'),
+(99, 1, 'login', '2024-10-11 18:08:24'),
+(100, 1, 'logout', '2024-10-11 18:16:07'),
+(101, 1, 'login', '2024-10-11 18:16:13'),
+(102, 1, 'login', '2024-10-11 18:46:16'),
+(103, 1, 'login', '2024-10-12 11:10:12'),
+(104, 1, 'logout', '2024-10-12 11:23:57'),
+(105, 1, 'login', '2024-10-12 11:24:04'),
+(106, 1, 'logout', '2024-10-12 11:52:57'),
+(107, 1, 'login', '2024-10-12 11:53:04'),
+(108, 1, 'logout', '2024-10-12 11:57:39'),
+(109, 1, 'login', '2024-10-12 11:57:59'),
+(110, 1, 'logout', '2024-10-12 12:17:26'),
+(111, 1, 'login', '2024-10-12 12:17:36'),
+(112, 1, 'logout', '2024-10-12 12:51:06'),
+(113, 1, 'login', '2024-10-12 12:51:13'),
+(114, 1, 'logout', '2024-10-12 14:21:15'),
+(115, 1, 'login', '2024-10-12 14:21:23'),
+(116, 1, 'logout', '2024-10-12 14:36:05'),
+(117, 1, 'login', '2024-10-12 14:36:19'),
+(118, 1, 'logout', '2024-10-12 14:45:40'),
+(119, 1, 'login', '2024-10-12 14:45:59'),
+(120, 1, 'logout', '2024-10-12 14:47:46'),
+(121, 1, 'login', '2024-10-12 14:48:02'),
+(122, 1, 'logout', '2024-10-12 14:50:23'),
+(123, 1, 'login', '2024-10-12 14:50:31'),
+(124, 1, 'logout', '2024-10-12 14:57:32'),
+(125, 1, 'login', '2024-10-12 14:57:44'),
+(126, 1, 'logout', '2024-10-12 16:09:52'),
+(127, 1, 'login', '2024-10-12 16:10:07'),
+(128, 1, 'logout', '2024-10-12 16:15:26'),
+(129, 1, 'login', '2024-10-12 16:15:38'),
+(130, 1, 'logout', '2024-10-12 16:18:52'),
+(131, 1, 'login', '2024-10-12 16:18:59'),
+(132, 1, 'logout', '2024-10-12 16:40:59'),
+(133, 1, 'login', '2024-10-12 16:41:04'),
+(134, 1, 'logout', '2024-10-12 16:53:12');
 
 -- --------------------------------------------------------
 
@@ -250,21 +550,19 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`idCategoria`, `nombreCategoria`, `creado_por`, `estado_categoria`, `tipo_categoria`) VALUES
-(2, 'Transporte', 1, 'activo', 'gasto'),
-(3, 'Vivienda', 1, 'activo', 'gasto'),
-(4, 'Alquiler', 1, 'activo', 'gasto'),
-(5, 'Compras', 1, 'activo', 'gasto'),
-(6, 'Ocio', 1, 'activo', 'gasto'),
-(7, 'Educación', 1, 'activo', 'gasto'),
-(8, 'Intereses', 1, 'activo', 'ingreso'),
-(9, 'Regalos', 1, 'activo', 'ingreso'),
-(10, 'Salario', 1, 'activo', 'ingreso'),
-(11, 'Venta', 1, 'activo', 'ingreso'),
-(12, 'Inversiones', 1, 'activo', 'ingreso'),
-(13, 'Premios', 1, 'activo', 'ingreso'),
-(14, 'Otros', 1, 'activo', 'ingreso'),
-(15, 'Servicios', 2, 'activo', 'gasto'),
-(16, 'Dividendos', 2, 'activo', 'ingreso');
+(23, 'Compra', 2, 'activo', 'gasto'),
+(24, 'Ocio', 2, 'activo', 'gasto'),
+(25, 'Luz', 2, 'activo', 'gasto'),
+(26, 'Agua', 2, 'activo', 'gasto'),
+(29, 'Salario', 2, 'activo', 'ingreso'),
+(30, 'Paga', 2, 'activo', 'ingreso'),
+(31, 'Otros', 2, 'activo', 'ingreso'),
+(32, 'Ventas', 2, 'activo', 'ingreso'),
+(35, 'Supermercado', 1, 'activo', 'gasto'),
+(36, 'Ingresos inesperados', 1, 'activo', 'ingreso'),
+(37, 'Ingresos esperados', 1, 'activo', 'ingreso'),
+(38, 'Gastos presupuestados', 1, 'activo', 'gasto'),
+(39, 'Gastos imprevistos', 1, 'activo', 'gasto');
 
 --
 -- Disparadores `categorias`
@@ -313,20 +611,21 @@ CREATE TABLE `envio_refranes` (
 CREATE TABLE `familias` (
   `idFamilia` int(11) NOT NULL,
   `nombre_familia` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `idAdmin` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `familias`
 --
 
-INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`) VALUES
-(1, 'Familia1', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(2, 'Familia2', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(3, 'Familia3', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(4, 'Familia Perez', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(5, 'Familia Gomez', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(6, 'Familia Garcia', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi');
+INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`, `idAdmin`) VALUES
+(1, 'Familia1', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', 2),
+(16, 'Familia juan', '$2y$10$6tMRSAZY4kUDE/bXGryequwQ1w3rmqjuI.9VpNVPYWv1S03wzuWSW', 2),
+(17, 'Famila paraProbar', '$2y$10$4TDdNc7ktRlQ.QlzntYNYe40MkM8nJ6c7nRunLIFlvO3gMcjggQ0K', 16),
+(18, 'Familia Actualizada', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', 2),
+(19, 'Otra Familia más+', '$2y$10$4GxsohZgXza1d8JYsg2aducihKyyw31zEca3vaOJICm0j8mOhjcu.', 16),
+(20, 'F63', '$2y$10$W0oMHrG9TKOTZsm51cCa6u5iOVvXn3jWcngZ64kCPBqiQPbB5Af4S', 17);
 
 --
 -- Disparadores `familias`
@@ -340,15 +639,15 @@ $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `auditar_familias_delete` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('DELETE', 'familias', OLD.idFamilia, NULL, NOW());
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, fecha) 
+  VALUES ('delete', 'familias', OLD.idFamilia, NOW());
 END
 $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `auditar_familias_update` AFTER UPDATE ON `familias` FOR EACH ROW BEGIN
   INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('UPDATE', 'familias', NEW.idFamilia, NULL, NOW());
+  VALUES ('UPDATE', 'familias', NEW.idFamilia, 'sistema', NOW());
 END
 $$
 DELIMITER ;
@@ -388,20 +687,10 @@ CREATE TABLE `gastos` (
 --
 
 INSERT INTO `gastos` (`idGasto`, `idUser`, `importe`, `idCategoria`, `origen`, `concepto`, `fecha`, `idGrupo`, `idFamilia`) VALUES
-(2, 2, 100.00, 2, 'efectivo', 'Transporte público', '2024-10-03 22:00:00', 0, 0),
-(3, 2, 300.00, 3, 'banco', 'Pago del alquiler', '2024-10-03 22:00:00', 0, 0),
-(4, 2, 420.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-21 23:00:00', 0, 0),
-(5, 2, 120.15, 2, 'banco', 'Compra de supermercado', '2021-04-14 22:00:00', 0, 0),
-(6, 2, 90.00, 3, 'banco', 'Transporte mensual', '2021-04-19 22:00:00', 0, 0),
-(7, 2, 50.50, 4, 'efectivo', 'Ocio y entretenimiento', '2021-05-21 22:00:00', 0, 0),
-(8, 2, 200.00, 5, 'banco', 'Pago de estudios', '2021-06-11 22:00:00', 0, 0),
-(9, 3, 450.30, 1, 'efectivo', 'Pago de alquiler', '2020-12-24 23:00:00', 0, 0),
-(10, 3, 100.15, 2, 'banco', 'Compra de supermercado', '2021-04-17 22:00:00', 0, 0),
-(11, 3, 85.00, 3, 'banco', 'Transporte mensual', '2021-04-22 22:00:00', 0, 0),
-(12, 3, 60.50, 4, 'efectivo', 'Cine y entretenimiento', '2021-05-24 22:00:00', 0, 0),
-(13, 3, 220.00, 5, 'banco', 'Matrícula estudios', '2021-06-14 22:00:00', 0, 0),
-(14, 2, 150.50, 1, 'efectivo', 'Compra de libros', '2024-10-06 19:09:40', 1, 1),
-(15, 2, 150.50, 1, 'efectivo', 'Compra de libros', '2024-10-06 19:10:45', 1, 1);
+(18, 2, 120.50, 23, 'banco', 'Mercadona', '2024-10-07 22:00:00', 1, 1),
+(19, 2, 48.25, 24, 'efectivo', 'Cena', '2024-10-07 22:00:00', 1, 1),
+(20, 2, 80.23, 25, 'banco', 'Factura Luz', '2024-10-07 22:00:00', 1, 1),
+(21, 2, 80.00, 26, 'banco', 'Factura Agua', '2024-10-07 22:00:00', 1, 1);
 
 --
 -- Disparadores `gastos`
@@ -502,75 +791,52 @@ DELIMITER ;
 CREATE TABLE `grupos` (
   `idGrupo` int(11) NOT NULL,
   `nombre_grupo` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `idAdmin` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `grupos`
 --
 
-INSERT INTO `grupos` (`idGrupo`, `nombre_grupo`, `password`) VALUES
-(1, 'Grupo1', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(2, 'Grupo2', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(3, 'Grupo3', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(4, 'Grupo Amigos Perez', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(5, 'Grupo Amigos Gomez', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi'),
-(6, 'Grupo Amigos Garcia', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi');
+INSERT INTO `grupos` (`idGrupo`, `nombre_grupo`, `password`, `idAdmin`) VALUES
+(1, 'Grupo1', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', 2),
+(9, 'Grupitoo lllll', '$2y$10$kT8Se.laK5eOSO.Gg.mxUOSJOOSI/ijZ9zHGYjM/VtAtxMaW5lKs2', 2),
+(11, 'B3', '$2y$10$W7OSfqRJR1jY9LJx1Ao6XeY16b6Ab7N1Y66KQS76bSkNlS1ztss0O', NULL);
 
 --
 -- Disparadores `grupos`
 --
 DELIMITER $$
-CREATE TRIGGER `auditar_grupos` AFTER INSERT ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('INSERT', 'grupos', NEW.idGrupo, 'sistema', NOW());
-END
-$$
-DELIMITER ;
-DELIMITER $$
 CREATE TRIGGER `auditar_grupos_delete` AFTER DELETE ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('DELETE', 'grupos', OLD.idGrupo, NULL, NOW());
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, fecha)
+    VALUES ('DELETE', 'grupos', OLD.idGrupo, NOW());
 END
 $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `auditar_grupos_insert` AFTER INSERT ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('INSERT', 'grupos', NEW.idGrupo, NULL, NOW());
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+    VALUES ('INSERT', 'grupos', NEW.idGrupo, 'Sistema', NOW());
 END
 $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `auditar_grupos_update` AFTER UPDATE ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('UPDATE', 'grupos', NEW.idGrupo, NULL, NOW());
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `auditar_insert_grupos` AFTER INSERT ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('INSERT', 'grupos', NEW.idGrupo, 'Sistema', NOW());
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `auditar_update_grupos` AFTER UPDATE ON `grupos` FOR EACH ROW BEGIN
-  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
-  VALUES ('UPDATE', 'grupos', NEW.idGrupo, 'Sistema', NOW());
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+    VALUES ('UPDATE', 'grupos', NEW.idGrupo, 'Sistema', NOW());
 END
 $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `before_insert_grupos` BEFORE INSERT ON `grupos` FOR EACH ROW BEGIN
-  DECLARE v_grupo_exist INT;
-  
-  SELECT COUNT(*) INTO v_grupo_exist FROM grupos WHERE nombre_grupo = NEW.nombre_grupo;
-  
-  IF v_grupo_exist > 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El grupo ya existe';
-  END IF;
+    DECLARE v_grupo_exist INT;
+
+    -- Verificar si ya existe un grupo con el mismo nombre
+    SELECT COUNT(*) INTO v_grupo_exist FROM grupos WHERE nombre_grupo = NEW.nombre_grupo;
+    IF v_grupo_exist > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El grupo ya existe.';
+    END IF;
 END
 $$
 DELIMITER ;
@@ -598,19 +864,10 @@ CREATE TABLE `ingresos` (
 --
 
 INSERT INTO `ingresos` (`idIngreso`, `idUser`, `importe`, `idCategoria`, `origen`, `concepto`, `fecha`, `idGrupo`, `idFamilia`) VALUES
-(1, 2, 1000.00, NULL, 'banco', 'Salario', '2024-10-03 22:00:00', 0, 0),
-(2, 2, 50.00, 2, 'efectivo', 'Intereses', '2024-10-03 22:00:00', 0, 0),
-(3, 2, 200.00, 3, 'banco', 'Regalo de cumpleaños', '2024-10-03 22:00:00', 0, 0),
-(4, 2, 1200.55, NULL, 'banco', 'Salario mensual', '2021-02-12 23:00:00', 0, 0),
-(5, 2, 2450.75, 2, 'efectivo', 'Venta de coche', '2020-08-08 22:00:00', 0, 0),
-(6, 2, 110.40, 3, 'efectivo', 'Inversiones', '2021-05-09 22:00:00', 0, 0),
-(7, 2, 90.30, 4, 'banco', 'Premio concurso', '2021-06-10 22:00:00', 0, 0),
-(8, 2, 250.00, 5, 'banco', 'Otros ingresos', '2021-07-11 22:00:00', 0, 0),
-(9, 3, 1300.55, NULL, 'banco', 'Salario mensual', '2021-02-13 23:00:00', 0, 0),
-(10, 3, 2250.75, 2, 'efectivo', 'Venta de moto', '2020-08-10 22:00:00', 0, 0),
-(11, 3, 210.40, 3, 'efectivo', 'Inversiones', '2021-05-13 22:00:00', 0, 0),
-(12, 3, 190.30, 4, 'banco', 'Premio torneo', '2021-06-13 22:00:00', 0, 0),
-(13, 3, 350.00, 5, 'banco', 'Otros ingresos', '2021-07-14 22:00:00', 0, 0);
+(17, 2, 1500.00, 29, 'banco', 'Sueldo Rafa', '2024-10-07 22:00:00', 1, 1),
+(18, 2, 50.00, 30, 'efectivo', 'Cumple Rafa', '2024-10-07 22:00:00', 1, 1),
+(19, 2, 15.00, 31, 'efectivo', 'Lotería', '2024-10-07 22:00:00', 1, 1),
+(20, 2, 350.00, 32, 'efectivo', 'Venta móvil', '2024-10-07 22:00:00', 1, 1);
 
 --
 -- Disparadores `ingresos`
@@ -969,19 +1226,17 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idUser`, `nombre`, `apellido`, `alias`, `email`, `contrasenya`, `fecha_nacimiento`, `telefono`, `nivel_usuario`, `fecha_registro`, `idFamilia`, `idGrupo`, `estado_usuario`) VALUES
-(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', NULL, NULL, 'activo'),
+(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', 1, NULL, 'activo'),
 (2, 'Admin1', 'Family1', 'admin1', 'admin1@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1980-01-01', '625418965', 'admin', '2024-10-04 10:04:06', 1, 1, 'activo'),
-(3, 'Admin2', 'Family2', 'admin2', 'admin2@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1985-01-01', '625418965', 'admin', '2024-10-04 10:04:06', NULL, NULL, 'activo'),
-(4, 'Admin3', 'Family3', 'admin3', 'admin3@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1990-01-01', '625418965', 'admin', '2024-10-04 10:04:06', NULL, NULL, 'activo'),
 (5, 'Pareja1', 'Family1', 'pareja1', 'pareja1@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1982-02-02', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
 (6, 'Hijo1', 'Family1', 'hijo1', 'hijo1@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '2005-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
 (7, 'Hijo2', 'Family1', 'hijo2', 'hijo2@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '2007-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
 (8, 'Hijo3', 'Family1', 'hijo3', 'hijo3@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '2010-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
 (9, 'Amigo1', 'Grupo1', 'amigo1', 'amigo1@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1990-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
 (10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
-(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1992-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
-(12, 'Normal1', 'Ind', 'normal1', 'normal1@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1987-05-05', '625418965', 'usuario', '2024-10-04 10:06:02', NULL, NULL, 'activo'),
-(13, 'Normal2', 'Ind', 'normal2', 'normal2@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1988-05-05', '625418965', 'usuario', '2024-10-04 10:06:02', NULL, NULL, 'activo');
+(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$HPaFq14JD6huWeE5RFkPROBK9H471071Ze6iP6.61HZkcPhVquZzi', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', NULL, 1, 'activo'),
+(16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$5o9QopABL4QqSHujwp8Nk.1GGDb9AJACA7AEwma2NGWFZhxY4QfKe', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', NULL, NULL, 'activo'),
+(17, 'Nuevito', 'Nuevito', 'Nuevito', 'Nuevito@Nuevito.com', '$2y$10$s6KAbcStIJXFBeeJ1930ZeKcMpZhdWN6LMMO3TYWZ4TMpWFKo9QIO', '2000-12-17', '552685456', 'admin', '2024-10-12 11:13:29', 1, 1, 'activo');
 
 --
 -- Disparadores `usuarios`
@@ -1054,9 +1309,13 @@ CREATE TABLE `usuarios_familias` (
 --
 
 INSERT INTO `usuarios_familias` (`idUser`, `idFamilia`) VALUES
+(1, 1),
 (2, 1),
 (5, 1),
-(6, 1);
+(6, 1),
+(7, 1),
+(8, 1),
+(17, 1);
 
 --
 -- Disparadores `usuarios_familias`
@@ -1087,9 +1346,9 @@ CREATE TABLE `usuarios_grupos` (
 
 INSERT INTO `usuarios_grupos` (`idUser`, `idGrupo`) VALUES
 (2, 1),
-(2, 2),
 (9, 1),
-(10, 1);
+(10, 1),
+(11, 1);
 
 --
 -- Disparadores `usuarios_grupos`
@@ -1118,8 +1377,9 @@ ALTER TABLE `administradores_familias`
 -- Indices de la tabla `administradores_grupos`
 --
 ALTER TABLE `administradores_grupos`
-  ADD PRIMARY KEY (`idAdmin`,`idGrupo`),
-  ADD KEY `idGrupo` (`idGrupo`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idGrupo` (`idGrupo`),
+  ADD KEY `fk_admin_grupo_admin` (`idAdmin`);
 
 --
 -- Indices de la tabla `auditoria`
@@ -1192,7 +1452,8 @@ ALTER TABLE `grupos`
   ADD UNIQUE KEY `nombre_grupo` (`nombre_grupo`),
   ADD KEY `idx_nombre_grupo` (`nombre_grupo`),
   ADD KEY `idx_grupos_password` (`password`),
-  ADD KEY `idx_grupos_nombre` (`nombre_grupo`);
+  ADD KEY `idx_grupos_nombre` (`nombre_grupo`),
+  ADD KEY `fk_grupo_admin` (`idAdmin`);
 
 --
 -- Indices de la tabla `ingresos`
@@ -1285,19 +1546,25 @@ ALTER TABLE `usuarios_grupos`
 -- AUTO_INCREMENT de la tabla `administradores_familias`
 --
 ALTER TABLE `administradores_familias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT de la tabla `administradores_grupos`
+--
+ALTER TABLE `administradores_grupos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=260;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
 ALTER TABLE `auditoria_accesos`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
@@ -1309,7 +1576,7 @@ ALTER TABLE `auditoria_accesos_archivo`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `idCategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idCategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `configuraciones`
@@ -1327,25 +1594,25 @@ ALTER TABLE `envio_refranes`
 -- AUTO_INCREMENT de la tabla `familias`
 --
 ALTER TABLE `familias`
-  MODIFY `idFamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idFamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos`
 --
 ALTER TABLE `grupos`
-  MODIFY `idGrupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idGrupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
-  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `news_letter_envios`
@@ -1381,7 +1648,7 @@ ALTER TABLE `situacion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Restricciones para tablas volcadas
@@ -1391,8 +1658,8 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `administradores_grupos`
 --
 ALTER TABLE `administradores_grupos`
-  ADD CONSTRAINT `fk_admin_grupo_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_admin_grupo_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_admin_grupo_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_admin_grupo_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `auditoria_accesos`
@@ -1419,6 +1686,12 @@ ALTER TABLE `envio_refranes`
 ALTER TABLE `gastos`
   ADD CONSTRAINT `fk_gasto_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_gasto_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `grupos`
+--
+ALTER TABLE `grupos`
+  ADD CONSTRAINT `fk_grupo_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `ingresos`
