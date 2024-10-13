@@ -112,19 +112,8 @@
         <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>
 
         <!-- Mostrar errores de validación -->
-        <?php if (isset($errores) && count($errores) > 0): ?>
+        <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
             <div class="alert alert-danger mt-3">
-                <ul>
-                    <?php foreach ($errores as $error): ?>
-                        <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-
-        <!-- Mostrar mensaje de éxito -->
-        <?php if (isset($params['mensaje'])): ?>
-            <div class="alert alert-success mt-3">
                 <?= htmlspecialchars($params['mensaje'], ENT_QUOTES, 'UTF-8') ?>
             </div>
         <?php endif; ?>
