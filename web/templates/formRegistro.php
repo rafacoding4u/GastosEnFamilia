@@ -5,22 +5,22 @@
         <!-- Campo para el nombre -->
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" class="form-control" 
-                   value="<?= isset($params['nombre']) ? htmlspecialchars($params['nombre'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" id="nombre" name="nombre" class="form-control"
+                value="<?= isset($params['nombre']) ? htmlspecialchars($params['nombre'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el apellido -->
         <div class="form-group">
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" name="apellido" class="form-control" 
-                   value="<?= isset($params['apellido']) ? htmlspecialchars($params['apellido'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" id="apellido" name="apellido" class="form-control"
+                value="<?= isset($params['apellido']) ? htmlspecialchars($params['apellido'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el alias (nombre de usuario) -->
         <div class="form-group">
             <label for="alias">Alias (Nombre de Usuario):</label>
-            <input type="text" id="alias" name="alias" class="form-control" 
-                   value="<?= isset($params['alias']) ? htmlspecialchars($params['alias'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" id="alias" name="alias" class="form-control"
+                value="<?= isset($params['alias']) ? htmlspecialchars($params['alias'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para la contraseña -->
@@ -32,22 +32,22 @@
         <!-- Campo para la fecha de nacimiento -->
         <div class="form-group">
             <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" 
-                   value="<?= isset($params['fecha_nacimiento']) ? htmlspecialchars($params['fecha_nacimiento'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
+                value="<?= isset($params['fecha_nacimiento']) ? htmlspecialchars($params['fecha_nacimiento'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el correo electrónico -->
         <div class="form-group">
             <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" class="form-control" 
-                   value="<?= isset($params['email']) ? htmlspecialchars($params['email'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="email" id="email" name="email" class="form-control"
+                value="<?= isset($params['email']) ? htmlspecialchars($params['email'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Campo para el teléfono -->
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" class="form-control" 
-                   value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" id="telefono" name="telefono" class="form-control"
+                value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
         </div>
 
         <!-- Selección de grupo o familia -->
@@ -102,11 +102,7 @@
         </div>
 
         <!-- Campo oculto para el token CSRF -->
-        <?php if (isset($params['csrf_token'])): ?>
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-        <?php else: ?>
-            <input type="hidden" name="csrf_token" value="">
-        <?php endif; ?>
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
 
         <!-- Botón de envío -->
         <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>
@@ -125,7 +121,7 @@
         var selectGrupoFamilia = document.getElementById('selectGrupoFamilia');
         var passwordGrupoFamilia = document.getElementById('passwordGrupoFamilia');
         var crearGrupoFamilia = document.getElementById('crearGrupoFamilia');
-        
+
         if (this.value === 'grupo' || this.value === 'familia') {
             selectGrupoFamilia.style.display = 'block';
             passwordGrupoFamilia.style.display = 'block';

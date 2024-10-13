@@ -1418,4 +1418,20 @@ class GastosModelo
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
+    public function obtenerIdUsuarioPorAlias($alias)
+    {
+        $sql = "SELECT idUser FROM usuarios WHERE alias = :alias";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':alias', $alias, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+    public function actualizarUsuarioNivel($idUsuario, $nivel_usuario)
+    {
+        $sql = "UPDATE usuarios SET nivel_usuario = :nivel_usuario WHERE idUser = :idUsuario";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

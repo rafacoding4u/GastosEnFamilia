@@ -29,6 +29,43 @@ class AuthController
         }
     }
 
+    public function inicio()
+    {
+        try {
+            // Asegurarse de que el usuario está autenticado
+            if (!isset($_SESSION['usuario']) || $_SESSION['nivel_usuario'] == 0) {
+                header('Location: index.php?ctl=iniciarSesion');
+                exit();
+            }
+
+            $m = new GastosModelo(); // Cargar el modelo para acceder a los datos del usuario
+            $idUsuario = $_SESSION['usuario']['id'];
+
+            // Obtener el total de ingresos, gastos y saldo del usuario
+            $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
+            $totalGastos = $m->obtenerTotalGastos($idUsuario);
+            $saldo = $totalIngresos - $totalGastos;
+
+            // Preparar los parámetros para la vista
+            $params = [
+                'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
+                'totalIngresos' => $totalIngresos,
+                'totalGastos' => $totalGastos,
+                'saldo' => $saldo,
+                'nivel_usuario' => $_SESSION['nivel_usuario'],
+                'fecha' => date('d-m-Y')
+            ];
+
+            // Renderizar la vista 'inicio.php'
+            $this->render('inicio.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en inicio(): " . $e->getMessage());
+            header('Location: index.php?ctl=home');
+            exit();
+        }
+    }
+
+
     // Iniciar sesión
     public function iniciarSesion()
     {
@@ -134,42 +171,6 @@ class AuthController
         exit();
     }
 
-    // Método de inicio para usuarios autenticados
-    public function inicio()
-    {
-        try {
-            // Asegurarse de que el usuario está autenticado
-            if (!isset($_SESSION['usuario']) || $_SESSION['nivel_usuario'] == 0) {
-                throw new Exception('Usuario no autenticado.');
-            }
-
-            $m = new GastosModelo();
-            $idUsuario = $_SESSION['usuario']['id'];
-
-            // Obtener el total de ingresos y gastos del usuario
-            $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
-            $totalGastos = $m->obtenerTotalGastos($idUsuario);
-            $saldo = $totalIngresos - $totalGastos;
-
-            // Mensaje de bienvenida personalizado según el usuario autenticado
-            $params = array(
-                'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
-                'totalIngresos' => $totalIngresos,
-                'totalGastos' => $totalGastos,
-                'saldo' => $saldo,
-                'nivel_usuario' => $_SESSION['nivel_usuario'],
-                'fecha' => date('d-m-Y')
-            );
-
-            // Renderizar la vista de inicio
-            $this->render('inicio.php', $params);
-        } catch (Exception $e) {
-            error_log("Error en inicio(): " . $e->getMessage());
-            header('Location: index.php?ctl=home');
-            exit();
-        }
-    }
-
     // Método de registro de nuevos usuarios
     public function registro()
     {
@@ -197,6 +198,11 @@ class AuthController
                     throw new Exception('Todos los campos son obligatorios.');
                 }
 
+                // Verificar si el alias ya existe
+                if ($m->existeUsuario($alias)) {
+                    throw new Exception('El alias ya está en uso.');
+                }
+
                 // Encriptar la contraseña
                 $passwordEncriptada = password_hash($password, PASSWORD_BCRYPT);
 
@@ -206,6 +212,16 @@ class AuthController
                 // Inicializar variables de familia o grupo como NULL por defecto
                 $idFamilia = null;
                 $idGrupo = null;
+
+                // Insertar el nuevo usuario en la base de datos (se inserta antes de crear familia o grupo)
+                $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono);
+
+                if (!$usuarioRegistrado) {
+                    throw new Exception('Error al registrar el usuario.');
+                }
+
+                // Obtener el ID del usuario recién creado para usarlo como administrador si es necesario
+                $idUsuario = $m->obtenerIdUsuarioPorAlias($alias);
 
                 // Lógica para familia/grupo nuevo o existente
                 if ($tipoVinculo === 'crear_familia') {
@@ -222,6 +238,15 @@ class AuthController
 
                     // Asignar al usuario como administrador
                     $nivel_usuario = 'admin';
+
+                    // Actualizar la tabla familias con el ID del administrador
+                    $m->actualizarFamilia($idFamilia, $nombreFamilia, $idUsuario);
+
+                    // Insertar el administrador en la tabla administradores_familias
+                    $m->añadirAdministradorAFamilia($idUsuario, $idFamilia);
+
+                    // Asignar al usuario a la familia en la tabla usuarios_familias
+                    $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
                 } elseif ($tipoVinculo === 'crear_grupo') {
                     // Crear nuevo grupo
                     $nombreGrupo = recoge('nombre_nuevo');
@@ -229,7 +254,7 @@ class AuthController
 
                     // Insertar el grupo en la base de datos
                     $m->insertarGrupo($nombreGrupo, $passwordGrupo);
-                    
+
                     // Obtener el ID del grupo recién creado
                     $idGrupo = $m->obtenerIdGrupoPorNombre($nombreGrupo);
 
@@ -240,6 +265,15 @@ class AuthController
 
                     // Asignar al usuario como administrador del grupo
                     $nivel_usuario = 'admin';
+
+                    // Actualizar el grupo con el ID del administrador
+                    $m->actualizarGrupo($idGrupo, $nombreGrupo, $idUsuario);
+
+                    // Insertar el administrador en la tabla administradores_grupos
+                    $m->añadirAdministradorAGrupo($idUsuario, $idGrupo);
+
+                    // Asignar al usuario al grupo en la tabla usuarios_grupos
+                    $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
                 } elseif ($tipoVinculo === 'familia' || $tipoVinculo === 'grupo') {
                     // Pertenecer a una familia o grupo existente
                     $idGrupoFamilia = recoge('idGrupoFamilia');
@@ -259,17 +293,13 @@ class AuthController
                     }
                 }
 
-                // Insertar el nuevo usuario con el nivel determinado y los IDs de familia/grupo
-                $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono, $idFamilia, $idGrupo);
+                // Actualizar el nivel del usuario después de los cambios
+                $m->actualizarUsuarioNivel($idUsuario, $nivel_usuario);
 
-                if ($usuarioRegistrado) {
-                    // Registro exitoso
-                    $params['mensaje'] = 'Usuario registrado con éxito.';
-                    header('Location: index.php?ctl=iniciarSesion');
-                    exit();
-                } else {
-                    throw new Exception('Error al registrar el usuario.');
-                }
+                // Registro exitoso
+                $params['mensaje'] = 'Usuario registrado con éxito.';
+                header('Location: index.php?ctl=iniciarSesion');
+                exit();
             } catch (Exception $e) {
                 error_log("Error en registro(): " . $e->getMessage());
                 $params['mensaje'] = 'Error al registrarse. ' . $e->getMessage();
@@ -299,8 +329,6 @@ class AuthController
             $this->render('formRegistro.php', $params);
         }
     }
-
-
 
     // Método para registrar acceso en la tabla de auditoría
     private function registrarAcceso($idUser, $accion)
@@ -343,5 +371,4 @@ class AuthController
             header('Location: index.php?ctl=error');
         }
     }
-    
 }
