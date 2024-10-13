@@ -330,26 +330,62 @@ class GastosModelo
 
 
 
-    // Insertar ingreso para un usuario
-    public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)
-    {
+    // Insertar ingreso para un usuario con manejo de excepciones y lógica corregida
+public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
+{
+    try {
         // Verificar que el usuario esté asignado
         if (empty($idUsuario)) {
             throw new Exception('El ingreso debe estar asociado a un usuario.');
         }
 
+        // Permitir ingreso asociado a una familia, grupo o ser personal
+        // Un ingreso puede no tener idFamilia o idGrupo, es decir, ser personal.
+        if (empty($idFamilia) && empty($idGrupo)) {
+            $idFamilia = null;  // Si no tiene familia
+            $idGrupo = null;    // Si no tiene grupo
+        }
+
+        // Preparar la consulta SQL
         $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-            VALUES (:idUsuario, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
+                VALUES (:idUsuario, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
+        
+        // Preparar la sentencia
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
         $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
         $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        return $stmt->execute();
+
+        // Asignar valor a idFamilia o NULL si no aplica
+        if ($idFamilia !== null) {
+            $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':idFamilia', null, PDO::PARAM_NULL);
+        }
+
+        // Asignar valor a idGrupo o NULL si no aplica
+        if ($idGrupo !== null) {
+            $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':idGrupo', null, PDO::PARAM_NULL);
+        }
+
+        // Ejecutar la sentencia
+        if ($stmt->execute()) {
+            return true; // Inserción exitosa
+        } else {
+            // Registrar el error de la consulta SQL
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception("Error en la inserción: " . $errorInfo[2]);
+        }
+    } catch (Exception $e) {
+        // Registrar cualquier excepción en el log de errores
+        error_log("Error en insertarIngreso: " . $e->getMessage());
+        return false; // Devolver false si ocurre un error
     }
+}
 
 
 

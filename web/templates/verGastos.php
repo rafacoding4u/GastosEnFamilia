@@ -9,11 +9,11 @@
             <!-- Filtro de fecha -->
             <div class="col">
                 <label for="fechaInicio">Desde:</label>
-                <input type="date" id="fechaInicio" name="fechaInicio" value="<?= htmlspecialchars($fechaInicio) ?>" class="form-control">
+                <input type="date" id="fechaInicio" name="fechaInicio" value="<?= htmlspecialchars($fechaInicio ?? '') ?>" class="form-control">
             </div>
             <div class="col">
                 <label for="fechaFin">Hasta:</label>
-                <input type="date" id="fechaFin" name="fechaFin" value="<?= htmlspecialchars($fechaFin) ?>" class="form-control">
+                <input type="date" id="fechaFin" name="fechaFin" value="<?= htmlspecialchars($fechaFin ?? '') ?>" class="form-control">
             </div>
 
             <!-- Filtro de categoría -->
@@ -22,8 +22,8 @@
                 <select id="categoria" name="categoria" class="form-control">
                     <option value="">Todas</option>
                     <?php foreach ($categorias as $cat): ?>
-                        <option value="<?= htmlspecialchars($cat['idCategoria']) ?>" <?= ($categoriaSeleccionada == $cat['idCategoria']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($cat['nombreCategoria']) ?>
+                        <option value="<?= htmlspecialchars($cat['idCategoria'] ?? '') ?>" <?= ($categoriaSeleccionada == $cat['idCategoria']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($cat['nombreCategoria'] ?? 'Sin categoría') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -69,11 +69,11 @@
             <tbody>
                 <?php foreach ($gastos as $gasto): ?>
                     <tr>
-                    <td><?= htmlspecialchars($gasto['nombreCategoria'] ?? 'Sin categoría') ?></td>
+                        <td><?= htmlspecialchars($gasto['nombreCategoria'] ?? 'Sin categoría') ?></td>
                         <td><?= number_format($gasto['importe'], 2, ',', '.') ?> €</td>
-                        <td><?= htmlspecialchars($gasto['fecha']) ?></td>
-                        <td><?= htmlspecialchars($gasto['origen']) ?></td>
-                        <td><?= htmlspecialchars($gasto['concepto']) ?></td>
+                        <td><?= htmlspecialchars($gasto['fecha'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($gasto['origen'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($gasto['concepto'] ?? '') ?></td>
                         <td>
                             <!-- Mostrar acciones según los permisos del usuario -->
                             <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['idUser'] === $gasto['idUsuario']): ?>

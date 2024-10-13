@@ -10,6 +10,8 @@
             <div class="col">
                 <label for="fechaInicio">Desde:</label>
                 <input type="date" id="fechaInicio" name="fechaInicio" value="<?= htmlspecialchars($fechaInicio ?? '') ?>" class="form-control">
+                
+
             </div>
             <div class="col">
                 <label for="fechaFin">Hasta:</label>
@@ -71,15 +73,15 @@
                     <tr>
                         <!-- Encontrar el nombre de la categoría basado en idCategoria -->
                         <td>
-                            <?php 
-                                $nombreCategoria = 'Sin categoría';
-                                foreach ($categorias as $categoria) {
-                                    if ($categoria['idCategoria'] == $ingreso['idCategoria']) {
-                                        $nombreCategoria = htmlspecialchars($categoria['nombreCategoria']);
-                                        break;
-                                    }
+                            <?php
+                            $nombreCategoria = 'Sin categoría';
+                            foreach ($categorias as $categoria) {
+                                if ($categoria['idCategoria'] == $ingreso['idCategoria']) {
+                                    $nombreCategoria = htmlspecialchars($categoria['nombreCategoria']);
+                                    break;
                                 }
-                                echo $nombreCategoria;
+                            }
+                            echo $nombreCategoria;
                             ?>
                         </td>
                         <td><?= number_format($ingreso['importe'], 2, ',', '.') ?> €</td>

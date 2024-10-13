@@ -12,6 +12,11 @@ class FinanzasController
         // Obtener la preferencia de resultados por página para gastos
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_gastos', $_SESSION['usuario']['id']) ?? 10;
 
+        // Asegurarse de que el valor sea válido
+        if ($resultadosPorPagina <= 0) {
+            $resultadosPorPagina = 10; // Valor predeterminado si la preferencia es inválida
+        }
+
         // Parámetros de filtro
         $fechaInicio = recoge('fechaInicio') ?: null;
         $fechaFin = recoge('fechaFin') ?: null;
@@ -27,7 +32,9 @@ class FinanzasController
 
         // Obtener el número total de gastos para la paginación
         $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
-        $totalPaginas = ceil($totalGastos / $resultadosPorPagina);
+
+        // Evitar la división por cero
+        $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalGastos / $resultadosPorPagina) : 1;
 
         // Pasar las categorías a la vista
         $categorias = $m->obtenerCategoriasGastos();
@@ -47,6 +54,8 @@ class FinanzasController
         $this->render('verGastos.php', $params);
     }
 
+
+
     // Ver Ingresos
     public function verIngresos()
     {
@@ -54,6 +63,11 @@ class FinanzasController
 
         // Obtener la preferencia de resultados por página para ingresos
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_ingresos', $_SESSION['usuario']['id']) ?? 10;
+
+        // Asegurarse de que el valor sea válido
+        if ($resultadosPorPagina <= 0) {
+            $resultadosPorPagina = 10; // Valor predeterminado si la preferencia es inválida
+        }
 
         // Parámetros de filtro
         $fechaInicio = recoge('fechaInicio') ?: null;
@@ -69,7 +83,9 @@ class FinanzasController
 
         // Obtener el número total de ingresos para la paginación
         $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria);
-        $totalPaginas = ceil($totalIngresos / $resultadosPorPagina);
+
+        // Evitar la división por cero
+        $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalIngresos / $resultadosPorPagina) : 1;
 
         // Pasar las categorías a la vista
         $categorias = $m->obtenerCategoriasIngresos();
@@ -116,10 +132,10 @@ class FinanzasController
     public function generarNewsLetter($idUser)
     {
         $m = new GastosModelo();
-        
+
         // Obtener el resumen financiero
         $resumen = $m->obtenerResumenFinancieroUsuario($idUser);
-        
+
         // Obtener un refrán aleatorio
         $refran = $m->obtenerRefranAleatorio();
 
@@ -171,7 +187,7 @@ class FinanzasController
     {
         // Aquí puedes usar la función mail() de PHP o una librería como PHPMailer
         // para enviar el correo. En este ejemplo se usará mail().
-        
+
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         $headers .= "From: admin@tuaplicacion.com" . "\r\n";
@@ -188,12 +204,21 @@ class FinanzasController
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
-            // Asegurarse de pasar idFamilia y idGrupo desde la sesión del usuario
-            $idFamilia = $_SESSION['usuario']['idFamilia'];
-            $idGrupo = $_SESSION['usuario']['idGrupo'];
+            // Obtener idFamilia y idGrupo desde la sesión del usuario
+            $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
+            $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
             $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el gasto
 
             $m = new GastosModelo();
+
+            // Verificar que el usuario esté asociado al menos a una familia o un grupo
+            if (!$idFamilia && !$idGrupo) {
+                $params['mensaje'] = 'El usuario no está asociado a una familia o grupo.';
+                $this->formInsertarGasto($params);
+                return;
+            }
+
+            // Realizar la inserción
             if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verGastos');
                 exit();
@@ -204,52 +229,70 @@ class FinanzasController
         $this->formInsertarGasto();
     }
 
+
     // Insertar Ingreso
-    public function insertarIngreso()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
-            $monto = recoge('importe');
-            $categoria = recoge('idCategoria');
-            $concepto = recoge('concepto');
-            $origen = recoge('origen');
+public function insertarIngreso()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
+        $monto = recoge('importe');
+        $categoria = recoge('idCategoria');
+        $concepto = recoge('concepto');
+        $origen = recoge('origen');
 
-            // Obtener idFamilia y idGrupo desde la sesión del usuario
-            $idFamilia = $_SESSION['usuario']['idFamilia'];
-            $idGrupo = $_SESSION['usuario']['idGrupo'];
-            $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el ingreso
+        // Validar los campos obligatorios
+        if (empty($monto) || empty($categoria) || empty($concepto) || empty($origen)) {
+            $params['mensaje'] = 'Todos los campos son obligatorios.';
+            $this->formInsertarIngreso($params);
+            return;
+        }
 
-            $m = new GastosModelo();
+        // Obtener idFamilia y idGrupo desde la sesión del usuario
+        $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
+        $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
+        $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el ingreso
+
+        $m = new GastosModelo();
+
+        // Intentar insertar el ingreso dentro de un bloque try-catch para manejar errores
+        try {
             if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verIngresos');
                 exit();
             } else {
                 $params['mensaje'] = 'No se pudo insertar el ingreso.';
             }
+        } catch (Exception $e) {
+            // Capturar cualquier excepción generada durante la inserción
+            $params['mensaje'] = 'Error al insertar ingreso: ' . $e->getMessage();
         }
-        $this->formInsertarIngreso();
     }
 
+    $this->formInsertarIngreso();
+}
+
+
+
+
     // Formulario para insertar gasto
-    public function formInsertarGasto()
+    public function formInsertarGasto($params = array())
     {
         $m = new GastosModelo();
-        $params = array(
-            'categorias' => $m->obtenerCategoriasGastos(),
-            'mensaje' => ''
-        );
+        $params['categorias'] = $m->obtenerCategoriasGastos();
+
+        // Renderizar la vista con los parámetros
         $this->render('formInsertarGasto.php', $params);
     }
 
     // Formulario para insertar ingreso
-    public function formInsertarIngreso()
+    public function formInsertarIngreso($params = array())
     {
         $m = new GastosModelo();
-        $params = array(
-            'categorias' => $m->obtenerCategoriasIngresos(),
-            'mensaje' => ''
-        );
+        $params['categorias'] = $m->obtenerCategoriasIngresos();
+
+        // Renderizar la vista con los parámetros
         $this->render('formInsertarIngreso.php', $params);
     }
+
 
     // Editar Gasto
     public function editarGasto()
