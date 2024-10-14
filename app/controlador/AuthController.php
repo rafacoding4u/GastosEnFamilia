@@ -149,27 +149,26 @@ class AuthController
 
     // Cerrar sesión
     public function salir()
-    {
-        try {
-            // Asegurar que la sesión existe antes de cerrarla
-            if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['usuario'])) {
-                // Registrar el cierre de sesión
-                $this->registrarAcceso($_SESSION['usuario']['id'], 'logout');
+{
+    try {
+        // Asegurar que la sesión existe antes de cerrarla
+        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['usuario'])) {
+            // Registrar el cierre de sesión
+            $this->registrarAcceso($_SESSION['usuario']['id'], 'logout');
 
-                session_start();
-                session_regenerate_id(true); // Generar un nuevo ID de sesión
-                session_unset(); // Eliminar todas las variables de sesión
-                session_destroy(); // Destruir la sesión
-                error_log("Sesión cerrada exitosamente.");
-            }
-        } catch (Exception $e) {
-            error_log("Error al cerrar la sesión: " . $e->getMessage());
+            // No es necesario llamar a session_start() si la sesión ya está activa
+            session_unset(); // Eliminar todas las variables de sesión
+            session_destroy(); // Destruir la sesión
+            error_log("Sesión cerrada exitosamente.");
         }
-
-        // Redirigir al home después de cerrar sesión
-        header("Location: index.php?ctl=home");
-        exit();
+    } catch (Exception $e) {
+        error_log("Error al cerrar la sesión: " . $e->getMessage());
     }
+
+    // Redirigir al home después de cerrar sesión
+    header("Location: index.php?ctl=home");
+    exit();
+}
 
     // Método de registro de nuevos usuarios
     public function registro()
@@ -278,20 +277,27 @@ class AuthController
                     // Pertenecer a una familia o grupo existente
                     $idGrupoFamilia = recoge('idGrupoFamilia');
                     $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
-
+                
                     // Validar la contraseña del grupo o familia
                     if (strpos($idGrupoFamilia, 'familia_') === 0) {
                         $idFamilia = str_replace('familia_', '', $idGrupoFamilia);
                         if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
                             throw new Exception('Contraseña de la familia incorrecta.');
+                        } else {
+                            // Asignar el usuario a la familia en la tabla usuarios_familias
+                            $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
                         }
                     } elseif (strpos($idGrupoFamilia, 'grupo_') === 0) {
                         $idGrupo = str_replace('grupo_', '', $idGrupoFamilia);
                         if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
                             throw new Exception('Contraseña del grupo incorrecta.');
+                        } else {
+                            // Asignar el usuario al grupo en la tabla usuarios_grupos
+                            $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
                         }
                     }
                 }
+                                
 
                 // Actualizar el nivel del usuario después de los cambios
                 $m->actualizarUsuarioNivel($idUsuario, $nivel_usuario);
