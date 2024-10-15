@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-10-2024 a las 00:25:13
+-- Tiempo de generación: 15-10-2024 a las 20:19:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,62 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `gastosencasa_bd`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `verificar_permiso_cacheado` (IN `idUser` INT, IN `nombrePermiso` VARCHAR(255), IN `tipoPermiso` VARCHAR(255))   BEGIN
+    DECLARE tiene_permiso TINYINT DEFAULT 0;
+
+    -- Buscar permiso en la cache
+    SELECT tiene_permiso 
+    INTO tiene_permiso 
+    FROM permisos_cache 
+    WHERE idUser = idUser 
+      AND nombrePermiso = nombrePermiso
+      AND tipoPermiso = tipoPermiso
+      AND TIMESTAMPDIFF(MINUTE, fecha_cache, NOW()) < 60;
+
+    -- Si no existe en cache o está desactualizado, recalcular el permiso
+    IF tiene_permiso IS NULL THEN
+        SELECT COUNT(*)
+        INTO tiene_permiso
+        FROM usuarios u
+        JOIN roles_permisos rp ON u.nivel_usuario = rp.idRol
+        WHERE u.idUser = idUser
+          AND rp.nombrePermiso = nombrePermiso
+          AND rp.tipoPermiso = tipoPermiso;
+
+        -- Actualizar la cache
+        INSERT INTO permisos_cache (idUser, nombrePermiso, tipoPermiso, tiene_permiso)
+        VALUES (idUser, nombrePermiso, tipoPermiso, tiene_permiso)
+        ON DUPLICATE KEY UPDATE tiene_permiso = VALUES(tiene_permiso), fecha_cache = NOW();
+    END IF;
+
+    -- Devolver el resultado
+    SELECT tiene_permiso;
+END$$
+
+--
+-- Funciones
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `verificar_permiso` (`idUser` INT, `tipoPermiso` VARCHAR(255), `nombrePermiso` VARCHAR(255)) RETURNS TINYINT(4) DETERMINISTIC BEGIN
+  DECLARE tiene_permiso TINYINT DEFAULT 0;
+
+  -- Verifica si el usuario tiene el permiso
+  SELECT COUNT(*)
+  INTO tiene_permiso
+  FROM usuarios u
+  JOIN roles_permisos rp ON u.nivel_usuario = rp.idRol
+  WHERE u.idUser = idUser
+    AND rp.nombrePermiso = nombrePermiso
+    AND rp.tipoPermiso = tipoPermiso;
+
+  RETURN tiene_permiso;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -513,7 +569,55 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 (401, 'INSERT', 'ingresos', 22, '27', '2024-10-13 21:49:23'),
 (402, 'INSERT', 'ingresos', 23, '27', '2024-10-13 21:52:30'),
 (403, 'INSERT', 'ingresos', 24, '27', '2024-10-13 21:53:00'),
-(404, 'INSERT', 'categorias', 42, '27', '2024-10-13 21:54:13');
+(404, 'INSERT', 'categorias', 42, '27', '2024-10-13 21:54:13'),
+(405, 'INSERT', 'usuarios', 28, '28', '2024-10-14 16:28:08'),
+(406, 'INSERT', 'usuarios', 28, '28', '2024-10-14 16:28:08'),
+(407, 'INSERT', 'usuarios', 28, 'sistema', '2024-10-14 16:28:08'),
+(408, 'UPDATE', 'familias', 1, 'sistema', '2024-10-14 16:28:24'),
+(409, 'UPDATE', 'familias', 16, 'sistema', '2024-10-14 16:28:24'),
+(410, 'UPDATE', 'familias', 22, 'sistema', '2024-10-14 16:28:24'),
+(411, 'UPDATE', 'familias', 23, 'sistema', '2024-10-14 16:28:24'),
+(412, 'UPDATE', 'familias', 24, 'sistema', '2024-10-14 16:28:24'),
+(413, 'UPDATE', 'familias', 30, 'sistema', '2024-10-14 16:28:24'),
+(414, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-14 16:28:24'),
+(415, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-14 16:28:24'),
+(416, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-14 16:28:24'),
+(417, 'UPDATE', 'usuarios', 1, '1', '2024-10-14 16:28:24'),
+(418, 'UPDATE', 'usuarios', 2, '2', '2024-10-14 16:28:24'),
+(419, 'UPDATE', 'usuarios', 5, '5', '2024-10-14 16:28:24'),
+(420, 'UPDATE', 'usuarios', 6, '6', '2024-10-14 16:28:24'),
+(421, 'UPDATE', 'usuarios', 7, '7', '2024-10-14 16:28:24'),
+(422, 'UPDATE', 'usuarios', 8, '8', '2024-10-14 16:28:24'),
+(423, 'UPDATE', 'usuarios', 9, '9', '2024-10-14 16:28:24'),
+(424, 'UPDATE', 'usuarios', 10, '10', '2024-10-14 16:28:24'),
+(425, 'UPDATE', 'usuarios', 11, '11', '2024-10-14 16:28:24'),
+(426, 'UPDATE', 'usuarios', 16, '16', '2024-10-14 16:28:24'),
+(427, 'UPDATE', 'usuarios', 17, '17', '2024-10-14 16:28:24'),
+(428, 'UPDATE', 'usuarios', 18, '18', '2024-10-14 16:28:24'),
+(429, 'UPDATE', 'usuarios', 19, '19', '2024-10-14 16:28:24'),
+(430, 'UPDATE', 'usuarios', 20, '20', '2024-10-14 16:28:24'),
+(431, 'UPDATE', 'usuarios', 21, '21', '2024-10-14 16:28:24'),
+(432, 'UPDATE', 'usuarios', 26, '26', '2024-10-14 16:28:24'),
+(433, 'UPDATE', 'usuarios', 27, '27', '2024-10-14 16:28:24'),
+(434, 'UPDATE', 'usuarios', 28, '28', '2024-10-14 16:28:24'),
+(435, 'INSERT', 'usuarios', 29, '29', '2024-10-14 16:30:53'),
+(436, 'INSERT', 'usuarios', 29, '29', '2024-10-14 16:30:53'),
+(437, 'INSERT', 'usuarios', 29, 'sistema', '2024-10-14 16:30:53'),
+(438, 'UPDATE', 'usuarios', 29, '29', '2024-10-14 16:30:54'),
+(439, 'INSERT', 'usuarios', 30, '30', '2024-10-14 17:24:50'),
+(440, 'INSERT', 'usuarios', 30, '30', '2024-10-14 17:24:50'),
+(441, 'INSERT', 'usuarios', 30, 'sistema', '2024-10-14 17:24:50'),
+(442, 'UPDATE', 'usuarios', 30, '30', '2024-10-14 17:24:50'),
+(443, 'INSERT', 'usuarios', 31, '31', '2024-10-14 18:11:36'),
+(444, 'INSERT', 'usuarios', 31, '31', '2024-10-14 18:11:36'),
+(445, 'INSERT', 'usuarios', 31, 'sistema', '2024-10-14 18:11:36'),
+(446, 'UPDATE', 'usuarios', 31, '31', '2024-10-14 18:11:37'),
+(447, 'UPDATE', 'usuarios', 31, '31', '2024-10-14 18:11:37'),
+(448, 'INSERT', 'ingresos', 25, '31', '2024-10-14 18:18:30'),
+(449, 'INSERT', 'ingresos', 26, '31', '2024-10-14 18:19:11'),
+(450, 'INSERT', 'gastos', 29, '31', '2024-10-14 18:19:50'),
+(451, 'INSERT', 'gastos', 30, '31', '2024-10-14 18:21:01'),
+(452, 'DELETE', 'ingresos', 22, '27', '2024-10-15 17:11:45');
 
 -- --------------------------------------------------------
 
@@ -744,7 +848,33 @@ INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 (223, 27, 'logout', '2024-10-13 20:38:50'),
 (224, 27, 'login', '2024-10-13 20:40:13'),
 (225, 27, 'logout', '2024-10-13 20:48:58'),
-(226, 27, 'login', '2024-10-13 20:49:03');
+(226, 27, 'login', '2024-10-13 20:49:03'),
+(227, 2, 'login', '2024-10-13 22:29:47'),
+(228, 2, 'logout', '2024-10-13 22:30:20'),
+(229, 27, 'login', '2024-10-14 16:25:52'),
+(230, 27, 'logout', '2024-10-14 16:26:40'),
+(231, 27, 'login', '2024-10-14 16:33:06'),
+(232, 27, 'logout', '2024-10-14 16:33:14'),
+(233, 27, 'login', '2024-10-14 16:33:36'),
+(234, 27, 'logout', '2024-10-14 16:33:59'),
+(235, 27, 'login', '2024-10-14 16:34:32'),
+(236, 27, 'logout', '2024-10-14 16:34:36'),
+(237, 27, 'login', '2024-10-14 17:11:01'),
+(238, 27, 'logout', '2024-10-14 17:11:06'),
+(239, 27, 'login', '2024-10-14 17:15:01'),
+(240, 27, 'logout', '2024-10-14 17:18:08'),
+(242, 27, 'login', '2024-10-14 17:23:21'),
+(243, 27, 'logout', '2024-10-14 17:23:25'),
+(244, 31, 'login', '2024-10-14 18:15:37'),
+(245, 31, 'logout', '2024-10-14 18:21:21'),
+(246, 27, 'login', '2024-10-14 18:21:29'),
+(247, 31, 'login', '2024-10-15 14:09:25'),
+(248, 31, 'logout', '2024-10-15 14:11:53'),
+(249, 27, 'login', '2024-10-15 14:12:01'),
+(250, 27, 'logout', '2024-10-15 14:15:30'),
+(251, 1, 'login', '2024-10-15 14:15:36'),
+(252, 1, 'logout', '2024-10-15 15:05:55'),
+(253, 2, 'login', '2024-10-15 15:06:03');
 
 -- --------------------------------------------------------
 
@@ -841,20 +971,21 @@ CREATE TABLE `familias` (
   `idFamilia` int(11) NOT NULL,
   `nombre_familia` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `idAdmin` int(11) DEFAULT NULL
+  `idAdmin` int(11) DEFAULT NULL,
+  `estado` enum('activo','inactivo') DEFAULT 'activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `familias`
 --
 
-INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`, `idAdmin`) VALUES
-(1, 'Familia1', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 2),
-(16, 'Familia juan', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 21),
-(22, 'mmmmmm', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 1),
-(23, 'vvvvv', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 20),
-(24, 'buena', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 20),
-(30, '27Fam', '$2y$10$1st9AdxDsMgbm1tx9oej7u6mDWfE5eX5wkYeqjFJYr/DXH.ioz8NC', 27);
+INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`, `idAdmin`, `estado`) VALUES
+(1, 'Familia1', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 2, 'activo'),
+(16, 'Familia juan', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 21, 'activo'),
+(22, 'mmmmmm', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 1, 'activo'),
+(23, 'vvvvv', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 20, 'activo'),
+(24, 'buena', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 20, 'activo'),
+(30, '27Fam', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 27, 'activo');
 
 --
 -- Disparadores `familias`
@@ -926,7 +1057,9 @@ INSERT INTO `gastos` (`idGasto`, `idUser`, `importe`, `idCategoria`, `origen`, `
 (25, 27, 300.00, 38, 'banco', 'Microondas', '2024-10-12 22:00:00', NULL, 30),
 (26, 27, 26.00, 23, 'banco', 'farmacia', '2024-10-12 22:00:00', NULL, 30),
 (27, 27, 8.00, 35, 'banco', 'Leche', '2024-10-12 22:00:00', NULL, 30),
-(28, 27, 123.00, 23, 'banco', 'Mercadona', '2024-10-12 22:00:00', NULL, 30);
+(28, 27, 123.00, 23, 'banco', 'Mercadona', '2024-10-12 22:00:00', NULL, 30),
+(29, 31, 25.23, 24, 'banco', 'Comida amigas', '2024-10-13 22:00:00', NULL, 30),
+(30, 31, 4.00, 24, 'efectivo', 'bono Bus', '2024-10-13 22:00:00', NULL, 30);
 
 --
 -- Disparadores `gastos`
@@ -1036,9 +1169,9 @@ CREATE TABLE `grupos` (
 --
 
 INSERT INTO `grupos` (`idGrupo`, `nombre_grupo`, `password`, `idAdmin`) VALUES
-(1, 'Grupo1', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 2),
-(9, 'Grupitoo lllll', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 2),
-(11, 'B3', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', 2);
+(1, 'Grupo1', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 2),
+(9, 'Grupitoo lllll', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 2),
+(11, 'B3', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 2);
 
 --
 -- Disparadores `grupos`
@@ -1104,9 +1237,10 @@ INSERT INTO `ingresos` (`idIngreso`, `idUser`, `importe`, `idCategoria`, `origen
 (18, 2, 50.00, 30, 'efectivo', 'Cumple Rafa', '2024-10-07 22:00:00', 1, 1),
 (19, 2, 15.00, 31, 'efectivo', 'Lotería', '2024-10-07 22:00:00', 1, 1),
 (20, 2, 350.00, 32, 'efectivo', 'Venta móvil', '2024-10-07 22:00:00', 1, 1),
-(22, 27, 100.00, 29, 'banco', 'Prueba de ingreso', '2024-10-12 22:00:00', NULL, NULL),
 (23, 27, 15.00, 31, 'efectivo', 'Lotería', '2024-10-12 22:00:00', NULL, 30),
-(24, 27, 1500.00, 29, 'banco', 'Septiembre', '2024-10-12 22:00:00', NULL, 30);
+(24, 27, 1500.00, 29, 'banco', 'Septiembre', '2024-10-12 22:00:00', NULL, 30),
+(25, 31, 1600.00, 29, 'banco', 'Agosto', '2024-10-13 22:00:00', NULL, 30),
+(26, 31, 15.00, 32, 'efectivo', 'Venta libros', '2024-10-13 22:00:00', NULL, 30);
 
 --
 -- Disparadores `ingresos`
@@ -1144,6 +1278,19 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `menuadmin`
+--
+
+CREATE TABLE `menuadmin` (
+  `idMenu` int(11) NOT NULL,
+  `idRol` int(11) DEFAULT NULL,
+  `nombreItem` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `news_letter_envios`
 --
 
@@ -1155,6 +1302,42 @@ CREATE TABLE `news_letter_envios` (
   `saldo_total` decimal(10,2) NOT NULL,
   `gastos_totales` decimal(10,2) NOT NULL,
   `ingresos_totales` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `notificaciones`
+--
+
+CREATE TABLE `notificaciones` (
+  `idNotificacion` int(11) NOT NULL,
+  `idUser` int(11) DEFAULT NULL,
+  `mensaje` text DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
+  `leido` tinyint(4) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`idNotificacion`, `idUser`, `mensaje`, `fecha`, `leido`) VALUES
+(1, 1, 'Se ha agregado un nuevo gasto.', '2024-10-15 18:01:23', 1),
+(2, 1, 'Esta es una nueva notificación.', '2024-10-15 18:03:48', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permisos_cache`
+--
+
+CREATE TABLE `permisos_cache` (
+  `idUser` int(11) NOT NULL,
+  `nombrePermiso` varchar(255) NOT NULL,
+  `tipoPermiso` varchar(255) NOT NULL,
+  `tiene_permiso` tinyint(4) DEFAULT 0,
+  `fecha_cache` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -1351,6 +1534,15 @@ CREATE TABLE `roles` (
   `nombreRol` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`idRol`, `nombreRol`) VALUES
+(1, 'superadmin'),
+(2, 'admin'),
+(3, 'usuario');
+
 -- --------------------------------------------------------
 
 --
@@ -1363,6 +1555,18 @@ CREATE TABLE `roles_permisos` (
   `nombrePermiso` varchar(255) DEFAULT NULL,
   `tipoPermiso` enum('leer','escribir','eliminar') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `roles_permisos`
+--
+
+INSERT INTO `roles_permisos` (`idPermiso`, `idRol`, `nombrePermiso`, `tipoPermiso`) VALUES
+(7, 1, 'gastos', 'leer'),
+(8, 1, 'gastos', 'escribir'),
+(9, 1, 'gastos', 'eliminar'),
+(10, 2, 'gastos', 'leer'),
+(11, 3, 'gastos', 'leer'),
+(12, 3, 'ingresos', 'leer');
 
 -- --------------------------------------------------------
 
@@ -1408,23 +1612,27 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idUser`, `nombre`, `apellido`, `alias`, `email`, `contrasenya`, `fecha_nacimiento`, `telefono`, `nivel_usuario`, `fecha_registro`, `idFamilia`, `idGrupo`, `estado_usuario`) VALUES
-(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', 1, NULL, 'activo'),
-(2, 'Admin1', 'Family1', 'admin1', 'admin1@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1980-01-01', '625418965', 'admin', '2024-10-04 10:04:06', 1, 1, 'activo'),
-(5, 'Pareja1', 'Family1', 'pareja1', 'pareja1@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1982-02-02', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
-(6, 'Hijo1', 'Family1', 'hijo1', 'hijo1@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2005-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
-(7, 'Hijo2', 'Family1', 'hijo2', 'hijo2@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2007-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
-(8, 'Hijo3', 'Family1', 'hijo3', 'hijo3@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2010-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
-(9, 'Amigo1', 'Grupo1', 'amigo1', 'amigo1@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1990-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
-(10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
-(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', 16, 1, 'activo'),
-(16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', 16, 9, 'activo'),
-(17, 'Nuevito', 'Nuevito', 'Nuevito', 'Nuevito@Nuevito.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2000-12-17', '552685456', 'admin', '2024-10-12 11:13:29', 16, 1, 'activo'),
-(18, 'Lucía', 'Gómez', 'Lucy', 'lucy@lucy.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1968-02-02', '123456789', 'usuario', '2024-10-12 17:42:45', 16, NULL, 'activo'),
-(19, 'Rafa', 'Gómez', 'RafaGomez', 'RafaGomez@RafaGomez.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1982-02-02', '336265984', 'usuario', '2024-10-12 18:28:50', 16, 1, 'activo'),
-(20, 'xxxxxx', 'xxxxxx', 'xxxxxx', 'xxx@xxx.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '2003-03-03', '777777777', 'admin', '2024-10-13 08:28:06', 23, NULL, 'activo'),
-(21, 'mmmmmm', 'mmmmmm', 'mmmmmm', 'mmmmmm@mmmmmm.com', '$2y$10$iH89IHyYNWb6PMGxq03BNej8mPHsszg71tG9xbcT77FTHKNmcy9nm', '1999-12-18', '222555555', 'usuario', '2024-10-13 08:34:52', 22, NULL, 'activo'),
-(26, '26Usu', '26Usu', '26Usu', '26Usu@26Usu.com', '$2y$10$k7rYSBC5Vsw3OBXjYdYCkOANW7gzzYkwY3p2aa4PEtuKWbBXvl.zW', '1980-06-03', '262662266', 'usuario', '2024-10-13 17:39:57', NULL, NULL, 'activo'),
-(27, '27Usu', '27Usu', '27Usu', '27Usu@27Usu.com', '$2y$10$IH3Fx9XxO/TQsi52deaIzOji/bi4kVPR.laiENPvYYX/I5AL6q1DO', '2001-01-01', '222333333', 'admin', '2024-10-13 18:28:47', 30, NULL, 'activo');
+(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', 1, NULL, 'activo'),
+(2, 'Admin1', 'Family1', 'admin1', 'admin1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1980-01-01', '625418965', 'admin', '2024-10-04 10:04:06', 1, 1, 'activo'),
+(5, 'Pareja1', 'Family1', 'pareja1', 'pareja1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1982-02-02', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
+(6, 'Hijo1', 'Family1', 'hijo1', 'hijo1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2005-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
+(7, 'Hijo2', 'Family1', 'hijo2', 'hijo2@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2007-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
+(8, 'Hijo3', 'Family1', 'hijo3', 'hijo3@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2010-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 1, NULL, 'activo'),
+(9, 'Amigo1', 'Grupo1', 'amigo1', 'amigo1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1990-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
+(10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', NULL, 1, 'activo'),
+(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', 16, 1, 'activo'),
+(16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', 16, 9, 'activo'),
+(17, 'Nuevito', 'Nuevito', 'Nuevito', 'Nuevito@Nuevito.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2000-12-17', '552685456', 'admin', '2024-10-12 11:13:29', 16, 1, 'activo'),
+(18, 'Lucía', 'Gómez', 'Lucy', 'lucy@lucy.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1968-02-02', '123456789', 'usuario', '2024-10-12 17:42:45', 16, NULL, 'activo'),
+(19, 'Rafa', 'Gómez', 'RafaGomez', 'RafaGomez@RafaGomez.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1982-02-02', '336265984', 'usuario', '2024-10-12 18:28:50', 16, 1, 'activo'),
+(20, 'xxxxxx', 'xxxxxx', 'xxxxxx', 'xxx@xxx.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2003-03-03', '777777777', 'admin', '2024-10-13 08:28:06', 23, NULL, 'activo'),
+(21, 'mmmmmm', 'mmmmmm', 'mmmmmm', 'mmmmmm@mmmmmm.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1999-12-18', '222555555', 'usuario', '2024-10-13 08:34:52', 22, NULL, 'activo'),
+(26, '26Usu', '26Usu', '26Usu', '26Usu@26Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1980-06-03', '262662266', 'usuario', '2024-10-13 17:39:57', NULL, NULL, 'activo'),
+(27, '27Usu', '27Usu', '27Usu', '27Usu@27Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2001-01-01', '222333333', 'admin', '2024-10-13 18:28:47', 30, NULL, 'activo'),
+(28, '28Usu', '28Usu', '28Usu', '28Usu@28Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2004-04-04', '626222222', 'usuario', '2024-10-14 16:28:08', NULL, NULL, 'activo'),
+(29, '29Usu', '29Usu', '29Usu', '29Usu@29Usu.com', '$2y$10$Jce6chf5g155y5siM3HVkupRg8iJoC4rhMaxFHg.UO9ryNITo6pqy', '2001-03-03', '555222222', 'usuario', '2024-10-14 16:30:53', NULL, NULL, 'activo'),
+(30, '50Usu', '50Usu', '50Usu', '50Usu@50Usu.com', '$2y$10$B0QWKa2P1dWoI0tlPFY5j.P.cKZSqokCN5E0PlSkLUy1kjwNtBU66', '1966-12-22', '639584745', 'usuario', '2024-10-14 17:24:50', NULL, NULL, 'activo'),
+(31, '31Usu', '31Usu', '31Usu', '31Usu@31Usu.com', '$2y$10$3xGESvqM7kMyOQF3Y4vvE.vjoKtcp3FKHT.IpQSkjVVLi/rhgZfgq', '2008-08-08', '987454545', 'usuario', '2024-10-14 18:11:36', 30, NULL, 'activo');
 
 --
 -- Disparadores `usuarios`
@@ -1504,7 +1712,8 @@ INSERT INTO `usuarios_familias` (`idUser`, `idFamilia`) VALUES
 (7, 1),
 (8, 1),
 (17, 1),
-(27, 30);
+(27, 30),
+(31, 30);
 
 --
 -- Disparadores `usuarios_familias`
@@ -1660,12 +1869,30 @@ ALTER TABLE `ingresos`
   ADD KEY `idx_ingresos_fecha_importe_concepto` (`fecha`,`importe`,`concepto`);
 
 --
+-- Indices de la tabla `menuadmin`
+--
+ALTER TABLE `menuadmin`
+  ADD PRIMARY KEY (`idMenu`);
+
+--
 -- Indices de la tabla `news_letter_envios`
 --
 ALTER TABLE `news_letter_envios`
   ADD PRIMARY KEY (`idEnvio`),
   ADD KEY `idUser` (`idUser`),
   ADD KEY `idRefran` (`idRefran`);
+
+--
+-- Indices de la tabla `notificaciones`
+--
+ALTER TABLE `notificaciones`
+  ADD PRIMARY KEY (`idNotificacion`);
+
+--
+-- Indices de la tabla `permisos_cache`
+--
+ALTER TABLE `permisos_cache`
+  ADD PRIMARY KEY (`idUser`,`nombrePermiso`,`tipoPermiso`);
 
 --
 -- Indices de la tabla `preferencias_usuarios`
@@ -1754,13 +1981,13 @@ ALTER TABLE `administradores_grupos`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=405;
+  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=453;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
 ALTER TABLE `auditoria_accesos`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=254;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
@@ -1796,7 +2023,7 @@ ALTER TABLE `familias`
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `idGasto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos`
@@ -1808,13 +2035,25 @@ ALTER TABLE `grupos`
 -- AUTO_INCREMENT de la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
-  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idIngreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT de la tabla `menuadmin`
+--
+ALTER TABLE `menuadmin`
+  MODIFY `idMenu` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `news_letter_envios`
 --
 ALTER TABLE `news_letter_envios`
   MODIFY `idEnvio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `notificaciones`
+--
+ALTER TABLE `notificaciones`
+  MODIFY `idNotificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `preferencias_usuarios`
@@ -1832,13 +2071,13 @@ ALTER TABLE `refranes`
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `idRol` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idRol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `roles_permisos`
 --
 ALTER TABLE `roles_permisos`
-  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `situacion`
@@ -1850,7 +2089,7 @@ ALTER TABLE `situacion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Restricciones para tablas volcadas

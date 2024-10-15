@@ -1094,4 +1094,43 @@ Modo debug activo, mostrando errores en pantallaSesión iniciadaNivel de usuario
 Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verGastosEjecutando acción: verGastos en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verIngresosEjecutando acción: verIngresos en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verSituacionEjecutando acción: verSituacion en SituacionFinancieraController[14-Oct-2024 20:21:35 Europe/Berlin] Administrador viendo situación financiera.
 Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: SituacionFinancieraControllerEjecutando acción: verSituacion en SituacionFinancieraController[14-Oct-2024 20:21:39 Europe/Berlin] Administrador viendo situación financiera.
 Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: SituacionFinancieraControllerEjecutando acción: verSituacion en SituacionFinancieraController[14-Oct-2024 20:21:40 Europe/Berlin] Administrador viendo situación financiera.
-Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verGastosEjecutando acción: verGastos en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verIngresosEjecutando acción: verIngresos en FinanzasController
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verGastosEjecutando acción: verGastos en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verIngresosEjecutando acción: verIngresos en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaNivel de usuario no definido, asignado a 0Ruta por defecto 'home' asignadaEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthController[15-Oct-2024 16:09:25 Europe/Berlin] Usuario con alias 31Usu ha iniciado sesión correctamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: formInsertarIngresoEjecutando acción: formInsertarIngreso en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: formInsertarGastoEjecutando acción: formInsertarGasto en FinanzasControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verSituacionEjecutando acción: verSituacion en SituacionFinancieraController[15-Oct-2024 16:09:43 Europe/Berlin] Usuario normal viendo su situación financiera.
+[15-Oct-2024 16:09:43 Europe/Berlin] Usuario: 31
+[15-Oct-2024 16:09:43 Europe/Berlin] Total Ingresos: 1615.00
+[15-Oct-2024 16:09:44 Europe/Berlin] Total Gastos: 29.23
+[15-Oct-2024 16:09:44 Europe/Berlin] Saldo: 1585.77
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: salirEjecutando acción: salir en AuthController[15-Oct-2024 16:11:53 Europe/Berlin] Sesión cerrada exitosamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaNivel de usuario no definido, asignado a 0Ruta encontrada: homeEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthController[15-Oct-2024 16:12:01 Europe/Berlin] Usuario con alias 27Usu ha iniciado sesión correctamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: salirEjecutando acción: salir en AuthController[15-Oct-2024 16:15:30 Europe/Berlin] Sesión cerrada exitosamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaNivel de usuario no definido, asignado a 0Ruta encontrada: homeEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthController[15-Oct-2024 16:15:36 Europe/Berlin] Iniciando sesión con superadmin: superadmin
+[15-Oct-2024 16:15:36 Europe/Berlin] Usuario con alias superadmin ha iniciado sesión correctamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: salirEjecutando acción: salir en AuthController[15-Oct-2024 17:05:55 Europe/Berlin] Sesión cerrada exitosamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaNivel de usuario no definido, asignado a 0Ruta encontrada: homeEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionEjecutando acción: iniciarSesion en AuthController[15-Oct-2024 17:06:03 Europe/Berlin] Usuario con alias admin1 ha iniciado sesión correctamente.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: inicioEjecutando acción: inicio en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: verSituacionEjecutando acción: verSituacion en SituacionFinancieraController[15-Oct-2024 17:07:40 Europe/Berlin] Administrador viendo situación financiera.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: SituacionFinancieraControllerEjecutando acción: verSituacion en SituacionFinancieraController[15-Oct-2024 17:07:42 Europe/Berlin] Administrador viendo situación financiera.
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: SituacionFinancieraControllerEjecutando acción: verSituacion en SituacionFinancieraController[15-Oct-2024 17:07:48 Europe/Berlin] Administrador viendo situación financiera.
+[15-Oct-2024 17:07:48 Europe/Berlin] Usuario: 1
+[15-Oct-2024 17:07:48 Europe/Berlin] Total Ingresos: 0.00
+[15-Oct-2024 17:07:48 Europe/Berlin] Total Gastos: 0.00
+[15-Oct-2024 17:07:48 Europe/Berlin] Saldo: 0
+[15-Oct-2024 17:07:49 Europe/Berlin] Usuario: 2
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Ingresos: 1915.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Gastos: 328.98
+[15-Oct-2024 17:07:49 Europe/Berlin] Saldo: 1586.02
+[15-Oct-2024 17:07:49 Europe/Berlin] Usuario: 5
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Ingresos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Gastos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Saldo: 0
+[15-Oct-2024 17:07:49 Europe/Berlin] Usuario: 6
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Ingresos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Gastos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Saldo: 0
+[15-Oct-2024 17:07:49 Europe/Berlin] Usuario: 7
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Ingresos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Gastos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Saldo: 0
+[15-Oct-2024 17:07:49 Europe/Berlin] Usuario: 8
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Ingresos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Total Gastos: 0.00
+[15-Oct-2024 17:07:49 Europe/Berlin] Saldo: 0
