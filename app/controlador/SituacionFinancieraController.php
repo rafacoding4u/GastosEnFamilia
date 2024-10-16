@@ -48,30 +48,29 @@ class SituacionFinancieraController
 
     // Función para ver la situación financiera de un administrador
     private function verSituacionAdmin($m, $tipo, $idSeleccionado, &$params)
-{
-    try {
-        $idAdmin = $_SESSION['usuario']['id'];  // Obtener el ID del administrador
-        $params['situacion'] = $m->obtenerSituacionFinanciera($idAdmin);  // Calcular la situación financiera del admin
+    {
+        try {
+            $idAdmin = $_SESSION['usuario']['id'];  // Obtener el ID del administrador
+            $params['situacion'] = $m->obtenerSituacionFinanciera($idAdmin);  // Calcular la situación financiera del admin
 
-        // Si el administrador tiene familias o grupos asignados, se muestran también
-        $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($idAdmin);
-        $gruposAsignados = $m->obtenerGruposPorAdministrador($idAdmin);
-        $params['familias'] = $familiasAsignadas;
-        $params['grupos'] = $gruposAsignados;
+            // Si el administrador tiene familias o grupos asignados, se muestran también
+            $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($idAdmin);
+            $gruposAsignados = $m->obtenerGruposPorAdministrador($idAdmin);
+            $params['familias'] = $familiasAsignadas;
+            $params['grupos'] = $gruposAsignados;
 
-        if ($tipo === 'familia' && $idSeleccionado) {
-            $this->verSituacionFamilia($m, $idSeleccionado, $params);
-        } elseif ($tipo === 'grupo' && $idSeleccionado) {
-            $this->verSituacionGrupo($m, $idSeleccionado, $params);
-        } elseif ($tipo === 'usuario' && $idSeleccionado) {
-            $this->verSituacionUsuario($m, $idSeleccionado, $params);
+            if ($tipo === 'familia' && $idSeleccionado) {
+                $this->verSituacionFamilia($m, $idSeleccionado, $params);
+            } elseif ($tipo === 'grupo' && $idSeleccionado) {
+                $this->verSituacionGrupo($m, $idSeleccionado, $params);
+            } elseif ($tipo === 'usuario' && $idSeleccionado) {
+                $this->verSituacionUsuario($m, $idSeleccionado, $params);
+            }
+        } catch (Exception $e) {
+            error_log("Error en verSituacionAdmin(): " . $e->getMessage());
+            $this->redireccionarError('Error al obtener la situación financiera del administrador.');
         }
-    } catch (Exception $e) {
-        error_log("Error en verSituacionAdmin(): " . $e->getMessage());
-        $this->redireccionarError('Error al obtener la situación financiera del administrador.');
     }
-}
-
 
     // Función para ver la situación financiera de un superadmin
     private function verSituacionSuperadmin($m, $tipo, $idSeleccionado, &$params)
@@ -128,28 +127,27 @@ class SituacionFinancieraController
 
     // Función para calcular la situación financiera de un usuario
     private function calcularSituacionUsuario($m, $idUsuario)
-{
-    try {
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
-        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
-        $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
-        $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
+    {
+        try {
+            $usuario = $m->obtenerUsuarioPorId($idUsuario);
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
+            $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
-        // Mensajes de depuración para comprobar los valores
-        error_log("Usuario: " . $idUsuario);
-        error_log("Total Ingresos: " . $usuario['totalIngresos']);
-        error_log("Total Gastos: " . $usuario['totalGastos']);
-        error_log("Saldo: " . $usuario['saldo']);
+            // Mensajes de depuración para comprobar los valores
+            error_log("Usuario: " . $idUsuario);
+            error_log("Total Ingresos: " . $usuario['totalIngresos']);
+            error_log("Total Gastos: " . $usuario['totalGastos']);
+            error_log("Saldo: " . $usuario['saldo']);
 
-        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
-        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
-        return $usuario;
-    } catch (Exception $e) {
-        error_log("Error en calcularSituacionUsuario(): " . $e->getMessage());
-        $this->redireccionarError('Error al calcular la situación financiera del usuario.');
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+            return $usuario;
+        } catch (Exception $e) {
+            error_log("Error en calcularSituacionUsuario(): " . $e->getMessage());
+            $this->redireccionarError('Error al calcular la situación financiera del usuario.');
+        }
     }
-}
-
 
     // Función para calcular la situación financiera de varios usuarios (para familias y grupos)
     private function calcularSituacionUsuarios($m, &$usuarios)

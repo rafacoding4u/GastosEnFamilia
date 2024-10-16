@@ -579,6 +579,25 @@ public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $orig
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function obtenerSituacionFinancieraPorAdmin($idAdmin)
+{
+    $sql = "
+        SELECT 
+            SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+            SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+            (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+        FROM usuarios u
+        LEFT JOIN ingresos i ON u.idUser = i.idUser
+        LEFT JOIN gastos g ON u.idUser = g.idUser
+        WHERE u.idAdmin = :idAdmin";
+
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 
     // Obtener gastos por grupo
     public function obtenerGastosPorGrupo($idGrupo)
@@ -1470,4 +1489,79 @@ public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $orig
         $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    // Obtener todos los registros de auditoría
+public function obtenerAuditoriaGlobal()
+{
+    try {
+        $sql = "SELECT * FROM auditoria ORDER BY fecha DESC";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en obtenerAuditoriaGlobal(): " . $e->getMessage());
+        return [];
+    }
+}
+
+// Obtener registros de auditoría de un usuario específico
+public function obtenerAuditoriaPorUsuario($idUsuario)
+{
+    try {
+        $sql = "SELECT * FROM auditoria WHERE idUser = :idUsuario ORDER BY fecha DESC";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error en obtenerAuditoriaPorUsuario(): " . $e->getMessage());
+        return [];
+    }
+}
+
+// Registrar una acción en la auditoría
+public function registrarAccionAuditoria($idUsuario, $accion, $detalles)
+{
+    try {
+        $sql = "INSERT INTO auditoria (idUser, accion, detalles, fecha) VALUES (:idUsuario, :accion, :detalles, NOW())";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':accion', $accion, PDO::PARAM_STR);
+        $stmt->bindValue(':detalles', $detalles, PDO::PARAM_STR);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Error en registrarAccionAuditoria(): " . $e->getMessage());
+        return false;
+    }
+}
+public function obtenerPresupuestosPorUsuario($idUsuario)
+{
+    try {
+        $stmt = $this->conexion->prepare('SELECT * FROM presupuestos WHERE idUsuario = :idUsuario');
+        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log('Error al obtener presupuestos: ' . $e->getMessage());
+        return false;
+    }
+}
+
+// Obtener metas globales
+public function obtenerMetasGlobales()
+{
+    // Aquí realizamos la consulta para obtener las metas globales de la base de datos
+    $sql = "SELECT * FROM metas_globales"; // Asumiendo que existe una tabla 'metas_globales'
+    
+    try {
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+        $metasGlobales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $metasGlobales;
+    } catch (PDOException $e) {
+        error_log("Error al obtener metas globales: " . $e->getMessage());
+        return false;
+    }
+}
+
 }

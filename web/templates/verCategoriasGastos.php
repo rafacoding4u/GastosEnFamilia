@@ -9,7 +9,7 @@
     <?php endif; ?>
 
     <!-- Mostrar el formulario para agregar una nueva categoría solo si es admin o superadmin -->
-    <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
         <form action="index.php?ctl=insertarCategoriaGasto" method="post">
             <div class="form-group">
                 <label for="nombreCategoria">Nueva Categoría de Gasto:</label>
@@ -34,7 +34,7 @@
                         <td><?= htmlspecialchars($categoria['nombreCategoria']); ?></td>
                         <td>
                             <!-- Verificar si el usuario es admin o superadmin para mostrar las opciones de edición/eliminación -->
-                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+                            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
                                 <a href="index.php?ctl=editarCategoriaGasto&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
 
                                 <!-- Mostrar "Categoría en uso" o permitir eliminar -->

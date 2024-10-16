@@ -10,8 +10,6 @@
             <div class="col">
                 <label for="fechaInicio">Desde:</label>
                 <input type="date" id="fechaInicio" name="fechaInicio" value="<?= htmlspecialchars($fechaInicio ?? '') ?>" class="form-control">
-                
-
             </div>
             <div class="col">
                 <label for="fechaFin">Hasta:</label>

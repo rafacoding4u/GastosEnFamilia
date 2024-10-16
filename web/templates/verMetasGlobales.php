@@ -18,21 +18,21 @@
             <tbody>
                 <?php foreach ($metas as $meta): ?>
                     <tr>
-                        <td><?= htmlspecialchars($meta['nombreMeta']) ?></td>
+                        <td><?= htmlspecialchars($meta['nombreMeta'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= number_format($meta['montoObjetivo'], 2, ',', '.') ?> €</td>
                         <td>
                             <!-- Barra de progreso -->
                             <div class="progress">
                                 <?php 
                                     $progreso = ($meta['montoObjetivo'] > 0) ? min(100, ($meta['montoActual'] / $meta['montoObjetivo']) * 100) : 0;
-                                    $color = $progreso >= 100 ? 'green' : 'blue';
+                                    $color = $progreso >= 100 ? 'bg-success' : 'bg-primary';
                                 ?>
-                                <div class="progress-bar" role="progressbar" style="width: <?= $progreso ?>%; background-color: <?= $color ?>;" aria-valuenow="<?= $progreso ?>" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar <?= $color ?>" role="progressbar" style="width: <?= $progreso ?>%;" aria-valuenow="<?= $progreso ?>" aria-valuemin="0" aria-valuemax="100">
                                     <?= number_format($progreso, 2) ?>%
                                 </div>
                             </div>
                         </td>
-                        <td><?= htmlspecialchars($meta['fechaLimite']) ?></td>
+                        <td><?= htmlspecialchars($meta['fechaLimite'], ENT_QUOTES, 'UTF-8') ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

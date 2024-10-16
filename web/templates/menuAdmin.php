@@ -9,31 +9,31 @@
                 <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
                     <!-- Opciones del administrador -->
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=verGastos">Ver Gastos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=verIngresos">Ver Ingresos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=formInsertarGasto">Añadir Gasto</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=formInsertarGasto">Añadir Gasto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=formInsertarIngreso">Añadir Ingreso</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=formInsertarIngreso">Añadir Ingreso</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=verPresupuestos">Ver Presupuestos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=formCrearPresupuesto">Añadir Presupuesto</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=formCrearPresupuesto">Añadir Presupuesto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=verMetas">Ver Metas Financieras</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=formCrearMeta">Añadir Meta Financiera</a>
+                        <a class="nav-link" href="index.php?ctl=FinanzasController&action=formCrearMeta">Añadir Meta Financiera</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a>
+                        <a class="nav-link" href="index.php?ctl=SituacionFinancieraController&action=verSituacion">Ver Situación Financiera</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuarios a Familias/Grupos</a>
@@ -61,8 +61,9 @@
 <div class="container mt-4">
     <h4>Resumen Financiero</h4>
     <?php
-    // Llamar a la función para obtener la situación financiera del usuario
-    $situacion = (new GastosModelo())->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+    // Instancia del modelo para obtener la situación financiera
+    $modeloGastos = new GastosModelo();
+    $situacion = $modeloGastos->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
     ?>
     <div class="card">
         <div class="card-header">

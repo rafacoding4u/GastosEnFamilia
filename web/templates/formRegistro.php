@@ -53,7 +53,7 @@
         <!-- Selección de grupo o familia -->
         <div class="form-group">
             <label for="tipo_vinculo">¿Perteneces a un grupo o familia existente?</label>
-            <select id="tipo_vinculo" name="tipo_vinculo" class="form-control" required>
+            <select id="tipo_vinculo" name="tipo_vinculo" class="form-control" required onchange="toggleVinculoOptions()">
                 <option value="grupo">Grupo</option>
                 <option value="familia">Familia</option>
                 <option value="crear_familia">Crear nueva familia</option>
@@ -117,23 +117,27 @@
 </div>
 
 <script>
-    document.getElementById('tipo_vinculo').addEventListener('change', function() {
+    function toggleVinculoOptions() {
         var selectGrupoFamilia = document.getElementById('selectGrupoFamilia');
         var passwordGrupoFamilia = document.getElementById('passwordGrupoFamilia');
         var crearGrupoFamilia = document.getElementById('crearGrupoFamilia');
+        var tipoVinculo = document.getElementById('tipo_vinculo').value;
 
-        if (this.value === 'grupo' || this.value === 'familia') {
+        if (tipoVinculo === 'grupo' || tipoVinculo === 'familia') {
             selectGrupoFamilia.style.display = 'block';
             passwordGrupoFamilia.style.display = 'block';
             crearGrupoFamilia.style.display = 'none';
-        } else if (this.value === 'crear_familia' || this.value === 'crear_grupo') {
+        } else if (tipoVinculo === 'crear_familia' || tipoVinculo === 'crear_grupo') {
             selectGrupoFamilia.style.display = 'none';
             passwordGrupoFamilia.style.display = 'none';
             crearGrupoFamilia.style.display = 'block';
-        } else if (this.value === 'individual') {
+        } else if (tipoVinculo === 'individual') {
             selectGrupoFamilia.style.display = 'none';
             passwordGrupoFamilia.style.display = 'none';
             crearGrupoFamilia.style.display = 'none';
         }
-    });
+    }
+
+    // Ejecutar la función al cargar la página para asegurar que el campo visible esté configurado correctamente
+    toggleVinculoOptions();
 </script>

@@ -9,34 +9,26 @@ class FinanzasController
     {
         $m = new GastosModelo();
 
-        // Obtener la preferencia de resultados por página para gastos
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_gastos', $_SESSION['usuario']['id']) ?? 10;
 
-        // Asegurarse de que el valor sea válido
         if ($resultadosPorPagina <= 0) {
-            $resultadosPorPagina = 10; // Valor predeterminado si la preferencia es inválida
+            $resultadosPorPagina = 10;
         }
 
-        // Parámetros de filtro
         $fechaInicio = recoge('fechaInicio') ?: null;
         $fechaFin = recoge('fechaFin') ?: null;
         $categoria = recoge('categoria') ?: null;
         $origen = recoge('origen') ?: null;
 
-        // Parámetros de paginación
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        // Obtener los gastos aplicando los filtros y la paginación
         $gastos = $m->obtenerGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen, $offset, $resultadosPorPagina);
 
-        // Obtener el número total de gastos para la paginación
         $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
 
-        // Evitar la división por cero
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalGastos / $resultadosPorPagina) : 1;
 
-        // Pasar las categorías a la vista
         $categorias = $m->obtenerCategoriasGastos();
 
         $params = array(
@@ -54,40 +46,47 @@ class FinanzasController
         $this->render('verGastos.php', $params);
     }
 
+    // Ver Metas Globales
+    public function verMetasGlobales()
+    {
+        $m = new GastosModelo();
 
+        // Obtiene las metas globales del modelo
+        $metasGlobales = $m->obtenerMetasGlobales();
+
+        // Parámetros a pasar a la vista
+        $params = array(
+            'metasGlobales' => $metasGlobales
+        );
+
+        // Renderiza la vista 'verMetasGlobales.php' con los parámetros
+        $this->render('verMetasGlobales.php', $params);
+    }
 
     // Ver Ingresos
     public function verIngresos()
     {
         $m = new GastosModelo();
 
-        // Obtener la preferencia de resultados por página para ingresos
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_ingresos', $_SESSION['usuario']['id']) ?? 10;
 
-        // Asegurarse de que el valor sea válido
         if ($resultadosPorPagina <= 0) {
-            $resultadosPorPagina = 10; // Valor predeterminado si la preferencia es inválida
+            $resultadosPorPagina = 10;
         }
 
-        // Parámetros de filtro
         $fechaInicio = recoge('fechaInicio') ?: null;
         $fechaFin = recoge('fechaFin') ?: null;
         $categoria = recoge('categoria') ?: null;
 
-        // Parámetros de paginación
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        // Obtener los ingresos aplicando los filtros y la paginación
         $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, null, $offset, $resultadosPorPagina);
 
-        // Obtener el número total de ingresos para la paginación
         $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria);
 
-        // Evitar la división por cero
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalIngresos / $resultadosPorPagina) : 1;
 
-        // Pasar las categorías a la vista
         $categorias = $m->obtenerCategoriasIngresos();
 
         $params = array(
@@ -110,21 +109,17 @@ class FinanzasController
         $m = new GastosModelo();
         $idUsuario = $_SESSION['usuario']['id'];
 
-        // Obtener el total de ingresos y gastos
         $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
         $totalGastos = $m->obtenerTotalGastos($idUsuario);
 
-        // Calcular saldo
         $saldo = $totalIngresos - $totalGastos;
 
-        // Preparar los parámetros para la vista
         $params = array(
             'totalIngresos' => $totalIngresos,
             'totalGastos' => $totalGastos,
             'saldo' => $saldo
         );
 
-        // Renderizar la vista de situación financiera
         $this->render('verSituacionFinanciera.php', $params);
     }
 
@@ -133,13 +128,9 @@ class FinanzasController
     {
         $m = new GastosModelo();
 
-        // Obtener el resumen financiero
         $resumen = $m->obtenerResumenFinancieroUsuario($idUser);
-
-        // Obtener un refrán aleatorio
         $refran = $m->obtenerRefranAleatorio();
 
-        // Crear el contenido de la newsletter
         $contenido = "Resumen Financiero:\n";
         $contenido .= "Saldo Total: " . $resumen['saldo_total'] . "\n";
         $contenido .= "Gastos Totales: " . $resumen['gastos_totales'] . "\n";
@@ -147,7 +138,6 @@ class FinanzasController
         $contenido .= "\nRefrán del día:\n";
         $contenido .= $refran['refran'] . "\n";
 
-        // Insertar el envío en la tabla news_letter_envios
         $m->insertarNewsLetterEnvio($idUser, $refran['idRefran'], $resumen['saldo_total'], $resumen['gastos_totales'], $resumen['ingresos_totales']);
 
         return $contenido;
@@ -158,13 +148,9 @@ class FinanzasController
     {
         $m = new GastosModelo();
 
-        // Obtener resumen financiero del usuario
         $resumen = $m->obtenerResumenFinancieroUsuario($idUser);
-
-        // Obtener un refrán aleatorio
         $refran = $m->obtenerRefranAleatorio();
 
-        // Preparar el contenido de la News Letter
         $contenido = "
             <h1>Resumen Financiero</h1>
             <p>Estimado usuario, aquí está tu resumen financiero:</p>
@@ -178,16 +164,12 @@ class FinanzasController
             <p>Gracias por usar nuestra aplicación.</p>
         ";
 
-        // Enviar correo al usuario
         $asunto = "Tu Resumen Financiero y un Refrán del Día";
         $this->enviarCorreo($email, $asunto, $contenido);
     }
 
     private function enviarCorreo($destinatario, $asunto, $contenido)
     {
-        // Aquí puedes usar la función mail() de PHP o una librería como PHPMailer
-        // para enviar el correo. En este ejemplo se usará mail().
-
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         $headers .= "From: admin@tuaplicacion.com" . "\r\n";
@@ -204,21 +186,18 @@ class FinanzasController
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
-            // Obtener idFamilia y idGrupo desde la sesión del usuario
             $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
             $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-            $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el gasto
+            $idUsuario = $_SESSION['usuario']['id'];
 
             $m = new GastosModelo();
 
-            // Verificar que el usuario esté asociado al menos a una familia o un grupo
             if (!$idFamilia && !$idGrupo) {
                 $params['mensaje'] = 'El usuario no está asociado a una familia o grupo.';
                 $this->formInsertarGasto($params);
                 return;
             }
 
-            // Realizar la inserción
             if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verGastos');
                 exit();
@@ -229,49 +208,41 @@ class FinanzasController
         $this->formInsertarGasto();
     }
 
-
     // Insertar Ingreso
-public function insertarIngreso()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
-        $monto = recoge('importe');
-        $categoria = recoge('idCategoria');
-        $concepto = recoge('concepto');
-        $origen = recoge('origen');
+    public function insertarIngreso()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
+            $monto = recoge('importe');
+            $categoria = recoge('idCategoria');
+            $concepto = recoge('concepto');
+            $origen = recoge('origen');
 
-        // Validar los campos obligatorios
-        if (empty($monto) || empty($categoria) || empty($concepto) || empty($origen)) {
-            $params['mensaje'] = 'Todos los campos son obligatorios.';
-            $this->formInsertarIngreso($params);
-            return;
-        }
-
-        // Obtener idFamilia y idGrupo desde la sesión del usuario
-        $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
-        $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-        $idUsuario = $_SESSION['usuario']['id']; // El ID del usuario que está haciendo el ingreso
-
-        $m = new GastosModelo();
-
-        // Intentar insertar el ingreso dentro de un bloque try-catch para manejar errores
-        try {
-            if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
-                header('Location: index.php?ctl=verIngresos');
-                exit();
-            } else {
-                $params['mensaje'] = 'No se pudo insertar el ingreso.';
+            if (empty($monto) || empty($categoria) || empty($concepto) || empty($origen)) {
+                $params['mensaje'] = 'Todos los campos son obligatorios.';
+                $this->formInsertarIngreso($params);
+                return;
             }
-        } catch (Exception $e) {
-            // Capturar cualquier excepción generada durante la inserción
-            $params['mensaje'] = 'Error al insertar ingreso: ' . $e->getMessage();
+
+            $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
+            $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
+            $idUsuario = $_SESSION['usuario']['id'];
+
+            $m = new GastosModelo();
+
+            try {
+                if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
+                    header('Location: index.php?ctl=verIngresos');
+                    exit();
+                } else {
+                    $params['mensaje'] = 'No se pudo insertar el ingreso.';
+                }
+            } catch (Exception $e) {
+                $params['mensaje'] = 'Error al insertar ingreso: ' . $e->getMessage();
+            }
         }
+
+        $this->formInsertarIngreso();
     }
-
-    $this->formInsertarIngreso();
-}
-
-
-
 
     // Formulario para insertar gasto
     public function formInsertarGasto($params = array())
@@ -279,7 +250,6 @@ public function insertarIngreso()
         $m = new GastosModelo();
         $params['categorias'] = $m->obtenerCategoriasGastos();
 
-        // Renderizar la vista con los parámetros
         $this->render('formInsertarGasto.php', $params);
     }
 
@@ -289,10 +259,8 @@ public function insertarIngreso()
         $m = new GastosModelo();
         $params['categorias'] = $m->obtenerCategoriasIngresos();
 
-        // Renderizar la vista con los parámetros
         $this->render('formInsertarIngreso.php', $params);
     }
-
 
     // Editar Gasto
     public function editarGasto()
@@ -397,6 +365,27 @@ public function insertarIngreso()
                 $this->verIngresos();
             }
         }
+    }
+
+    // Formulario para asignar usuario a familia o grupo
+    public function formAsignarUsuario()
+    {
+        $m = new GastosModelo();
+        
+        // Obtiene las familias y grupos disponibles
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+        $usuarios = $m->obtenerUsuarios();
+
+        // Parámetros a pasar a la vista
+        $params = array(
+            'familias' => $familias,
+            'grupos' => $grupos,
+            'usuarios' => $usuarios
+        );
+
+        // Renderiza la vista con el formulario para asignar usuario
+        $this->render('formAsignarUsuario.php', $params);
     }
 
     // Método para renderizar vistas

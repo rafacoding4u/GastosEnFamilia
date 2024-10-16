@@ -36,7 +36,7 @@ class UsuarioController
             $errores = array();
             $m = new GastosModelo();
 
-            // Obtener familias y grupos
+            // Obtener familias y grupos según el nivel del usuario
             if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') {
                 $familias = $m->obtenerFamilias();
                 $grupos = $m->obtenerGrupos();
@@ -198,32 +198,6 @@ class UsuarioController
         }
     }
 
-    // Actualizar usuario
-    public function actualizarUsuario()
-    {
-        $id = recoge('id');
-        $m = new GastosModelo();
-
-        // Recoger datos del formulario
-        $nombre = recoge('nombre');
-        $apellido = recoge('apellido');
-        $alias = recoge('alias');
-        $email = recoge('email');
-        $telefono = recoge('telefono');
-        $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
-        $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
-        $nivel_usuario = recoge('nivel_usuario');
-
-        // Actualizar usuario en la base de datos
-        if ($m->actualizarUsuario($id, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
-            header('Location: index.php?ctl=listarUsuarios');
-            exit();
-        } else {
-            $params['mensaje'] = 'Error al actualizar el usuario.';
-            $this->render('formEditarUsuario.php', $params);
-        }
-    }
-
     // Eliminar usuario
     public function eliminarUsuario()
     {
@@ -309,87 +283,4 @@ class UsuarioController
             ($usuario['idFamilia'] == $_SESSION['usuario']['idFamilia'] ||
                 $usuario['idGrupo'] == $_SESSION['usuario']['idGrupo']));
     }
-
-    // Formulario para crear usuario
-    public function formCrearUsuario()
-    {
-        $m = new GastosModelo();
-
-        // Obtener familias y grupos para asignar al nuevo usuario
-        $familias = $m->obtenerFamilias();
-        $grupos = $m->obtenerGrupos();
-
-        $params = array(
-            'familias' => $familias,
-            'grupos' => $grupos,
-            'mensaje' => ''
-        );
-
-        $this->render('formCrearUsuario.php', $params);
-    }
-    // Método para procesar la creación de un usuario
-public function crearUsuario()
-{
-    // Inicializamos el modelo
-    $m = new GastosModelo();
-
-    // Verificamos si se ha enviado el formulario
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Recoger los datos del formulario
-        $nombre = recoge('nombre');
-        $apellido = recoge('apellido');
-        $alias = recoge('alias');
-        $email = recoge('email');
-        $telefono = recoge('telefono');
-        $fecha_nacimiento = recoge('fecha_nacimiento');
-        $contrasenya = recoge('contrasenya');
-        $nivel_usuario = recoge('nivel_usuario');
-        $idFamilia = recoge('idFamilia') ?: null;
-        $idGrupo = recoge('idGrupo') ?: null;
-
-        // Validamos los campos (puedes adaptar las funciones de validación según tu necesidad)
-        $errores = array();
-        cTexto($nombre, "nombre", $errores);
-        cTexto($apellido, "apellido", $errores);
-        cUser($alias, "alias", $errores);
-        cEmail($email, $errores);
-        cContrasenya($contrasenya, $errores);
-        cTelefono($telefono, $errores);
-
-        // Verificamos si hay errores de validación
-        if (empty($errores)) {
-            // Encriptar la contraseña antes de guardarla
-            $hashedPassword = password_hash($contrasenya, PASSWORD_DEFAULT);
-
-            // Insertar el usuario en la base de datos
-            if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
-                // Redirigir a la lista de usuarios si todo va bien
-                $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
-                header('Location: index.php?ctl=listarUsuarios');
-                exit();
-            } else {
-                // Mensaje de error si algo falla al guardar
-                $params['mensaje'] = 'No se pudo insertar el usuario. Inténtalo de nuevo.';
-            }
-        } else {
-            // Si hay errores de validación, los pasamos al formulario
-            $params = array(
-                'familias' => $m->obtenerFamilias(),
-                'grupos' => $m->obtenerGrupos(),
-                'mensaje' => 'Por favor corrige los errores:',
-                'errores' => $errores,
-                'nombre' => $nombre,
-                'apellido' => $apellido,
-                'alias' => $alias,
-                'email' => $email,
-                'telefono' => $telefono,
-                'fecha_nacimiento' => $fecha_nacimiento,
-                'idFamilia' => $idFamilia,
-                'idGrupo' => $idGrupo
-            );
-            $this->render('formCrearUsuario.php', $params);
-        }
-    }
-}
-
 }

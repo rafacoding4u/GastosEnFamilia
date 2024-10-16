@@ -40,7 +40,6 @@
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Gestionar Presupuestos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetasGlobales">Ver Metas Globales</a></li>
-                            <!-- Nueva opción: Asignar Usuario a Familia o Grupo -->
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuario a Familia o Grupo</a></li>
                         <?php elseif ($_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
@@ -70,6 +69,16 @@
 
     <!-- Contenido principal de la página -->
     <main class="container py-4">
+        <!-- Bloque de notificaciones -->
+        <?php if (isset($_SESSION['notificaciones']) && !empty($_SESSION['notificaciones'])): ?>
+            <div class="alert alert-info">
+                <?php foreach ($_SESSION['notificaciones'] as $notificacion): ?>
+                    <p><?php echo $notificacion['mensaje']; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Contenido dinámico -->
         <?php if (isset($contenido)) { echo $contenido; } ?>
     </main>
 

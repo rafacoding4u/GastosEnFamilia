@@ -26,6 +26,15 @@
             </span>
         </p>
 
+        <!-- Mostrar notificaciones si hay alguna -->
+        <?php if (isset($_SESSION['notificaciones']) && !empty($_SESSION['notificaciones'])): ?>
+            <div class="alert alert-info mt-3">
+                <?php foreach ($_SESSION['notificaciones'] as $notificacion): ?>
+                    <p><?= htmlspecialchars($notificacion['mensaje']); ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Mostrar mensaje personalizado -->
         <?php if (isset($mensaje) && !empty($mensaje)): ?>
             <div class="alert alert-info mt-3">

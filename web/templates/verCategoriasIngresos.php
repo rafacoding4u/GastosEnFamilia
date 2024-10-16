@@ -9,7 +9,7 @@
     <?php endif; ?>
 
     <!-- Mostrar el formulario para agregar una nueva categoría solo si es admin o superadmin -->
-    <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
         <form action="index.php?ctl=insertarCategoriaIngreso" method="post">
             <div class="form-group">
                 <label for="nombreCategoria">Nueva Categoría de Ingreso:</label>
@@ -33,7 +33,7 @@
                     <tr>
                         <td><?= htmlspecialchars($categoria['nombreCategoria']); ?></td>
                         <td>
-                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+                            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
                                 <a href="index.php?ctl=editarCategoriaIngreso&id=<?= htmlspecialchars($categoria['idCategoria']); ?>" class="btn btn-warning btn-sm">Editar</a>
 
                                 <?php if (!$categoria['enUso'] || $categoria['creadaPorUsuario']): ?>
@@ -41,14 +41,12 @@
                                 <?php else: ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Categoría en uso</button>
                                 <?php endif; ?>
-
                             <?php else: ?>
                                 <button class="btn btn-secondary btn-sm" disabled>No permitido</button>
                             <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-
             <?php else: ?>
                 <tr>
                     <td colspan="2">No hay categorías de ingresos registradas.</td>

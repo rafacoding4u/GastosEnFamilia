@@ -48,10 +48,10 @@
             <tbody>
                 <?php foreach ($auditoria as $registro): ?>
                     <tr>
-                        <td><?= htmlspecialchars($registro['fecha']) ?></td>
-                        <td><?= htmlspecialchars($registro['nombre_usuario']) ?></td>
-                        <td><?= htmlspecialchars($registro['accion']) ?></td>
-                        <td><?= htmlspecialchars($registro['detalles']) ?></td>
+                        <td><?= htmlspecialchars($registro['fecha'] ?? 'Fecha no disponible') ?></td>
+                        <td><?= htmlspecialchars($registro['nombre_usuario'] ?? 'Usuario desconocido') ?></td>
+                        <td><?= htmlspecialchars($registro['accion'] ?? 'Acción no especificada') ?></td>
+                        <td><?= htmlspecialchars($registro['detalles'] ?? 'Detalles no disponibles') ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

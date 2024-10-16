@@ -26,7 +26,7 @@
                 <label for="idSeleccionado">Selecciona una familia:</label>
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
                     <?php foreach ($familias as $familia): ?>
-                        <option value="<?= $familia['idFamilia'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idSeleccionado) && $idSeleccionado == $familia['idFamilia'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($familia['nombre_familia']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -37,7 +37,7 @@
                 <label for="idSeleccionado">Selecciona un grupo:</label>
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
                     <?php foreach ($grupos as $grupo): ?>
-                        <option value="<?= $grupo['idGrupo'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idSeleccionado) && $idSeleccionado == $grupo['idGrupo'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($grupo['nombre_grupo']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -49,7 +49,7 @@
                 <select name="idSeleccionado" id="idSeleccionado" class="form-control" onchange="this.form.submit()">
                     <option value="todos" <?= isset($idSeleccionado) && $idSeleccionado == 'todos' ? 'selected' : '' ?>>Todos los usuarios</option>
                     <?php foreach ($usuariosLista as $usuario): ?>
-                        <option value="<?= $usuario['idUser'] ?>" <?= isset($idSeleccionado) && $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= isset($idSeleccionado) && $idSeleccionado == $usuario['idUser'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -73,7 +73,6 @@
     <?php else: ?>
         <p>No hay datos financieros disponibles.</p>
     <?php endif; ?>
-
 
     <!-- Mostrar usuarios si los hay y si el rol lo permite -->
     <?php if ($_SESSION['nivel_usuario'] === 'superadmin' && isset($usuarios) && !empty($usuarios)): ?>

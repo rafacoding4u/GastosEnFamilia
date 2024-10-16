@@ -14,6 +14,7 @@ require_once __DIR__ . '/app/controlador/FamiliaGrupoController.php';
 require_once __DIR__ . '/app/controlador/FinanzasController.php';
 require_once __DIR__ . '/app/controlador/SituacionFinancieraController.php';
 require_once __DIR__ . '/app/controlador/UsuarioController.php';
+require_once __DIR__ . '/app/controlador/AuditoriaController.php';
 
 // Definir la ruta para el archivo de log de errores
 ini_set('error_log', __DIR__ . '/app/log/php-error.log');
@@ -73,7 +74,7 @@ $map = array(
     'insertarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'insertarCategoriaIngreso', 'nivel_usuario' => 1),
     'editarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'editarCategoriaIngreso', 'nivel_usuario' => 1),
     'actualizarCategoriaIngreso' => array('controller' => 'CategoriaController', 'action' => 'actualizarCategoriaIngreso', 'nivel_usuario' => 1),
-    
+
     // Gestión de familias y grupos
     'listarFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarFamilias', 'nivel_usuario' => 2),
     'listarGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
@@ -109,6 +110,10 @@ $map = array(
     'verSituacion' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
     'dashboard' => array('controller' => 'SituacionFinancieraController', 'action' => 'dashboard', 'nivel_usuario' => 1),
     'SituacionFinancieraController' => array('controller' => 'SituacionFinancieraController', 'action' => 'verSituacion', 'nivel_usuario' => 1),
+
+    // Añadir la ruta para ver la auditoría (solo superadmin tiene permiso)
+    'verAuditoria' => array('controller' => 'AuditoriaController', 'action' => 'verAuditoria', 'nivel_usuario' => 2),
+
 );
 
 // Verificar si la ruta solicitada existe
@@ -132,15 +137,19 @@ $controlador = $map[$ruta];
 
 // Verificar si el método solicitado existe en el controlador
 try {
-    if (isset($_GET['action']) && method_exists($controlador['controller'], $_GET['action'])) {
+    $controllerInstance = new $controlador['controller'];
+
+    if (isset($_GET['action']) && method_exists($controllerInstance, $_GET['action'])) {
         $action = $_GET['action'];
-    } else {
+    } else if (method_exists($controllerInstance, $controlador['action'])) {
         $action = $controlador['action'];  // Acción por defecto si no está definida en la URL
+    } else {
+        throw new Exception("La acción especificada no existe en el controlador.");
     }
 
     if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
         error_log("Ejecutando acción: {$action} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
-        call_user_func(array(new $controlador['controller'], $action));
+        call_user_func(array($controllerInstance, $action));
     } else {
         header('HTTP/1.0 403 Forbidden');
         error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');

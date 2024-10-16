@@ -5,7 +5,6 @@ require_once 'app/libs/bGeneral.php';
 class CategoriaController
 {
     // Ver categorías de gastos
-    // Ver categorías de gastos
     public function verCategoriasGastos()
     {
         try {
@@ -30,8 +29,6 @@ class CategoriaController
         }
     }
 
-
-
     // Ver categorías de ingresos
     public function verCategoriasIngresos()
     {
@@ -41,9 +38,7 @@ class CategoriaController
 
             // Verificar si cada categoría está en uso por algún ingreso
             foreach ($categorias as &$categoria) {
-                // Verificar si la categoría está en uso
                 $categoria['enUso'] = $m->categoriaIngresoEnUso($categoria['idCategoria']);
-                // Verificar si fue creada por el usuario actual
                 $categoria['creadaPorUsuario'] = ($categoria['creado_por'] == $_SESSION['usuario']['id']);
             }
 
@@ -58,8 +53,6 @@ class CategoriaController
             $this->redireccionarError('Error al cargar las categorías de ingresos.');
         }
     }
-
-
 
     // Insertar nueva categoría de gasto
     public function insertarCategoriaGasto()
@@ -134,7 +127,6 @@ class CategoriaController
     }
 
     // Editar categoría de gasto
-    // Editar categoría de gasto
     public function editarCategoriaGasto()
     {
         try {
@@ -180,53 +172,11 @@ class CategoriaController
             $this->redireccionarError('Error al actualizar la categoría de gasto.');
         }
     }
-    public function actualizarCategoriaIngreso()
-    {
-        try {
-            if (!esAdmin() && !esSuperadmin()) {
-                $this->redireccionarError('Acceso denegado.');
-                return;
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
-                $idCategoria = recoge('idCategoria');
-                $nombreCategoria = recoge('nombreCategoria');
-                $csrf_token = recoge('csrf_token');
-
-                // Validar token CSRF
-                if (!isset($_SESSION['csrf_token']) || $csrf_token !== $_SESSION['csrf_token']) {
-                    $this->redireccionarError('Token CSRF no válido.');
-                    return;
-                }
-
-                if (empty($idCategoria) || empty($nombreCategoria)) {
-                    $params['mensaje'] = 'El ID de la categoría y el nombre no pueden estar vacíos.';
-                } else {
-                    $m = new GastosModelo();
-                    if ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
-                        error_log("Categoría de ingreso '{$nombreCategoria}' actualizada.");
-                        header('Location: index.php?ctl=verCategoriasIngresos');
-                        exit();
-                    } else {
-                        $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
-                        error_log("Fallo al actualizar la categoría de ingreso con ID: {$idCategoria}.");
-                    }
-                }
-            }
-
-            $this->verCategoriasIngresos();
-        } catch (Exception $e) {
-            error_log("Error en actualizarCategoriaIngreso(): " . $e->getMessage());
-            $this->redireccionarError('Error al actualizar la categoría de ingreso.');
-        }
-    }
-
 
     // Editar categoría de ingreso
     public function editarCategoriaIngreso()
     {
         try {
-            // Verificar que el usuario tiene los permisos adecuados
             if (!esAdmin() && !esSuperadmin()) {
                 $this->redireccionarError('Acceso denegado.');
                 return;
@@ -237,47 +187,37 @@ class CategoriaController
             // Generar el token CSRF
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-            // Si el método es POST, significa que estamos intentando actualizar la categoría
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
-                // Recoger los datos enviados por el formulario
                 $idCategoria = recoge('idCategoria');
                 $nombreCategoria = recoge('nombreCategoria');
 
-                // Validar que el ID y el nombre de la categoría no estén vacíos
                 if (empty($idCategoria) || empty($nombreCategoria)) {
                     $params['mensaje'] = 'El ID de la categoría y el nombre no pueden estar vacíos.';
                 } else {
-                    // Intentar actualizar la categoría
                     if ($m->actualizarCategoriaIngreso($idCategoria, $nombreCategoria)) {
                         error_log("Categoría de ingreso '{$nombreCategoria}' actualizada.");
                         header('Location: index.php?ctl=verCategoriasIngresos');
                         exit();
                     } else {
-                        // Si ocurre un error en la actualización
                         $params['mensaje'] = 'No se pudo actualizar la categoría de ingreso.';
                         error_log("Fallo al actualizar la categoría de ingreso con ID: {$idCategoria}.");
                     }
                 }
             } else {
-                // Si el método no es POST, es GET y queremos mostrar los datos de la categoría
                 if (isset($_GET['id'])) {
                     $categoria = $m->obtenerCategoriaIngresoPorId($_GET['id']);
 
-                    // Comprobar si la categoría existe
-                    if (!$categoria) {
-                        $this->redireccionarError('Categoría no encontrada.');
-                        return;
+                    if ($categoria) {
+                        $params['categoria'] = $categoria;
+                        $this->render('formEditarCategoriaIngreso.php', $params);
+                    } else {
+                        $this->redireccionarError('Categoría no válida.');
                     }
-
-                    // Preparar los datos para mostrarlos en la vista de edición
-                    $params['categoria'] = $categoria;
-                    $this->render('formEditarCategoriaIngreso.php', $params);
                 } else {
                     $this->redireccionarError('Categoría no válida.');
                 }
             }
         } catch (Exception $e) {
-            // Capturar cualquier excepción y mostrar un error
             error_log("Error en editarCategoriaIngreso(): " . $e->getMessage());
             $this->redireccionarError('Error al actualizar la categoría de ingreso.');
         }
@@ -295,7 +235,6 @@ class CategoriaController
             if (isset($_GET['id'])) {
                 $m = new GastosModelo();
 
-                // Verificar si la categoría está en uso antes de eliminarla
                 if ($m->categoriaEnUso($_GET['id'], 'gastos')) {
                     $params['mensaje'] = 'No se puede eliminar la categoría porque está en uso.';
                     error_log("Intento de eliminar categoría de gasto en uso, ID: {$_GET['id']}.");
@@ -330,7 +269,6 @@ class CategoriaController
             if (isset($_GET['id'])) {
                 $m = new GastosModelo();
 
-                // Verificar si la categoría está en uso antes de eliminarla
                 if ($m->categoriaIngresoEnUso($_GET['id'])) {
                     error_log("Intento de eliminar categoría de ingreso en uso, ID: {$_GET['id']}.");
                     $this->redireccionarError('No se puede eliminar la categoría porque está en uso.');
@@ -351,8 +289,6 @@ class CategoriaController
             $this->redireccionarError('Error al eliminar la categoría de ingreso.');
         }
     }
-
-
 
     // Método de redireccionamiento en caso de errores
     private function redireccionarError($mensaje)
