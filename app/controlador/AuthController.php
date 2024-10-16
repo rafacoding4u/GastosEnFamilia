@@ -42,15 +42,8 @@ class AuthController
             $m = new GastosModelo();
             $idUsuario = $_SESSION['usuario']['id'];
 
-            $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
-            $totalGastos = $m->obtenerTotalGastos($idUsuario);
-            $saldo = $totalIngresos - $totalGastos;
-
             $params = [
                 'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
-                'totalIngresos' => $totalIngresos,
-                'totalGastos' => $totalGastos,
-                'saldo' => $saldo,
                 'nivel_usuario' => $_SESSION['nivel_usuario'],
                 'fecha' => date('d-m-Y')
             ];
@@ -60,9 +53,10 @@ class AuthController
                 $params['finanzasGlobales'] = $m->obtenerSituacionGlobal();
             } elseif ($_SESSION['nivel_usuario'] === self::NIVEL_ADMIN) {
                 // Admin ve el resumen financiero de sus familias y grupos
-                $params['finanzasFamilias'] = $m->obtenerSituacionFinancieraPorAdmin($idUsuario);
+                $params['finanzasFamilias'] = $m->obtenerFamiliasPorAdministrador($idUsuario);
+                $params['finanzasGrupos'] = $m->obtenerGruposPorAdministrador($idUsuario);
             } else {
-                // Usuario regular solo ve su resumen
+                // Usuario regular solo ve su resumen personal
                 $params['finanzasPersonales'] = $m->obtenerSituacionFinanciera($idUsuario);
             }
 
@@ -185,6 +179,10 @@ class AuthController
                 $idFamilia = null;
                 $idGrupo = null;
 
+                if ($_SESSION['nivel_usuario'] !== self::NIVEL_SUPERADMIN && ($tipoVinculo === 'crear_familia' || $tipoVinculo === 'crear_grupo')) {
+                    throw new Exception('Solo los Superadmins pueden crear nuevas familias o grupos.');
+                }
+
                 $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono);
 
                 if (!$usuarioRegistrado) {
@@ -219,7 +217,6 @@ class AuthController
 
                     $nivel_usuario = self::NIVEL_ADMIN;
                     $m->actualizarGrupo($idGrupo, $nombreGrupo, $idUsuario);
-
                     $m->añadirAdministradorAGrupo($idUsuario, $idGrupo);
                     $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
                 } elseif ($tipoVinculo === 'familia' || $tipoVinculo === 'grupo') {

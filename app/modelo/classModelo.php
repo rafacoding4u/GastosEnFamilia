@@ -331,61 +331,61 @@ class GastosModelo
 
 
     // Insertar ingreso para un usuario con manejo de excepciones y lógica corregida
-public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
-{
-    try {
-        // Verificar que el usuario esté asignado
-        if (empty($idUsuario)) {
-            throw new Exception('El ingreso debe estar asociado a un usuario.');
-        }
+    public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
+    {
+        try {
+            // Verificar que el usuario esté asignado
+            if (empty($idUsuario)) {
+                throw new Exception('El ingreso debe estar asociado a un usuario.');
+            }
 
-        // Permitir ingreso asociado a una familia, grupo o ser personal
-        // Un ingreso puede no tener idFamilia o idGrupo, es decir, ser personal.
-        if (empty($idFamilia) && empty($idGrupo)) {
-            $idFamilia = null;  // Si no tiene familia
-            $idGrupo = null;    // Si no tiene grupo
-        }
+            // Permitir ingreso asociado a una familia, grupo o ser personal
+            // Un ingreso puede no tener idFamilia o idGrupo, es decir, ser personal.
+            if (empty($idFamilia) && empty($idGrupo)) {
+                $idFamilia = null;  // Si no tiene familia
+                $idGrupo = null;    // Si no tiene grupo
+            }
 
-        // Preparar la consulta SQL
-        $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
+            // Preparar la consulta SQL
+            $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
                 VALUES (:idUsuario, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
-        
-        // Preparar la sentencia
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
-        $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
-        $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
-        $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
 
-        // Asignar valor a idFamilia o NULL si no aplica
-        if ($idFamilia !== null) {
-            $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        } else {
-            $stmt->bindValue(':idFamilia', null, PDO::PARAM_NULL);
-        }
+            // Preparar la sentencia
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
+            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+            $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+            $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
 
-        // Asignar valor a idGrupo o NULL si no aplica
-        if ($idGrupo !== null) {
-            $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        } else {
-            $stmt->bindValue(':idGrupo', null, PDO::PARAM_NULL);
-        }
+            // Asignar valor a idFamilia o NULL si no aplica
+            if ($idFamilia !== null) {
+                $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(':idFamilia', null, PDO::PARAM_NULL);
+            }
 
-        // Ejecutar la sentencia
-        if ($stmt->execute()) {
-            return true; // Inserción exitosa
-        } else {
-            // Registrar el error de la consulta SQL
-            $errorInfo = $stmt->errorInfo();
-            throw new Exception("Error en la inserción: " . $errorInfo[2]);
+            // Asignar valor a idGrupo o NULL si no aplica
+            if ($idGrupo !== null) {
+                $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue(':idGrupo', null, PDO::PARAM_NULL);
+            }
+
+            // Ejecutar la sentencia
+            if ($stmt->execute()) {
+                return true; // Inserción exitosa
+            } else {
+                // Registrar el error de la consulta SQL
+                $errorInfo = $stmt->errorInfo();
+                throw new Exception("Error en la inserción: " . $errorInfo[2]);
+            }
+        } catch (Exception $e) {
+            // Registrar cualquier excepción en el log de errores
+            error_log("Error en insertarIngreso: " . $e->getMessage());
+            return false; // Devolver false si ocurre un error
         }
-    } catch (Exception $e) {
-        // Registrar cualquier excepción en el log de errores
-        error_log("Error en insertarIngreso: " . $e->getMessage());
-        return false; // Devolver false si ocurre un error
     }
-}
 
 
 
@@ -580,22 +580,26 @@ public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $orig
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     public function obtenerSituacionFinancieraPorAdmin($idAdmin)
-{
-    $sql = "
-        SELECT 
-            SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
-            SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
-            (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
-        FROM usuarios u
-        LEFT JOIN ingresos i ON u.idUser = i.idUser
-        LEFT JOIN gastos g ON u.idUser = g.idUser
-        WHERE u.idAdmin = :idAdmin";
+    {
+        $sql = "
+    SELECT 
+        SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+        SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+        (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+    FROM usuarios u
+    LEFT JOIN ingresos i ON u.idUser = i.idUser
+    LEFT JOIN gastos g ON u.idUser = g.idUser
+    WHERE u.idUser IN (
+        SELECT af.idUser 
+        FROM administradores_familias af
+        WHERE af.idAdmin = :idAdmin
+    )";
 
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 
 
@@ -1490,78 +1494,77 @@ public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $orig
         return $stmt->execute();
     }
     // Obtener todos los registros de auditoría
-public function obtenerAuditoriaGlobal()
-{
-    try {
-        $sql = "SELECT * FROM auditoria ORDER BY fecha DESC";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error en obtenerAuditoriaGlobal(): " . $e->getMessage());
-        return [];
+    public function obtenerAuditoriaGlobal()
+    {
+        try {
+            $sql = "SELECT * FROM auditoria ORDER BY fecha DESC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en obtenerAuditoriaGlobal(): " . $e->getMessage());
+            return [];
+        }
     }
-}
 
-// Obtener registros de auditoría de un usuario específico
-public function obtenerAuditoriaPorUsuario($idUsuario)
-{
-    try {
-        $sql = "SELECT * FROM auditoria WHERE idUser = :idUsuario ORDER BY fecha DESC";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error en obtenerAuditoriaPorUsuario(): " . $e->getMessage());
-        return [];
+    // Obtener registros de auditoría de un usuario específico
+    public function obtenerAuditoriaPorUsuario($idUsuario)
+    {
+        try {
+            $sql = "SELECT * FROM auditoria WHERE idUser = :idUsuario ORDER BY fecha DESC";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en obtenerAuditoriaPorUsuario(): " . $e->getMessage());
+            return [];
+        }
     }
-}
 
-// Registrar una acción en la auditoría
-public function registrarAccionAuditoria($idUsuario, $accion, $detalles)
-{
-    try {
-        $sql = "INSERT INTO auditoria (idUser, accion, detalles, fecha) VALUES (:idUsuario, :accion, :detalles, NOW())";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->bindValue(':accion', $accion, PDO::PARAM_STR);
-        $stmt->bindValue(':detalles', $detalles, PDO::PARAM_STR);
-        return $stmt->execute();
-    } catch (PDOException $e) {
-        error_log("Error en registrarAccionAuditoria(): " . $e->getMessage());
-        return false;
+    // Registrar una acción en la auditoría
+    public function registrarAccionAuditoria($idUsuario, $accion, $detalles)
+    {
+        try {
+            $sql = "INSERT INTO auditoria (idUser, accion, detalles, fecha) VALUES (:idUsuario, :accion, :detalles, NOW())";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':accion', $accion, PDO::PARAM_STR);
+            $stmt->bindValue(':detalles', $detalles, PDO::PARAM_STR);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en registrarAccionAuditoria(): " . $e->getMessage());
+            return false;
+        }
     }
-}
-public function obtenerPresupuestosPorUsuario($idUsuario)
-{
-    try {
-        $stmt = $this->conexion->prepare('SELECT * FROM presupuestos WHERE idUsuario = :idUsuario');
-        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        error_log('Error al obtener presupuestos: ' . $e->getMessage());
-        return false;
+    public function obtenerPresupuestosPorUsuario($idUsuario)
+    {
+        try {
+            $stmt = $this->conexion->prepare('SELECT * FROM presupuestos WHERE idUsuario = :idUsuario');
+            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log('Error al obtener presupuestos: ' . $e->getMessage());
+            return false;
+        }
     }
-}
 
-// Obtener metas globales
-public function obtenerMetasGlobales()
-{
-    // Aquí realizamos la consulta para obtener las metas globales de la base de datos
-    $sql = "SELECT * FROM metas_globales"; // Asumiendo que existe una tabla 'metas_globales'
-    
-    try {
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute();
-        $metasGlobales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Obtener metas globales
+    public function obtenerMetasGlobales()
+    {
+        // Aquí realizamos la consulta para obtener las metas globales de la base de datos
+        $sql = "SELECT * FROM metas_globales"; // Asumiendo que existe una tabla 'metas_globales'
 
-        return $metasGlobales;
-    } catch (PDOException $e) {
-        error_log("Error al obtener metas globales: " . $e->getMessage());
-        return false;
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $metasGlobales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $metasGlobales;
+        } catch (PDOException $e) {
+            error_log("Error al obtener metas globales: " . $e->getMessage());
+            return false;
+        }
     }
-}
-
 }
