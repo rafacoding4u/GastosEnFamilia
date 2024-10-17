@@ -1,6 +1,7 @@
 <?php
 require_once 'app/libs/bSeguridad.php';
 require_once 'app/libs/bGeneral.php';
+require_once 'app/modelo/classModelo.php';
 
 class CategoriaController
 {

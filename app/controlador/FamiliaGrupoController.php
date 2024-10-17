@@ -424,73 +424,82 @@ class FamiliaGrupoController
         header("Location: index.php?ctl=error");
         exit();
     }
+    // Formulario para asignar un usuario a familia/grupo
     public function formAsignarUsuario($params = array())
-{
-    // Instanciamos el modelo para acceder a los datos
-    $m = new GastosModelo();
+    {
+        // Instanciamos el modelo para acceder a los datos
+        $m = new GastosModelo();
 
-    // Obtenemos la lista de familias y grupos para poder asignar
-    $familias = $m->obtenerFamilias();
-    $grupos = $m->obtenerGrupos();
-    $usuarios = $m->obtenerUsuarios();
+        // Obtenemos la lista de familias y grupos para poder asignar
+        $familias = $m->obtenerFamilias();
+        $grupos = $m->obtenerGrupos();
+        $usuarios = $m->obtenerUsuarios();
 
-    // Verificamos si hay mensajes de error o éxito en los parámetros pasados
-    if (isset($params['mensaje'])) {
-        $mensaje = $params['mensaje'];
-    } else {
-        $mensaje = null;
-    }
-
-    // Parámetros que se pasarán a la vista
-    $params = array(
-        'familias' => $familias,
-        'grupos' => $grupos,
-        'usuarios' => $usuarios,
-        'mensaje' => $mensaje,
-    );
-
-    // Renderizamos la vista del formulario asignar usuario a familia/grupo
-    $this->render('formAsignarUsuario.php', $params);
-}
-public function asignarUsuarioFamiliaGrupo()
-{
-    $m = new GastosModelo(); // Asumiendo que GastosModelo es el que gestiona las familias y grupos.
-
-    // Recoger los datos del formulario
-    $idUsuario = recoge('idUsuario');
-    $idFamilia = recoge('idFamilia') ?: null;
-    $idGrupo = recoge('idGrupo') ?: null;
-
-    // Validar que se haya seleccionado al menos una opción válida (familia o grupo)
-    if (empty($idUsuario) || (empty($idFamilia) && empty($idGrupo))) {
-        $params['mensaje'] = 'Debes seleccionar un usuario y al menos una familia o grupo para asignar.';
-        $this->formAsignarUsuario($params);
-        return;
-    }
-
-    // Intentar asignar el usuario al grupo/familia seleccionado
-    try {
-        if ($idFamilia) {
-            $asignadoFamilia = $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-        }
-        if ($idGrupo) {
-            $asignadoGrupo = $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-        }
-
-        if (!empty($asignadoFamilia) || !empty($asignadoGrupo)) {
-            // Redirigir a la vista que corresponda luego de la asignación exitosa
-            header('Location: index.php?ctl=listarFamilias'); // Puedes cambiar la ruta según lo que desees mostrar.
-            exit();
+        // Verificamos si hay mensajes de error o éxito en los parámetros pasados
+        if (isset($params['mensaje'])) {
+            $mensaje = $params['mensaje'];
         } else {
-            $params['mensaje'] = 'No se pudo asignar el usuario a la familia o grupo.';
+            $mensaje = null;
         }
-    } catch (Exception $e) {
-        $params['mensaje'] = 'Error al asignar usuario: ' . $e->getMessage();
+
+        // Parámetros que se pasarán a la vista
+        $params = array(
+            'familias' => $familias,
+            'grupos' => $grupos,
+            'usuarios' => $usuarios,
+            'mensaje' => $mensaje,
+        );
+
+        // Renderizamos la vista del formulario asignar usuario a familia/grupo
+        $this->render('formAsignarUsuario.php', $params);
     }
 
-    // Si no se redirige, mostrar el formulario nuevamente con mensaje de error
-    $this->formAsignarUsuario($params);
-}
+    // Asignar usuario a una familia o grupo
+    public function asignarUsuarioFamiliaGrupo()
+    {
+        $m = new GastosModelo(); // Asumiendo que GastosModelo es el que gestiona las familias y grupos.
 
+        // Recoger los datos del formulario
+        $idUsuario = recoge('idUsuario');
+        $idFamilia = recoge('idFamilia') ?: null;
+        $idGrupo = recoge('idGrupo') ?: null;
 
+        // Validar que se haya seleccionado al menos una opción válida (familia o grupo)
+        if (empty($idUsuario) || (empty($idFamilia) && empty($idGrupo))) {
+            $params['mensaje'] = 'Debes seleccionar un usuario y al menos una familia o grupo para asignar.';
+            $this->formAsignarUsuario($params);
+            return;
+        }
+
+        // Intentar asignar el usuario al grupo/familia seleccionado
+        try {
+            if ($idFamilia) {
+                $asignadoFamilia = $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+            }
+            if ($idGrupo) {
+                $asignadoGrupo = $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+            }
+
+            if (!empty($asignadoFamilia) || !empty($asignadoGrupo)) {
+                // Redirigir a la vista que corresponda luego de la asignación exitosa
+                header('Location: index.php?ctl=listarFamilias'); // Puedes cambiar la ruta según lo que desees mostrar.
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo asignar el usuario a la familia o grupo.';
+            }
+        } catch (Exception $e) {
+            $params['mensaje'] = 'Error al asignar usuario: ' . $e->getMessage();
+        }
+
+        // Si no se redirige, mostrar el formulario nuevamente con mensaje de error
+        $this->formAsignarUsuario($params);
+    }
+    // Método privado para generar un token CSRF
+    private function generarTokenCSRF()
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
 }

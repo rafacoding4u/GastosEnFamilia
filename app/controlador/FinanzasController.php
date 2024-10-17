@@ -367,27 +367,6 @@ class FinanzasController
         }
     }
 
-    // Formulario para asignar usuario a familia o grupo
-    public function formAsignarUsuario()
-    {
-        $m = new GastosModelo();
-        
-        // Obtiene las familias y grupos disponibles
-        $familias = $m->obtenerFamilias();
-        $grupos = $m->obtenerGrupos();
-        $usuarios = $m->obtenerUsuarios();
-
-        // Parámetros a pasar a la vista
-        $params = array(
-            'familias' => $familias,
-            'grupos' => $grupos,
-            'usuarios' => $usuarios
-        );
-
-        // Renderiza la vista con el formulario para asignar usuario
-        $this->render('formAsignarUsuario.php', $params);
-    }
-
     // Método para renderizar vistas
     private function render($vista, $params = array())
     {
