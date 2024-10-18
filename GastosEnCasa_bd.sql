@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-10-2024 a las 20:48:38
+-- Tiempo de generación: 18-10-2024 a las 18:59:28
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -619,7 +619,8 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 (451, 'INSERT', 'gastos', 30, '31', '2024-10-14 18:21:01'),
 (452, 'DELETE', 'ingresos', 22, '27', '2024-10-15 17:11:45'),
 (453, 'UPDATE', 'usuarios', 19, '19', '2024-10-16 16:14:53'),
-(454, 'UPDATE', 'usuarios', 18, '18', '2024-10-16 16:15:24');
+(454, 'UPDATE', 'usuarios', 18, '18', '2024-10-16 16:15:24'),
+(455, 'DELETE', 'usuarios', 17, '17', '2024-10-18 16:53:32');
 
 -- --------------------------------------------------------
 
@@ -926,7 +927,58 @@ INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 (300, 1, 'logout', '2024-10-17 18:22:02'),
 (301, 31, 'login', '2024-10-17 18:22:07'),
 (302, 31, 'logout', '2024-10-17 18:42:35'),
-(303, 27, 'login', '2024-10-17 18:42:40');
+(303, 27, 'login', '2024-10-17 18:42:40'),
+(304, 27, 'logout', '2024-10-17 18:51:00'),
+(305, 1, 'login', '2024-10-17 18:51:04'),
+(306, 1, 'logout', '2024-10-17 18:51:30'),
+(307, 27, 'login', '2024-10-17 18:51:38'),
+(308, 27, 'logout', '2024-10-17 18:51:53'),
+(309, 31, 'login', '2024-10-17 18:52:03'),
+(310, 31, 'logout', '2024-10-17 18:52:11'),
+(312, 6, 'login', '2024-10-17 18:52:24'),
+(313, 1, 'login', '2024-10-18 11:01:52'),
+(314, 1, 'logout', '2024-10-18 11:03:28'),
+(315, 1, 'login', '2024-10-18 11:03:36'),
+(316, 1, 'logout', '2024-10-18 11:22:07'),
+(317, 1, 'login', '2024-10-18 11:22:13'),
+(318, 1, 'logout', '2024-10-18 11:24:06'),
+(319, 1, 'login', '2024-10-18 11:24:16'),
+(320, 1, 'logout', '2024-10-18 11:24:46'),
+(321, 1, 'login', '2024-10-18 11:24:53'),
+(322, 1, 'logout', '2024-10-18 11:55:00'),
+(323, 1, 'login', '2024-10-18 11:56:03'),
+(324, 1, 'logout', '2024-10-18 12:08:49'),
+(325, 1, 'login', '2024-10-18 12:09:21'),
+(326, 1, 'logout', '2024-10-18 12:29:24'),
+(327, 1, 'login', '2024-10-18 12:29:31'),
+(328, 1, 'logout', '2024-10-18 12:30:04'),
+(329, 1, 'login', '2024-10-18 12:30:30'),
+(330, 1, 'logout', '2024-10-18 14:07:26'),
+(331, 1, 'login', '2024-10-18 14:07:44'),
+(332, 1, 'logout', '2024-10-18 14:15:17'),
+(333, 1, 'login', '2024-10-18 14:15:25'),
+(334, 1, 'logout', '2024-10-18 14:22:46'),
+(335, 1, 'login', '2024-10-18 14:22:57'),
+(336, 1, 'logout', '2024-10-18 14:28:14'),
+(337, 1, 'login', '2024-10-18 14:28:34'),
+(338, 1, 'logout', '2024-10-18 14:30:10'),
+(339, 1, 'login', '2024-10-18 14:30:24'),
+(340, 1, 'logout', '2024-10-18 14:42:20'),
+(341, 1, 'login', '2024-10-18 14:42:30'),
+(342, 1, 'logout', '2024-10-18 14:43:31'),
+(343, 1, 'login', '2024-10-18 14:43:42'),
+(344, 1, 'logout', '2024-10-18 14:47:29'),
+(345, 1, 'login', '2024-10-18 14:47:36'),
+(346, 1, 'logout', '2024-10-18 14:54:40'),
+(347, 1, 'login', '2024-10-18 14:55:08'),
+(348, 1, 'logout', '2024-10-18 15:07:48'),
+(349, 1, 'login', '2024-10-18 15:08:04'),
+(350, 1, 'logout', '2024-10-18 15:27:50'),
+(351, 27, 'login', '2024-10-18 15:27:59'),
+(352, 27, 'logout', '2024-10-18 15:28:29'),
+(353, 1, 'login', '2024-10-18 15:28:36'),
+(354, 1, 'logout', '2024-10-18 16:34:28'),
+(355, 1, 'login', '2024-10-18 16:34:34');
 
 -- --------------------------------------------------------
 
@@ -1670,7 +1722,6 @@ INSERT INTO `usuarios` (`idUser`, `nombre`, `apellido`, `alias`, `email`, `contr
 (10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', 'activo'),
 (11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', 'activo'),
 (16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', 'activo'),
-(17, 'Nuevito', 'Nuevito', 'Nuevito', 'Nuevito@Nuevito.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2000-12-17', '552685456', 'admin', '2024-10-12 11:13:29', 'activo'),
 (18, 'Lucía', 'Gómez', 'Lucy', 'lucy@lucy.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1968-02-02', '123456789', 'usuario', '2024-10-12 17:42:45', 'activo'),
 (19, 'Rafa', 'Gómez', 'RafaGomez', 'RafaGomez@RafaGomez.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1982-02-02', '336265984', 'usuario', '2024-10-12 18:28:50', 'activo'),
 (20, 'xxxxxx', 'xxxxxx', 'xxxxxx', 'xxx@xxx.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2003-03-03', '777777777', 'admin', '2024-10-13 08:28:06', 'activo'),
@@ -1760,9 +1811,10 @@ INSERT INTO `usuarios_familias` (`id`, `idUser`, `idFamilia`) VALUES
 (4, 6, 1),
 (5, 7, 1),
 (6, 8, 1),
-(7, 17, 1),
 (8, 27, 30),
-(9, 31, 30);
+(9, 31, 30),
+(10, 16, 23),
+(12, 20, 1);
 
 --
 -- Disparadores `usuarios_familias`
@@ -1797,8 +1849,12 @@ INSERT INTO `usuarios_grupos` (`idUser`, `idGrupo`) VALUES
 (9, 1),
 (10, 1),
 (11, 1),
+(11, 11),
 (18, 11),
-(19, 9);
+(19, 9),
+(20, 1),
+(20, 9),
+(20, 11);
 
 --
 -- Disparadores `usuarios_grupos`
@@ -2030,13 +2086,13 @@ ALTER TABLE `administradores_grupos`
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=455;
+  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=456;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
 ALTER TABLE `auditoria_accesos`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=304;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=356;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
@@ -2144,7 +2200,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `usuarios_familias`
 --
 ALTER TABLE `usuarios_familias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas
