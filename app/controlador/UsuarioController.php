@@ -97,7 +97,17 @@ class UsuarioController
                 // Insertar usuario si no hay errores
                 if (empty($errores)) {
                     $hashedPassword = encriptar($contrasenya);
-                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, null, $email, $telefono, $idGrupo, $idFamilia)) {
+                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, null, $email, $telefono)) {
+                        $idUsuario = $m->obtenerUltimoId();
+
+                        // Asignar usuario a familia y/o grupo
+                        if ($idFamilia) {
+                            $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                        }
+                        if ($idGrupo) {
+                            $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                        }
+
                         $_SESSION['mensaje_exito'] = 'Usuario creado correctamente';
                         header('Location: index.php?ctl=listarUsuarios');
                         exit();
@@ -118,7 +128,96 @@ class UsuarioController
         }
     }
 
-    // Editar usuario
+    public function crearUsuario()
+    {
+        try {
+            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
+                throw new Exception('No tienes permisos para crear un usuario.');
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $m = new GastosModelo();
+                // Aquí puedes implementar la lógica de creación del usuario,
+                // similar a lo que ya tienes en el método `registro()`
+                $nombre = recoge('nombre');
+                $apellido = recoge('apellido');
+                $alias = recoge('alias');
+                $email = recoge('email');
+                $telefono = recoge('telefono');
+                $fecha_nacimiento = recoge('fecha_nacimiento');
+                $contrasenya = recoge('contrasenya');
+                $nivel_usuario = recoge('nivel_usuario');
+                $idFamilia = recoge('idFamilia');
+                $idGrupo = recoge('idGrupo');
+
+                $errores = [];
+                // Validaciones (ya puedes usar las funciones cTexto, cEmail, etc)
+                cTexto($nombre, "nombre", $errores);
+                cTexto($apellido, "apellido", $errores);
+                cUser($alias, "alias", $errores);
+                cEmail($email, $errores);
+                cTelefono($telefono, $errores);
+                cContrasenya($contrasenya, $errores);
+
+                // Inserción del usuario si no hay errores
+                if (empty($errores)) {
+                    $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
+                    if ($m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia, $idGrupo)) {
+                        header('Location: index.php?ctl=listarUsuarios');
+                        exit();
+                    } else {
+                        throw new Exception('No se pudo crear el usuario.');
+                    }
+                } else {
+                    $params['errores'] = $errores;
+                }
+            }
+
+            // Renderiza el formulario de creación si no se ha enviado POST
+            $m = new GastosModelo();
+            $familias = $m->obtenerFamilias();
+            $grupos = $m->obtenerGrupos();
+            $params = array(
+                'familias' => $familias,
+                'grupos' => $grupos,
+            );
+            $this->render('formCrearUsuario.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en crearUsuario(): " . $e->getMessage());
+            $this->redireccionarError('Error al crear el usuario.');
+        }
+    }
+
+    public function formCrearUsuario()
+    {
+        try {
+            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
+                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear usuarios.');
+                return;
+            }
+
+            // Obtener las familias y grupos registrados
+            $m = new GastosModelo();
+            $familias = $m->obtenerFamilias();
+            $grupos = $m->obtenerGrupos();
+
+            // Generar un token CSRF para evitar ataques de CSRF y almacenarlo en la sesión
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+            // Pasar las listas de familias, grupos y el token CSRF a la vista del formulario de creación de usuario
+            $params = [
+                'csrf_token' => $_SESSION['csrf_token'],
+                'familias' => $familias,
+                'grupos' => $grupos
+            ];
+
+            $this->render('formCrearUsuario.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en formCrearUsuario(): " . $e->getMessage());
+            $this->redireccionarError('Error al mostrar el formulario de creación de usuario.');
+        }
+    }
+
     public function editarUsuario()
     {
         try {
@@ -137,16 +236,17 @@ class UsuarioController
             $familias = $m->obtenerFamilias();
             $grupos = $m->obtenerGrupos();
 
+            // Asegurarse de que todos los campos están en $params
             $params = array(
-                'nombre' => $usuario['nombre'],
-                'apellido' => $usuario['apellido'],
-                'alias' => $usuario['alias'],
-                'email' => $usuario['email'],
-                'telefono' => $usuario['telefono'],
-                'idUser' => $usuario['idUser'],
-                'nivel_usuario' => $usuario['nivel_usuario'],
-                'idFamilia' => $usuario['idFamilia'],
-                'idGrupo' => $usuario['idGrupo'],
+                'nombre' => $usuario['nombre'] ?? '',
+                'apellido' => $usuario['apellido'] ?? '',
+                'alias' => $usuario['alias'] ?? '',
+                'email' => $usuario['email'] ?? '',
+                'telefono' => $usuario['telefono'] ?? '',
+                'idUser' => $usuario['idUser'] ?? '',
+                'nivel_usuario' => $usuario['nivel_usuario'] ?? '',
+                'idFamilia' => $usuario['idFamilia'] ?? null,
+                'idGrupo' => $usuario['idGrupo'] ?? null,
                 'familias' => $familias,
                 'grupos' => $grupos
             );
@@ -197,6 +297,77 @@ class UsuarioController
             $this->redireccionarError('Error al editar el usuario.');
         }
     }
+
+
+    public function actualizarUsuario()
+    {
+        try {
+            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))) {
+                throw new Exception('No tienes permisos para actualizar este usuario.');
+            }
+
+            $m = new GastosModelo();
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
+                $idUsuario = $_GET['id'];
+                $nombre = recoge('nombre');
+                $apellido = recoge('apellido');
+                $alias = recoge('alias');
+                $email = recoge('email');
+                $telefono = recoge('telefono');
+                $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
+                $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
+                $nivel_usuario = ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') ? recoge('nivel_usuario') : 'usuario';
+
+                $errores = array();
+
+                // Validaciones
+                cTexto($nombre, "nombre", $errores);
+                cTexto($apellido, "apellido", $errores);
+                cUser($alias, "alias", $errores);
+                cEmail($email, $errores);
+                cTelefono($telefono, $errores);
+
+                if ($idFamilia && !$m->obtenerFamiliaPorId($idFamilia)) {
+                    $errores['familia'] = 'La familia seleccionada no existe.';
+                }
+
+                if ($idGrupo && !$m->obtenerGrupoPorId($idGrupo)) {
+                    $errores['grupo'] = 'El grupo seleccionado no existe.';
+                }
+
+                // Actualizar si no hay errores
+                if (empty($errores)) {
+                    if ($m->actualizarUsuario($idUsuario, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
+                        header('Location: index.php?ctl=listarUsuarios');
+                        exit();
+                    } else {
+                        $params['mensaje'] = 'No se pudo actualizar el usuario.';
+                    }
+                } else {
+                    $params['errores'] = $errores;
+                }
+            } else {
+                throw new Exception('Método de solicitud no permitido o ID de usuario no proporcionado.');
+            }
+
+            // Renderizar el formulario con los errores si ocurre un problema
+            $familias = $m->obtenerFamilias();
+            $grupos = $m->obtenerGrupos();
+
+            $params = array(
+                'familias' => $familias,
+                'grupos' => $grupos,
+                'errores' => $errores
+            );
+
+            $this->render('formEditarUsuario.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en actualizarUsuario(): " . $e->getMessage());
+            $this->redireccionarError('Error al actualizar el usuario.');
+        }
+    }
+
 
     // Eliminar usuario
     public function eliminarUsuario()

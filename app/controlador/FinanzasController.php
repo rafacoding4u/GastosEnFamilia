@@ -5,6 +5,7 @@ require_once 'app/libs/bGeneral.php';
 class FinanzasController
 {
     // Ver Gastos
+    // Ver Gastos
     public function verGastos()
     {
         $m = new GastosModelo();
@@ -103,14 +104,14 @@ class FinanzasController
         $this->render('verIngresos.php', $params);
     }
 
-    // Ver situación financiera del usuario
+    // Ver situación financiera del usuario (detallada)
     public function verSituacionFinanciera()
     {
         $m = new GastosModelo();
         $idUsuario = $_SESSION['usuario']['id'];
 
-        $totalIngresos = $m->obtenerTotalIngresos($idUsuario);
-        $totalGastos = $m->obtenerTotalGastos($idUsuario);
+        $totalIngresos = $m->obtenerTotalIngresos($idUsuario) ?? 0;
+        $totalGastos = $m->obtenerTotalGastos($idUsuario) ?? 0;
 
         $saldo = $totalIngresos - $totalGastos;
 
@@ -375,5 +376,27 @@ class FinanzasController
         require __DIR__ . '/../../web/templates/' . $vista;
         $contenido = ob_get_clean();
         require __DIR__ . '/../../web/templates/layout.php';
+    }
+
+    // Página de Inicio - Mostrar situación financiera general del usuario
+    public function inicio()
+    {
+        $m = new GastosModelo();
+        $idUsuario = $_SESSION['usuario']['id'];
+
+        // Obtener los ingresos, gastos y calcular el saldo del usuario
+        $totalIngresos = $m->obtenerTotalIngresos($idUsuario) ?? 0;
+        $totalGastos = $m->obtenerTotalGastos($idUsuario) ?? 0;
+        $saldo = $totalIngresos - $totalGastos;
+
+        // Parámetros a pasar a la vista
+        $params = array(
+            'totalIngresos' => $totalIngresos,
+            'totalGastos' => $totalGastos,
+            'saldo' => $saldo
+        );
+
+        // Renderizar la vista de inicio
+        $this->render('inicio.php', $params);
     }
 }

@@ -101,8 +101,8 @@ class AuthController
                             'nombre' => $usuario['nombre'],
                             'nivel_usuario' => $usuario['nivel_usuario'],
                             'email' => $usuario['email'],
-                            'idFamilia' => $usuario['idFamilia'],
-                            'idGrupo' => $usuario['idGrupo']
+                            'idFamilia' => $usuario['idFamilia'] ?? null,
+                            'idGrupo' => $usuario['idGrupo'] ?? null
                         );
 
                         $this->registrarAcceso($usuario['idUser'], 'login');

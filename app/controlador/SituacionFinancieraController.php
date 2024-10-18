@@ -130,8 +130,8 @@ class SituacionFinancieraController
     {
         try {
             $usuario = $m->obtenerUsuarioPorId($idUsuario);
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario) ?? 0;
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario) ?? 0;
             $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
             // Mensajes de depuración para comprobar los valores

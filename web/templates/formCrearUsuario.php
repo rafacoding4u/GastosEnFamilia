@@ -74,11 +74,15 @@
                 <label for="familia">Familia:</label>
                 <select name="idFamilia" class="form-control">
                     <option value="">Sin familia</option>
-                    <?php foreach ($familias as $familia): ?>
-                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idFamilia) && $idFamilia == $familia['idFamilia'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($familia['nombre_familia']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($familias)): ?>
+                        <?php foreach ($familias as $familia): ?>
+                            <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idFamilia) && $idFamilia == $familia['idFamilia'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($familia['nombre_familia']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No hay familias disponibles</option>
+                    <?php endif; ?>
                 </select>
             </div>
 
@@ -87,11 +91,15 @@
                 <label for="grupo">Grupo:</label>
                 <select name="idGrupo" class="form-control">
                     <option value="">Sin grupo</option>
-                    <?php foreach ($grupos as $grupo): ?>
-                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idGrupo) && $idGrupo == $grupo['idGrupo'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($grupos)): ?>
+                        <?php foreach ($grupos as $grupo): ?>
+                            <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idGrupo) && $idGrupo == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No hay grupos disponibles</option>
+                    <?php endif; ?>
                 </select>
             </div>
 

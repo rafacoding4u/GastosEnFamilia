@@ -60,7 +60,7 @@ $map = array(
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
     'actualizarUsuario' => array('controller' => 'UsuarioController', 'action' => 'actualizarUsuario', 'nivel_usuario' => 2),
-    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 2),
+    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 'superadmin'),
 
     // Gestión de categorías gastos
     'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 1),
@@ -113,7 +113,6 @@ $map = array(
 
     // Añadir la ruta para ver la auditoría (solo superadmin tiene permiso)
     'verAuditoria' => array('controller' => 'AuditoriaController', 'action' => 'verAuditoria', 'nivel_usuario' => 2),
-
 );
 
 // Verificar si la ruta solicitada existe
@@ -138,6 +137,9 @@ $controlador = $map[$ruta];
 // Verificar si el método solicitado existe en el controlador
 try {
     $controllerInstance = new $controlador['controller'];
+
+    // Debug adicional para verificar las acciones disponibles en el controlador
+    error_log("Acciones disponibles en " . $controlador['controller'] . ": " . implode(', ', get_class_methods($controllerInstance)), 3, __DIR__ . '/app/log/php-error.log');
 
     if (isset($_GET['action']) && method_exists($controllerInstance, $_GET['action'])) {
         $action = $_GET['action'];

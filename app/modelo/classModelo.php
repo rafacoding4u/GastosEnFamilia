@@ -20,6 +20,16 @@ class GastosModelo
             throw new Exception("Error de conexión a la base de datos: " . $e->getMessage());
         }
     }
+    public function obtenerUltimoId()
+    {
+        try {
+            // Devuelve el último ID insertado usando la conexión PDO
+            return $this->conexion->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Error al obtener el último ID insertado: " . $e->getMessage());
+            return false;
+        }
+    }
 
     public function getConexion()
     {
@@ -87,41 +97,53 @@ class GastosModelo
 
     public function insertarUsuario($nombre, $apellido, $alias, $contrasenya, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $idFamilia = null, $idGrupo = null)
     {
-        // Si no hay familia ni grupo, lo consideramos usuario individual
-        if (empty($idFamilia) && empty($idGrupo)) {
-            $idFamilia = null;
-            $idGrupo = null;
+        try {
+            $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, idFamilia, idGrupo) 
+                VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :idFamilia, :idGrupo)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+            $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+            $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
+            $stmt->bindValue(':contrasenya', $contrasenya, PDO::PARAM_STR);
+            $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+            $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR);
+            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+            $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
+            $stmt->bindValue(':idFamilia', $idFamilia !== null ? $idFamilia : null, PDO::PARAM_INT);
+            $stmt->bindValue(':idGrupo', $idGrupo !== null ? $idGrupo : null, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al insertar usuario: " . $e->getMessage());
+            throw new Exception("Error al insertar el usuario. Revisa los datos ingresados.");
         }
-
-        $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, idFamilia, idGrupo) 
-            VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :idFamilia, :idGrupo)";
-
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-        $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-        $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
-        $stmt->bindValue(':contrasenya', $contrasenya, PDO::PARAM_STR);
-        $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-
-        return $stmt->execute();
     }
+
 
     public function obtenerUsuarios()
     {
-        $sql = "SELECT u.*, 
-                   f.nombre_familia, 
-                   g.nombre_grupo 
-            FROM usuarios u
-            LEFT JOIN familias f ON u.idFamilia = f.idFamilia
-            LEFT JOIN grupos g ON u.idGrupo = g.idGrupo";
-        $stmt = $this->conexion->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT u.*, 
+                           COALESCE(f.nombre_familia, 'Sin Familia') AS nombre_familia, 
+                           COALESCE(g.nombre_grupo, 'Sin Grupo') AS nombre_grupo
+                    FROM usuarios u
+                    LEFT JOIN usuarios_familias uf ON u.idUser = uf.idUser
+                    LEFT JOIN familias f ON uf.idFamilia = f.idFamilia
+                    LEFT JOIN usuarios_grupos ug ON u.idUser = ug.idUser
+                    LEFT JOIN grupos g ON ug.idGrupo = g.idGrupo";
+
+            error_log("Ejecutando consulta SQL: " . $sql);
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Resultado de obtenerUsuarios: " . json_encode($result));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Error en obtenerUsuarios(): " . $e->getMessage());
+            throw new Exception('Error al listar los usuarios.');
+        }
     }
+
+
 
 
     public function eliminarUsuario($idUsuario)
@@ -134,30 +156,38 @@ class GastosModelo
 
     public function actualizarUsuario($idUsuario, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia = null, $idGrupo = null)
     {
-        // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
-        if (empty($idFamilia) && empty($idGrupo)) {
-            $idFamilia = null;
-            $idGrupo = null;
+        try {
+            // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
+            if (empty($idFamilia)) {
+                $idFamilia = null;
+            }
+            if (empty($idGrupo)) {
+                $idGrupo = null;
+            }
+
+            $sql = "UPDATE usuarios 
+                SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, telefono = :telefono, 
+                    nivel_usuario = :nivel_usuario, idFamilia = :idFamilia, idGrupo = :idGrupo
+                WHERE idUser = :idUsuario";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+            $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+            $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
+            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+            $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
+            $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+            $stmt->bindValue(':idFamilia', $idFamilia, is_null($idFamilia) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(':idGrupo', $idGrupo, is_null($idGrupo) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error en actualizarUsuario(): " . $e->getMessage());
+            return false;
         }
-
-        $sql = "UPDATE usuarios 
-            SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, telefono = :telefono, 
-                nivel_usuario = :nivel_usuario, idFamilia = :idFamilia, idGrupo = :idGrupo
-            WHERE idUser = :idUsuario";
-
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-        $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-        $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
-        $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-
-        return $stmt->execute();
     }
+
 
 
 
@@ -608,11 +638,17 @@ class GastosModelo
         WHERE af.idAdmin = :idAdmin
     )";
 
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en obtenerSituacionFinancieraPorAdmin(): " . $e->getMessage());
+            return false;
+        }
     }
+
 
 
 
@@ -1221,20 +1257,20 @@ class GastosModelo
 
 
     public function asignarUsuarioAGrupo($idUsuario, $idGrupo)
-{
-    try {
-        $sqlGrupo = "INSERT INTO usuarios_grupos (idUser, idGrupo) 
+    {
+        try {
+            $sqlGrupo = "INSERT INTO usuarios_grupos (idUser, idGrupo) 
                      VALUES (:idUsuario, :idGrupo) 
                      ON DUPLICATE KEY UPDATE idGrupo = :idGrupo";
-        $stmtGrupo = $this->conexion->prepare($sqlGrupo);
-        $stmtGrupo->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmtGrupo->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-        return $stmtGrupo->execute();
-    } catch (PDOException $e) {
-        error_log("Error al asignar el usuario al grupo: " . $e->getMessage());
-        return false;
+            $stmtGrupo = $this->conexion->prepare($sqlGrupo);
+            $stmtGrupo->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmtGrupo->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            return $stmtGrupo->execute();
+        } catch (PDOException $e) {
+            error_log("Error al asignar el usuario al grupo: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
 
@@ -1464,32 +1500,32 @@ class GastosModelo
         return $stmt->execute();
     }
     // Obtener todos los usuarios registrados en el sistema
-public function obtenerTodosLosUsuarios()
-{
-    try {
-        $sql = "SELECT idUser, email FROM usuarios";
-        $stmt = $this->conexion->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error al obtener todos los usuarios: " . $e->getMessage());
-        return false;
+    public function obtenerTodosLosUsuarios()
+    {
+        try {
+            $sql = "SELECT idUser, email FROM usuarios";
+            $stmt = $this->conexion->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al obtener todos los usuarios: " . $e->getMessage());
+            return false;
+        }
     }
-}
-public function consultarFamiliaPorId($idFamilia)
-{
-    try {
-        // Conexión a la base de datos
-        $stmt = $this->conexion->prepare("SELECT idFamilia, nombre_familia, idAdmin FROM familias WHERE idFamilia = :idFamilia");
-        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->execute();
+    public function consultarFamiliaPorId($idFamilia)
+    {
+        try {
+            // Conexión a la base de datos
+            $stmt = $this->conexion->prepare("SELECT idFamilia, nombre_familia, idAdmin FROM familias WHERE idFamilia = :idFamilia");
+            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmt->execute();
 
-        // Retornar el resultado de la consulta
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error al consultar la familia por ID: " . $e->getMessage());
-        return false;
+            // Retornar el resultado de la consulta
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al consultar la familia por ID: " . $e->getMessage());
+            return false;
+        }
     }
-}
     public function obtenerIdGrupoPorNombre($nombreGrupo)
     {
         try {

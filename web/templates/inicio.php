@@ -3,26 +3,27 @@
     <?php if (isset($_SESSION['usuario'])): ?>
         <h2>Situación Financiera de <?= htmlspecialchars($_SESSION['usuario']['nombre']); ?></h2>
 
+        <!-- Definir variables por defecto si no están presentes -->
+        <?php
+            $totalIngresos = isset($totalIngresos) ? $totalIngresos : 0;
+            $totalGastos = isset($totalGastos) ? $totalGastos : 0;
+            $saldo = isset($saldo) ? $saldo : 0;
+        ?>
+
         <!-- Mostrar Total Ingresos -->
         <p><b>Total Ingresos:</b> 
-            <?= isset($totalIngresos) && $totalIngresos !== null 
-                ? number_format(htmlspecialchars($totalIngresos), 2, ',', '.') . ' €' 
-                : '<span class="text-muted">No disponible</span>' ?>
+            <?= number_format(htmlspecialchars($totalIngresos), 2, ',', '.') . ' €' ?>
         </p>
 
         <!-- Mostrar Total Gastos -->
         <p><b>Total Gastos:</b> 
-            <?= isset($totalGastos) && $totalGastos !== null 
-                ? number_format(htmlspecialchars($totalGastos), 2, ',', '.') . ' €' 
-                : '<span class="text-muted">No disponible</span>' ?>
+            <?= number_format(htmlspecialchars($totalGastos), 2, ',', '.') . ' €' ?>
         </p>
 
         <!-- Mostrar Balance -->
         <p><b>Balance:</b> 
-            <span style="color: <?= isset($saldo) && $saldo >= 0 ? 'green' : 'red'; ?>;">
-                <?= isset($saldo) && $saldo !== null 
-                    ? number_format(htmlspecialchars($saldo), 2, ',', '.') . ' €' 
-                    : '<span class="text-muted">No disponible</span>' ?>
+            <span style="color: <?= $saldo >= 0 ? 'green' : 'red'; ?>;">
+                <?= number_format(htmlspecialchars($saldo), 2, ',', '.') . ' €' ?>
             </span>
         </p>
 
