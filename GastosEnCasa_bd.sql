@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-10-2024 a las 18:59:28
+-- Tiempo de generación: 19-10-2024 a las 19:44:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -978,7 +978,26 @@ INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 (352, 27, 'logout', '2024-10-18 15:28:29'),
 (353, 1, 'login', '2024-10-18 15:28:36'),
 (354, 1, 'logout', '2024-10-18 16:34:28'),
-(355, 1, 'login', '2024-10-18 16:34:34');
+(355, 1, 'login', '2024-10-18 16:34:34'),
+(356, 1, 'login', '2024-10-19 09:47:48'),
+(357, 1, 'logout', '2024-10-19 11:02:21'),
+(358, 1, 'login', '2024-10-19 11:02:56'),
+(359, 1, 'logout', '2024-10-19 12:34:58'),
+(360, 1, 'login', '2024-10-19 12:35:19'),
+(361, 1, 'logout', '2024-10-19 14:12:51'),
+(362, 27, 'login', '2024-10-19 14:13:02'),
+(363, 27, 'logout', '2024-10-19 14:13:57'),
+(364, 1, 'login', '2024-10-19 14:48:30'),
+(365, 1, 'logout', '2024-10-19 15:32:10'),
+(366, 2, 'login', '2024-10-19 15:32:16'),
+(367, 2, 'logout', '2024-10-19 15:33:19'),
+(368, 27, 'login', '2024-10-19 15:33:27'),
+(369, 27, 'logout', '2024-10-19 15:33:41'),
+(370, 1, 'login', '2024-10-19 15:36:57'),
+(371, 1, 'logout', '2024-10-19 15:58:29'),
+(372, 1, 'login', '2024-10-19 15:58:36'),
+(373, 1, 'logout', '2024-10-19 16:07:17'),
+(374, 1, 'login', '2024-10-19 16:07:26');
 
 -- --------------------------------------------------------
 
@@ -1104,6 +1123,13 @@ DELIMITER $$
 CREATE TRIGGER `auditar_familias_delete` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
   INSERT INTO auditoria (accion, tabla_afectada, idRegistro, fecha) 
   VALUES ('delete', 'familias', OLD.idFamilia, NOW());
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `auditar_familias_delete_archivo` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (NULL, 'DELETE_FAMILIA_' || OLD.idFamilia, NOW());
 END
 $$
 DELIMITER ;
@@ -1286,6 +1312,13 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
+CREATE TRIGGER `auditar_grupos_delete_archivo` AFTER DELETE ON `grupos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (NULL, 'DELETE_GRUPO_' || OLD.idGrupo, NOW());
+END
+$$
+DELIMITER ;
+DELIMITER $$
 CREATE TRIGGER `auditar_grupos_insert` AFTER INSERT ON `grupos` FOR EACH ROW BEGIN
     INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
     VALUES ('INSERT', 'grupos', NEW.idGrupo, 'Sistema', NOW());
@@ -1454,6 +1487,14 @@ CREATE TABLE `preferencias_usuarios` (
   `clave` varchar(255) NOT NULL,
   `valor` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `preferencias_usuarios`
+--
+
+INSERT INTO `preferencias_usuarios` (`idPreferencia`, `idUser`, `clave`, `valor`) VALUES
+(1, 1, 'notificaciones', 'activado'),
+(2, 1, 'dashboard_layout', 'modo_simple');
 
 -- --------------------------------------------------------
 
@@ -1668,7 +1709,69 @@ INSERT INTO `roles_permisos` (`idPermiso`, `idRol`, `nombrePermiso`, `tipoPermis
 (9, 1, 'gastos', 'eliminar'),
 (10, 2, 'gastos', 'leer'),
 (11, 3, 'gastos', 'leer'),
-(12, 3, 'ingresos', 'leer');
+(12, 3, 'ingresos', 'leer'),
+(13, 1, 'usuarios', 'leer'),
+(14, 1, 'usuarios', 'escribir'),
+(15, 1, 'usuarios', 'eliminar'),
+(16, 1, 'familias', 'leer'),
+(17, 1, 'familias', 'escribir'),
+(18, 1, 'familias', 'eliminar'),
+(19, 1, 'grupos', 'leer'),
+(20, 1, 'grupos', 'escribir'),
+(21, 1, 'grupos', 'eliminar'),
+(22, 1, 'gastos', 'leer'),
+(23, 1, 'gastos', 'escribir'),
+(24, 1, 'gastos', 'eliminar'),
+(25, 1, 'ingresos', 'leer'),
+(26, 1, 'ingresos', 'escribir'),
+(27, 1, 'ingresos', 'eliminar'),
+(28, 1, 'presupuestos', 'leer'),
+(29, 1, 'presupuestos', 'escribir'),
+(30, 1, 'presupuestos', 'eliminar'),
+(31, 1, 'metas', 'leer'),
+(32, 1, 'metas', 'escribir'),
+(33, 1, 'metas', 'eliminar'),
+(34, 2, 'usuarios', 'leer'),
+(35, 2, 'usuarios', 'escribir'),
+(36, 2, 'usuarios', 'eliminar'),
+(37, 2, 'familias', 'leer'),
+(38, 2, 'familias', 'escribir'),
+(39, 2, 'familias', 'eliminar'),
+(40, 2, 'grupos', 'leer'),
+(41, 2, 'grupos', 'escribir'),
+(42, 2, 'grupos', 'eliminar'),
+(43, 2, 'gastos', 'leer'),
+(44, 2, 'gastos', 'escribir'),
+(45, 2, 'gastos', 'eliminar'),
+(46, 2, 'ingresos', 'leer'),
+(47, 2, 'ingresos', 'escribir'),
+(48, 2, 'ingresos', 'eliminar'),
+(49, 2, 'presupuestos', 'leer'),
+(50, 2, 'presupuestos', 'escribir'),
+(51, 2, 'metas', 'leer'),
+(52, 2, 'metas', 'escribir'),
+(53, 3, 'gastos', 'leer'),
+(54, 3, 'gastos', 'escribir'),
+(55, 3, 'gastos', 'eliminar'),
+(56, 3, 'ingresos', 'leer'),
+(57, 3, 'ingresos', 'escribir'),
+(58, 3, 'ingresos', 'eliminar'),
+(59, 3, 'presupuestos', 'leer'),
+(60, 3, 'presupuestos', 'escribir'),
+(61, 3, 'metas', 'leer'),
+(62, 3, 'metas', 'escribir'),
+(63, 3, 'gastos', 'leer'),
+(64, 3, 'ingresos', 'leer'),
+(65, 3, 'gastos', 'leer'),
+(66, 3, 'gastos', 'escribir'),
+(67, 3, 'gastos', 'eliminar'),
+(68, 3, 'ingresos', 'leer'),
+(69, 3, 'ingresos', 'escribir'),
+(70, 3, 'ingresos', 'eliminar'),
+(71, 3, 'presupuestos', 'leer'),
+(72, 3, 'presupuestos', 'escribir'),
+(73, 3, 'metas', 'leer'),
+(74, 3, 'metas', 'escribir');
 
 -- --------------------------------------------------------
 
@@ -1758,6 +1861,13 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
+CREATE TRIGGER `auditar_usuarios_delete_archivo` AFTER DELETE ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (OLD.idUser, 'DELETE', NOW());
+END
+$$
+DELIMITER ;
+DELIMITER $$
 CREATE TRIGGER `auditar_usuarios_insert` AFTER INSERT ON `usuarios` FOR EACH ROW BEGIN
   INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
   VALUES ('INSERT', 'usuarios', NEW.idUser, NEW.idUser, NOW());
@@ -1768,22 +1878,6 @@ DELIMITER $$
 CREATE TRIGGER `auditar_usuarios_update` AFTER UPDATE ON `usuarios` FOR EACH ROW BEGIN
   INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
   VALUES ('UPDATE', 'usuarios', NEW.idUser, NEW.idUser, NOW());
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `before_insert_usuario` BEFORE INSERT ON `usuarios` FOR EACH ROW BEGIN
-  -- Validar si la familia existe
-  IF NEW.idFamilia IS NOT NULL AND 
-     (SELECT COUNT(*) FROM familias WHERE idFamilia = NEW.idFamilia) = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La familia no existe';
-  END IF;
-
-  -- Validar si el grupo existe
-  IF NEW.idGrupo IS NOT NULL AND 
-     (SELECT COUNT(*) FROM grupos WHERE idGrupo = NEW.idGrupo) = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El grupo no existe';
-  END IF;
 END
 $$
 DELIMITER ;
@@ -1814,7 +1908,9 @@ INSERT INTO `usuarios_familias` (`id`, `idUser`, `idFamilia`) VALUES
 (8, 27, 30),
 (9, 31, 30),
 (10, 16, 23),
-(12, 20, 1);
+(12, 20, 1),
+(13, 19, 22),
+(14, 19, 23);
 
 --
 -- Disparadores `usuarios_familias`
@@ -2092,7 +2188,7 @@ ALTER TABLE `auditoria`
 -- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
 ALTER TABLE `auditoria_accesos`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=356;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=375;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
@@ -2164,7 +2260,7 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `preferencias_usuarios`
 --
 ALTER TABLE `preferencias_usuarios`
-  MODIFY `idPreferencia` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPreferencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `refranes`
@@ -2182,7 +2278,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `roles_permisos`
 --
 ALTER TABLE `roles_permisos`
-  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idPermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT de la tabla `situacion`
@@ -2200,7 +2296,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `usuarios_familias`
 --
 ALTER TABLE `usuarios_familias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
