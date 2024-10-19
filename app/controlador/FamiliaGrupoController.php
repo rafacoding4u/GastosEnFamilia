@@ -61,8 +61,13 @@ class FamiliaGrupoController
                 cUser($nombre_familia, "nombre_familia", $errores, 100, 1, true);
                 cContrasenya($password_familia, $errores);
 
+                // Verificar si la familia ya existe
+                $m = new GastosModelo();
+                if ($m->obtenerFamiliaPorNombre($nombre_familia)) {
+                    $errores['nombre_familia'] = 'La familia ya existe.';
+                }
+
                 if (empty($errores)) {
-                    $m = new GastosModelo();
                     $hashedPassword = encriptar($password_familia);
 
                     if ($m->insertarFamilia($nombre_familia, $hashedPassword)) {
@@ -137,8 +142,13 @@ class FamiliaGrupoController
                 cUser($nombre_grupo, "nombre_grupo", $errores, 100, 1, true);
                 cContrasenya($password_grupo, $errores);
 
+                // Verificar si el grupo ya existe
+                $m = new GastosModelo();
+                if ($m->obtenerGrupoPorNombre($nombre_grupo)) {
+                    $errores['nombre_grupo'] = 'El grupo ya existe.';
+                }
+
                 if (empty($errores)) {
-                    $m = new GastosModelo();
                     $hashedPassword = encriptar($password_grupo);
 
                     if ($m->insertarGrupo($nombre_grupo, $hashedPassword)) {
@@ -350,6 +360,7 @@ class FamiliaGrupoController
                 $idFamilia = $_GET['id'];
                 $m = new GastosModelo();
 
+                // Validar si existen usuarios asociados a la familia
                 $usuariosAsociados = $m->obtenerUsuariosPorFamilia($idFamilia);
                 if (!empty($usuariosAsociados)) {
                     $this->redireccionarError('No se puede eliminar la familia. Hay usuarios asociados.');
@@ -383,6 +394,7 @@ class FamiliaGrupoController
             $idGrupo = recoge('id');
             $m = new GastosModelo();
 
+            // Validar si existen usuarios asociados al grupo
             $usuariosAsociados = $m->obtenerUsuariosPorGrupo($idGrupo);
             if (!empty($usuariosAsociados)) {
                 $this->redireccionarError('No se puede eliminar el grupo. Hay usuarios asociados.');
@@ -424,6 +436,7 @@ class FamiliaGrupoController
         header("Location: index.php?ctl=error");
         exit();
     }
+
     // Formulario para asignar un usuario a familia/grupo
     public function formAsignarUsuario($params = array())
     {

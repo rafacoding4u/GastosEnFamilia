@@ -64,12 +64,11 @@
                     <option value="usuario" <?= isset($nivel_usuario) && $nivel_usuario === 'usuario' ? 'selected' : '' ?>>Usuario</option>
                     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
                         <option value="admin" <?= isset($nivel_usuario) && $nivel_usuario === 'admin' ? 'selected' : '' ?>>Administrador</option>
-                        <option value="superadmin" <?= isset($nivel_usuario) && $nivel_usuario === 'superadmin' ? 'selected' : '' ?>>Super Administrador</option>
                     <?php endif; ?>
                 </select>
             </div>
 
-            <!-- Asignar a familia (opcional) -->
+            <!-- Asignar a familia (opcional) o crear nueva -->
             <div class="form-group">
                 <label for="familia">Familia:</label>
                 <select name="idFamilia" class="form-control">
@@ -84,9 +83,11 @@
                         <option value="">No hay familias disponibles</option>
                     <?php endif; ?>
                 </select>
+                <input type="text" name="nombre_nueva_familia" class="form-control mt-2" placeholder="Crear nueva familia (opcional)">
+                <input type="password" name="password_nueva_familia" class="form-control mt-2" placeholder="Contraseña para nueva familia">
             </div>
 
-            <!-- Asignar a grupo (opcional) -->
+            <!-- Asignar a grupo (opcional) o crear nuevo -->
             <div class="form-group">
                 <label for="grupo">Grupo:</label>
                 <select name="idGrupo" class="form-control">
@@ -101,6 +102,14 @@
                         <option value="">No hay grupos disponibles</option>
                     <?php endif; ?>
                 </select>
+                <input type="text" name="nombre_nuevo_grupo" class="form-control mt-2" placeholder="Crear nuevo grupo (opcional)">
+                <input type="password" name="password_nuevo_grupo" class="form-control mt-2" placeholder="Contraseña para nuevo grupo">
+            </div>
+
+            <!-- Contraseña para asociarse a una familia o grupo existente -->
+            <div class="form-group">
+                <label for="passwordGrupoFamilia">Contraseña de Familia/Grupo:</label>
+                <input type="password" name="passwordGrupoFamilia" class="form-control" placeholder="Contraseña para familia o grupo seleccionado">
             </div>
 
             <!-- Campo oculto para el token CSRF -->

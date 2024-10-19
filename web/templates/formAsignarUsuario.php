@@ -1,5 +1,5 @@
 <div class="container p-4">
-    <h2>Asignar Usuario a Familia o Grupo</h2>
+    <h2>Asignar Usuario a Familias o Grupos</h2>
 
     <!-- Verificar permisos del usuario -->
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
@@ -19,19 +19,23 @@
                 </select>
             </div>
 
-            <!-- Selección de tipo de vinculación (familia o grupo) -->
+            <!-- Creación de nuevas familias o grupos -->
             <div class="form-group">
-                <label for="tipoVinculo">Selecciona si es Familia o Grupo:</label>
-                <select name="tipoVinculo" id="tipoVinculo" class="form-control" required onchange="toggleVinculoOptions()">
-                    <option value="familia">Familia</option>
-                    <option value="grupo">Grupo</option>
-                </select>
+                <label for="numFamilias">Número de Familias a Crear:</label>
+                <input type="number" name="numFamilias" id="numFamilias" class="form-control" min="0" value="0" onchange="renderFamiliaInputs()">
             </div>
+            <div id="familiasContainer"></div>
 
-            <!-- Desplegable de familias -->
-            <div class="form-group" id="familiasGroup" style="display: none;">
-                <label for="idFamilia">Selecciona una Familia:</label>
-                <select name="idFamilia" id="idFamilia" class="form-control">
+            <div class="form-group">
+                <label for="numGrupos">Número de Grupos a Crear:</label>
+                <input type="number" name="numGrupos" id="numGrupos" class="form-control" min="0" value="0" onchange="renderGrupoInputs()">
+            </div>
+            <div id="gruposContainer"></div>
+
+            <!-- Selección de familias existentes -->
+            <div class="form-group">
+                <label for="idFamilia">Selecciona Familias Existentes:</label>
+                <select name="idFamilia[]" id="idFamilia" class="form-control" multiple>
                     <?php foreach ($familias as $familia): ?>
                         <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
                             <?= htmlspecialchars($familia['nombre_familia']) ?>
@@ -40,10 +44,10 @@
                 </select>
             </div>
 
-            <!-- Desplegable de grupos -->
-            <div class="form-group" id="gruposGroup" style="display: none;">
-                <label for="idGrupo">Selecciona un Grupo:</label>
-                <select name="idGrupo" id="idGrupo" class="form-control">
+            <!-- Selección de grupos existentes -->
+            <div class="form-group">
+                <label for="idGrupo">Selecciona Grupos Existentes:</label>
+                <select name="idGrupo[]" id="idGrupo" class="form-control" multiple>
                     <?php foreach ($grupos as $grupo): ?>
                         <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
                             <?= htmlspecialchars($grupo['nombre_grupo']) ?>
@@ -52,10 +56,10 @@
                 </select>
             </div>
 
-            <!-- Campo para introducir la contraseña -->
+            <!-- Contraseña para asociación existente -->
             <div class="form-group">
-                <label for="passwordGrupoFamilia">Introduce la contraseña para acceder al grupo o familia:</label>
-                <input type="password" name="passwordGrupoFamilia" class="form-control" required>
+                <label for="passwordGrupoFamilia">Introduce la contraseña para acceder al grupo o familia existente (si aplica):</label>
+                <input type="password" name="passwordGrupoFamilia" class="form-control">
             </div>
 
             <!-- Campo oculto para el token CSRF -->
@@ -72,20 +76,42 @@
 </div>
 
 <script>
-    // Mostrar solo el campo relacionado con familia o grupo
-    function toggleVinculoOptions() {
-        var tipoVinculo = document.getElementById('tipoVinculo').value;
-        document.getElementById('familiasGroup').style.display = (tipoVinculo === 'familia') ? 'block' : 'none';
-        document.getElementById('gruposGroup').style.display = (tipoVinculo === 'grupo') ? 'block' : 'none';
-        
-        // Limpiar el campo no visible para evitar problemas en el envío
-        if (tipoVinculo === 'familia') {
-            document.getElementById('idGrupo').value = '';
-        } else {
-            document.getElementById('idFamilia').value = '';
+    // Renderizar campos para crear familias
+    function renderFamiliaInputs() {
+        const numFamilias = document.getElementById('numFamilias').value;
+        const familiasContainer = document.getElementById('familiasContainer');
+        familiasContainer.innerHTML = '';
+
+        for (let i = 0; i < numFamilias; i++) {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label for="nombreFamilia_${i}">Nombre de la Nueva Familia ${i + 1}:</label>
+                <input type="text" name="nombreFamilia[]" id="nombreFamilia_${i}" class="form-control" required>
+                <label for="passwordFamilia_${i}">Contraseña de la Nueva Familia ${i + 1}:</label>
+                <input type="password" name="passwordFamilia[]" id="passwordFamilia_${i}" class="form-control" required>
+            `;
+            familiasContainer.appendChild(div);
         }
     }
 
-    // Ejecutar la función al cargar la página para asegurar que el campo visible esté configurado correctamente
-    toggleVinculoOptions();
+    // Renderizar campos para crear grupos
+    function renderGrupoInputs() {
+        const numGrupos = document.getElementById('numGrupos').value;
+        const gruposContainer = document.getElementById('gruposContainer');
+        gruposContainer.innerHTML = '';
+
+        for (let i = 0; i < numGrupos; i++) {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label for="nombreGrupo_${i}">Nombre del Nuevo Grupo ${i + 1}:</label>
+                <input type="text" name="nombreGrupo[]" id="nombreGrupo_${i}" class="form-control" required>
+                <label for="passwordGrupo_${i}">Contraseña del Nuevo Grupo ${i + 1}:</label>
+                <input type="password" name="passwordGrupo[]" id="passwordGrupo_${i}" class="form-control" required>
+            `;
+            gruposContainer.appendChild(div);
+        }
+    }
 </script>
+

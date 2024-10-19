@@ -5,7 +5,6 @@ require_once 'app/libs/bGeneral.php';
 class FinanzasController
 {
     // Ver Gastos
-    // Ver Gastos
     public function verGastos()
     {
         $m = new GastosModelo();
@@ -24,12 +23,16 @@ class FinanzasController
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        $gastos = $m->obtenerGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen, $offset, $resultadosPorPagina);
+        // Validar pertenencia del usuario a la familia o grupo para obtener los gastos
+        if (!$m->usuarioPerteneceAFamiliaOGrupo($_SESSION['usuario']['id'])) {
+            $this->redireccionarError('No tienes permiso para ver estos gastos.');
+            return;
+        }
 
+        $gastos = $m->obtenerGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen, $offset, $resultadosPorPagina);
         $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
 
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalGastos / $resultadosPorPagina) : 1;
-
         $categorias = $m->obtenerCategoriasGastos();
 
         $params = array(
@@ -82,12 +85,16 @@ class FinanzasController
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, null, $offset, $resultadosPorPagina);
+        // Validar pertenencia del usuario a la familia o grupo para obtener los ingresos
+        if (!$m->usuarioPerteneceAFamiliaOGrupo($_SESSION['usuario']['id'])) {
+            $this->redireccionarError('No tienes permiso para ver estos ingresos.');
+            return;
+        }
 
+        $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, null, $offset, $resultadosPorPagina);
         $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria);
 
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalIngresos / $resultadosPorPagina) : 1;
-
         $categorias = $m->obtenerCategoriasIngresos();
 
         $params = array(
@@ -193,8 +200,9 @@ class FinanzasController
 
             $m = new GastosModelo();
 
-            if (!$idFamilia && !$idGrupo) {
-                $params['mensaje'] = 'El usuario no está asociado a una familia o grupo.';
+            // Validar que el usuario pertenezca a la familia o grupo correspondiente
+            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUsuario)) {
+                $params['mensaje'] = 'No tienes permiso para insertar gastos en esta familia o grupo.';
                 $this->formInsertarGasto($params);
                 return;
             }
@@ -229,6 +237,13 @@ class FinanzasController
             $idUsuario = $_SESSION['usuario']['id'];
 
             $m = new GastosModelo();
+
+            // Validar que el usuario pertenezca a la familia o grupo correspondiente
+            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUsuario)) {
+                $params['mensaje'] = 'No tienes permiso para insertar ingresos en esta familia o grupo.';
+                $this->formInsertarIngreso($params);
+                return;
+            }
 
             try {
                 if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
@@ -368,14 +383,25 @@ class FinanzasController
         }
     }
 
-    // Método para renderizar vistas
+    // Render y redireccionamiento de errores
     private function render($vista, $params = array())
     {
-        extract($params);
-        ob_start();
-        require __DIR__ . '/../../web/templates/' . $vista;
-        $contenido = ob_get_clean();
-        require __DIR__ . '/../../web/templates/layout.php';
+        try {
+            extract($params);
+            ob_start();
+            require __DIR__ . '/../../web/templates/' . $vista;
+            $contenido = ob_get_clean();
+            require __DIR__ . '/../../web/templates/layout.php';
+        } catch (Exception $e) {
+            error_log("Error en render(): " . $e->getMessage());
+            $this->redireccionarError('Error al renderizar la vista.');
+        }
+    }
+    private function redireccionarError($mensaje)
+    {
+        $_SESSION['error_mensaje'] = $mensaje;
+        header('Location: index.php?ctl=error');
+        exit();
     }
 
     // Página de Inicio - Mostrar situación financiera general del usuario
