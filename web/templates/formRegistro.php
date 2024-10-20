@@ -87,7 +87,7 @@
             </select>
         </div>
 
-        <!-- Campo para la contraseña del grupo/familia -->
+        <!-- Campo para la contraseña del grupo/familia existente -->
         <div class="form-group" id="passwordGrupoFamilia" style="display:none;">
             <label for="passwordGrupoFamilia">Contraseña del Grupo/Familia:</label>
             <input type="password" id="passwordGrupoFamilia" name="passwordGrupoFamilia" class="form-control">

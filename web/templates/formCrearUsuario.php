@@ -106,10 +106,15 @@
                 <input type="password" name="password_nuevo_grupo" class="form-control mt-2" placeholder="Contraseña para nuevo grupo">
             </div>
 
-            <!-- Contraseña para asociarse a una familia o grupo existente -->
+            <!-- Contraseñas separadas para familia y grupo -->
             <div class="form-group">
-                <label for="passwordGrupoFamilia">Contraseña de Familia/Grupo:</label>
-                <input type="password" name="passwordGrupoFamilia" class="form-control" placeholder="Contraseña para familia o grupo seleccionado">
+                <label for="passwordFamiliaExistente">Contraseña de Familia Existente:</label>
+                <input type="password" name="passwordFamiliaExistente" class="form-control" placeholder="Contraseña de la familia seleccionada">
+            </div>
+
+            <div class="form-group">
+                <label for="passwordGrupoExistente">Contraseña de Grupo Existente:</label>
+                <input type="password" name="passwordGrupoExistente" class="form-control" placeholder="Contraseña del grupo seleccionado">
             </div>
 
             <!-- Campo oculto para el token CSRF -->

@@ -95,11 +95,12 @@ class GastosModelo
         return $stmt->fetchColumn() > 0;
     }
 
-    public function insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fechaNacimiento, $email, $telefono, $idFamilia = null, $idGrupo = null)
+    public function insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fechaNacimiento, $email, $telefono)
     {
         try {
-            $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, idFamilia, idGrupo) 
-                VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fechaNacimiento, :email, :telefono, :idFamilia, :idGrupo)";
+            // Consulta SQL ajustada para eliminar idFamilia y idGrupo de la inserción
+            $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono) 
+                VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fechaNacimiento, :email, :telefono)";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
             $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
@@ -109,11 +110,10 @@ class GastosModelo
             $stmt->bindValue(':fechaNacimiento', $fechaNacimiento, PDO::PARAM_STR);
             $stmt->bindValue(':email', $email, PDO::PARAM_STR);
             $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
-            $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-            $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                return true; // Inserción exitosa
+                // Devolver el ID del usuario recién creado para posibles asignaciones de familia y grupo
+                return $this->conexion->lastInsertId();
             } else {
                 // Registrar el error de la consulta SQL
                 $errorInfo = $stmt->errorInfo();
@@ -125,6 +125,7 @@ class GastosModelo
             return false;
         }
     }
+
 
 
 
@@ -1169,6 +1170,7 @@ class GastosModelo
 
 
     // Verificar la contraseña de una familia
+    // Verificar la contraseña de una familia
     public function verificarPasswordFamilia($idFamilia, $password)
     {
         $sql = "SELECT password FROM familias WHERE idFamilia = :idFamilia";
@@ -1177,11 +1179,22 @@ class GastosModelo
         $stmt->execute();
         $familia = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($familia && password_verify($password, $familia['password'])) {
-            return true;
+        if ($familia) {
+            error_log("Contraseña proporcionada: $password");
+            error_log("Contraseña en la base de datos (hash): " . $familia['password']);
+
+            if (password_verify($password, $familia['password'])) {
+                error_log("Contraseña correcta.");
+                return true;
+            } else {
+                error_log("Contraseña incorrecta.");
+            }
+        } else {
+            error_log("No se encontró la familia con ID: $idFamilia");
         }
         return false;
     }
+
 
     // Verificar la contraseña de un grupo
     public function verificarPasswordGrupo($idGrupo, $password)
@@ -1192,11 +1205,22 @@ class GastosModelo
         $stmt->execute();
         $grupo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($grupo && password_verify($password, $grupo['password'])) {
-            return true;
+        if ($grupo) {
+            error_log("Contraseña proporcionada: $password");
+            error_log("Contraseña en la base de datos (hash): " . $grupo['password']);
+
+            if (password_verify($password, $grupo['password'])) {
+                error_log("Contraseña correcta para el grupo.");
+                return true;
+            } else {
+                error_log("Contraseña incorrecta para el grupo.");
+            }
+        } else {
+            error_log("No se encontró el grupo con ID: $idGrupo");
         }
         return false;
     }
+
 
 
     public function obtenerAdministradoresFamilia($idFamilia)
@@ -1330,6 +1354,38 @@ class GastosModelo
         return $stmtFamilia->execute();
     }
 
+    public function asignarFamilia($idUsuario, $idFamilia = null, $nombreNuevaFamilia = null, $passwordNuevaFamilia = null)
+    {
+        try {
+            // Si se proporciona el nombre de una nueva familia, la creamos
+            if ($nombreNuevaFamilia) {
+                $sqlFamilia = "INSERT INTO familias (nombre_familia, password) VALUES (:nombre_familia, :password)";
+                $stmtFamilia = $this->conexion->prepare($sqlFamilia);
+                $stmtFamilia->bindValue(':nombre_familia', $nombreNuevaFamilia, PDO::PARAM_STR);
+                $stmtFamilia->bindValue(':password', password_hash($passwordNuevaFamilia, PASSWORD_BCRYPT), PDO::PARAM_STR);
+
+                if ($stmtFamilia->execute()) {
+                    // Obtener el id de la nueva familia
+                    $idFamilia = $this->conexion->lastInsertId();
+                } else {
+                    throw new Exception("Error al crear la nueva familia.");
+                }
+            }
+
+            // Asignamos el usuario a la familia (existente o recién creada)
+            $sqlAsignar = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUsuario, :idFamilia)";
+            $stmtAsignar = $this->conexion->prepare($sqlAsignar);
+            $stmtAsignar->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmtAsignar->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+
+            return $stmtAsignar->execute();
+        } catch (Exception $e) {
+            error_log("Error en asignarFamilia: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 
 
     public function asignarUsuarioAGrupo($idUsuario, $idGrupo)
@@ -1349,6 +1405,36 @@ class GastosModelo
     }
 
 
+    public function asignarGrupo($idUsuario, $idGrupo = null, $nombreNuevoGrupo = null, $passwordNuevoGrupo = null)
+    {
+        try {
+            // Si se proporciona el nombre de un nuevo grupo, lo creamos
+            if ($nombreNuevoGrupo) {
+                $sqlGrupo = "INSERT INTO grupos (nombre_grupo, password) VALUES (:nombre_grupo, :password)";
+                $stmtGrupo = $this->conexion->prepare($sqlGrupo);
+                $stmtGrupo->bindValue(':nombre_grupo', $nombreNuevoGrupo, PDO::PARAM_STR);
+                $stmtGrupo->bindValue(':password', password_hash($passwordNuevoGrupo, PASSWORD_BCRYPT), PDO::PARAM_STR);
+
+                if ($stmtGrupo->execute()) {
+                    // Obtener el id del nuevo grupo
+                    $idGrupo = $this->conexion->lastInsertId();
+                } else {
+                    throw new Exception("Error al crear el nuevo grupo.");
+                }
+            }
+
+            // Asignamos el usuario al grupo (existente o recién creado)
+            $sqlAsignar = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUsuario, :idGrupo)";
+            $stmtAsignar = $this->conexion->prepare($sqlAsignar);
+            $stmtAsignar->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmtAsignar->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+
+            return $stmtAsignar->execute();
+        } catch (Exception $e) {
+            error_log("Error en asignarGrupo: " . $e->getMessage());
+            return false;
+        }
+    }
 
 
 
@@ -1756,32 +1842,31 @@ class GastosModelo
         }
     }
     public function usuarioPerteneceAFamiliaOGrupo($idUsuario, $idFamilia = null, $idGrupo = null)
-{
-    $sql = "SELECT COUNT(*) as conteo FROM usuarios_familias WHERE idUsuario = :idUsuario";
-    if ($idFamilia) {
-        $sql .= " AND idFamilia = :idFamilia";
-    }
-    if ($idGrupo) {
-        $sql .= " AND idGrupo = :idGrupo";
-    }
-
-    try {
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    {
+        $sql = "SELECT COUNT(*) as conteo FROM usuarios_familias WHERE idUsuario = :idUsuario";
         if ($idFamilia) {
-            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $sql .= " AND idFamilia = :idFamilia";
         }
         if ($idGrupo) {
-            $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            $sql .= " AND idGrupo = :idGrupo";
         }
-        $stmt->execute();
 
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($resultado && $resultado['conteo'] > 0);
-    } catch (Exception $e) {
-        error_log("Error en usuarioPerteneceAFamiliaOGrupo(): " . $e->getMessage());
-        return false;
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            if ($idFamilia) {
+                $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            }
+            if ($idGrupo) {
+                $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ($resultado && $resultado['conteo'] > 0);
+        } catch (Exception $e) {
+            error_log("Error en usuarioPerteneceAFamiliaOGrupo(): " . $e->getMessage());
+            return false;
+        }
     }
-}
-
 }
