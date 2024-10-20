@@ -1,143 +1,125 @@
 <div class="container p-4">
-    <h3>Registro de Usuario</h3>
+    <h2>Registro de Nuevo Usuario</h2>
 
-    <form action="index.php?ctl=registro" method="post">
-        <!-- Campo para el nombre -->
+    <!-- Mostrar mensaje de éxito, si lo hay -->
+    <?php if (!empty($mensaje_exito)): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($mensaje_exito) ?></div>
+    <?php endif; ?>
+
+    <!-- Mostrar mensaje de error, si lo hay -->
+    <?php if (!empty($mensaje)): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($mensaje) ?></div>
+    <?php endif; ?>
+
+    <!-- Mostrar errores de validación -->
+    <?php if (!empty($errores)): ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errores as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <!-- El formulario apunta a la ruta correcta para el registro -->
+    <form action="index.php?ctl=registro" method="POST">
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" class="form-control"
-                value="<?= isset($params['nombre']) ? htmlspecialchars($params['nombre'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($nombre ?? '') ?>" required>
         </div>
 
-        <!-- Campo para el apellido -->
         <div class="form-group">
             <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" name="apellido" class="form-control"
-                value="<?= isset($params['apellido']) ? htmlspecialchars($params['apellido'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" name="apellido" class="form-control" value="<?= htmlspecialchars($apellido ?? '') ?>" required>
         </div>
 
-        <!-- Campo para el alias (nombre de usuario) -->
         <div class="form-group">
             <label for="alias">Alias (Nombre de Usuario):</label>
-            <input type="text" id="alias" name="alias" class="form-control"
-                value="<?= isset($params['alias']) ? htmlspecialchars($params['alias'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" name="alias" class="form-control" value="<?= htmlspecialchars($alias ?? '') ?>" required>
         </div>
 
-        <!-- Campo para la contraseña -->
         <div class="form-group">
-            <label for="contrasenya">Contraseña:</label>
-            <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
         </div>
 
-        <!-- Campo para la fecha de nacimiento -->
-        <div class="form-group">
-            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control"
-                value="<?= isset($params['fecha_nacimiento']) ? htmlspecialchars($params['fecha_nacimiento'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
-        </div>
-
-        <!-- Campo para el correo electrónico -->
-        <div class="form-group">
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" class="form-control"
-                value="<?= isset($params['email']) ? htmlspecialchars($params['email'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
-        </div>
-
-        <!-- Campo para el teléfono -->
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" class="form-control"
-                value="<?= isset($params['telefono']) ? htmlspecialchars($params['telefono'], ENT_QUOTES, 'UTF-8') : '' ?>" required>
+            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($telefono ?? '') ?>" required>
         </div>
 
-        <!-- Selección de grupo o familia -->
         <div class="form-group">
-            <label for="tipo_vinculo">¿Perteneces a un grupo o familia existente?</label>
-            <select id="tipo_vinculo" name="tipo_vinculo" class="form-control" required onchange="toggleVinculoOptions()">
-                <option value="grupo">Grupo</option>
-                <option value="familia">Familia</option>
-                <option value="crear_familia">Crear nueva familia</option>
-                <option value="crear_grupo">Crear nuevo grupo</option>
-                <option value="individual">Usuario individual (sin grupo o familia)</option>
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" class="form-control" value="<?= htmlspecialchars($fecha_nacimiento ?? '') ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contrasenya">Contraseña:</label>
+            <input type="password" name="contrasenya" class="form-control" required>
+        </div>
+
+        <!-- Mostrar la opción para cambiar el nivel de usuario -->
+        <div class="form-group">
+            <label for="nivel_usuario">Nivel de Usuario:</label>
+            <select name="nivel_usuario" class="form-control" required>
+                <option value="usuario" <?= isset($nivel_usuario) && $nivel_usuario === 'usuario' ? 'selected' : '' ?>>Usuario</option>
+                <option value="admin" <?= isset($nivel_usuario) && $nivel_usuario === 'admin' ? 'selected' : '' ?>>Administrador</option>
             </select>
         </div>
 
-        <!-- Campo para seleccionar grupo/familia existente -->
-        <div class="form-group" id="selectGrupoFamilia" style="display:none;">
-            <label for="idGrupoFamilia">Seleccionar Grupo o Familia:</label>
-            <select id="idGrupoFamilia" name="idGrupoFamilia" class="form-control">
-                <optgroup label="Grupos">
-                    <?php if (!empty($grupos)) : ?>
-                        <?php foreach ($grupos as $grupo): ?>
-                            <option value="grupo_<?= htmlspecialchars($grupo['idGrupo'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($grupo['nombre_grupo'], ENT_QUOTES, 'UTF-8') ?></option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value="" disabled>No hay grupos disponibles</option>
-                    <?php endif; ?>
-                </optgroup>
-                <optgroup label="Familias">
-                    <?php if (!empty($familias)) : ?>
-                        <?php foreach ($familias as $familia): ?>
-                            <option value="familia_<?= htmlspecialchars($familia['idFamilia'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($familia['nombre_familia'], ENT_QUOTES, 'UTF-8') ?></option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value="" disabled>No hay familias disponibles</option>
-                    <?php endif; ?>
-                </optgroup>
+        <!-- Asignar a familia (opcional) o crear nueva -->
+        <div class="form-group">
+            <label for="familia">Familia:</label>
+            <select name="idFamilia" class="form-control">
+                <option value="">Sin familia</option>
+                <?php if (!empty($familias)): ?>
+                    <?php foreach ($familias as $familia): ?>
+                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idFamilia) && $idFamilia == $familia['idFamilia'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($familia['nombre_familia']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <option value="">No hay familias disponibles</option>
+                <?php endif; ?>
             </select>
+            <input type="text" name="nombre_nueva_familia" class="form-control mt-2" placeholder="Crear nueva familia (opcional)">
+            <input type="password" name="password_nueva_familia" class="form-control mt-2" placeholder="Contraseña para nueva familia">
         </div>
 
-        <!-- Campo para la contraseña del grupo/familia existente -->
-        <div class="form-group" id="passwordGrupoFamilia" style="display:none;">
-            <label for="passwordGrupoFamilia">Contraseña del Grupo/Familia:</label>
-            <input type="password" id="passwordGrupoFamilia" name="passwordGrupoFamilia" class="form-control">
+        <!-- Asignar a grupo (opcional) o crear nuevo -->
+        <div class="form-group">
+            <label for="grupo">Grupo:</label>
+            <select name="idGrupo" class="form-control">
+                <option value="">Sin grupo</option>
+                <?php if (!empty($grupos)): ?>
+                    <?php foreach ($grupos as $grupo): ?>
+                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idGrupo) && $idGrupo == $grupo['idGrupo'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <option value="">No hay grupos disponibles</option>
+                <?php endif; ?>
+            </select>
+            <input type="text" name="nombre_nuevo_grupo" class="form-control mt-2" placeholder="Crear nuevo grupo (opcional)">
+            <input type="password" name="password_nuevo_grupo" class="form-control mt-2" placeholder="Contraseña para nuevo grupo">
         </div>
 
-        <!-- Creación de un nuevo grupo o familia -->
-        <div class="form-group" id="crearGrupoFamilia" style="display:none;">
-            <label for="nombre_nuevo">Nombre del Nuevo Grupo/Familia:</label>
-            <input type="text" id="nombre_nuevo" name="nombre_nuevo" class="form-control">
-            <label for="password_nuevo">Contraseña del Nuevo Grupo/Familia:</label>
-            <input type="password" id="password_nuevo" name="password_nuevo" class="form-control">
+        <!-- Contraseñas separadas para familia y grupo -->
+        <div class="form-group">
+            <label for="passwordFamiliaExistente">Contraseña de Familia Existente:</label>
+            <input type="password" name="passwordFamiliaExistente" class="form-control" placeholder="Contraseña de la familia seleccionada">
+        </div>
+
+        <div class="form-group">
+            <label for="passwordGrupoExistente">Contraseña de Grupo Existente:</label>
+            <input type="password" name="passwordGrupoExistente" class="form-control" placeholder="Contraseña del grupo seleccionado">
         </div>
 
         <!-- Campo oculto para el token CSRF -->
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '') ?>">
 
-        <!-- Botón de envío -->
-        <button type="submit" name="bRegistro" class="btn btn-primary mt-3">Registrarse</button>
-
-        <!-- Mostrar errores de validación -->
-        <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
-            <div class="alert alert-danger mt-3">
-                <?= htmlspecialchars($params['mensaje'], ENT_QUOTES, 'UTF-8') ?>
-            </div>
-        <?php endif; ?>
+        <button type="submit" class="btn btn-primary">Registrarse</button>
     </form>
 </div>
-
-<script>
-    function toggleVinculoOptions() {
-        var selectGrupoFamilia = document.getElementById('selectGrupoFamilia');
-        var passwordGrupoFamilia = document.getElementById('passwordGrupoFamilia');
-        var crearGrupoFamilia = document.getElementById('crearGrupoFamilia');
-        var tipoVinculo = document.getElementById('tipo_vinculo').value;
-
-        if (tipoVinculo === 'grupo' || tipoVinculo === 'familia') {
-            selectGrupoFamilia.style.display = 'block';
-            passwordGrupoFamilia.style.display = 'block';
-            crearGrupoFamilia.style.display = 'none';
-        } else if (tipoVinculo === 'crear_familia' || tipoVinculo === 'crear_grupo') {
-            selectGrupoFamilia.style.display = 'none';
-            passwordGrupoFamilia.style.display = 'none';
-            crearGrupoFamilia.style.display = 'block';
-        } else if (tipoVinculo === 'individual') {
-            selectGrupoFamilia.style.display = 'none';
-            passwordGrupoFamilia.style.display = 'none';
-            crearGrupoFamilia.style.display = 'none';
-        }
-    }
-
-    // Ejecutar la función al cargar la página para asegurar que el campo visible esté configurado correctamente
-    toggleVinculoOptions();
-</script>

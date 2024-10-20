@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-10-2024 a las 19:44:58
+-- Tiempo de generación: 20-10-2024 a las 23:46:24
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -95,19 +95,18 @@ CREATE TABLE `administradores_familias` (
 
 INSERT INTO `administradores_familias` (`id`, `idAdmin`, `idFamilia`) VALUES
 (1, 2, 1),
-(5, 2, 10),
-(6, 2, 11),
-(7, 2, 12),
-(9, 2, 14),
-(10, 2, 15),
-(4, 16, 9),
-(8, 16, 13),
 (11, 16, 16),
-(12, 16, 19),
-(13, 16, 20),
 (14, 20, 23),
 (15, 20, 24),
-(18, 27, 30);
+(18, 27, 30),
+(28, 39, 48),
+(27, 60, 47),
+(26, 61, 46),
+(22, 65, 34),
+(23, 65, 35),
+(24, 65, 36),
+(25, 65, 37),
+(29, 70, 1);
 
 -- --------------------------------------------------------
 
@@ -126,7 +125,11 @@ CREATE TABLE `administradores_grupos` (
 --
 
 INSERT INTO `administradores_grupos` (`idAdmin`, `idGrupo`, `id`) VALUES
-(2, 1, 1);
+(2, 1, 1),
+(65, 17, 2),
+(65, 18, 3),
+(65, 19, 4),
+(65, 20, 5);
 
 --
 -- Disparadores `administradores_grupos`
@@ -620,7 +623,450 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 (452, 'DELETE', 'ingresos', 22, '27', '2024-10-15 17:11:45'),
 (453, 'UPDATE', 'usuarios', 19, '19', '2024-10-16 16:14:53'),
 (454, 'UPDATE', 'usuarios', 18, '18', '2024-10-16 16:15:24'),
-(455, 'DELETE', 'usuarios', 17, '17', '2024-10-18 16:53:32');
+(455, 'DELETE', 'usuarios', 17, '17', '2024-10-18 16:53:32'),
+(456, 'INSERT', 'usuarios', 32, '32', '2024-10-20 09:21:21'),
+(457, 'INSERT', 'usuarios', 32, '32', '2024-10-20 09:21:21'),
+(458, 'INSERT', 'usuarios', 32, 'sistema', '2024-10-20 09:21:21'),
+(459, 'UPDATE', 'familias', 1, 'sistema', '2024-10-20 09:21:37'),
+(460, 'UPDATE', 'familias', 16, 'sistema', '2024-10-20 09:21:37'),
+(461, 'UPDATE', 'familias', 22, 'sistema', '2024-10-20 09:21:37'),
+(462, 'UPDATE', 'familias', 23, 'sistema', '2024-10-20 09:21:37'),
+(463, 'UPDATE', 'familias', 24, 'sistema', '2024-10-20 09:21:37'),
+(464, 'UPDATE', 'familias', 30, 'sistema', '2024-10-20 09:21:37'),
+(465, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-20 09:21:37'),
+(466, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-20 09:21:37'),
+(467, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-20 09:21:37'),
+(468, 'UPDATE', 'usuarios', 1, '1', '2024-10-20 09:21:37'),
+(469, 'UPDATE', 'usuarios', 2, '2', '2024-10-20 09:21:37'),
+(470, 'UPDATE', 'usuarios', 5, '5', '2024-10-20 09:21:37'),
+(471, 'UPDATE', 'usuarios', 6, '6', '2024-10-20 09:21:37'),
+(472, 'UPDATE', 'usuarios', 7, '7', '2024-10-20 09:21:37'),
+(473, 'UPDATE', 'usuarios', 8, '8', '2024-10-20 09:21:37'),
+(474, 'UPDATE', 'usuarios', 9, '9', '2024-10-20 09:21:37'),
+(475, 'UPDATE', 'usuarios', 10, '10', '2024-10-20 09:21:37'),
+(476, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:21:37'),
+(477, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:21:37'),
+(478, 'UPDATE', 'usuarios', 16, '16', '2024-10-20 09:21:37'),
+(479, 'UPDATE', 'usuarios', 18, '18', '2024-10-20 09:21:37'),
+(480, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:21:37'),
+(481, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:21:37'),
+(482, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:37'),
+(483, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:37'),
+(484, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:37'),
+(485, 'UPDATE', 'usuarios', 21, '21', '2024-10-20 09:21:37'),
+(486, 'UPDATE', 'usuarios', 26, '26', '2024-10-20 09:21:37'),
+(487, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 09:21:37'),
+(488, 'UPDATE', 'usuarios', 28, '28', '2024-10-20 09:21:37'),
+(489, 'UPDATE', 'usuarios', 29, '29', '2024-10-20 09:21:37'),
+(490, 'UPDATE', 'usuarios', 30, '30', '2024-10-20 09:21:37'),
+(491, 'UPDATE', 'usuarios', 31, '31', '2024-10-20 09:21:37'),
+(492, 'UPDATE', 'usuarios', 32, '32', '2024-10-20 09:21:37'),
+(493, 'UPDATE', 'familias', 1, 'sistema', '2024-10-20 09:21:39'),
+(494, 'UPDATE', 'familias', 16, 'sistema', '2024-10-20 09:21:39'),
+(495, 'UPDATE', 'familias', 22, 'sistema', '2024-10-20 09:21:39'),
+(496, 'UPDATE', 'familias', 23, 'sistema', '2024-10-20 09:21:39'),
+(497, 'UPDATE', 'familias', 24, 'sistema', '2024-10-20 09:21:39'),
+(498, 'UPDATE', 'familias', 30, 'sistema', '2024-10-20 09:21:39'),
+(499, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-20 09:21:39'),
+(500, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-20 09:21:39'),
+(501, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-20 09:21:39'),
+(502, 'UPDATE', 'usuarios', 1, '1', '2024-10-20 09:21:39'),
+(503, 'UPDATE', 'usuarios', 2, '2', '2024-10-20 09:21:39'),
+(504, 'UPDATE', 'usuarios', 5, '5', '2024-10-20 09:21:39'),
+(505, 'UPDATE', 'usuarios', 6, '6', '2024-10-20 09:21:39'),
+(506, 'UPDATE', 'usuarios', 7, '7', '2024-10-20 09:21:39'),
+(507, 'UPDATE', 'usuarios', 8, '8', '2024-10-20 09:21:39'),
+(508, 'UPDATE', 'usuarios', 9, '9', '2024-10-20 09:21:39'),
+(509, 'UPDATE', 'usuarios', 10, '10', '2024-10-20 09:21:39'),
+(510, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:21:39'),
+(511, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:21:39'),
+(512, 'UPDATE', 'usuarios', 16, '16', '2024-10-20 09:21:39'),
+(513, 'UPDATE', 'usuarios', 18, '18', '2024-10-20 09:21:39'),
+(514, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:21:39'),
+(515, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:21:39'),
+(516, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:39'),
+(517, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:39'),
+(518, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:21:39'),
+(519, 'UPDATE', 'usuarios', 21, '21', '2024-10-20 09:21:39'),
+(520, 'UPDATE', 'usuarios', 26, '26', '2024-10-20 09:21:39'),
+(521, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 09:21:39'),
+(522, 'UPDATE', 'usuarios', 28, '28', '2024-10-20 09:21:39'),
+(523, 'UPDATE', 'usuarios', 29, '29', '2024-10-20 09:21:39'),
+(524, 'UPDATE', 'usuarios', 30, '30', '2024-10-20 09:21:39'),
+(525, 'UPDATE', 'usuarios', 31, '31', '2024-10-20 09:21:39'),
+(526, 'UPDATE', 'usuarios', 32, '32', '2024-10-20 09:21:39'),
+(527, 'DELETE', 'usuarios', 32, '32', '2024-10-20 09:24:17'),
+(528, 'INSERT', 'usuarios', 33, '33', '2024-10-20 09:25:11'),
+(529, 'INSERT', 'usuarios', 33, '33', '2024-10-20 09:25:11'),
+(530, 'INSERT', 'usuarios', 33, 'sistema', '2024-10-20 09:25:11'),
+(531, 'INSERT', 'usuarios', 34, '34', '2024-10-20 09:27:59'),
+(532, 'INSERT', 'usuarios', 34, '34', '2024-10-20 09:27:59'),
+(533, 'INSERT', 'usuarios', 34, 'sistema', '2024-10-20 09:27:59'),
+(534, 'INSERT', 'familias', 31, 'sistema', '2024-10-20 09:27:59'),
+(535, 'INSERT', 'usuarios', 35, '35', '2024-10-20 09:29:23'),
+(536, 'INSERT', 'usuarios', 35, '35', '2024-10-20 09:29:23'),
+(537, 'INSERT', 'usuarios', 35, 'sistema', '2024-10-20 09:29:23'),
+(538, 'INSERT', 'usuarios', 36, '36', '2024-10-20 09:31:36'),
+(539, 'INSERT', 'usuarios', 36, '36', '2024-10-20 09:31:36'),
+(540, 'INSERT', 'usuarios', 36, 'sistema', '2024-10-20 09:31:36'),
+(541, 'INSERT', 'usuarios', 37, '37', '2024-10-20 09:34:04'),
+(542, 'INSERT', 'usuarios', 37, '37', '2024-10-20 09:34:04'),
+(543, 'INSERT', 'usuarios', 37, 'sistema', '2024-10-20 09:34:04'),
+(544, 'INSERT', 'grupos', 14, 'Sistema', '2024-10-20 09:34:04'),
+(545, 'INSERT', 'usuarios', 38, '38', '2024-10-20 09:36:05'),
+(546, 'INSERT', 'usuarios', 38, '38', '2024-10-20 09:36:05'),
+(547, 'INSERT', 'usuarios', 38, 'sistema', '2024-10-20 09:36:05'),
+(548, 'UPDATE', 'familias', 1, 'sistema', '2024-10-20 09:36:20'),
+(549, 'UPDATE', 'familias', 16, 'sistema', '2024-10-20 09:36:20'),
+(550, 'UPDATE', 'familias', 22, 'sistema', '2024-10-20 09:36:20'),
+(551, 'UPDATE', 'familias', 23, 'sistema', '2024-10-20 09:36:20'),
+(552, 'UPDATE', 'familias', 24, 'sistema', '2024-10-20 09:36:20'),
+(553, 'UPDATE', 'familias', 30, 'sistema', '2024-10-20 09:36:20'),
+(554, 'UPDATE', 'familias', 31, 'sistema', '2024-10-20 09:36:20'),
+(555, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-20 09:36:20'),
+(556, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-20 09:36:20'),
+(557, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-20 09:36:20'),
+(558, 'UPDATE', 'grupos', 14, 'Sistema', '2024-10-20 09:36:20'),
+(559, 'UPDATE', 'usuarios', 1, '1', '2024-10-20 09:36:20'),
+(560, 'UPDATE', 'usuarios', 2, '2', '2024-10-20 09:36:20'),
+(561, 'UPDATE', 'usuarios', 5, '5', '2024-10-20 09:36:20'),
+(562, 'UPDATE', 'usuarios', 6, '6', '2024-10-20 09:36:20'),
+(563, 'UPDATE', 'usuarios', 7, '7', '2024-10-20 09:36:20'),
+(564, 'UPDATE', 'usuarios', 8, '8', '2024-10-20 09:36:20'),
+(565, 'UPDATE', 'usuarios', 9, '9', '2024-10-20 09:36:20'),
+(566, 'UPDATE', 'usuarios', 10, '10', '2024-10-20 09:36:20'),
+(567, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:36:20'),
+(568, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:36:20'),
+(569, 'UPDATE', 'usuarios', 16, '16', '2024-10-20 09:36:20'),
+(570, 'UPDATE', 'usuarios', 18, '18', '2024-10-20 09:36:20'),
+(571, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:36:20'),
+(572, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:36:20'),
+(573, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:36:20'),
+(574, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:36:20'),
+(575, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:36:20'),
+(576, 'UPDATE', 'usuarios', 21, '21', '2024-10-20 09:36:20'),
+(577, 'UPDATE', 'usuarios', 26, '26', '2024-10-20 09:36:20'),
+(578, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 09:36:20'),
+(579, 'UPDATE', 'usuarios', 28, '28', '2024-10-20 09:36:20'),
+(580, 'UPDATE', 'usuarios', 29, '29', '2024-10-20 09:36:20'),
+(581, 'UPDATE', 'usuarios', 30, '30', '2024-10-20 09:36:20'),
+(582, 'UPDATE', 'usuarios', 31, '31', '2024-10-20 09:36:20'),
+(583, 'UPDATE', 'usuarios', 33, '33', '2024-10-20 09:36:20'),
+(584, 'UPDATE', 'usuarios', 34, '34', '2024-10-20 09:36:20'),
+(585, 'UPDATE', 'usuarios', 35, '35', '2024-10-20 09:36:20'),
+(586, 'UPDATE', 'usuarios', 36, '36', '2024-10-20 09:36:20'),
+(587, 'UPDATE', 'usuarios', 37, '37', '2024-10-20 09:36:20'),
+(588, 'UPDATE', 'usuarios', 38, '38', '2024-10-20 09:36:20'),
+(589, 'INSERT', 'usuarios', 39, '39', '2024-10-20 09:40:26'),
+(590, 'INSERT', 'usuarios', 39, '39', '2024-10-20 09:40:26'),
+(591, 'INSERT', 'usuarios', 39, 'sistema', '2024-10-20 09:40:26'),
+(592, 'UPDATE', 'familias', 1, 'sistema', '2024-10-20 09:40:49'),
+(593, 'UPDATE', 'familias', 16, 'sistema', '2024-10-20 09:40:49'),
+(594, 'UPDATE', 'familias', 22, 'sistema', '2024-10-20 09:40:49'),
+(595, 'UPDATE', 'familias', 23, 'sistema', '2024-10-20 09:40:49'),
+(596, 'UPDATE', 'familias', 24, 'sistema', '2024-10-20 09:40:49'),
+(597, 'UPDATE', 'familias', 30, 'sistema', '2024-10-20 09:40:49'),
+(598, 'UPDATE', 'familias', 31, 'sistema', '2024-10-20 09:40:49'),
+(599, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-20 09:40:49'),
+(600, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-20 09:40:49'),
+(601, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-20 09:40:49'),
+(602, 'UPDATE', 'grupos', 14, 'Sistema', '2024-10-20 09:40:49'),
+(603, 'UPDATE', 'usuarios', 1, '1', '2024-10-20 09:40:49'),
+(604, 'UPDATE', 'usuarios', 2, '2', '2024-10-20 09:40:49'),
+(605, 'UPDATE', 'usuarios', 5, '5', '2024-10-20 09:40:49'),
+(606, 'UPDATE', 'usuarios', 6, '6', '2024-10-20 09:40:49'),
+(607, 'UPDATE', 'usuarios', 7, '7', '2024-10-20 09:40:49'),
+(608, 'UPDATE', 'usuarios', 8, '8', '2024-10-20 09:40:49'),
+(609, 'UPDATE', 'usuarios', 9, '9', '2024-10-20 09:40:49'),
+(610, 'UPDATE', 'usuarios', 10, '10', '2024-10-20 09:40:49'),
+(611, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:40:49'),
+(612, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 09:40:49'),
+(613, 'UPDATE', 'usuarios', 16, '16', '2024-10-20 09:40:49'),
+(614, 'UPDATE', 'usuarios', 18, '18', '2024-10-20 09:40:49'),
+(615, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:40:49'),
+(616, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 09:40:49'),
+(617, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:40:49'),
+(618, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:40:49'),
+(619, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 09:40:49'),
+(620, 'UPDATE', 'usuarios', 21, '21', '2024-10-20 09:40:49'),
+(621, 'UPDATE', 'usuarios', 26, '26', '2024-10-20 09:40:49'),
+(622, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 09:40:49'),
+(623, 'UPDATE', 'usuarios', 28, '28', '2024-10-20 09:40:49'),
+(624, 'UPDATE', 'usuarios', 29, '29', '2024-10-20 09:40:49'),
+(625, 'UPDATE', 'usuarios', 30, '30', '2024-10-20 09:40:49'),
+(626, 'UPDATE', 'usuarios', 31, '31', '2024-10-20 09:40:49'),
+(627, 'UPDATE', 'usuarios', 33, '33', '2024-10-20 09:40:49'),
+(628, 'UPDATE', 'usuarios', 34, '34', '2024-10-20 09:40:49'),
+(629, 'UPDATE', 'usuarios', 35, '35', '2024-10-20 09:40:49'),
+(630, 'UPDATE', 'usuarios', 36, '36', '2024-10-20 09:40:49'),
+(631, 'UPDATE', 'usuarios', 37, '37', '2024-10-20 09:40:49'),
+(632, 'UPDATE', 'usuarios', 38, '38', '2024-10-20 09:40:49'),
+(633, 'UPDATE', 'usuarios', 39, '39', '2024-10-20 09:40:49'),
+(634, 'INSERT', 'usuarios', 40, '40', '2024-10-20 09:42:58'),
+(635, 'INSERT', 'usuarios', 40, '40', '2024-10-20 09:42:58'),
+(636, 'INSERT', 'usuarios', 40, 'sistema', '2024-10-20 09:42:58'),
+(637, 'INSERT', 'usuarios', 41, '41', '2024-10-20 09:56:31'),
+(638, 'INSERT', 'usuarios', 41, '41', '2024-10-20 09:56:31'),
+(639, 'INSERT', 'usuarios', 41, 'sistema', '2024-10-20 09:56:31'),
+(640, 'INSERT', 'usuarios', 42, '42', '2024-10-20 10:10:40'),
+(641, 'INSERT', 'usuarios', 42, '42', '2024-10-20 10:10:40'),
+(642, 'INSERT', 'usuarios', 42, 'sistema', '2024-10-20 10:10:40'),
+(643, 'INSERT', 'usuarios', 43, '43', '2024-10-20 10:14:01'),
+(644, 'INSERT', 'usuarios', 43, '43', '2024-10-20 10:14:01'),
+(645, 'INSERT', 'usuarios', 43, 'sistema', '2024-10-20 10:14:01'),
+(646, 'UPDATE', 'usuarios', 43, '43', '2024-10-20 10:14:02'),
+(647, 'INSERT', 'usuarios', 44, '44', '2024-10-20 10:20:19'),
+(648, 'INSERT', 'usuarios', 44, '44', '2024-10-20 10:20:19'),
+(649, 'INSERT', 'usuarios', 44, 'sistema', '2024-10-20 10:20:19'),
+(650, 'UPDATE', 'usuarios', 44, '44', '2024-10-20 10:20:19'),
+(651, 'INSERT', 'usuarios', 45, '45', '2024-10-20 10:47:20'),
+(652, 'INSERT', 'usuarios', 45, '45', '2024-10-20 10:47:20'),
+(653, 'INSERT', 'usuarios', 45, 'sistema', '2024-10-20 10:47:20'),
+(654, 'UPDATE', 'usuarios', 45, '45', '2024-10-20 10:47:20'),
+(655, 'INSERT', 'usuarios', 46, '46', '2024-10-20 10:56:38'),
+(656, 'INSERT', 'usuarios', 46, '46', '2024-10-20 10:56:38'),
+(657, 'INSERT', 'usuarios', 46, 'sistema', '2024-10-20 10:56:38'),
+(658, 'UPDATE', 'usuarios', 46, '46', '2024-10-20 10:56:38'),
+(659, 'INSERT', 'usuarios', 47, '47', '2024-10-20 11:10:56'),
+(660, 'INSERT', 'usuarios', 47, '47', '2024-10-20 11:10:56'),
+(661, 'INSERT', 'usuarios', 47, 'sistema', '2024-10-20 11:10:56'),
+(662, 'UPDATE', 'usuarios', 47, '47', '2024-10-20 11:10:56'),
+(663, 'INSERT', 'usuarios', 48, '48', '2024-10-20 11:17:56'),
+(664, 'INSERT', 'usuarios', 48, '48', '2024-10-20 11:17:56'),
+(665, 'INSERT', 'usuarios', 48, 'sistema', '2024-10-20 11:17:56'),
+(666, 'UPDATE', 'usuarios', 48, '48', '2024-10-20 11:17:56'),
+(667, 'INSERT', 'usuarios', 49, '49', '2024-10-20 11:24:30'),
+(668, 'INSERT', 'usuarios', 49, '49', '2024-10-20 11:24:30'),
+(669, 'INSERT', 'usuarios', 49, 'sistema', '2024-10-20 11:24:30'),
+(670, 'UPDATE', 'usuarios', 49, '49', '2024-10-20 11:24:30'),
+(671, 'INSERT', 'usuarios', 50, '50', '2024-10-20 11:35:17'),
+(672, 'INSERT', 'usuarios', 50, '50', '2024-10-20 11:35:17'),
+(673, 'INSERT', 'usuarios', 50, 'sistema', '2024-10-20 11:35:17'),
+(674, 'UPDATE', 'usuarios', 50, '50', '2024-10-20 11:35:17'),
+(675, 'INSERT', 'usuarios', 51, '51', '2024-10-20 11:49:59'),
+(676, 'INSERT', 'usuarios', 51, '51', '2024-10-20 11:49:59'),
+(677, 'INSERT', 'usuarios', 51, 'sistema', '2024-10-20 11:49:59'),
+(678, 'UPDATE', 'usuarios', 51, '51', '2024-10-20 11:49:59'),
+(679, 'INSERT', 'usuarios', 52, '52', '2024-10-20 11:51:53'),
+(680, 'INSERT', 'usuarios', 52, '52', '2024-10-20 11:51:53'),
+(681, 'INSERT', 'usuarios', 52, 'sistema', '2024-10-20 11:51:53'),
+(682, 'UPDATE', 'usuarios', 52, '52', '2024-10-20 11:51:53'),
+(683, 'INSERT', 'usuarios', 53, '53', '2024-10-20 12:02:41'),
+(684, 'INSERT', 'usuarios', 53, '53', '2024-10-20 12:02:41'),
+(685, 'INSERT', 'usuarios', 53, 'sistema', '2024-10-20 12:02:41'),
+(686, 'UPDATE', 'usuarios', 53, '53', '2024-10-20 12:02:41'),
+(687, 'INSERT', 'usuarios', 54, '54', '2024-10-20 13:29:53'),
+(688, 'INSERT', 'usuarios', 54, '54', '2024-10-20 13:29:53'),
+(689, 'INSERT', 'usuarios', 54, 'sistema', '2024-10-20 13:29:53'),
+(690, 'UPDATE', 'usuarios', 54, '54', '2024-10-20 13:29:53'),
+(691, 'INSERT', 'usuarios', 55, '55', '2024-10-20 13:33:15'),
+(692, 'INSERT', 'usuarios', 55, '55', '2024-10-20 13:33:15'),
+(693, 'INSERT', 'usuarios', 55, 'sistema', '2024-10-20 13:33:15'),
+(694, 'INSERT', 'familias', 32, 'sistema', '2024-10-20 13:33:15'),
+(695, 'INSERT', 'grupos', 15, 'Sistema', '2024-10-20 13:33:15'),
+(696, 'INSERT', 'usuarios', 56, '56', '2024-10-20 13:38:38'),
+(697, 'INSERT', 'usuarios', 56, '56', '2024-10-20 13:38:38'),
+(698, 'INSERT', 'usuarios', 56, 'sistema', '2024-10-20 13:38:38'),
+(699, 'UPDATE', 'usuarios', 56, '56', '2024-10-20 13:38:38'),
+(700, 'INSERT', 'usuarios', 57, '57', '2024-10-20 13:45:49'),
+(701, 'INSERT', 'usuarios', 57, '57', '2024-10-20 13:45:49'),
+(702, 'INSERT', 'usuarios', 57, 'sistema', '2024-10-20 13:45:49'),
+(703, 'UPDATE', 'usuarios', 57, '57', '2024-10-20 13:45:49'),
+(704, 'INSERT', 'usuarios', 58, '58', '2024-10-20 13:55:11'),
+(705, 'INSERT', 'usuarios', 58, '58', '2024-10-20 13:55:11'),
+(706, 'INSERT', 'usuarios', 58, 'sistema', '2024-10-20 13:55:11'),
+(707, 'UPDATE', 'usuarios', 58, '58', '2024-10-20 13:55:11'),
+(708, 'INSERT', 'usuarios', 59, '59', '2024-10-20 13:58:07'),
+(709, 'INSERT', 'usuarios', 59, '59', '2024-10-20 13:58:07'),
+(710, 'INSERT', 'usuarios', 59, 'sistema', '2024-10-20 13:58:07'),
+(711, 'INSERT', 'familias', 33, 'sistema', '2024-10-20 13:58:07'),
+(712, 'INSERT', 'grupos', 16, 'Sistema', '2024-10-20 13:58:07'),
+(713, 'INSERT', 'usuarios', 60, '60', '2024-10-20 14:03:29'),
+(714, 'INSERT', 'usuarios', 60, '60', '2024-10-20 14:03:29'),
+(715, 'INSERT', 'usuarios', 60, 'sistema', '2024-10-20 14:03:29'),
+(716, 'INSERT', 'usuarios', 61, '61', '2024-10-20 14:05:27'),
+(717, 'INSERT', 'usuarios', 61, '61', '2024-10-20 14:05:27'),
+(718, 'INSERT', 'usuarios', 61, 'sistema', '2024-10-20 14:05:27'),
+(719, 'INSERT', 'familias', 34, 'sistema', '2024-10-20 14:05:27'),
+(720, 'INSERT', 'grupos', 17, 'Sistema', '2024-10-20 14:05:27'),
+(721, 'INSERT', 'usuarios', 62, '62', '2024-10-20 14:08:36'),
+(722, 'INSERT', 'usuarios', 62, '62', '2024-10-20 14:08:36'),
+(723, 'INSERT', 'usuarios', 62, 'sistema', '2024-10-20 14:08:36'),
+(724, 'UPDATE', 'usuarios', 62, '62', '2024-10-20 14:08:36'),
+(725, 'INSERT', 'usuarios', 63, '63', '2024-10-20 14:55:14'),
+(726, 'INSERT', 'usuarios', 63, '63', '2024-10-20 14:55:14'),
+(727, 'INSERT', 'usuarios', 63, 'sistema', '2024-10-20 14:55:14'),
+(728, 'INSERT', 'familias', 35, 'sistema', '2024-10-20 14:55:14'),
+(729, 'INSERT', 'grupos', 18, 'Sistema', '2024-10-20 14:55:15'),
+(730, 'INSERT', 'usuarios', 64, '64', '2024-10-20 15:27:05'),
+(731, 'INSERT', 'usuarios', 64, '64', '2024-10-20 15:27:05'),
+(732, 'INSERT', 'usuarios', 64, 'sistema', '2024-10-20 15:27:05'),
+(733, 'INSERT', 'usuarios', 65, '65', '2024-10-20 15:28:56'),
+(734, 'INSERT', 'usuarios', 65, '65', '2024-10-20 15:28:56'),
+(735, 'INSERT', 'usuarios', 65, 'sistema', '2024-10-20 15:28:56'),
+(736, 'INSERT', 'familias', 36, 'sistema', '2024-10-20 15:30:47'),
+(737, 'INSERT', 'familias', 37, 'sistema', '2024-10-20 15:30:47'),
+(738, 'INSERT', 'grupos', 19, 'Sistema', '2024-10-20 15:31:44'),
+(739, 'INSERT', 'grupos', 20, 'Sistema', '2024-10-20 15:31:44'),
+(740, 'INSERT', 'familias', 38, 'sistema', '2024-10-20 17:10:59'),
+(741, 'INSERT', 'familias', 39, 'sistema', '2024-10-20 17:10:59'),
+(742, 'INSERT', 'familias', 40, 'sistema', '2024-10-20 17:10:59'),
+(743, 'INSERT', 'familias', 41, 'sistema', '2024-10-20 17:10:59'),
+(744, 'INSERT', 'familias', 43, 'sistema', '2024-10-20 17:18:56'),
+(745, 'INSERT', 'familias', 44, 'sistema', '2024-10-20 17:18:56'),
+(746, 'INSERT', 'familias', 45, 'sistema', '2024-10-20 17:29:14'),
+(747, 'INSERT', 'familias', 46, 'sistema', '2024-10-20 17:48:59'),
+(748, 'INSERT', 'familias', 47, 'sistema', '2024-10-20 18:42:31'),
+(749, 'INSERT', 'familias', 48, 'sistema', '2024-10-20 18:44:27'),
+(750, 'INSERT', 'familias', 50, 'sistema', '2024-10-20 19:22:33'),
+(751, 'INSERT', 'usuarios', 66, '66', '2024-10-20 19:26:49'),
+(752, 'INSERT', 'usuarios', 66, '66', '2024-10-20 19:26:49'),
+(753, 'INSERT', 'usuarios', 66, 'sistema', '2024-10-20 19:26:49'),
+(754, 'INSERT', 'usuarios', 67, '67', '2024-10-20 19:28:40'),
+(755, 'INSERT', 'usuarios', 67, '67', '2024-10-20 19:28:40'),
+(756, 'INSERT', 'usuarios', 67, 'sistema', '2024-10-20 19:28:40'),
+(757, 'UPDATE', 'usuarios', 67, '67', '2024-10-20 19:28:40'),
+(758, 'INSERT', 'familias', 51, 'sistema', '2024-10-20 19:31:23'),
+(759, 'INSERT', 'familias', 53, 'sistema', '2024-10-20 19:42:16'),
+(760, 'INSERT', 'familias', 55, 'sistema', '2024-10-20 20:34:34'),
+(761, 'INSERT', 'familias', 56, 'sistema', '2024-10-20 20:40:56'),
+(762, 'INSERT', 'usuarios', 68, '68', '2024-10-20 21:07:01'),
+(763, 'INSERT', 'usuarios', 68, '68', '2024-10-20 21:07:01'),
+(764, 'INSERT', 'usuarios', 68, 'sistema', '2024-10-20 21:07:01'),
+(765, 'INSERT', 'usuarios', 70, '70', '2024-10-20 21:08:55'),
+(766, 'INSERT', 'usuarios', 70, '70', '2024-10-20 21:08:55'),
+(767, 'INSERT', 'usuarios', 70, 'sistema', '2024-10-20 21:08:55'),
+(768, 'INSERT', 'usuarios', 71, '71', '2024-10-20 21:23:39'),
+(769, 'INSERT', 'usuarios', 71, '71', '2024-10-20 21:23:39'),
+(770, 'INSERT', 'usuarios', 71, 'sistema', '2024-10-20 21:23:39'),
+(771, 'UPDATE', 'familias', 1, 'sistema', '2024-10-20 21:23:50'),
+(772, 'UPDATE', 'familias', 16, 'sistema', '2024-10-20 21:23:50'),
+(773, 'UPDATE', 'familias', 22, 'sistema', '2024-10-20 21:23:50'),
+(774, 'UPDATE', 'familias', 23, 'sistema', '2024-10-20 21:23:50'),
+(775, 'UPDATE', 'familias', 24, 'sistema', '2024-10-20 21:23:50'),
+(776, 'UPDATE', 'familias', 30, 'sistema', '2024-10-20 21:23:50'),
+(777, 'UPDATE', 'familias', 31, 'sistema', '2024-10-20 21:23:50'),
+(778, 'UPDATE', 'familias', 32, 'sistema', '2024-10-20 21:23:50'),
+(779, 'UPDATE', 'familias', 33, 'sistema', '2024-10-20 21:23:50'),
+(780, 'UPDATE', 'familias', 34, 'sistema', '2024-10-20 21:23:50'),
+(781, 'UPDATE', 'familias', 35, 'sistema', '2024-10-20 21:23:50'),
+(782, 'UPDATE', 'familias', 36, 'sistema', '2024-10-20 21:23:50'),
+(783, 'UPDATE', 'familias', 37, 'sistema', '2024-10-20 21:23:50'),
+(784, 'UPDATE', 'familias', 38, 'sistema', '2024-10-20 21:23:50'),
+(785, 'UPDATE', 'familias', 39, 'sistema', '2024-10-20 21:23:50'),
+(786, 'UPDATE', 'familias', 40, 'sistema', '2024-10-20 21:23:50'),
+(787, 'UPDATE', 'familias', 41, 'sistema', '2024-10-20 21:23:50'),
+(788, 'UPDATE', 'familias', 43, 'sistema', '2024-10-20 21:23:50'),
+(789, 'UPDATE', 'familias', 44, 'sistema', '2024-10-20 21:23:50'),
+(790, 'UPDATE', 'familias', 45, 'sistema', '2024-10-20 21:23:50'),
+(791, 'UPDATE', 'familias', 46, 'sistema', '2024-10-20 21:23:50'),
+(792, 'UPDATE', 'familias', 47, 'sistema', '2024-10-20 21:23:50'),
+(793, 'UPDATE', 'familias', 48, 'sistema', '2024-10-20 21:23:50'),
+(794, 'UPDATE', 'familias', 50, 'sistema', '2024-10-20 21:23:50'),
+(795, 'UPDATE', 'familias', 51, 'sistema', '2024-10-20 21:23:50'),
+(796, 'UPDATE', 'familias', 53, 'sistema', '2024-10-20 21:23:50'),
+(797, 'UPDATE', 'familias', 55, 'sistema', '2024-10-20 21:23:50'),
+(798, 'UPDATE', 'familias', 56, 'sistema', '2024-10-20 21:23:50'),
+(799, 'UPDATE', 'grupos', 1, 'Sistema', '2024-10-20 21:23:50'),
+(800, 'UPDATE', 'grupos', 9, 'Sistema', '2024-10-20 21:23:50'),
+(801, 'UPDATE', 'grupos', 11, 'Sistema', '2024-10-20 21:23:50'),
+(802, 'UPDATE', 'grupos', 14, 'Sistema', '2024-10-20 21:23:50'),
+(803, 'UPDATE', 'grupos', 15, 'Sistema', '2024-10-20 21:23:50'),
+(804, 'UPDATE', 'grupos', 16, 'Sistema', '2024-10-20 21:23:50'),
+(805, 'UPDATE', 'grupos', 17, 'Sistema', '2024-10-20 21:23:50'),
+(806, 'UPDATE', 'grupos', 18, 'Sistema', '2024-10-20 21:23:50'),
+(807, 'UPDATE', 'grupos', 19, 'Sistema', '2024-10-20 21:23:50'),
+(808, 'UPDATE', 'grupos', 20, 'Sistema', '2024-10-20 21:23:50'),
+(809, 'UPDATE', 'usuarios', 1, '1', '2024-10-20 21:23:50'),
+(810, 'UPDATE', 'usuarios', 2, '2', '2024-10-20 21:23:50'),
+(811, 'UPDATE', 'usuarios', 5, '5', '2024-10-20 21:23:50'),
+(812, 'UPDATE', 'usuarios', 6, '6', '2024-10-20 21:23:50'),
+(813, 'UPDATE', 'usuarios', 7, '7', '2024-10-20 21:23:50'),
+(814, 'UPDATE', 'usuarios', 8, '8', '2024-10-20 21:23:50'),
+(815, 'UPDATE', 'usuarios', 9, '9', '2024-10-20 21:23:50'),
+(816, 'UPDATE', 'usuarios', 10, '10', '2024-10-20 21:23:50'),
+(817, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 21:23:50'),
+(818, 'UPDATE', 'usuarios', 11, '11', '2024-10-20 21:23:50'),
+(819, 'UPDATE', 'usuarios', 16, '16', '2024-10-20 21:23:50'),
+(820, 'UPDATE', 'usuarios', 18, '18', '2024-10-20 21:23:50'),
+(821, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 21:23:50'),
+(822, 'UPDATE', 'usuarios', 19, '19', '2024-10-20 21:23:50'),
+(823, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 21:23:50'),
+(824, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 21:23:50');
+INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`, `usuario`, `fecha`) VALUES
+(825, 'UPDATE', 'usuarios', 20, '20', '2024-10-20 21:23:50'),
+(826, 'UPDATE', 'usuarios', 21, '21', '2024-10-20 21:23:50'),
+(827, 'UPDATE', 'usuarios', 26, '26', '2024-10-20 21:23:50'),
+(828, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 21:23:50'),
+(829, 'UPDATE', 'usuarios', 27, '27', '2024-10-20 21:23:50'),
+(830, 'UPDATE', 'usuarios', 28, '28', '2024-10-20 21:23:50'),
+(831, 'UPDATE', 'usuarios', 29, '29', '2024-10-20 21:23:50'),
+(832, 'UPDATE', 'usuarios', 30, '30', '2024-10-20 21:23:50'),
+(833, 'UPDATE', 'usuarios', 31, '31', '2024-10-20 21:23:50'),
+(834, 'UPDATE', 'usuarios', 33, '33', '2024-10-20 21:23:50'),
+(835, 'UPDATE', 'usuarios', 34, '34', '2024-10-20 21:23:50'),
+(836, 'UPDATE', 'usuarios', 35, '35', '2024-10-20 21:23:50'),
+(837, 'UPDATE', 'usuarios', 36, '36', '2024-10-20 21:23:50'),
+(838, 'UPDATE', 'usuarios', 37, '37', '2024-10-20 21:23:50'),
+(839, 'UPDATE', 'usuarios', 38, '38', '2024-10-20 21:23:50'),
+(840, 'UPDATE', 'usuarios', 39, '39', '2024-10-20 21:23:50'),
+(841, 'UPDATE', 'usuarios', 40, '40', '2024-10-20 21:23:50'),
+(842, 'UPDATE', 'usuarios', 41, '41', '2024-10-20 21:23:50'),
+(843, 'UPDATE', 'usuarios', 41, '41', '2024-10-20 21:23:50'),
+(844, 'UPDATE', 'usuarios', 42, '42', '2024-10-20 21:23:50'),
+(845, 'UPDATE', 'usuarios', 43, '43', '2024-10-20 21:23:50'),
+(846, 'UPDATE', 'usuarios', 44, '44', '2024-10-20 21:23:50'),
+(847, 'UPDATE', 'usuarios', 45, '45', '2024-10-20 21:23:50'),
+(848, 'UPDATE', 'usuarios', 46, '46', '2024-10-20 21:23:50'),
+(849, 'UPDATE', 'usuarios', 47, '47', '2024-10-20 21:23:50'),
+(850, 'UPDATE', 'usuarios', 48, '48', '2024-10-20 21:23:50'),
+(851, 'UPDATE', 'usuarios', 49, '49', '2024-10-20 21:23:50'),
+(852, 'UPDATE', 'usuarios', 50, '50', '2024-10-20 21:23:50'),
+(853, 'UPDATE', 'usuarios', 51, '51', '2024-10-20 21:23:50'),
+(854, 'UPDATE', 'usuarios', 52, '52', '2024-10-20 21:23:50'),
+(855, 'UPDATE', 'usuarios', 53, '53', '2024-10-20 21:23:50'),
+(856, 'UPDATE', 'usuarios', 54, '54', '2024-10-20 21:23:50'),
+(857, 'UPDATE', 'usuarios', 55, '55', '2024-10-20 21:23:50'),
+(858, 'UPDATE', 'usuarios', 56, '56', '2024-10-20 21:23:50'),
+(859, 'UPDATE', 'usuarios', 57, '57', '2024-10-20 21:23:50'),
+(860, 'UPDATE', 'usuarios', 58, '58', '2024-10-20 21:23:50'),
+(861, 'UPDATE', 'usuarios', 59, '59', '2024-10-20 21:23:50'),
+(862, 'UPDATE', 'usuarios', 60, '60', '2024-10-20 21:23:50'),
+(863, 'UPDATE', 'usuarios', 61, '61', '2024-10-20 21:23:50'),
+(864, 'UPDATE', 'usuarios', 61, '61', '2024-10-20 21:23:50'),
+(865, 'UPDATE', 'usuarios', 62, '62', '2024-10-20 21:23:50'),
+(866, 'UPDATE', 'usuarios', 63, '63', '2024-10-20 21:23:50'),
+(867, 'UPDATE', 'usuarios', 63, '63', '2024-10-20 21:23:50'),
+(868, 'UPDATE', 'usuarios', 63, '63', '2024-10-20 21:23:50'),
+(869, 'UPDATE', 'usuarios', 63, '63', '2024-10-20 21:23:50'),
+(870, 'UPDATE', 'usuarios', 64, '64', '2024-10-20 21:23:50'),
+(871, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(872, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(873, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(874, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(875, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(876, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(877, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(878, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(879, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(880, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(881, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(882, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(883, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(884, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(885, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(886, 'UPDATE', 'usuarios', 65, '65', '2024-10-20 21:23:50'),
+(887, 'UPDATE', 'usuarios', 66, '66', '2024-10-20 21:23:50'),
+(888, 'UPDATE', 'usuarios', 67, '67', '2024-10-20 21:23:50'),
+(889, 'UPDATE', 'usuarios', 68, '68', '2024-10-20 21:23:50'),
+(890, 'UPDATE', 'usuarios', 70, '70', '2024-10-20 21:23:50'),
+(891, 'UPDATE', 'usuarios', 71, '71', '2024-10-20 21:23:50'),
+(892, 'INSERT', 'usuarios', 72, '72', '2024-10-20 21:25:22'),
+(893, 'INSERT', 'usuarios', 72, '72', '2024-10-20 21:25:22'),
+(894, 'INSERT', 'usuarios', 72, 'sistema', '2024-10-20 21:25:22'),
+(895, 'INSERT', 'familias', 57, 'sistema', '2024-10-20 21:26:47'),
+(896, 'DELETE', 'usuarios', 71, '71', '2024-10-20 21:34:55'),
+(897, 'DELETE', 'usuarios', 68, '68', '2024-10-20 21:35:09');
 
 -- --------------------------------------------------------
 
@@ -997,7 +1443,67 @@ INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 (371, 1, 'logout', '2024-10-19 15:58:29'),
 (372, 1, 'login', '2024-10-19 15:58:36'),
 (373, 1, 'logout', '2024-10-19 16:07:17'),
-(374, 1, 'login', '2024-10-19 16:07:26');
+(374, 1, 'login', '2024-10-19 16:07:26'),
+(375, 1, 'login', '2024-10-20 08:13:00'),
+(376, 1, 'logout', '2024-10-20 09:18:33'),
+(377, 1, 'login', '2024-10-20 09:19:02'),
+(378, 1, 'logout', '2024-10-20 09:19:27'),
+(379, 1, 'login', '2024-10-20 09:19:45'),
+(380, 1, 'logout', '2024-10-20 09:21:56'),
+(381, 1, 'login', '2024-10-20 09:22:04'),
+(382, 1, 'logout', '2024-10-20 10:12:12'),
+(383, 1, 'login', '2024-10-20 10:14:24'),
+(384, 1, 'logout', '2024-10-20 10:15:28'),
+(385, 1, 'login', '2024-10-20 10:20:27'),
+(386, 1, 'logout', '2024-10-20 10:44:40'),
+(387, 1, 'login', '2024-10-20 10:47:28'),
+(388, 1, 'logout', '2024-10-20 10:53:26'),
+(389, 1, 'login', '2024-10-20 10:56:48'),
+(390, 1, 'logout', '2024-10-20 10:57:51'),
+(391, 1, 'login', '2024-10-20 11:11:15'),
+(392, 1, 'logout', '2024-10-20 11:15:35'),
+(393, 1, 'login', '2024-10-20 11:18:06'),
+(394, 1, 'logout', '2024-10-20 11:20:15'),
+(395, 1, 'login', '2024-10-20 11:24:39'),
+(396, 1, 'logout', '2024-10-20 11:26:19'),
+(397, 1, 'login', '2024-10-20 11:35:34'),
+(398, 1, 'logout', '2024-10-20 11:37:33'),
+(399, 1, 'login', '2024-10-20 11:44:20'),
+(400, 1, 'logout', '2024-10-20 11:48:44'),
+(401, 1, 'login', '2024-10-20 11:50:14'),
+(402, 1, 'login', '2024-10-20 11:52:00'),
+(403, 1, 'logout', '2024-10-20 11:53:37'),
+(404, 1, 'login', '2024-10-20 11:54:56'),
+(405, 1, 'logout', '2024-10-20 12:01:06'),
+(406, 1, 'login', '2024-10-20 12:02:48'),
+(407, 1, 'logout', '2024-10-20 13:28:19'),
+(408, 1, 'login', '2024-10-20 13:30:06'),
+(409, 1, 'logout', '2024-10-20 13:36:40'),
+(410, 1, 'login', '2024-10-20 13:38:46'),
+(411, 1, 'logout', '2024-10-20 13:44:09'),
+(412, 1, 'login', '2024-10-20 13:46:02'),
+(413, 1, 'logout', '2024-10-20 13:51:29'),
+(414, 1, 'login', '2024-10-20 13:55:23'),
+(415, 1, 'logout', '2024-10-20 14:02:09'),
+(416, 1, 'login', '2024-10-20 14:02:13'),
+(417, 1, 'logout', '2024-10-20 14:07:08'),
+(418, 1, 'login', '2024-10-20 14:52:15'),
+(419, 1, 'login', '2024-10-20 16:56:54'),
+(420, 1, 'logout', '2024-10-20 17:28:18'),
+(421, 1, 'login', '2024-10-20 17:28:24'),
+(422, 1, 'logout', '2024-10-20 17:48:06'),
+(423, 1, 'login', '2024-10-20 17:48:28'),
+(424, 1, 'logout', '2024-10-20 17:59:57'),
+(425, 1, 'login', '2024-10-20 18:00:26'),
+(426, 1, 'logout', '2024-10-20 18:42:46'),
+(427, 1, 'login', '2024-10-20 18:43:59'),
+(428, 1, 'logout', '2024-10-20 19:21:10'),
+(429, 1, 'login', '2024-10-20 19:21:39'),
+(430, 1, 'logout', '2024-10-20 19:27:45'),
+(431, 1, 'login', '2024-10-20 19:28:53'),
+(432, 1, 'logout', '2024-10-20 20:33:19'),
+(433, 1, 'login', '2024-10-20 20:33:49'),
+(434, 1, 'login', '2024-10-20 21:20:57');
 
 -- --------------------------------------------------------
 
@@ -1011,6 +1517,15 @@ CREATE TABLE `auditoria_accesos_archivo` (
   `accion` varchar(255) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `auditoria_accesos_archivo`
+--
+
+INSERT INTO `auditoria_accesos_archivo` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
+(1, 32, 'DELETE', '2024-10-20 09:24:17'),
+(2, 71, 'DELETE', '2024-10-20 21:34:55'),
+(3, 68, 'DELETE', '2024-10-20 21:35:09');
 
 -- --------------------------------------------------------
 
@@ -1102,12 +1617,35 @@ CREATE TABLE `familias` (
 --
 
 INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`, `estado`) VALUES
-(1, 'Familia1', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo'),
-(16, 'Familia juan', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo'),
-(22, 'mmmmmm', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo'),
-(23, 'vvvvv', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo'),
-(24, 'buena', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo'),
-(30, '27Fam', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', 'activo');
+(1, 'Familia1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(16, 'Familia juan', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(22, 'mmmmmm', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(23, 'vvvvv', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(24, 'buena', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(30, '27Fam', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(31, 'SebasFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(32, 'PaulaFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(33, 'SilviaFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(34, 'JuanFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(35, 'LucioFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(36, 'FamiliaNueva1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(37, 'FamiliaNueva2', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(38, 'RobertoF1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(39, 'RobertoF2', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(40, 'RobertoF3', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(41, 'RobertoF4', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(43, 'LosGuayonesF1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(44, 'LosGuayonesF2', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(45, 'MolonaFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(46, 'LaMejorDelMundo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(47, 'Pruebita11', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(48, 'LosBola', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(50, 'BolincheFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(51, 'AverSi', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(53, 'GonzalezFamilia', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(55, 'PucholFamila', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(56, 'FamiliaPrueba', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', 'activo'),
+(57, 'FamiliaPruebitaDefinitiva', '$2y$10$rhmmZ60UIU5LMHyX/DDU7uN9nO.HBAKVGb7urbhVIQApCtMjVGtPS', 'activo');
 
 --
 -- Disparadores `familias`
@@ -1297,9 +1835,16 @@ CREATE TABLE `grupos` (
 --
 
 INSERT INTO `grupos` (`idGrupo`, `nombre_grupo`, `password`) VALUES
-(1, 'Grupo1', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG'),
-(9, 'Grupitoo lllll', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG'),
-(11, 'B3', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG');
+(1, 'Grupo1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(9, 'Grupitoo lllll', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(11, 'B3', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(14, 'AndrésGrupo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(15, 'PaulaGrupo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(16, 'SilviaGrupo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(17, 'JuanGrupo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(18, 'LucioGrupo', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(19, 'GrupoNuevo1', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq'),
+(20, 'GrupoNuevo2', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq');
 
 --
 -- Disparadores `grupos`
@@ -1815,26 +2360,63 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`idUser`, `nombre`, `apellido`, `alias`, `email`, `contrasenya`, `fecha_nacimiento`, `telefono`, `nivel_usuario`, `fecha_registro`, `estado_usuario`) VALUES
-(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', 'activo'),
-(2, 'Admin1', 'Family1', 'admin1', 'admin1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1980-01-01', '625418965', 'admin', '2024-10-04 10:04:06', 'activo'),
-(5, 'Pareja1', 'Family1', 'pareja1', 'pareja1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1982-02-02', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
-(6, 'Hijo1', 'Family1', 'hijo1', 'hijo1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2005-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
-(7, 'Hijo2', 'Family1', 'hijo2', 'hijo2@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2007-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
-(8, 'Hijo3', 'Family1', 'hijo3', 'hijo3@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2010-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
-(9, 'Amigo1', 'Grupo1', 'amigo1', 'amigo1@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1990-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', 'activo'),
-(10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', 'activo'),
-(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', 'activo'),
-(16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', 'activo'),
-(18, 'Lucía', 'Gómez', 'Lucy', 'lucy@lucy.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1968-02-02', '123456789', 'usuario', '2024-10-12 17:42:45', 'activo'),
-(19, 'Rafa', 'Gómez', 'RafaGomez', 'RafaGomez@RafaGomez.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1982-02-02', '336265984', 'usuario', '2024-10-12 18:28:50', 'activo'),
-(20, 'xxxxxx', 'xxxxxx', 'xxxxxx', 'xxx@xxx.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2003-03-03', '777777777', 'admin', '2024-10-13 08:28:06', 'activo'),
-(21, 'mmmmmm', 'mmmmmm', 'mmmmmm', 'mmmmmm@mmmmmm.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1999-12-18', '222555555', 'usuario', '2024-10-13 08:34:52', 'activo'),
-(26, '26Usu', '26Usu', '26Usu', '26Usu@26Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '1980-06-03', '262662266', 'usuario', '2024-10-13 17:39:57', 'activo'),
-(27, '27Usu', '27Usu', '27Usu', '27Usu@27Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2001-01-01', '222333333', 'admin', '2024-10-13 18:28:47', 'activo'),
-(28, '28Usu', '28Usu', '28Usu', '28Usu@28Usu.com', '$2y$10$YE/fFb8WWDsnPmpGhDg.iuvFb1aHYQiyBM6oxl9Dmj8ER.iMgh0yG', '2004-04-04', '626222222', 'usuario', '2024-10-14 16:28:08', 'activo'),
-(29, '29Usu', '29Usu', '29Usu', '29Usu@29Usu.com', '$2y$10$Jce6chf5g155y5siM3HVkupRg8iJoC4rhMaxFHg.UO9ryNITo6pqy', '2001-03-03', '555222222', 'usuario', '2024-10-14 16:30:53', 'activo'),
-(30, '50Usu', '50Usu', '50Usu', '50Usu@50Usu.com', '$2y$10$B0QWKa2P1dWoI0tlPFY5j.P.cKZSqokCN5E0PlSkLUy1kjwNtBU66', '1966-12-22', '639584745', 'usuario', '2024-10-14 17:24:50', 'activo'),
-(31, '31Usu', '31Usu', '31Usu', '31Usu@31Usu.com', '$2y$10$3xGESvqM7kMyOQF3Y4vvE.vjoKtcp3FKHT.IpQSkjVVLi/rhgZfgq', '2008-08-08', '987454545', 'usuario', '2024-10-14 18:11:36', 'activo');
+(1, 'Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1970-01-01', '625418965', 'superadmin', '2024-10-04 10:03:48', 'activo'),
+(2, 'Admin1', 'Family1', 'admin1', 'admin1@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1980-01-01', '625418965', 'admin', '2024-10-04 10:04:06', 'activo'),
+(5, 'Pareja1', 'Family1', 'pareja1', 'pareja1@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1982-02-02', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
+(6, 'Hijo1', 'Family1', 'hijo1', 'hijo1@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2005-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
+(7, 'Hijo2', 'Family1', 'hijo2', 'hijo2@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2007-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
+(8, 'Hijo3', 'Family1', 'hijo3', 'hijo3@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2010-01-01', '625418965', 'usuario', '2024-10-04 10:05:28', 'activo'),
+(9, 'Amigo1', 'Grupo1', 'amigo1', 'amigo1@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1990-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', 'activo'),
+(10, 'Amigo2', 'Grupo1', 'amigo2', 'amigo2@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1991-03-03', '625418965', 'usuario', '2024-10-04 10:05:49', 'activo'),
+(11, 'Amigo3', 'Grupo1', 'amigo3', 'amigo3@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1992-03-03', '625418965', 'admin', '2024-10-04 10:05:49', 'activo'),
+(16, 'kk', 'kkkk', 'kk', 'kk@kk.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2004-04-04', '455545545', 'admin', '2024-10-10 16:31:32', 'activo'),
+(18, 'Lucía', 'Gómez', 'Lucy', 'lucy@lucy.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1968-02-02', '123456789', 'usuario', '2024-10-12 17:42:45', 'activo'),
+(19, 'Rafa', 'Gómez', 'RafaGomez', 'RafaGomez@RafaGomez.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1982-02-02', '336265984', 'usuario', '2024-10-12 18:28:50', 'activo'),
+(20, 'xxxxxx', 'xxxxxx', 'xxxxxx', 'xxx@xxx.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2003-03-03', '777777777', 'admin', '2024-10-13 08:28:06', 'activo'),
+(21, 'mmmmmm', 'mmmmmm', 'mmmmmm', 'mmmmmm@mmmmmm.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1999-12-18', '222555555', 'usuario', '2024-10-13 08:34:52', 'activo'),
+(26, '26Usu', '26Usu', '26Usu', '26Usu@26Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1980-06-03', '262662266', 'usuario', '2024-10-13 17:39:57', 'activo'),
+(27, '27Usu', '27Usu', '27Usu', '27Usu@27Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2001-01-01', '222333333', 'admin', '2024-10-13 18:28:47', 'activo'),
+(28, '28Usu', '28Usu', '28Usu', '28Usu@28Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2004-04-04', '626222222', 'usuario', '2024-10-14 16:28:08', 'activo'),
+(29, '29Usu', '29Usu', '29Usu', '29Usu@29Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2001-03-03', '555222222', 'usuario', '2024-10-14 16:30:53', 'activo'),
+(30, '50Usu', '50Usu', '50Usu', '50Usu@50Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1966-12-22', '639584745', 'usuario', '2024-10-14 17:24:50', 'activo'),
+(31, '31Usu', '31Usu', '31Usu', '31Usu@31Usu.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2008-08-08', '987454545', 'usuario', '2024-10-14 18:11:36', 'activo'),
+(33, 'Euclides', 'Euclides', 'Euclides', 'Euclides@Euclides.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1987-03-02', '582331145', 'usuario', '2024-10-20 09:25:11', 'activo'),
+(34, 'Sebas', 'Sebas', 'Sebas', 'Sebas@Sebas.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1999-03-02', '245636985', 'admin', '2024-10-20 09:27:59', 'activo'),
+(35, 'Carlitos', 'Carlitos', 'Carlitos', 'Carlitos@Carlitos.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1975-01-01', '458623515', 'usuario', '2024-10-20 09:29:23', 'activo'),
+(36, 'Ramón', 'Ramón', 'Ramón', 'Ramon@Ramon.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1999-02-03', '789512445', 'usuario', '2024-10-20 09:31:36', 'activo'),
+(37, 'Andrés', 'Andrés', 'Andrés', 'Andres@Andres.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2003-03-03', '526323214', 'admin', '2024-10-20 09:34:04', 'activo'),
+(38, 'Sebastián', 'Sebastián', 'Sebastián', 'Sebas@123.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2004-04-04', '754232659', 'admin', '2024-10-20 09:36:05', 'activo'),
+(39, 'Tian', 'Tian', 'Tian', 'Tian@Tian.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2000-03-03', '256336699', 'admin', '2024-10-20 09:40:26', 'activo'),
+(40, 'Goro', 'Goro', 'Goro', 'Goro@Goro.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1976-06-30', '568221144', 'usuario', '2024-10-20 09:42:58', 'activo'),
+(41, 'Eduardito', 'Eduardito', 'Eduardito', 'Eduardito@Eduardito.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1987-03-02', '351226699', 'admin', '2024-10-20 09:56:31', 'activo'),
+(42, 'Nolo', 'Nolo', 'Nolo', 'Nolo@Nolo.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2000-02-03', '321565854', 'admin', '2024-10-20 10:10:40', 'activo'),
+(43, 'Externo', 'Externo', 'Externo', 'Externo@Externo.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2000-12-02', '856232124', 'usuario', '2024-10-20 10:14:01', 'activo'),
+(44, 'Eduardo', 'Eduardo', 'Eduardo', 'Eduardo@Eduardo.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-01-01', '358652147', 'usuario', '2024-10-20 10:20:19', 'activo'),
+(45, 'Esteban', 'Esteban', 'Esteban', 'Esteban@Esteban.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-02-02', '352669988', 'usuario', '2024-10-20 10:47:20', 'activo'),
+(46, 'Franjo', 'Franjo', 'Franjo', 'Franjo@Franjo.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-05-01', '352487489', 'usuario', '2024-10-20 10:56:38', 'activo'),
+(47, 'Luis', 'Luis', 'Luis', 'Luis@Luis.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-05-05', '695332211', 'usuario', '2024-10-20 11:10:56', 'activo'),
+(48, 'JavierI', 'JavierI', 'JavierI', 'JavierI@JavierI.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-06-06', '695847574', 'usuario', '2024-10-20 11:17:56', 'activo'),
+(49, 'Mónica', 'Mónica', 'Mónica', 'Monica@Monica.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2000-02-03', '352669944', 'usuario', '2024-10-20 11:24:30', 'activo'),
+(50, 'Mery', 'Mery', 'Mery', 'Mery@Mery.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1979-09-09', '985624763', 'usuario', '2024-10-20 11:35:17', 'activo'),
+(51, 'Luisote', 'Luisote', 'Luisote', 'Luisote@Luisote.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-03-03', '698574868', 'usuario', '2024-10-20 11:49:59', 'activo'),
+(52, 'Estela', 'Estela', 'Estela', 'Estela@Estela.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1979-09-09', '325456987', 'usuario', '2024-10-20 11:51:53', 'activo'),
+(53, 'Susanita', 'Susanita', 'Susanita', 'Susanita@Susanita.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1974-06-02', '357986512', 'usuario', '2024-10-20 12:02:41', 'activo'),
+(54, 'Natalia', 'Natalia', 'Natalia', 'Natalia@Natalia.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1998-08-08', '586241458', 'usuario', '2024-10-20 13:29:53', 'activo'),
+(55, 'Paula', 'Paula', 'Paula', 'Paula@Paula.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1997-09-26', '789562519', 'usuario', '2024-10-20 13:33:15', 'activo'),
+(56, 'Fran', 'Fran', 'Fran', 'Fran@Fran.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1966-04-15', '245968547', 'usuario', '2024-10-20 13:38:38', 'activo'),
+(57, 'Mamen', 'Mamen', 'Mamen', 'Mamen@Mamen.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1973-04-04', '586958475', 'usuario', '2024-10-20 13:45:49', 'activo'),
+(58, 'Laura', 'Laura', 'Laura', 'Laura@Laura.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1984-01-06', '753264875', 'usuario', '2024-10-20 13:55:11', 'activo'),
+(59, 'Silvia', 'Silvia', 'Silvia', 'Silvia@Silvia.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1999-03-22', '351265847', 'usuario', '2024-10-20 13:58:07', 'activo'),
+(60, 'Manolo', 'Manolo', 'Manolo', 'Manolo@Manolo.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1995-05-05', '265323536', 'admin', '2024-10-20 14:03:29', 'activo'),
+(61, 'Juan', 'Juan', 'Juan', 'Juan@Juan.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1992-03-03', '785246859', 'admin', '2024-10-20 14:05:27', 'activo'),
+(62, 'Mica', 'Mica', 'Mica', 'Mica@Mica.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1971-09-01', '159698423', 'usuario', '2024-10-20 14:08:36', 'activo'),
+(63, 'Lucio', 'Lucio', 'Lucio', 'Lucio@Lucio.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2005-05-04', '265323254', 'admin', '2024-10-20 14:55:14', 'activo'),
+(64, 'NuevoAdmin', 'ApellidoAdmin', 'nuevoadmin', 'nuevoadmin@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1990-01-01', '123456789', 'admin', '2024-10-20 15:27:05', 'activo'),
+(65, 'NuevoAdmin', 'ApellidoAdmin', 'nuevoadmin', 'nuevoadmin2@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1990-01-01', '123456789', 'admin', '2024-10-20 15:28:56', 'activo'),
+(66, 'Marianico', 'Marianico', 'Marianico', 'Marianico@Marianico.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1999-12-22', '562336699', 'usuario', '2024-10-20 19:26:49', 'activo'),
+(67, 'Mariana', 'Mariana', 'Mariana', 'Mariana@Mariana.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '2000-12-13', '625474142', 'usuario', '2024-10-20 19:28:40', 'activo'),
+(70, 'UsuarioPrueba', 'ApellidoPrueba', 'AliasPrueba', 'nuevoemail@example.com', '$2y$10$WpcxKZnOTuV0R8WiW62rM.iw1n/JA09gjBu52cTYG.mbLdkBA5zrq', '1990-01-01', '123456789', 'usuario', '2024-10-20 21:08:55', 'activo'),
+(72, 'PruebitaFinal', 'PruebitaFinal', 'PruebitaFinal', 'PruebitaFinal@PruebitaFinal.com', '$2y$10$.i0w23GsLlK9DMawpTJqdu5Vi2lOakC0RD3Lf97a4KdmaOBUuivzq', '1999-02-03', '622335588', 'admin', '2024-10-20 21:25:22', 'activo');
 
 --
 -- Disparadores `usuarios`
@@ -1910,7 +2492,29 @@ INSERT INTO `usuarios_familias` (`id`, `idUser`, `idFamilia`) VALUES
 (10, 16, 23),
 (12, 20, 1),
 (13, 19, 22),
-(14, 19, 23);
+(14, 19, 23),
+(15, 33, 30),
+(16, 34, 31),
+(17, 41, 31),
+(18, 42, 31),
+(19, 44, 31),
+(20, 51, 31),
+(21, 55, 32),
+(22, 59, 33),
+(23, 60, 33),
+(24, 61, 34),
+(25, 63, 35),
+(26, 63, 34),
+(27, 65, 34),
+(28, 65, 35),
+(29, 65, 36),
+(30, 65, 37),
+(31, 38, 50),
+(32, 27, 51),
+(33, 41, 53),
+(34, 61, 55),
+(35, 72, 1),
+(36, 72, 57);
 
 --
 -- Disparadores `usuarios_familias`
@@ -1950,7 +2554,24 @@ INSERT INTO `usuarios_grupos` (`idUser`, `idGrupo`) VALUES
 (19, 9),
 (20, 1),
 (20, 9),
-(20, 11);
+(20, 11),
+(36, 1),
+(37, 14),
+(41, 14),
+(42, 14),
+(43, 14),
+(46, 14),
+(55, 15),
+(59, 16),
+(60, 16),
+(61, 17),
+(63, 17),
+(63, 18),
+(65, 17),
+(65, 18),
+(65, 19),
+(65, 20),
+(72, 15);
 
 --
 -- Disparadores `usuarios_grupos`
@@ -1973,7 +2594,8 @@ DELIMITER ;
 --
 ALTER TABLE `administradores_familias`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `idAdmin` (`idAdmin`,`idFamilia`);
+  ADD UNIQUE KEY `idAdmin` (`idAdmin`,`idFamilia`),
+  ADD KEY `fk_familia` (`idFamilia`);
 
 --
 -- Indices de la tabla `administradores_grupos`
@@ -1981,7 +2603,7 @@ ALTER TABLE `administradores_familias`
 ALTER TABLE `administradores_grupos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idGrupo` (`idGrupo`),
-  ADD KEY `fk_admin_grupo_admin` (`idAdmin`);
+  ADD KEY `fk_admin_grupo` (`idAdmin`);
 
 --
 -- Indices de la tabla `auditoria`
@@ -2170,31 +2792,31 @@ ALTER TABLE `usuarios_grupos`
 -- AUTO_INCREMENT de la tabla `administradores_familias`
 --
 ALTER TABLE `administradores_familias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `administradores_grupos`
 --
 ALTER TABLE `administradores_grupos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria`
 --
 ALTER TABLE `auditoria`
-  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=456;
+  MODIFY `idAuditoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=898;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos`
 --
 ALTER TABLE `auditoria_accesos`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=375;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=435;
 
 --
 -- AUTO_INCREMENT de la tabla `auditoria_accesos_archivo`
 --
 ALTER TABLE `auditoria_accesos_archivo`
-  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idAcceso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -2218,7 +2840,7 @@ ALTER TABLE `envio_refranes`
 -- AUTO_INCREMENT de la tabla `familias`
 --
 ALTER TABLE `familias`
-  MODIFY `idFamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `idFamilia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `gastos`
@@ -2230,7 +2852,7 @@ ALTER TABLE `gastos`
 -- AUTO_INCREMENT de la tabla `grupos`
 --
 ALTER TABLE `grupos`
-  MODIFY `idGrupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `idGrupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `ingresos`
@@ -2290,24 +2912,33 @@ ALTER TABLE `situacion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_familias`
 --
 ALTER TABLE `usuarios_familias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
+-- Filtros para la tabla `administradores_familias`
+--
+ALTER TABLE `administradores_familias`
+  ADD CONSTRAINT `fk_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_familia` FOREIGN KEY (`idFamilia`) REFERENCES `familias` (`idFamilia`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `administradores_grupos`
 --
 ALTER TABLE `administradores_grupos`
+  ADD CONSTRAINT `fk_admin_grupo` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_admin_grupo_admin` FOREIGN KEY (`idAdmin`) REFERENCES `usuarios` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_admin_grupo_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_admin_grupo_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_grupo` FOREIGN KEY (`idGrupo`) REFERENCES `grupos` (`idGrupo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `auditoria_accesos`

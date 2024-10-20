@@ -174,20 +174,25 @@ class GastosModelo
             }
 
             // Validar si se proporciona una familia o un grupo
-            $asignacionExitosa = false;
-            if ($idFamilia !== null) {
-                if (!$this->verificarPasswordFamilia($idFamilia, $passwordFamiliaGrupo)) {
-                    throw new Exception('Contraseña de la familia incorrecta.');
-                }
-                $asignacionExitosa = $this->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-            }
+$asignacionExitosa = false;
+if ($idFamilia !== null) {
+    if (!$this->verificarPasswordFamilia($idFamilia, $passwordFamiliaGrupo)) {
+        throw new Exception('Contraseña de la familia incorrecta.');
+    }
+    // No asignar el resultado a una variable ya que el método no devuelve nada
+    $this->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+    $asignacionExitosa = true;  // Indicar éxito manualmente
+}
 
-            if ($idGrupo !== null) {
-                if (!$this->verificarPasswordGrupo($idGrupo, $passwordFamiliaGrupo)) {
-                    throw new Exception('Contraseña del grupo incorrecta.');
-                }
-                $asignacionExitosa = $this->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-            }
+if ($idGrupo !== null) {
+    if (!$this->verificarPasswordGrupo($idGrupo, $passwordFamiliaGrupo)) {
+        throw new Exception('Contraseña del grupo incorrecta.');
+    }
+    // No asignar el resultado a una variable ya que el método no devuelve nada
+    $this->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+    $asignacionExitosa = true;  // Indicar éxito manualmente
+}
+
 
             // Si no se asignó ni a familia ni a grupo, quitar cualquier asociación existente
             if ($idFamilia === null && $idGrupo === null) {
@@ -365,10 +370,10 @@ class GastosModelo
     public function obtenerUsuariosPorFamilia($idFamilia)
     {
         $sql = "
-        SELECT u.*
-        FROM usuarios u
-        JOIN usuarios_familias uf ON u.idUser = uf.idUser
-        WHERE uf.idFamilia = :idFamilia";
+    SELECT u.* 
+    FROM usuarios u 
+    JOIN usuarios_familias uf ON u.idUser = uf.idUser 
+    WHERE uf.idFamilia = :idFamilia";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->execute();
@@ -380,15 +385,16 @@ class GastosModelo
     public function obtenerUsuariosPorGrupo($idGrupo)
     {
         $sql = "
-        SELECT u.*
-        FROM usuarios u
-        JOIN usuarios_grupos ug ON u.idUser = ug.idUser
-        WHERE ug.idGrupo = :idGrupo";
+    SELECT u.* 
+    FROM usuarios u 
+    JOIN usuarios_grupos ug ON u.idUser = ug.idUser 
+    WHERE ug.idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
 
 
@@ -543,14 +549,20 @@ class GastosModelo
 
     // Insertar una familia con contraseña encriptada
     public function insertarFamilia($nombreFamilia, $passwordFamilia)
-    {
-        $sql = "INSERT INTO familias (nombre_familia, password) VALUES (:nombreFamilia, :password)";
-        $stmt = $this->conexion->prepare($sql);
-        $hashedPassword = password_hash($passwordFamilia, PASSWORD_DEFAULT);  // Encriptar la contraseña
-        $stmt->bindValue(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
-        $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
-        return $stmt->execute();
+{
+    $sql = "INSERT INTO familias (nombre_familia, password) VALUES (:nombreFamilia, :password)";
+    $stmt = $this->conexion->prepare($sql);
+    $hashedPassword = password_hash($passwordFamilia, PASSWORD_DEFAULT);  // Encriptar la contraseña
+    $stmt->bindValue(':nombreFamilia', $nombreFamilia, PDO::PARAM_STR);
+    $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+    
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        throw new Exception('Error al insertar familia: ' . implode(", ", $stmt->errorInfo()));
     }
+}
+
 
 
     public function actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)
@@ -604,22 +616,31 @@ class GastosModelo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Actualizar familia y/o grupo asignado a un usuario
-    public function actualizarUsuarioFamiliaGrupo($idUsuario, $idFamilia = null, $idGrupo = null)
+    public function actualizarUsuarioFamiliaGrupo($idUsuario, $familias = [], $grupos = [])
     {
-        // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
-        if (empty($idFamilia) && empty($idGrupo)) {
-            $idFamilia = null;
-            $idGrupo = null;
+        try {
+            // Validar que el usuario esté asignado
+            if (empty($idUsuario)) {
+                throw new Exception('El usuario a actualizar debe estar definido.');
+            }
+
+            // Asignar al usuario a múltiples familias
+            foreach ($familias as $idFamilia) {
+                $this->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+            }
+
+            // Asignar al usuario a múltiples grupos
+            foreach ($grupos as $idGrupo) {
+                $this->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            error_log("Error en actualizarUsuarioFamiliaGrupo: " . $e->getMessage());
+            return false;
         }
-
-        $sql = "UPDATE usuarios SET idFamilia = :idFamilia, idGrupo = :idGrupo WHERE idUser = :idUsuario";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-
-        return $stmt->execute();
     }
+
 
 
 
@@ -1343,16 +1364,19 @@ class GastosModelo
         return $stmt->execute();
     }
 
-    public function asignarUsuarioAFamilia($idUsuario, $idFamilia)
-    {
-        $sqlFamilia = "INSERT INTO usuarios_familias (idUser, idFamilia) 
-                   VALUES (:idUsuario, :idFamilia) 
-                   ON DUPLICATE KEY UPDATE idFamilia = VALUES(idFamilia)";
-        $stmtFamilia = $this->conexion->prepare($sqlFamilia);
-        $stmtFamilia->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-        $stmtFamilia->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-        return $stmtFamilia->execute();
-    }
+    public function asignarUsuarioAFamilia($idUser, $idFamilia)
+{
+    $sql = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUser, :idFamilia)";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+
+
+
+
 
     public function asignarFamilia($idUsuario, $idFamilia = null, $nombreNuevaFamilia = null, $passwordNuevaFamilia = null)
     {
@@ -1385,24 +1409,16 @@ class GastosModelo
         }
     }
 
+    public function asignarUsuarioAGrupo($idUser, $idGrupo)
+{
+    $sql = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUser, :idGrupo)";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+    $stmt->execute();
+}
 
 
-
-    public function asignarUsuarioAGrupo($idUsuario, $idGrupo)
-    {
-        try {
-            $sqlGrupo = "INSERT INTO usuarios_grupos (idUser, idGrupo) 
-                     VALUES (:idUsuario, :idGrupo) 
-                     ON DUPLICATE KEY UPDATE idGrupo = :idGrupo";
-            $stmtGrupo = $this->conexion->prepare($sqlGrupo);
-            $stmtGrupo->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
-            $stmtGrupo->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-            return $stmtGrupo->execute();
-        } catch (PDOException $e) {
-            error_log("Error al asignar el usuario al grupo: " . $e->getMessage());
-            return false;
-        }
-    }
 
 
     public function asignarGrupo($idUsuario, $idGrupo = null, $nombreNuevoGrupo = null, $passwordNuevoGrupo = null)
@@ -1869,4 +1885,105 @@ class GastosModelo
             return false;
         }
     }
+    public function buscarFamiliasPorNombre($query)
+    {
+        $sql = "SELECT idFamilia, nombre_familia FROM familias WHERE nombre_familia LIKE :query LIMIT 10";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':query', '%' . $query . '%');
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function buscarGruposPorNombre($query)
+    {
+        $sql = "SELECT idGrupo, nombre_grupo FROM grupos WHERE nombre_grupo LIKE :query LIMIT 10";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':query', '%' . $query . '%');
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function insertarVariasFamilias($familias)
+    {
+        try {
+            $this->conexion->beginTransaction(); // Iniciar la transacción
+            foreach ($familias as $familia) {
+                $sql = "INSERT INTO familias (nombre_familia, password) VALUES (:nombreFamilia, :password)";
+                $stmt = $this->conexion->prepare($sql);
+                $hashedPassword = password_hash($familia['password'], PASSWORD_DEFAULT);  // Encriptar la contraseña
+                $stmt->bindValue(':nombreFamilia', $familia['nombre'], PDO::PARAM_STR);
+                $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+                $stmt->execute();
+            }
+            $this->conexion->commit(); // Confirmar la transacción
+            return true;
+        } catch (Exception $e) {
+            $this->conexion->rollBack(); // Revertir si hay algún error
+            error_log("Error al insertar familias: " . $e->getMessage());
+            return false;
+        }
+    }
+    public function insertarVariosGrupos($grupos)
+    {
+        try {
+            $this->conexion->beginTransaction(); // Iniciar la transacción
+            foreach ($grupos as $grupo) {
+                $sql = "INSERT INTO grupos (nombre_grupo, password) VALUES (:nombreGrupo, :password)";
+                $stmt = $this->conexion->prepare($sql);
+                $hashedPassword = password_hash($grupo['password'], PASSWORD_DEFAULT);  // Encriptar la contraseña
+                $stmt->bindValue(':nombreGrupo', $grupo['nombre'], PDO::PARAM_STR);
+                $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+                $stmt->execute();
+            }
+            $this->conexion->commit(); // Confirmar la transacción
+            return true;
+        } catch (Exception $e) {
+            $this->conexion->rollBack(); // Revertir si hay algún error
+            error_log("Error al insertar grupos: " . $e->getMessage());
+            return false;
+        }
+    }
+    public function contarFamiliasPorAdmin($idAdmin)
+{
+    $sql = "SELECT COUNT(*) AS total FROM administradores_familias WHERE idAdmin = :idAdmin";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+}
+
+
+
+public function contarGruposPorAdmin($idAdmin)
+{
+    $sql = "SELECT COUNT(*) AS total FROM administradores_grupos WHERE idAdmin = :idAdmin";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+}
+
+
+
+
+    public function asignarAdministradorAFamilia($idAdmin, $idFamilia)
+    {
+        $sql = "INSERT INTO administradores_familias (idAdmin, idFamilia) VALUES (:idAdmin, :idFamilia)";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    public function asignarAdministradorAGrupo($idAdmin, $idGrupo)
+    {
+        $sql = "INSERT INTO administradores_grupos (idAdmin, idGrupo) VALUES (:idAdmin, :idGrupo)";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+        $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    public function getLastInsertId()
+{
+    return $this->conexion->lastInsertId();
+}
+
 }

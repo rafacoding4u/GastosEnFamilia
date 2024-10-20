@@ -91,6 +91,8 @@ $map = array(
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
     'asignarUsuarioFamiliaGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'asignarUsuarioFamiliaGrupo', 'nivel_usuario' => 2),
+    'crearVariasFamilias' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearVariasFamilias', 'nivel_usuario' => 2),
+    'crearVariosGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'crearVariosGrupos', 'nivel_usuario' => 2),
 
     // Gestión financiera
     'verGastos' => array('controller' => 'FinanzasController', 'action' => 'verGastos', 'nivel_usuario' => 1),
