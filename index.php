@@ -39,8 +39,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Inicializa el nivel de usuario si no está definido
-if (!isset($_SESSION['nivel_usuario'])) {
-    $_SESSION['nivel_usuario'] = 0;
+if (!isset($_SESSION['usuario']['nivel_usuario'])) {
+    $_SESSION['usuario']['nivel_usuario'] = 0;
     error_log("Nivel de usuario no definido, asignado a 0", 3, __DIR__ . '/app/log/php-error.log');
 }
 
@@ -49,7 +49,7 @@ $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'AuthController', 'action' => 'home', 'nivel_usuario' => 0),
     'inicio' => array('controller' => 'AuthController', 'action' => 'inicio', 'nivel_usuario' => 1),
-    'salir' => array('controller' => 'AuthController', 'action' => 'salir', 'nivel_usuario' => 1),
+    'salir' => array('controller' => 'AuthController', 'action' => 'salir', 'nivel_usuario' => 0),
     'error' => array('controller' => 'AuthController', 'action' => 'error', 'nivel_usuario' => 0),
     'iniciarSesion' => array('controller' => 'AuthController', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
     'registro' => array('controller' => 'AuthController', 'action' => 'registro', 'nivel_usuario' => 0),
@@ -151,7 +151,7 @@ try {
         throw new Exception("La acción especificada no existe en el controlador.");
     }
 
-    if ($controlador['nivel_usuario'] <= $_SESSION['nivel_usuario']) {
+    if ($controlador['nivel_usuario'] <= $_SESSION['usuario']['nivel_usuario']) {
         error_log("Ejecutando acción: {$action} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
         call_user_func(array($controllerInstance, $action));
     } else {
