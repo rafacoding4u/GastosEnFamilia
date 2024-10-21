@@ -243,6 +243,12 @@ class UsuarioController
                         $idFamilia = $m->obtenerUltimoId();
                         error_log("Familia creada con éxito con ID: $idFamilia");
                         $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+
+                        // Si el usuario es administrador, asignarlo como tal
+                        if ($nivel_usuario === 'admin') {
+                            $m->asignarAdministradorAFamilia($idUser, $idFamilia);
+                            error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                        }
                     }
                 }
 
@@ -256,6 +262,12 @@ class UsuarioController
                         } else {
                             $m->asignarUsuarioAFamilia($idUser, $idFamilia);
                             error_log("Usuario $idUser asignado a la familia $idFamilia");
+
+                            // Asignar como administrador a la familia si el rol es 'admin'
+                            if ($nivel_usuario === 'admin') {
+                                $m->asignarAdministradorAFamilia($idUser, $idFamilia);
+                                error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                            }
                         }
                     }
                 }
@@ -270,6 +282,12 @@ class UsuarioController
                         $idGrupo = $m->obtenerUltimoId();
                         error_log("Grupo creado con éxito con ID: $idGrupo");
                         $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+
+                        // Si el usuario es administrador, asignarlo como tal
+                        if ($nivel_usuario === 'admin') {
+                            $m->asignarAdministradorAGrupo($idUser, $idGrupo);
+                            error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                        }
                     }
                 }
 
@@ -283,6 +301,12 @@ class UsuarioController
                         } else {
                             $m->asignarUsuarioAGrupo($idUser, $idGrupo);
                             error_log("Usuario $idUser asignado al grupo $idGrupo");
+
+                            // Asignar como administrador al grupo si el rol es 'admin'
+                            if ($nivel_usuario === 'admin') {
+                                $m->asignarAdministradorAGrupo($idUser, $idGrupo);
+                                error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                            }
                         }
                     }
                 }
@@ -327,6 +351,7 @@ class UsuarioController
             $this->render('formCrearUsuario.php', $params);
         }
     }
+
 
 
     public function formCrearUsuario()
