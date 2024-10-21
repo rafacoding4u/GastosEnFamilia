@@ -247,8 +247,6 @@ class AuthController
         $this->render('formRegistro.php', $params);
     }
 }
-
-
     private function registrarAcceso($idUser, $accion)
     {
         $m = new GastosModelo();

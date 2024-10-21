@@ -15,112 +15,141 @@ class UsuarioController
     }
 
     // Registro de usuario
-    public function registro()
-    {
+    /*public function registro()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
-            // Inicialización
-            $params = array(
-                'nombre' => '',
-                'apellido' => '',
-                'alias' => '',
-                'contrasenya' => '',
-                'email' => '',
-                'telefono' => '',
-                'nivel_usuario' => 'usuario',
-            );
-            $errores = array();
             $m = new GastosModelo();
 
-            // Obtener familias y grupos (igual que en crearUsuario)
-            $familias = $m->obtenerFamilias();
-            $grupos = $m->obtenerGrupos();
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                throw new Exception('CSRF token inválido.');
+            }
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Recoger datos del formulario
-                $nombre = recoge('nombre');
-                $apellido = recoge('apellido');
-                $alias = recoge('alias');
-                $contrasenya = recoge('contrasenya');
-                $email = recoge('email');
-                $telefono = recoge('telefono');
-                $nivel_usuario = recoge('nivel_usuario');
-                $fecha_nacimiento = recoge('fecha_nacimiento');
-                $idFamilias = recoge('idFamilia');
-                $idGrupos = recoge('idGrupo');
-                $nombre_nueva_familia = recoge('nombre_nueva_familia');
-                $password_nueva_familia = recoge('password_nueva_familia');
-                $nombre_nuevo_grupo = recoge('nombre_nuevo_grupo');
-                $password_nuevo_grupo = recoge('password_nuevo_grupo');
-                $passwordFamiliaExistente = recoge('passwordFamiliaExistente');
-                $passwordGrupoExistente = recoge('passwordGrupoExistente');
+            // Recoger los datos del formulario
+            $nombre = htmlspecialchars(recoge('nombre'), ENT_QUOTES, 'UTF-8');
+            $apellido = htmlspecialchars(recoge('apellido'), ENT_QUOTES, 'UTF-8');
+            $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
+            $email = filter_var(recoge('email'), FILTER_VALIDATE_EMAIL);
+            $telefono = htmlspecialchars(recoge('telefono'), ENT_QUOTES, 'UTF-8');
+            $password = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
+            $fechaNacimiento = recoge('fecha_nacimiento');
+            $tipoVinculo = recoge('tipo_vinculo'); // Familia o grupo
+            $nivel_usuario = 'registro'; // Establecemos el rol como registro
 
-                // Validaciones
-                cTexto($nombre, "nombre", $errores);
-                cTexto($apellido, "apellido", $errores);
-                cUser($alias, "alias", $errores);
-                cContrasenya($contrasenya, $errores);
-                cEmail($email, $errores);
-                cTelefono($telefono, $errores);
+            // Validaciones...
+            if (!$email || empty($password) || empty($nombre) || empty($alias)) {
+                throw new Exception('Todos los campos son obligatorios.');
+            }
 
-                // Validar alias existente
-                if ($m->existeUsuario($alias)) {
-                    $errores[] = "El alias ya está en uso.";
+            if ($m->existeUsuario($alias)) {
+                throw new Exception('El alias ya está en uso.');
+            }
+
+            $passwordEncriptada = password_hash($password, PASSWORD_DEFAULT);
+
+            // Insertar usuario con rol 'registro'
+            $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono);
+
+            if (!$usuarioRegistrado) {
+                throw new Exception('Error al registrar el usuario.');
+            }
+
+            $idUsuario = $m->obtenerIdUsuarioPorAlias($alias);
+
+            // Si se selecciona crear familia
+            if ($tipoVinculo === 'crear_familia') {
+                $nombreFamilia = recoge('nombre_nueva_familia');
+                $passwordFamilia = password_hash(recoge('password_nueva_familia'), PASSWORD_DEFAULT);
+                $m->insertarFamilia($nombreFamilia, $passwordFamilia);
+                $idFamilia = $m->obtenerIdFamiliaPorNombre($nombreFamilia);
+
+                if (!$idFamilia) {
+                    throw new Exception('Error al crear la familia.');
                 }
 
-                if (empty($errores)) {
-                    // Insertar usuario
-                    $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
-                    $idUsuario = $m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
+                $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                $m->añadirAdministradorAFamilia($idUsuario, $idFamilia);
 
-                    // Verificar creación de nuevas familias y grupos
-                    if (!empty($nombre_nueva_familia) && !empty($password_nueva_familia)) {
-                        $idFamilia = $m->insertarFamilia($nombre_nueva_familia, encriptar($password_nueva_familia));
-                        if ($idFamilia) {
-                            $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-                        }
-                    }
-                    if (!empty($nombre_nuevo_grupo) && !empty($password_nuevo_grupo)) {
-                        $idGrupo = $m->insertarGrupo($nombre_nuevo_grupo, encriptar($password_nuevo_grupo));
-                        if ($idGrupo) {
-                            $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-                        }
-                    }
+                // Actualizar el rol del usuario a "admin"
+                $m->actualizarUsuarioNivel($idUsuario, 'admin');
+            }
 
-                    // Asignar a familias y grupos existentes
-                    $idFamilias = is_array($idFamilias) ? $idFamilias : (!empty($idFamilias) ? [$idFamilias] : []);
-                    foreach ($idFamilias as $idFamilia) {
-                        if ($m->verificarPasswordFamilia($idFamilia, $passwordFamiliaExistente)) {
-                            $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-                        }
-                    }
+            // Si se selecciona crear grupo
+            if ($tipoVinculo === 'crear_grupo') {
+                $nombreGrupo = recoge('nombre_nuevo_grupo');
+                $passwordGrupo = password_hash(recoge('password_nuevo_grupo'), PASSWORD_DEFAULT);
+                $m->insertarGrupo($nombreGrupo, $passwordGrupo);
+                $idGrupo = $m->obtenerIdGrupoPorNombre($nombreGrupo);
 
-                    $idGrupos = is_array($idGrupos) ? $idGrupos : (!empty($idGrupos) ? [$idGrupos] : []);
-                    foreach ($idGrupos as $idGrupo) {
-                        if ($m->verificarPasswordGrupo($idGrupo, $passwordGrupoExistente)) {
-                            $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-                        }
-                    }
+                if (!$idGrupo) {
+                    throw new Exception('Error al crear el grupo.');
+                }
 
-                    // Redirigir tras éxito
-                    $_SESSION['mensaje_exito'] = 'Usuario registrado correctamente.';
-                    header('Location: index.php?ctl=login');
-                    exit();
-                } else {
-                    $params['errores'] = $errores;
+                $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                $m->añadirAdministradorAGrupo($idUsuario, $idGrupo);
+
+                // Actualizar el rol del usuario a "admin"
+                $m->actualizarUsuarioNivel($idUsuario, 'admin');
+            }
+
+            // Si se une a una familia o grupo existente
+            if ($tipoVinculo === 'familia' || $tipoVinculo === 'grupo') {
+                $idGrupoFamilia = recoge('idGrupoFamilia');
+                $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
+
+                if (strpos($idGrupoFamilia, 'familia_') === 0) {
+                    $idFamilia = str_replace('familia_', '', $idGrupoFamilia);
+                    if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
+                        throw new Exception('Contraseña de la familia incorrecta.');
+                    }
+                    $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+
+                    // Actualizar a rol 'usuario'
+                    $m->actualizarUsuarioNivel($idUsuario, 'usuario');
+                } elseif (strpos($idGrupoFamilia, 'grupo_') === 0) {
+                    $idGrupo = str_replace('grupo_', '', $idGrupoFamilia);
+                    if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
+                        throw new Exception('Contraseña del grupo incorrecta.');
+                    }
+                    $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+
+                    // Actualizar a rol 'usuario'
+                    $m->actualizarUsuarioNivel($idUsuario, 'usuario');
                 }
             }
 
-            $params['familias'] = $familias;
-            $params['grupos'] = $grupos;
-            $this->render('formRegistro.php', $params);
+            // Registro exitoso
+            $params['mensaje'] = 'Usuario registrado con éxito.';
+            header('Location: index.php?ctl=iniciarSesion');
+            exit();
         } catch (Exception $e) {
             error_log("Error en registro(): " . $e->getMessage());
-            $this->redireccionarError("Error al registrar usuario.");
+            $params['mensaje'] = 'Error al registrarse. ' . $e->getMessage();
+
+            // Volver a cargar los grupos y familias en caso de error
+            if (!isset($m)) {
+                $m = new GastosModelo();
+            }
+
+            $params['familias'] = $m->obtenerFamilias();
+            $params['grupos'] = $m->obtenerGrupos();
+            $this->render('formRegistro.php', $params);
         }
+    } else {
+        // Generar token CSRF
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        // Obtener grupos y familias del modelo y pasarlos al formulario
+        $m = new GastosModelo();
+        $params['csrf_token'] = $_SESSION['csrf_token'];
+        $params['familias'] = $m->obtenerFamilias();
+        $params['grupos'] = $m->obtenerGrupos();
+
+        $this->render('formRegistro.php', $params);
     }
-
-
-
+}*/
 
     public function crearUsuario()
     {
