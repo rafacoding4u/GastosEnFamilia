@@ -147,7 +147,7 @@ class AuthController
         exit();
     }
 
-    public function registro()
+public function registro()
 {
     try {
         error_log("Iniciando proceso de registro de usuario...");
@@ -171,6 +171,8 @@ class AuthController
             $password_nuevo_grupo = recoge('password_nuevo_grupo');
             $passwordFamiliaExistente = recoge('passwordFamiliaExistente');
             $passwordGrupoExistente = recoge('passwordGrupoExistente');
+            $idFamilia = recoge('idFamilia');
+            $idGrupo = recoge('idGrupo');
 
             // Validaciones y comprobaciones...
             // Aquí repites las validaciones de datos como lo haces en crearUsuario()
@@ -188,7 +190,7 @@ class AuthController
             }
             error_log("Usuario creado con ID $idUser");
 
-            // Verificar y asignar nueva familia
+            // Verificar y asignar nueva familia o familia existente
             if (!empty($nombre_nueva_familia) && !empty($password_nueva_familia)) {
                 if (!$m->insertarFamilia($nombre_nueva_familia, $password_nueva_familia)) {
                     throw new Exception('No se pudo crear la nueva familia.');
@@ -200,9 +202,15 @@ class AuthController
                     $m->asignarAdministradorAFamilia($idUser, $idFamilia);
                     error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
                 }
+            } elseif (!empty($idFamilia)) {
+                if ($m->verificarPasswordFamilia($idFamilia, $passwordFamiliaExistente)) {
+                    $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                } else {
+                    throw new Exception('Contraseña de la familia incorrecta.');
+                }
             }
 
-            // Verificar y asignar nuevo grupo
+            // Verificar y asignar nuevo grupo o grupo existente
             if (!empty($nombre_nuevo_grupo) && !empty($password_nuevo_grupo)) {
                 if (!$m->insertarGrupo($nombre_nuevo_grupo, $password_nuevo_grupo)) {
                     throw new Exception('No se pudo crear el nuevo grupo.');
@@ -214,10 +222,13 @@ class AuthController
                     $m->asignarAdministradorAGrupo($idUser, $idGrupo);
                     error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
                 }
+            } elseif (!empty($idGrupo)) {
+                if ($m->verificarPasswordGrupo($idGrupo, $passwordGrupoExistente)) {
+                    $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+                } else {
+                    throw new Exception('Contraseña del grupo incorrecta.');
+                }
             }
-
-            // Asignar familias y grupos existentes, similar a crearUsuario()
-            // ...
 
             // Actualizar el rol del usuario dependiendo del tipo de vínculo
             if ($rol_vinculo === 'admin') {
@@ -247,6 +258,7 @@ class AuthController
         $this->render('formRegistro.php', $params);
     }
 }
+
     private function registrarAcceso($idUser, $accion)
     {
         $m = new GastosModelo();
