@@ -50,14 +50,14 @@
 
         <!-- Teléfono -->
         <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($telefono ?? '') ?>" required>
+            <label for="telefono">Teléfono (opcional):</label>
+            <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($telefono ?? '') ?>">
         </div>
 
         <!-- Fecha de nacimiento -->
         <div class="form-group">
-            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input type="date" name="fecha_nacimiento" class="form-control" value="<?= htmlspecialchars($fecha_nacimiento ?? '') ?>" required>
+            <label for="fecha_nacimiento">Fecha de Nacimiento (opcional):</label>
+            <input type="date" name="fecha_nacimiento" class="form-control" value="<?= htmlspecialchars($fecha_nacimiento ?? '') ?>">
         </div>
 
         <!-- Contraseña -->
@@ -66,62 +66,39 @@
             <input type="password" name="contrasenya" class="form-control" required>
         </div>
 
-        <!-- Rol del Usuario (Usuario o Administrador) -->
+        <!-- Opción de creación de familia o grupo -->
         <div class="form-group">
-            <label for="rol_vinculo">Tipo de Usuario:</label>
-            <select name="rol_vinculo" class="form-control" required>
-                <option value="usuario">Usuario Regular</option>
-                <option value="admin">Administrador</option>
+            <label for="opcion_creacion">¿Desea crear una familia o grupo?</label>
+            <select name="opcion_creacion" id="opcion_creacion" class="form-control" onchange="mostrarOpciones()">
+                <option value="usuario">No, seré un usuario individual</option>
+                <option value="crear_familia">Crear una familia</option>
+                <option value="crear_grupo">Crear un grupo</option>
+                <option value="crear_ambos">Crear una familia y un grupo</option>
             </select>
         </div>
 
-        <!-- Asignar a familia existente o crear nueva -->
-        <div class="form-group">
-            <label for="familia">Asignar a una Familia (opcional):</label>
-            <select name="idFamilia" class="form-control">
-                <option value="">Sin familia</option>
-                <?php if (!empty($familias)): ?>
-                    <?php foreach ($familias as $familia): ?>
-                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= isset($idFamilia) && $idFamilia == $familia['idFamilia'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($familia['nombre_familia']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <option value="">No hay familias disponibles</option>
-                <?php endif; ?>
-            </select>
-            <input type="text" name="nombre_nueva_familia" class="form-control mt-2" placeholder="Crear nueva familia (opcional)">
-            <input type="password" name="password_nueva_familia" class="form-control mt-2" placeholder="Contraseña para nueva familia">
+        <!-- Campos de creación de nueva familia -->
+        <div id="contenedor_familia" style="display:none;">
+            <div class="form-group">
+                <label for="nombre_nueva_familia">Nombre Nueva Familia:</label>
+                <input type="text" name="nombre_nueva_familia" class="form-control" placeholder="Escriba el nombre de la familia">
+            </div>
+            <div class="form-group">
+                <label for="password_nueva_familia">Contraseña para Nueva Familia:</label>
+                <input type="password" name="password_nueva_familia" class="form-control" placeholder="Escriba una contraseña para la familia">
+            </div>
         </div>
 
-        <!-- Asignar a grupo existente o crear nuevo -->
-        <div class="form-group">
-            <label for="grupo">Asignar a un Grupo (opcional):</label>
-            <select name="idGrupo" class="form-control">
-                <option value="">Sin grupo</option>
-                <?php if (!empty($grupos)): ?>
-                    <?php foreach ($grupos as $grupo): ?>
-                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= isset($idGrupo) && $idGrupo == $grupo['idGrupo'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <option value="">No hay grupos disponibles</option>
-                <?php endif; ?>
-            </select>
-            <input type="text" name="nombre_nuevo_grupo" class="form-control mt-2" placeholder="Crear nuevo grupo (opcional)">
-            <input type="password" name="password_nuevo_grupo" class="form-control mt-2" placeholder="Contraseña para nuevo grupo">
-        </div>
-
-        <!-- Contraseñas para familias y grupos existentes -->
-        <div class="form-group">
-            <label for="passwordFamiliaExistente">Contraseña para Familia Existente:</label>
-            <input type="password" name="passwordFamiliaExistente" class="form-control" placeholder="Contraseña de la familia seleccionada">
-        </div>
-
-        <div class="form-group">
-            <label for="passwordGrupoExistente">Contraseña para Grupo Existente:</label>
-            <input type="password" name="passwordGrupoExistente" class="form-control" placeholder="Contraseña del grupo seleccionado">
+        <!-- Campos de creación de nuevo grupo -->
+        <div id="contenedor_grupo" style="display:none;">
+            <div class="form-group">
+                <label for="nombre_nuevo_grupo">Nombre Nuevo Grupo:</label>
+                <input type="text" name="nombre_nuevo_grupo" class="form-control" placeholder="Escriba el nombre del grupo">
+            </div>
+            <div class="form-group">
+                <label for="password_nuevo_grupo">Contraseña para Nuevo Grupo:</label>
+                <input type="password" name="password_nuevo_grupo" class="form-control" placeholder="Escriba una contraseña para el grupo">
+            </div>
         </div>
 
         <!-- Campo oculto para el token CSRF -->
@@ -131,3 +108,24 @@
         <button type="submit" class="btn btn-primary">Registrarse</button>
     </form>
 </div>
+
+<script>
+    // Mostrar dinámicamente las opciones según la selección
+    function mostrarOpciones() {
+        const opcion = document.getElementById('opcion_creacion').value;
+        const contenedorFamilia = document.getElementById('contenedor_familia');
+        const contenedorGrupo = document.getElementById('contenedor_grupo');
+
+        contenedorFamilia.style.display = 'none';
+        contenedorGrupo.style.display = 'none';
+
+        if (opcion === 'crear_familia') {
+            contenedorFamilia.style.display = 'block';
+        } else if (opcion === 'crear_grupo') {
+            contenedorGrupo.style.display = 'block';
+        } else if (opcion === 'crear_ambos') {
+            contenedorFamilia.style.display = 'block';
+            contenedorGrupo.style.display = 'block';
+        }
+    }
+</script>
