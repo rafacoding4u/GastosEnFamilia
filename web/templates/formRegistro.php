@@ -66,39 +66,53 @@
             <input type="password" name="contrasenya" class="form-control" required>
         </div>
 
-        <!-- Opción de creación de familia o grupo -->
+        <!-- Opción de creación de familias y grupos -->
         <div class="form-group">
-            <label for="opcion_creacion">¿Desea crear una familia o grupo?</label>
+            <label for="opcion_creacion">¿Desea crear familias o grupos?</label>
             <select name="opcion_creacion" id="opcion_creacion" class="form-control" onchange="mostrarOpciones()">
                 <option value="usuario">No, seré un usuario individual</option>
-                <option value="crear_familia">Crear una familia</option>
-                <option value="crear_grupo">Crear un grupo</option>
-                <option value="crear_ambos">Crear una familia y un grupo</option>
+                <option value="crear_familia">Crear hasta cinco familias</option>
+                <option value="crear_grupo">Crear hasta diez grupos</option>
+                <option value="crear_ambos">Crear hasta cinco familias y diez grupos</option>
             </select>
         </div>
 
-        <!-- Campos de creación de nueva familia -->
+        <!-- Campos de creación de nuevas familias -->
         <div id="contenedor_familia" style="display:none;">
             <div class="form-group">
-                <label for="nombre_nueva_familia">Nombre Nueva Familia:</label>
-                <input type="text" name="nombre_nueva_familia" class="form-control" placeholder="Escriba el nombre de la familia">
+                <label for="nombre_nueva_familia_1">Nombre Nueva Familia 1:</label>
+                <input type="text" name="nombre_nueva_familia_1" class="form-control" placeholder="Nombre de la familia 1">
+                <label for="password_nueva_familia_1">Contraseña Familia 1:</label>
+                <input type="password" name="password_nueva_familia_1" class="form-control" placeholder="Contraseña de la familia 1">
             </div>
+            <!-- Repetir campos de creación de familia hasta 5 -->
+            <?php for ($i = 2; $i <= 5; $i++): ?>
             <div class="form-group">
-                <label for="password_nueva_familia">Contraseña para Nueva Familia:</label>
-                <input type="password" name="password_nueva_familia" class="form-control" placeholder="Escriba una contraseña para la familia">
+                <label for="nombre_nueva_familia_<?= $i ?>">Nombre Nueva Familia <?= $i ?> (opcional):</label>
+                <input type="text" name="nombre_nueva_familia_<?= $i ?>" class="form-control" placeholder="Nombre de la familia <?= $i ?> (opcional)">
+                <label for="password_nueva_familia_<?= $i ?>">Contraseña Familia <?= $i ?> (opcional):</label>
+                <input type="password" name="password_nueva_familia_<?= $i ?>" class="form-control" placeholder="Contraseña de la familia <?= $i ?> (opcional)">
             </div>
+            <?php endfor; ?>
         </div>
 
-        <!-- Campos de creación de nuevo grupo -->
+        <!-- Campos de creación de nuevos grupos -->
         <div id="contenedor_grupo" style="display:none;">
             <div class="form-group">
-                <label for="nombre_nuevo_grupo">Nombre Nuevo Grupo:</label>
-                <input type="text" name="nombre_nuevo_grupo" class="form-control" placeholder="Escriba el nombre del grupo">
+                <label for="nombre_nuevo_grupo_1">Nombre Nuevo Grupo 1:</label>
+                <input type="text" name="nombre_nuevo_grupo_1" class="form-control" placeholder="Nombre del grupo 1">
+                <label for="password_nuevo_grupo_1">Contraseña Grupo 1:</label>
+                <input type="password" name="password_nuevo_grupo_1" class="form-control" placeholder="Contraseña del grupo 1">
             </div>
+            <!-- Repetir campos de creación de grupo hasta 10 -->
+            <?php for ($i = 2; $i <= 10; $i++): ?>
             <div class="form-group">
-                <label for="password_nuevo_grupo">Contraseña para Nuevo Grupo:</label>
-                <input type="password" name="password_nuevo_grupo" class="form-control" placeholder="Escriba una contraseña para el grupo">
+                <label for="nombre_nuevo_grupo_<?= $i ?>">Nombre Nuevo Grupo <?= $i ?> (opcional):</label>
+                <input type="text" name="nombre_nuevo_grupo_<?= $i ?>" class="form-control" placeholder="Nombre del grupo <?= $i ?> (opcional)">
+                <label for="password_nuevo_grupo_<?= $i ?>">Contraseña Grupo <?= $i ?> (opcional):</label>
+                <input type="password" name="password_nuevo_grupo_<?= $i ?>" class="form-control" placeholder="Contraseña del grupo <?= $i ?> (opcional)">
             </div>
+            <?php endfor; ?>
         </div>
 
         <!-- Campo oculto para el token CSRF -->

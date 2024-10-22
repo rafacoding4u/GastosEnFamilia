@@ -161,19 +161,13 @@ class AuthController
             $apellido = recoge('apellido');
             $alias = recoge('alias');
             $email = recoge('email');
-            $telefono = !empty(recoge('telefono')) ? recoge('telefono') : null;  // Teléfono opcional
-            $fecha_nacimiento = !empty(recoge('fecha_nacimiento')) ? recoge('fecha_nacimiento') : null;  // Fecha de nacimiento opcional
+            $telefono = !empty(recoge('telefono')) ? recoge('telefono') : null;
+            $fecha_nacimiento = !empty(recoge('fecha_nacimiento')) ? recoge('fecha_nacimiento') : null;
             $contrasenya = recoge('contrasenya');
-            $rol_vinculo = recoge('rol_vinculo'); // Selección de usuario o admin
-            $nombre_nueva_familia = recoge('nombre_nueva_familia');
-            $password_nueva_familia = recoge('password_nueva_familia');
-            $nombre_nuevo_grupo = recoge('nombre_nuevo_grupo');
-            $password_nuevo_grupo = recoge('password_nuevo_grupo');
 
-            // Validaciones y comprobaciones...
-            // Aquí puedes añadir las validaciones necesarias para los campos del formulario
-            // ...
-
+            // Opción de creación de familias o grupos
+            $opcion_creacion = recoge('opcion_creacion');
+            
             // Encriptar la contraseña
             $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
             $nivel_usuario = 'usuario'; // Asignamos el rol de usuario regular por defecto
@@ -186,32 +180,46 @@ class AuthController
             }
             error_log("Usuario creado con ID $idUser");
 
-            // Verificar si el usuario desea crear una familia y/o grupo
-            if (!empty($nombre_nueva_familia) && !empty($password_nueva_familia)) {
-                // Crear nueva familia
-                if (!$m->insertarFamilia($nombre_nueva_familia, $password_nueva_familia)) {
-                    throw new Exception('No se pudo crear la nueva familia.');
+            // Verificar si el usuario desea crear familias y/o grupos
+            if ($opcion_creacion === 'crear_familia' || $opcion_creacion === 'crear_ambos') {
+                // Crear hasta 5 familias
+                for ($i = 1; $i <= 5; $i++) {
+                    $nombre_familia = recoge("nombre_nueva_familia_$i");
+                    $password_familia = recoge("password_nueva_familia_$i");
+
+                    if (!empty($nombre_familia) && !empty($password_familia)) {
+                        if (!$m->insertarFamilia($nombre_familia, $password_familia)) {
+                            throw new Exception("No se pudo crear la nueva familia $i.");
+                        }
+                        $idFamilia = $m->obtenerUltimoId();
+                        $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                        $m->asignarAdministradorAFamilia($idUser, $idFamilia);
+                        $nivel_usuario = 'admin'; // Cambiar a rol administrador
+                        error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                    }
                 }
-                $idFamilia = $m->obtenerUltimoId();
-                $m->asignarUsuarioAFamilia($idUser, $idFamilia); // Asignar al usuario
-                $m->asignarAdministradorAFamilia($idUser, $idFamilia); // Hacerlo administrador
-                $nivel_usuario = 'admin'; // Cambiar el rol a administrador
-                error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
             }
 
-            if (!empty($nombre_nuevo_grupo) && !empty($password_nuevo_grupo)) {
-                // Crear nuevo grupo
-                if (!$m->insertarGrupo($nombre_nuevo_grupo, $password_nuevo_grupo)) {
-                    throw new Exception('No se pudo crear el nuevo grupo.');
+            if ($opcion_creacion === 'crear_grupo' || $opcion_creacion === 'crear_ambos') {
+                // Crear hasta 10 grupos
+                for ($i = 1; $i <= 10; $i++) {
+                    $nombre_grupo = recoge("nombre_nuevo_grupo_$i");
+                    $password_grupo = recoge("password_nuevo_grupo_$i");
+
+                    if (!empty($nombre_grupo) && !empty($password_grupo)) {
+                        if (!$m->insertarGrupo($nombre_grupo, $password_grupo)) {
+                            throw new Exception("No se pudo crear el nuevo grupo $i.");
+                        }
+                        $idGrupo = $m->obtenerUltimoId();
+                        $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+                        $m->asignarAdministradorAGrupo($idUser, $idGrupo);
+                        $nivel_usuario = 'admin'; // Cambiar a rol administrador
+                        error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                    }
                 }
-                $idGrupo = $m->obtenerUltimoId();
-                $m->asignarUsuarioAGrupo($idUser, $idGrupo); // Asignar al usuario
-                $m->asignarAdministradorAGrupo($idUser, $idGrupo); // Hacerlo administrador
-                $nivel_usuario = 'admin'; // Cambiar el rol a administrador
-                error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
             }
 
-            // Actualizar el rol del usuario dependiendo de si creó una familia/grupo o no
+            // Actualizar el rol del usuario
             $m->actualizarUsuarioNivel($idUser, $nivel_usuario);
 
             // Mensaje de éxito y redirección
@@ -228,6 +236,7 @@ class AuthController
         $this->render('formRegistro.php', $params);
     }
 }
+
 
 
     private function registrarAcceso($idUser, $accion)
