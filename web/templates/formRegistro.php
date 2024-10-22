@@ -66,9 +66,9 @@
             <input type="password" name="contrasenya" class="form-control" required>
         </div>
 
-        <!-- Opción de creación de familias y grupos -->
+        <!-- Opción de creación de familia o grupo -->
         <div class="form-group">
-            <label for="opcion_creacion">¿Desea crear familias o grupos?</label>
+            <label for="opcion_creacion">¿Desea crear una o más familias o grupos?</label>
             <select name="opcion_creacion" id="opcion_creacion" class="form-control" onchange="mostrarOpciones()">
                 <option value="usuario">No, seré un usuario individual</option>
                 <option value="crear_familia">Crear hasta cinco familias</option>
@@ -77,7 +77,7 @@
             </select>
         </div>
 
-        <!-- Campos de creación de nuevas familias -->
+        <!-- Desplegable dinámico para creación de familias -->
         <div id="contenedor_familia" style="display:none;">
             <div class="form-group">
                 <label for="nombre_nueva_familia_1">Nombre Nueva Familia 1:</label>
@@ -85,18 +85,11 @@
                 <label for="password_nueva_familia_1">Contraseña Familia 1:</label>
                 <input type="password" name="password_nueva_familia_1" class="form-control" placeholder="Contraseña de la familia 1">
             </div>
-            <!-- Repetir campos de creación de familia hasta 5 -->
-            <?php for ($i = 2; $i <= 5; $i++): ?>
-            <div class="form-group">
-                <label for="nombre_nueva_familia_<?= $i ?>">Nombre Nueva Familia <?= $i ?> (opcional):</label>
-                <input type="text" name="nombre_nueva_familia_<?= $i ?>" class="form-control" placeholder="Nombre de la familia <?= $i ?> (opcional)">
-                <label for="password_nueva_familia_<?= $i ?>">Contraseña Familia <?= $i ?> (opcional):</label>
-                <input type="password" name="password_nueva_familia_<?= $i ?>" class="form-control" placeholder="Contraseña de la familia <?= $i ?> (opcional)">
-            </div>
-            <?php endfor; ?>
+            <div id="familias_adicionales"></div>
+            <button type="button" class="btn btn-link" onclick="agregarFamilia()">Añadir otra familia</button>
         </div>
 
-        <!-- Campos de creación de nuevos grupos -->
+        <!-- Desplegable dinámico para creación de grupos -->
         <div id="contenedor_grupo" style="display:none;">
             <div class="form-group">
                 <label for="nombre_nuevo_grupo_1">Nombre Nuevo Grupo 1:</label>
@@ -104,15 +97,8 @@
                 <label for="password_nuevo_grupo_1">Contraseña Grupo 1:</label>
                 <input type="password" name="password_nuevo_grupo_1" class="form-control" placeholder="Contraseña del grupo 1">
             </div>
-            <!-- Repetir campos de creación de grupo hasta 10 -->
-            <?php for ($i = 2; $i <= 10; $i++): ?>
-            <div class="form-group">
-                <label for="nombre_nuevo_grupo_<?= $i ?>">Nombre Nuevo Grupo <?= $i ?> (opcional):</label>
-                <input type="text" name="nombre_nuevo_grupo_<?= $i ?>" class="form-control" placeholder="Nombre del grupo <?= $i ?> (opcional)">
-                <label for="password_nuevo_grupo_<?= $i ?>">Contraseña Grupo <?= $i ?> (opcional):</label>
-                <input type="password" name="password_nuevo_grupo_<?= $i ?>" class="form-control" placeholder="Contraseña del grupo <?= $i ?> (opcional)">
-            </div>
-            <?php endfor; ?>
+            <div id="grupos_adicionales"></div>
+            <button type="button" class="btn btn-link" onclick="agregarGrupo()">Añadir otro grupo</button>
         </div>
 
         <!-- Campo oculto para el token CSRF -->
@@ -124,7 +110,11 @@
 </div>
 
 <script>
-    // Mostrar dinámicamente las opciones según la selección
+    let contadorFamilias = 1;
+    let contadorGrupos = 1;
+    const maxFamilias = 5;
+    const maxGrupos = 10;
+
     function mostrarOpciones() {
         const opcion = document.getElementById('opcion_creacion').value;
         const contenedorFamilia = document.getElementById('contenedor_familia');
@@ -132,6 +122,8 @@
 
         contenedorFamilia.style.display = 'none';
         contenedorGrupo.style.display = 'none';
+        contadorFamilias = 1;
+        contadorGrupos = 1;
 
         if (opcion === 'crear_familia') {
             contenedorFamilia.style.display = 'block';
@@ -140,6 +132,40 @@
         } else if (opcion === 'crear_ambos') {
             contenedorFamilia.style.display = 'block';
             contenedorGrupo.style.display = 'block';
+        }
+    }
+
+    // Función para añadir familias
+    function agregarFamilia() {
+        if (contadorFamilias < maxFamilias) {
+            contadorFamilias++;
+            const contenedor = document.getElementById('familias_adicionales');
+            const nuevaFamilia = `
+                <div class="form-group">
+                    <label for="nombre_nueva_familia_${contadorFamilias}">Nombre Nueva Familia ${contadorFamilias} (opcional):</label>
+                    <input type="text" name="nombre_nueva_familia_${contadorFamilias}" class="form-control" placeholder="Nombre de la familia ${contadorFamilias}">
+                    <label for="password_nueva_familia_${contadorFamilias}">Contraseña Familia ${contadorFamilias} (opcional):</label>
+                    <input type="password" name="password_nueva_familia_${contadorFamilias}" class="form-control" placeholder="Contraseña de la familia ${contadorFamilias}">
+                </div>
+            `;
+            contenedor.insertAdjacentHTML('beforeend', nuevaFamilia);
+        }
+    }
+
+    // Función para añadir grupos
+    function agregarGrupo() {
+        if (contadorGrupos < maxGrupos) {
+            contadorGrupos++;
+            const contenedor = document.getElementById('grupos_adicionales');
+            const nuevoGrupo = `
+                <div class="form-group">
+                    <label for="nombre_nuevo_grupo_${contadorGrupos}">Nombre Nuevo Grupo ${contadorGrupos} (opcional):</label>
+                    <input type="text" name="nombre_nuevo_grupo_${contadorGrupos}" class="form-control" placeholder="Nombre del grupo ${contadorGrupos}">
+                    <label for="password_nuevo_grupo_${contadorGrupos}">Contraseña Grupo ${contadorGrupos} (opcional):</label>
+                    <input type="password" name="password_nuevo_grupo_${contadorGrupos}" class="form-control" placeholder="Contraseña del grupo ${contadorGrupos}">
+                </div>
+            `;
+            contenedor.insertAdjacentHTML('beforeend', nuevoGrupo);
         }
     }
 </script>

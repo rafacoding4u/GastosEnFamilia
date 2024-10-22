@@ -1,10 +1,20 @@
-Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta por defecto 'home' asignadaAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: registroAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: registro en AuthController[22-Oct-2024 22:38:02 Europe/Berlin] Iniciando proceso de registro de usuario...
-Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: registroAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: registro en AuthController[22-Oct-2024 22:41:00 Europe/Berlin] Iniciando proceso de registro de usuario...
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario creado con ID 119
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador a la familia 75
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador a la familia 76
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador a la familia 77
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador al grupo 35
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador al grupo 36
-[22-Oct-2024 22:41:01 Europe/Berlin] Usuario 119 asignado como administrador al grupo 37
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta por defecto 'home' asignadaAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: home en AuthControllerModo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: registroAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: registro en AuthController[22-Oct-2024 22:58:08 Europe/Berlin] Iniciando proceso de registro de usuario...
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: registroAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: registro en AuthController[22-Oct-2024 23:04:58 Europe/Berlin] Iniciando proceso de registro de usuario...
+Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: registroAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: registro en AuthController[22-Oct-2024 23:10:04 Europe/Berlin] Iniciando proceso de registro de usuario...
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario creado con ID 120
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador a la familia 78
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador a la familia 79
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador a la familia 80
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador a la familia 81
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador a la familia 82
+[22-Oct-2024 23:10:04 Europe/Berlin] Usuario 120 asignado como administrador al grupo 38
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 39
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 40
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 41
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 42
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 43
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 44
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 45
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 46
+[22-Oct-2024 23:10:05 Europe/Berlin] Usuario 120 asignado como administrador al grupo 47
 Modo debug activo, mostrando errores en pantallaSesión iniciadaRuta encontrada: iniciarSesionAcciones disponibles en AuthController: home, inicio, iniciarSesion, salir, registro, errorEjecutando acción: iniciarSesion en AuthController
