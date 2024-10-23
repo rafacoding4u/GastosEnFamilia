@@ -5,8 +5,13 @@ require_once 'app/modelo/classModelo.php';
 
 class UsuarioController
 {
+    private $modelo; // Definir la propiedad $modelo
+
     public function __construct()
     {
+        // Inicializar el modelo en el constructor
+        $this->modelo = new GastosModelo();
+
         // Verifica si el usuario está autenticado
         if (!isset($_SESSION['usuario'])) {
             header('Location: index.php?ctl=iniciarSesion');
@@ -14,7 +19,56 @@ class UsuarioController
         }
     }
 
-    // Registro de usuario
+    public function ejecutarActualizacionContraseñas()
+    {
+        // Actualizar todas las contraseñas de usuarios, grupos y familias
+        $this->modelo->actualizarContraseñasUsuariosGruposFamilias();
+    }
+
+    // Función para resetear la contraseña del superadmin
+    public function resetearPasswordSuperadmin()
+    {
+        $nuevaContrasena = 'Temp@1234ComplexLa7890@2@';
+        $hashedPassword = password_hash($nuevaContrasena, PASSWORD_DEFAULT);
+
+        // Actualización de la contraseña del superadmin
+        $sql = "UPDATE usuarios SET contrasenya = :hashedPassword WHERE nivel_usuario = 'superadmin'";
+        $stmt = $this->modelo->getConexion()->prepare($sql);
+        $stmt->bindValue(':hashedPassword', $hashedPassword);
+        $stmt->execute();
+
+        echo "Contraseña del superadmin actualizada correctamente.";
+    }
+
+    public function asignarPasswordPremium($idUsuario, $passwordPremium)
+    {
+        // Generar el hash de la nueva contraseña premium
+        $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_DEFAULT);
+
+        // Ejecutar la consulta para actualizar la contraseña premium del usuario
+        $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUsuario";
+        $stmt = $this->modelo->getConexion()->prepare($sql);
+        $stmt->bindValue(':hashedPasswordPremium', $hashedPasswordPremium);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+
+        echo "Contraseña premium asignada correctamente al usuario con ID $idUsuario.";
+    }
+
+    public function verificarPasswordPremium($idUsuario, $passwordIntroducido)
+    {
+        $sql = "SELECT password_premium FROM usuarios WHERE idUser = :idUsuario";
+        $stmt = $this->modelo->getConexion()->prepare($sql);
+        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Verificar si la contraseña introducida coincide con el hash almacenado
+        return $resultado && password_verify($passwordIntroducido, $resultado['password_premium']);
+    }
+
+
+
     /*public function registro()
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -564,4 +618,60 @@ class UsuarioController
             }
         }
     }
+    public function crearFamiliaGrupoAdicionales()
+    {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $password_premium = recoge('password_premium');
+                $idUsuario = $_SESSION['usuario']['id'];
+
+                // Verificar la contraseña premium
+                if (!$this->verificarPasswordPremium($idUsuario, $password_premium)) {
+                    throw new Exception('Contraseña premium incorrecta. No tienes permisos para crear familias o grupos.');
+                }
+
+                // Crear familias adicionales
+                for ($i = 1; $i <= 4; $i++) {
+                    $nombre_familia = recoge("nombre_nueva_familia_$i");
+                    $password_familia = recoge("password_nueva_familia_$i");
+
+                    if (!empty($nombre_familia) && !empty($password_familia)) {
+                        if (!$this->modelo->insertarFamilia($nombre_familia, $password_familia)) {
+                            throw new Exception("No se pudo crear la nueva familia $i.");
+                        }
+                        $idFamilia = $this->modelo->obtenerUltimoId();
+                        $this->modelo->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                        $this->modelo->asignarAdministradorAFamilia($idUsuario, $idFamilia);
+                    }
+                }
+
+                // Crear grupos adicionales
+                for ($i = 1; $i <= 9; $i++) {
+                    $nombre_grupo = recoge("nombre_nuevo_grupo_$i");
+                    $password_grupo = recoge("password_nuevo_grupo_$i");
+
+                    if (!empty($nombre_grupo) && !empty($password_grupo)) {
+                        if (!$this->modelo->insertarGrupo($nombre_grupo, $password_grupo)) {
+                            throw new Exception("No se pudo crear el nuevo grupo $i.");
+                        }
+                        $idGrupo = $this->modelo->obtenerUltimoId();
+                        $this->modelo->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                        $this->modelo->asignarAdministradorAGrupo($idUsuario, $idGrupo);
+                    }
+                }
+
+                $_SESSION['mensaje_exito'] = 'Familias y grupos creados con éxito';
+                header('Location: index.php?ctl=inicio');
+                exit();
+            }
+
+            // Renderizar el formulario
+            $this->render('formCrearFamiliaGrupoAdicionales.php', []);
+        } catch (Exception $e) {
+            error_log("Error en crearFamiliaGrupoAdicionales(): " . $e->getMessage());
+            $params['mensaje'] = 'Error al crear familias o grupos adicionales. ' . $e->getMessage();
+            $this->render('formCrearFamiliaGrupoAdicionales.php', $params);
+        }
+    }
+
 }

@@ -53,7 +53,11 @@
     <?php else: ?>
         <!-- Si el usuario no está autenticado, muestra los enlaces de inicio de sesión y registro -->
         <h2>Bienvenido a GastosEnFamilia</h2>
-        <p>Para gestionar tus ingresos y gastos, por favor <a href="index.php?ctl=iniciarSesion">inicia sesión</a> o <a href="index.php?ctl=registro">regístrate</a>.</p>
+        <p>Para gestionar tus ingresos y gastos, por favor <a href="index.php?ctl=iniciarSesion">inicia sesión</a> o regístrate:</p>
+        <ul>
+            <li><a href="index.php?ctl=registro">Registro Administrador</a></li>
+            <li><a href="index.php?ctl=registroInd">Registro Usuario</a></li>
+        </ul>
 
         <!-- Mensaje adicional si hay alguno -->
         <?php if (isset($mensaje) && !empty($mensaje)): ?>

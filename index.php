@@ -48,11 +48,14 @@ if (!isset($_SESSION['usuario']['nivel_usuario'])) {
 $map = array(
     // Rutas de inicio y autenticación
     'home' => array('controller' => 'AuthController', 'action' => 'home', 'nivel_usuario' => 0),
-    'inicio' => array('controller' => 'AuthController', 'action' => 'inicio', 'nivel_usuario' => 1),
+    'inicio' => array('controller' => 'AuthController', 'action' => 'inicio', 'nivel_usuario' => 0),
     'salir' => array('controller' => 'AuthController', 'action' => 'salir', 'nivel_usuario' => 0),
     'error' => array('controller' => 'AuthController', 'action' => 'error', 'nivel_usuario' => 0),
     'iniciarSesion' => array('controller' => 'AuthController', 'action' => 'iniciarSesion', 'nivel_usuario' => 0),
     'registro' => array('controller' => 'AuthController', 'action' => 'registro', 'nivel_usuario' => 0),
+
+    // Nueva ruta para el registro individual
+    'registroInd' => array('controller' => 'AuthController', 'action' => 'registroInd', 'nivel_usuario' => 0),
 
     // Gestión de usuarios
     'listarUsuarios' => array('controller' => 'UsuarioController', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
@@ -60,7 +63,12 @@ $map = array(
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
     'actualizarUsuario' => array('controller' => 'UsuarioController', 'action' => 'actualizarUsuario', 'nivel_usuario' => 2),
-    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 'superadmin'),
+    'formCrearUsuario' => array('controller' => 'UsuarioController', 'action' => 'formCrearUsuario', 'nivel_usuario' => 1),
+
+    // **Ruta para actualizar contraseñas**
+    'actualizar_contraseñas' => array('controller' => 'UsuarioController', 'action' => 'ejecutarActualizacionContraseñas', 'nivel_usuario' => 1),
+    // **Ruta para asignar contraseñas premium**
+    'asignarPasswordPremium' => array('controller' => 'UsuarioController', 'action' => 'asignarPasswordPremium', 'nivel_usuario' => 1),
 
     // Gestión de categorías gastos
     'verCategoriasGastos' => array('controller' => 'CategoriaController', 'action' => 'verCategoriasGastos', 'nivel_usuario' => 1),
@@ -87,6 +95,10 @@ $map = array(
     'eliminarFamilia' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarFamilia', 'nivel_usuario' => 2),
     'eliminarGrupo' => array('controller' => 'FamiliaGrupoController', 'action' => 'eliminarGrupo', 'nivel_usuario' => 2),
     'verGrupos' => array('controller' => 'FamiliaGrupoController', 'action' => 'listarGrupos', 'nivel_usuario' => 2),
+
+    // Ruta para crear familias y grupos adicionales
+    'formCrearFamiliaGrupoAdicionales' => array('controller' => 'FamiliaGrupoController', 'action' => 'formCrearFamiliaGrupoAdicionales', 'nivel_usuario' => 'admin'),
+    'crearFamiliaGrupoAdicionales' => array('controller' => 'UsuarioController', 'action' => 'crearFamiliaGrupoAdicionales', 'nivel_usuario' => 2),
 
     // Nuevas funciones para SuperUsuario (asignar usuarios a familias o grupos)
     'formAsignarUsuario' => array('controller' => 'FamiliaGrupoController', 'action' => 'formAsignarUsuario', 'nivel_usuario' => 2),
@@ -116,6 +128,21 @@ $map = array(
     // Añadir la ruta para ver la auditoría (solo superadmin tiene permiso)
     'verAuditoria' => array('controller' => 'AuditoriaController', 'action' => 'verAuditoria', 'nivel_usuario' => 2),
 );
+
+// verificación de la URL para asignar contraseñas premium
+if (isset($_GET['ctl']) && $_GET['ctl'] == 'asignarPasswordPremium') {
+    if (isset($_GET['idUsuario']) && isset($_GET['password'])) {
+        // Obtener los parámetros de la URL
+        $idUsuario = $_GET['idUsuario'];
+        $passwordPremium = $_GET['password'];
+
+        // Crear una instancia del controlador
+        $controlador = new UsuarioController();
+        // Llamar al método que asigna la contraseña premium
+        $controlador->asignarPasswordPremium($idUsuario, $passwordPremium);
+        exit(); // Detener la ejecución para evitar que pase por el flujo del mapeo de rutas
+    }
+}
 
 // Verificar si la ruta solicitada existe
 if (isset($_GET['ctl'])) {

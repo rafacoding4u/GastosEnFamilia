@@ -95,40 +95,30 @@ class GastosModelo
         return $stmt->fetchColumn() > 0;
     }
 
-    public function insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fechaNacimiento, $email, $telefono)
+    public function insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento = null, $email = null, $telefono = null, $hashedPasswordPremium = null)
     {
         try {
-            // Consulta SQL ajustada para eliminar idFamilia y idGrupo de la inserción
-            $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono) 
-                VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fechaNacimiento, :email, :telefono)";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
-            $stmt->bindValue(':apellido', $apellido, PDO::PARAM_STR);
-            $stmt->bindValue(':alias', $alias, PDO::PARAM_STR);
-            $stmt->bindValue(':contrasenya', $hashedPassword, PDO::PARAM_STR);
-            $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-            $stmt->bindValue(':fechaNacimiento', $fechaNacimiento, PDO::PARAM_STR);
-            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-            $stmt->bindValue(':telefono', $telefono, PDO::PARAM_STR);
+            $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, password_premium)
+                VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :password_premium)";
 
-            if ($stmt->execute()) {
-                // Devolver el ID del usuario recién creado para posibles asignaciones de familia y grupo
-                return $this->conexion->lastInsertId();
-            } else {
-                // Registrar el error de la consulta SQL
-                $errorInfo = $stmt->errorInfo();
-                error_log("Error en la inserción de usuario: " . $errorInfo[2]);
-                return false;
-            }
+            $stmt = $this->getConexion()->prepare($sql);
+            $stmt->bindValue(':nombre', $nombre);
+            $stmt->bindValue(':apellido', $apellido);
+            $stmt->bindValue(':alias', $alias);
+            $stmt->bindValue(':contrasenya', $hashedPassword);
+            $stmt->bindValue(':nivel_usuario', $nivel_usuario);
+            $stmt->bindValue(':fecha_nacimiento', $fecha_nacimiento);
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':telefono', $telefono);
+            $stmt->bindValue(':password_premium', $hashedPasswordPremium);
+
+            $stmt->execute();
+            return $this->getConexion()->lastInsertId();
         } catch (Exception $e) {
-            error_log("Error en insertarUsuario: " . $e->getMessage());
+            error_log("Error al insertar usuario: " . $e->getMessage());
             return false;
         }
     }
-
-
-
-
 
     public function obtenerUsuarios()
     {
@@ -153,9 +143,105 @@ class GastosModelo
             throw new Exception('Error al listar los usuarios.');
         }
     }
+    // Para actualizar las contraseñas no encriptadas
+    public function actualizarContraseñasUsuariosGruposFamilias()
+    {
+        // Función para detectar si una contraseña está encriptada o no
+        function esContraseñaEncriptada($password)
+        {
+            // Las contraseñas encriptadas con password_hash() suelen tener una longitud mínima de 60 caracteres
+            return strlen($password) === 60;
+        }
 
+        // Actualizar las contraseñas de todas las familias
+        $familias = $this->obtenerFamilias();
+        foreach ($familias as $familia) {
+            echo "Familia ID: " . $familia['idFamilia'] . "<br>";
 
+            if (!isset($familia['password']) || empty($familia['password'])) {
+                echo "La familia con ID {$familia['idFamilia']} no tiene una contraseña definida.\n";
+                continue;
+            }
 
+            // Comprobar si la contraseña ya está encriptada
+            if (!esContraseñaEncriptada($familia['password'])) {
+                // Mantener la contraseña actual pero encriptarla
+                $hashedPassword = password_hash($familia['password'], PASSWORD_DEFAULT);
+                $sql = "UPDATE familias SET password = :hashedPassword WHERE idFamilia = :idFamilia";
+                $stmt = $this->getConexion()->prepare($sql);
+                $stmt->bindValue(':hashedPassword', $hashedPassword);
+                $stmt->bindValue(':idFamilia', $familia['idFamilia']);
+                $stmt->execute();
+
+                echo "Contraseña de la familia con ID {$familia['idFamilia']} encriptada correctamente.\n";
+            } else {
+                echo "Contraseña de la familia con ID {$familia['idFamilia']} ya estaba encriptada.\n";
+            }
+        }
+
+        // Actualizar las contraseñas de todos los grupos
+        $grupos = $this->obtenerGrupos();
+        foreach ($grupos as $grupo) {
+            echo "Grupo ID: " . $grupo['idGrupo'] . "<br>";
+
+            if (!isset($grupo['password']) || empty($grupo['password'])) {
+                echo "El grupo con ID {$grupo['idGrupo']} no tiene una contraseña definida.\n";
+                continue;
+            }
+
+            // Comprobar si la contraseña ya está encriptada
+            if (!esContraseñaEncriptada($grupo['password'])) {
+                // Mantener la contraseña actual pero encriptarla
+                $hashedPassword = password_hash($grupo['password'], PASSWORD_DEFAULT);
+                $sql = "UPDATE grupos SET password = :hashedPassword WHERE idGrupo = :idGrupo";
+                $stmt = $this->getConexion()->prepare($sql);
+                $stmt->bindValue(':hashedPassword', $hashedPassword);
+                $stmt->bindValue(':idGrupo', $grupo['idGrupo']);
+                $stmt->execute();
+
+                echo "Contraseña del grupo con ID {$grupo['idGrupo']} encriptada correctamente.\n";
+            } else {
+                echo "Contraseña del grupo con ID {$grupo['idGrupo']} ya estaba encriptada.\n";
+            }
+        }
+
+        // Actualizar las contraseñas de todos los usuarios
+        $usuarios = $this->obtenerUsuarios();
+        foreach ($usuarios as $usuario) {
+            // Verificar si la contraseña está encriptada
+            if (!esContraseñaEncriptada($usuario['contrasenya'])) {
+                // Encriptar la contraseña actual sin cambiarla
+                $hashedPassword = password_hash($usuario['contrasenya'], PASSWORD_DEFAULT);
+                $sql = "UPDATE usuarios SET contrasenya = :hashedPassword WHERE idUser = :idUser";
+                $stmt = $this->getConexion()->prepare($sql);
+                $stmt->bindValue(':hashedPassword', $hashedPassword);
+                $stmt->bindValue(':idUser', $usuario['idUser']);
+                $stmt->execute();
+
+                echo "Contraseña del usuario con ID {$usuario['idUser']} encriptada correctamente.\n";
+            } else {
+                echo "Contraseña del usuario con ID {$usuario['idUser']} ya estaba encriptada.\n";
+            }
+
+            // Verificar y actualizar la contraseña premium si tiene un valor asignado
+            if (!empty($usuario['password_premium'])) {
+                if (!esContraseñaEncriptada($usuario['password_premium'])) {
+                    $hashedPasswordPremium = password_hash($usuario['password_premium'], PASSWORD_DEFAULT);
+                    $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUser";
+                    $stmt = $this->getConexion()->prepare($sql);
+                    $stmt->bindValue(':hashedPasswordPremium', $hashedPasswordPremium);
+                    $stmt->bindValue(':idUser', $usuario['idUser']);
+                    $stmt->execute();
+
+                    echo "Contraseña premium del usuario con ID {$usuario['idUser']} encriptada correctamente.\n";
+                } else {
+                    echo "Contraseña premium del usuario con ID {$usuario['idUser']} ya estaba encriptada.\n";
+                }
+            }
+        }
+
+        echo "Contraseñas de usuarios, familias, grupos y contraseñas premium verificadas y encriptadas correctamente.";
+    }
 
     public function eliminarUsuario($idUsuario)
     {
@@ -1988,5 +2074,40 @@ class GastosModelo
     public function getLastInsertId()
     {
         return $this->conexion->lastInsertId();
+    }
+    public function insertarUsuarioConPremium($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono, $password_premium)
+    {
+        $sql = "INSERT INTO usuarios (nombre, apellido, alias, contrasenya, nivel_usuario, fecha_nacimiento, email, telefono, password_premium)
+            VALUES (:nombre, :apellido, :alias, :contrasenya, :nivel_usuario, :fecha_nacimiento, :email, :telefono, :password_premium)";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellido', $apellido);
+        $stmt->bindParam(':alias', $alias);
+        $stmt->bindParam(':contrasenya', $hashedPassword);
+        $stmt->bindParam(':nivel_usuario', $nivel_usuario);
+        $stmt->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':telefono', $telefono);
+        $stmt->bindParam(':password_premium', $password_premium);
+
+        return $stmt->execute();
+    }
+    // Para Usuarios Premium
+    public function obtenerUsuarioPorNivel($nivel_usuario)
+    {
+        try {
+            // Consulta SQL para obtener el usuario con el nivel especificado
+            $sql = "SELECT * FROM usuarios WHERE nivel_usuario = :nivel_usuario LIMIT 1";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Devuelve el resultado de la consulta
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error en obtenerUsuarioPorNivel(): " . $e->getMessage());
+            return false;
+        }
     }
 }

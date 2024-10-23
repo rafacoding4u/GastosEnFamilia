@@ -28,11 +28,17 @@
             <ul>
                 <li><a href="index.php?ctl=verGastos">Ver Gastos</a></li>
                 <li><a href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
-                <li><a href="index.php?ctl=formCrearFamilia">Añadir Nueva Familia</a></li>
-                <li><a href="index.php?ctl=formCrearGrupo">Añadir Nuevo Grupo</a></li>
                 <li><a href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
+                <li><a href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a></li>
+                <li><a href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
                 <li><a href="index.php?ctl=verPresupuestos">Ver Presupuestos</a></li>
                 <li><a href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
+                <!-- Nueva opción para crear familias y grupos adicionales -->
+                <li><a href="index.php?ctl=formCrearFamiliaGrupoAdicionales">Crear Familias/Grupos adicionales</a></li>
+                <!-- Nuevas opciones para gestionar familias y grupos como administrador -->
+                <li><a href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                <li><a href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
+                <li><a href="index.php?ctl=asignarUsuarioFamiliaGrupo">Asignar Usuario a Familia o Grupo</a></li>
             </ul>
 
         <?php elseif ($nivel_usuario === 0): ?>
@@ -48,6 +54,12 @@
         <?php endif; ?>
 
     <?php else: ?>
-        <!-- Si el usuario no está autenticado, no mostrar nada aquí -->
+        <!-- Opciones para usuarios no autenticados -->
+        <p>Accede a la aplicación con una de las siguientes opciones:</p>
+        <ul>
+            <li><a href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
+            <li><a href="index.php?ctl=registro">Registro Administrador</a></li>
+            <li><a href="index.php?ctl=registroInd">Registro Usuario</a></li>
+        </ul>
     <?php endif; ?>
 </div>

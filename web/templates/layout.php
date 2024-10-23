@@ -43,7 +43,7 @@
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetasGlobales">Ver Metas Globales</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuario a Familia o Grupo</a></li>
 
-                        <!-- Menú para Admin -->
+                            <!-- Menú para Admin -->
                         <?php elseif ($nivel_usuario === 'admin'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
@@ -52,23 +52,25 @@
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
+                            <!-- Nueva opción para crear familias y grupos adicionales -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=formCrearFamiliaGrupoAdicionales">Crear Familias/Grupos adicionales</a></li>
 
-                        <!-- Menú para Usuario regular o nivel 0 -->
+                            <!-- Menú para Usuario regular o nivel 0 -->
                         <?php elseif ($nivel_usuario === 'usuario' || $nivel_usuario === 0): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
                         <?php endif; ?>
 
-                        <!-- Mostrar Cerrar Sesión para usuarios autenticados excepto nivel 0 -->
                         <?php if ($nivel_usuario !== 0): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a></li>
                         <?php endif; ?>
 
                     <?php else: ?>
-                        <!-- Menú para usuarios no autenticados -->
                         <li class="nav-item"><a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registrarse</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=registro">Registro Administrador</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ctl=registroInd">Registro Usuario</a></li>
                     <?php endif; ?>
+
                 </ul>
             </div>
         </div>
