@@ -2110,4 +2110,17 @@ class GastosModelo
             return false;
         }
     }
+    public function actualizarPasswordPremium($idUsuario, $hashedPasswordPremium)
+    {
+        try {
+            $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUsuario";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':hashedPasswordPremium', $hashedPasswordPremium, PDO::PARAM_STR);
+            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al actualizar la contraseña premium: " . $e->getMessage());
+            return false;
+        }
+    }
 }
