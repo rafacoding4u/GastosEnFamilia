@@ -164,16 +164,17 @@ class AuthController
             $email = recoge('email');
             $telefono = !empty(recoge('telefono')) ? recoge('telefono') : null;
             $fecha_nacimiento = !empty(recoge('fecha_nacimiento')) ? recoge('fecha_nacimiento') : null;
+
+            // Recoger la contraseña que el usuario ha introducido
             $contrasenya = recoge('contrasenya'); // Contraseña que el usuario elige
-            $opcion_creacion = recoge('opcion_creacion');
 
             // Encriptar la contraseña que el usuario eligió para iniciar sesión
             $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
             $nivel_usuario = 'usuario'; // Por defecto, el usuario será regular
 
-            // Generar una contraseña aleatoria para `password_premium`
-            $passwordPremium = bin2hex(random_bytes(4)); // Ejemplo de generación de contraseña aleatoria (8 caracteres)
-            $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_BCRYPT);
+            // Generar solo la contraseña premium
+            $passwordPremium = bin2hex(random_bytes(4)); // Generar una contraseña aleatoria de 8 caracteres para password_premium
+            $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_BCRYPT); // Encriptar la contraseña premium
 
             // Insertar el nuevo usuario en la base de datos
             $idUser = $m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
@@ -186,6 +187,9 @@ class AuthController
             // Actualizar la contraseña premium en la base de datos
             $m->actualizarPasswordPremium($idUser, $hashedPasswordPremium);
             error_log("Contraseña premium generada para el usuario $alias: $passwordPremium");
+
+            // *** Recoger la opción de creación del formulario ***
+            $opcion_creacion = recoge('opcion_creacion'); // Añadimos la recogida de la opción de creación
 
             // *** Verificación de los límites de creación para usuarios no premium ***
             $maxFamiliasNoPremium = 1;
@@ -258,8 +262,11 @@ class AuthController
             // Actualizar el rol del usuario dependiendo de si es administrador o no
             $m->actualizarUsuarioNivel($idUser, $nivel_usuario);
 
-            // Mensaje de éxito y redirección
-            $_SESSION['mensaje_exito'] = 'Usuario registrado con éxito. La contraseña ha sido generada automáticamente.';
+            // *** Mostrar la contraseña premium en pantalla para propósitos de prueba ***
+            $_SESSION['mensaje_exito'] = "Usuario registrado con éxito. 
+                <br>Contraseña premium generada: <strong>$passwordPremium</strong>";
+
+            // Redirigir al inicio de sesión
             header('Location: index.php?ctl=iniciarSesion');
             exit();
         }
@@ -272,6 +279,7 @@ class AuthController
         $this->render('formRegistro.php', $params);
     }
 }
+
 
 
 
