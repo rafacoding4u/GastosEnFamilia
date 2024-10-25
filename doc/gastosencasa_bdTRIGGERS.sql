@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-10-2024 a las 12:52:55
+-- Tiempo de generación: 25-10-2024 a las 12:48:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -25,6 +25,7 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+DROP PROCEDURE IF EXISTS `verificar_permiso_cacheado`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `verificar_permiso_cacheado` (IN `idUser` INT, IN `nombrePermiso` VARCHAR(255), IN `tipoPermiso` VARCHAR(255))   BEGIN
     DECLARE tiene_permiso TINYINT DEFAULT 0;
 
@@ -60,6 +61,7 @@ END$$
 --
 -- Funciones
 --
+DROP FUNCTION IF EXISTS `verificar_permiso`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `verificar_permiso` (`idUser` INT, `tipoPermiso` VARCHAR(255), `nombrePermiso` VARCHAR(255)) RETURNS TINYINT(4) DETERMINISTIC BEGIN
     DECLARE tiene_permiso TINYINT DEFAULT 0;
 
@@ -83,6 +85,7 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `administradores_familias`
 --
 
+DROP TABLE IF EXISTS `administradores_familias`;
 CREATE TABLE `administradores_familias` (
   `id` int(11) NOT NULL,
   `idAdmin` int(11) NOT NULL,
@@ -149,6 +152,7 @@ INSERT INTO `administradores_familias` (`id`, `idAdmin`, `idFamilia`) VALUES
 -- Estructura de tabla para la tabla `administradores_grupos`
 --
 
+DROP TABLE IF EXISTS `administradores_grupos`;
 CREATE TABLE `administradores_grupos` (
   `idAdmin` int(11) NOT NULL,
   `idGrupo` int(11) NOT NULL,
@@ -209,6 +213,7 @@ INSERT INTO `administradores_grupos` (`idAdmin`, `idGrupo`, `id`) VALUES
 -- Estructura de tabla para la tabla `auditoria`
 --
 
+DROP TABLE IF EXISTS `auditoria`;
 CREATE TABLE `auditoria` (
   `idAuditoria` int(11) NOT NULL,
   `accion` varchar(255) NOT NULL,
@@ -2951,6 +2956,7 @@ INSERT INTO `auditoria` (`idAuditoria`, `accion`, `tabla_afectada`, `idRegistro`
 -- Estructura de tabla para la tabla `auditoria_accesos`
 --
 
+DROP TABLE IF EXISTS `auditoria_accesos`;
 CREATE TABLE `auditoria_accesos` (
   `idAcceso` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -3462,6 +3468,7 @@ INSERT INTO `auditoria_accesos` (`idAcceso`, `idUser`, `accion`, `fecha`) VALUES
 -- Estructura de tabla para la tabla `auditoria_accesos_archivo`
 --
 
+DROP TABLE IF EXISTS `auditoria_accesos_archivo`;
 CREATE TABLE `auditoria_accesos_archivo` (
   `idAcceso` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -3486,6 +3493,7 @@ INSERT INTO `auditoria_accesos_archivo` (`idAcceso`, `idUser`, `accion`, `fecha`
 -- Estructura de tabla para la tabla `categorias`
 --
 
+DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE `categorias` (
   `idCategoria` int(11) NOT NULL,
   `nombreCategoria` varchar(100) NOT NULL,
@@ -3514,12 +3522,25 @@ INSERT INTO `categorias` (`idCategoria`, `nombreCategoria`, `creado_por`, `estad
 (39, 'Gastos imprevistos', 1, 'activo', 'gasto'),
 (41, 'Nuevitas', 26, 'activo', 'ingreso');
 
+--
+-- Disparadores `categorias`
+--
+DROP TRIGGER IF EXISTS `auditar_categoria_insert`;
+DELIMITER $$
+CREATE TRIGGER `auditar_categoria_insert` AFTER INSERT ON `categorias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('INSERT', 'categorias', NEW.idCategoria, NEW.creado_por, NOW());
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `configuraciones`
 --
 
+DROP TABLE IF EXISTS `configuraciones`;
 CREATE TABLE `configuraciones` (
   `idConfig` int(11) NOT NULL,
   `clave_config` varchar(100) DEFAULT NULL,
@@ -3533,6 +3554,7 @@ CREATE TABLE `configuraciones` (
 -- Estructura de tabla para la tabla `contrasenyas_premium`
 --
 
+DROP TABLE IF EXISTS `contrasenyas_premium`;
 CREATE TABLE `contrasenyas_premium` (
   `id` int(11) NOT NULL,
   `password` varchar(255) NOT NULL
@@ -3544,6 +3566,7 @@ CREATE TABLE `contrasenyas_premium` (
 -- Estructura de tabla para la tabla `envio_refranes`
 --
 
+DROP TABLE IF EXISTS `envio_refranes`;
 CREATE TABLE `envio_refranes` (
   `idEnvio` int(11) NOT NULL,
   `idRefran` int(11) NOT NULL,
@@ -3558,6 +3581,7 @@ CREATE TABLE `envio_refranes` (
 -- Estructura de tabla para la tabla `familias`
 --
 
+DROP TABLE IF EXISTS `familias`;
 CREATE TABLE `familias` (
   `idFamilia` int(11) NOT NULL,
   `nombre_familia` varchar(100) NOT NULL,
@@ -3639,12 +3663,63 @@ INSERT INTO `familias` (`idFamilia`, `nombre_familia`, `password`, `estado`) VAL
 (95, 'Familia95', '$2y$10$qF76R7ndbioILMkFAxnaXO5wHEa7rDAPuECowL0ZxYHwI4cm96F8q', 'activo'),
 (96, 'Familia60', '$2y$10$g/HBUqcuBqKSyOmUqd1AJurSiLBF261hC4rsRSoDQEmNEynWTfx.S', 'activo');
 
+--
+-- Disparadores `familias`
+--
+DROP TRIGGER IF EXISTS `auditar_familias`;
+DELIMITER $$
+CREATE TRIGGER `auditar_familias` AFTER INSERT ON `familias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('INSERT', 'familias', NEW.idFamilia, 'sistema', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_familias_delete`;
+DELIMITER $$
+CREATE TRIGGER `auditar_familias_delete` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, fecha) 
+  VALUES ('delete', 'familias', OLD.idFamilia, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_familias_delete_archivo`;
+DELIMITER $$
+CREATE TRIGGER `auditar_familias_delete_archivo` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (NULL, 'DELETE_FAMILIA_' || OLD.idFamilia, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_familias_update`;
+DELIMITER $$
+CREATE TRIGGER `auditar_familias_update` AFTER UPDATE ON `familias` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('UPDATE', 'familias', NEW.idFamilia, 'sistema', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `eliminar_gastos_huerfanos`;
+DELIMITER $$
+CREATE TRIGGER `eliminar_gastos_huerfanos` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
+  DELETE FROM gastos WHERE idFamilia = OLD.idFamilia;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `eliminar_ingresos_huerfanos`;
+DELIMITER $$
+CREATE TRIGGER `eliminar_ingresos_huerfanos` AFTER DELETE ON `familias` FOR EACH ROW BEGIN
+  DELETE FROM ingresos WHERE idFamilia = OLD.idFamilia;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `gastos`
 --
 
+DROP TABLE IF EXISTS `gastos`;
 CREATE TABLE `gastos` (
   `idGasto` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -3676,12 +3751,110 @@ INSERT INTO `gastos` (`idGasto`, `idUser`, `importe`, `idCategoria`, `origen`, `
 (29, 31, 25.23, 24, 'banco', 'Comida amigas', '2024-10-13 22:00:00', NULL, 30),
 (30, 31, 4.00, 24, 'efectivo', 'bono Bus', '2024-10-13 22:00:00', NULL, 30);
 
+--
+-- Disparadores `gastos`
+--
+DROP TRIGGER IF EXISTS `auditar_creacion_gasto`;
+DELIMITER $$
+CREATE TRIGGER `auditar_creacion_gasto` AFTER INSERT ON `gastos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario)
+  VALUES ('INSERT', 'gastos', NEW.idGasto, NEW.idUser);
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_gastos_delete`;
+DELIMITER $$
+CREATE TRIGGER `auditar_gastos_delete` AFTER DELETE ON `gastos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('DELETE', 'gastos', OLD.idGasto, OLD.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_gastos_update`;
+DELIMITER $$
+CREATE TRIGGER `auditar_gastos_update` AFTER UPDATE ON `gastos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('UPDATE', 'gastos', NEW.idGasto, NEW.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `check_gasto_asignacion`;
+DELIMITER $$
+CREATE TRIGGER `check_gasto_asignacion` BEFORE INSERT ON `gastos` FOR EACH ROW BEGIN
+  IF NEW.idFamilia IS NULL AND NEW.idGrupo IS NULL THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Un gasto debe pertenecer a una familia, a un grupo o ser personal.';
+  END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `validar_consistencia_gasto`;
+DELIMITER $$
+CREATE TRIGGER `validar_consistencia_gasto` BEFORE INSERT ON `gastos` FOR EACH ROW BEGIN
+  DECLARE v_familia_exist INT;
+  DECLARE v_grupo_exist INT;
+  
+  -- Validar que el usuario pertenece a la familia, si está asignada
+  IF NEW.idFamilia IS NOT NULL THEN
+    SELECT COUNT(*) INTO v_familia_exist 
+    FROM usuarios 
+    WHERE idUser = NEW.idUser AND idFamilia = NEW.idFamilia;
+    
+    IF v_familia_exist = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El usuario no pertenece a la familia asignada';
+    END IF;
+  END IF;
+  
+  -- Validar que el usuario pertenece al grupo, si está asignado
+  IF NEW.idGrupo IS NOT NULL THEN
+    SELECT COUNT(*) INTO v_grupo_exist 
+    FROM usuarios 
+    WHERE idUser = NEW.idUser AND idGrupo = NEW.idGrupo;
+    
+    IF v_grupo_exist = 0 THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El usuario no pertenece al grupo asignado';
+    END IF;
+  END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `verificar_consistencia_gasto`;
+DELIMITER $$
+CREATE TRIGGER `verificar_consistencia_gasto` BEFORE INSERT ON `gastos` FOR EACH ROW BEGIN
+    -- Verificar que el gasto no sea negativo
+    IF NEW.importe < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El importe del gasto no puede ser negativo';
+    END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `verificar_gasto_familia_grupo`;
+DELIMITER $$
+CREATE TRIGGER `verificar_gasto_familia_grupo` BEFORE INSERT ON `gastos` FOR EACH ROW BEGIN
+  DECLARE familia_grupo_valido BOOLEAN;
+  
+  -- Verificar si el usuario pertenece a la familia o grupo indicado
+  SELECT COUNT(*) INTO familia_grupo_valido
+  FROM usuarios
+  WHERE idUser = NEW.idUser
+    AND (idFamilia = NEW.idFamilia OR idGrupo = NEW.idGrupo);
+  
+  IF familia_grupo_valido = 0 THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'El usuario no pertenece a la familia o grupo indicado';
+  END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `grupos`
 --
 
+DROP TABLE IF EXISTS `grupos`;
 CREATE TABLE `grupos` (
   `idGrupo` int(11) NOT NULL,
   `nombre_grupo` varchar(100) NOT NULL,
@@ -3744,12 +3917,62 @@ INSERT INTO `grupos` (`idGrupo`, `nombre_grupo`, `password`) VALUES
 (59, 'Grupo59', '$2y$10$0V7ZeSg1c1wZqylZny5Cp.QucxIDay/U/qceby1OStWDeYoQsRsdK'),
 (60, 'Grupo60', '$2y$10$lRmbrTcpo8AOmB6zz7kNt.JzHtCq9ve8Rf3Zv0fYv/xvDrFhL6wbe');
 
+--
+-- Disparadores `grupos`
+--
+DROP TRIGGER IF EXISTS `auditar_grupos_delete`;
+DELIMITER $$
+CREATE TRIGGER `auditar_grupos_delete` AFTER DELETE ON `grupos` FOR EACH ROW BEGIN
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, fecha)
+    VALUES ('DELETE', 'grupos', OLD.idGrupo, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_grupos_delete_archivo`;
+DELIMITER $$
+CREATE TRIGGER `auditar_grupos_delete_archivo` AFTER DELETE ON `grupos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (NULL, 'DELETE_GRUPO_' || OLD.idGrupo, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_grupos_insert`;
+DELIMITER $$
+CREATE TRIGGER `auditar_grupos_insert` AFTER INSERT ON `grupos` FOR EACH ROW BEGIN
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+    VALUES ('INSERT', 'grupos', NEW.idGrupo, 'Sistema', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_grupos_update`;
+DELIMITER $$
+CREATE TRIGGER `auditar_grupos_update` AFTER UPDATE ON `grupos` FOR EACH ROW BEGIN
+    INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+    VALUES ('UPDATE', 'grupos', NEW.idGrupo, 'Sistema', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `before_insert_grupos`;
+DELIMITER $$
+CREATE TRIGGER `before_insert_grupos` BEFORE INSERT ON `grupos` FOR EACH ROW BEGIN
+    DECLARE v_grupo_exist INT;
+
+    -- Verificar si ya existe un grupo con el mismo nombre
+    SELECT COUNT(*) INTO v_grupo_exist FROM grupos WHERE nombre_grupo = NEW.nombre_grupo;
+    IF v_grupo_exist > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El grupo ya existe.';
+    END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `ingresos`
 --
 
+DROP TABLE IF EXISTS `ingresos`;
 CREATE TABLE `ingresos` (
   `idIngreso` int(11) NOT NULL,
   `idUser` int(11) DEFAULT NULL,
@@ -3776,12 +3999,50 @@ INSERT INTO `ingresos` (`idIngreso`, `idUser`, `importe`, `idCategoria`, `origen
 (25, 31, 1600.00, 29, 'banco', 'Agosto', '2024-10-13 22:00:00', NULL, 30),
 (26, 31, 15.00, 32, 'efectivo', 'Venta libros', '2024-10-13 22:00:00', NULL, 30);
 
+--
+-- Disparadores `ingresos`
+--
+DROP TRIGGER IF EXISTS `auditar_creacion_ingreso`;
+DELIMITER $$
+CREATE TRIGGER `auditar_creacion_ingreso` AFTER INSERT ON `ingresos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario)
+  VALUES ('INSERT', 'ingresos', NEW.idIngreso, NEW.idUser);
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_ingresos_delete`;
+DELIMITER $$
+CREATE TRIGGER `auditar_ingresos_delete` AFTER DELETE ON `ingresos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('DELETE', 'ingresos', OLD.idIngreso, OLD.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_ingresos_update`;
+DELIMITER $$
+CREATE TRIGGER `auditar_ingresos_update` AFTER UPDATE ON `ingresos` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('UPDATE', 'ingresos', NEW.idIngreso, NEW.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `check_ingreso_asignacion`;
+DELIMITER $$
+CREATE TRIGGER `check_ingreso_asignacion` BEFORE INSERT ON `ingresos` FOR EACH ROW BEGIN
+  IF NEW.idFamilia IS NOT NULL OR NEW.idGrupo IS NOT NULL THEN
+    SET @dummy = 1;
+  END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `menuadmin`
 --
 
+DROP TABLE IF EXISTS `menuadmin`;
 CREATE TABLE `menuadmin` (
   `idMenu` int(11) NOT NULL,
   `idRol` int(11) DEFAULT NULL,
@@ -3795,6 +4056,7 @@ CREATE TABLE `menuadmin` (
 -- Estructura de tabla para la tabla `news_letter_envios`
 --
 
+DROP TABLE IF EXISTS `news_letter_envios`;
 CREATE TABLE `news_letter_envios` (
   `idEnvio` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -3811,6 +4073,7 @@ CREATE TABLE `news_letter_envios` (
 -- Estructura de tabla para la tabla `notificaciones`
 --
 
+DROP TABLE IF EXISTS `notificaciones`;
 CREATE TABLE `notificaciones` (
   `idNotificacion` int(11) NOT NULL,
   `idUser` int(11) DEFAULT NULL,
@@ -3833,6 +4096,7 @@ INSERT INTO `notificaciones` (`idNotificacion`, `idUser`, `mensaje`, `fecha`, `l
 -- Estructura de tabla para la tabla `permisos_cache`
 --
 
+DROP TABLE IF EXISTS `permisos_cache`;
 CREATE TABLE `permisos_cache` (
   `idUser` int(11) NOT NULL,
   `nombrePermiso` varchar(255) NOT NULL,
@@ -3847,6 +4111,7 @@ CREATE TABLE `permisos_cache` (
 -- Estructura de tabla para la tabla `preferencias_usuarios`
 --
 
+DROP TABLE IF EXISTS `preferencias_usuarios`;
 CREATE TABLE `preferencias_usuarios` (
   `idPreferencia` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -3868,6 +4133,7 @@ INSERT INTO `preferencias_usuarios` (`idPreferencia`, `idUser`, `clave`, `valor`
 -- Estructura de tabla para la tabla `refranes`
 --
 
+DROP TABLE IF EXISTS `refranes`;
 CREATE TABLE `refranes` (
   `idRefran` int(11) NOT NULL,
   `refran` text NOT NULL,
@@ -4038,6 +4304,7 @@ INSERT INTO `refranes` (`idRefran`, `refran`, `autor`, `pais`, `fecha_ultimo_uso
 -- Estructura de tabla para la tabla `roles`
 --
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `idRol` int(11) NOT NULL,
   `nombreRol` varchar(255) NOT NULL
@@ -4059,6 +4326,7 @@ INSERT INTO `roles` (`idRol`, `nombreRol`) VALUES
 -- Estructura de tabla para la tabla `roles_permisos`
 --
 
+DROP TABLE IF EXISTS `roles_permisos`;
 CREATE TABLE `roles_permisos` (
   `idPermiso` int(11) NOT NULL,
   `idRol` int(11) DEFAULT NULL,
@@ -4152,6 +4420,7 @@ INSERT INTO `roles_permisos` (`idPermiso`, `idRol`, `nombrePermiso`, `tipoPermis
 -- Estructura de tabla para la tabla `situacion`
 --
 
+DROP TABLE IF EXISTS `situacion`;
 CREATE TABLE `situacion` (
   `idSituacion` int(11) NOT NULL,
   `idUser` int(11) DEFAULT NULL,
@@ -4169,6 +4438,7 @@ CREATE TABLE `situacion` (
 -- Estructura de tabla para la tabla `usuarios`
 --
 
+DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `idUser` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -4309,12 +4579,65 @@ INSERT INTO `usuarios` (`idUser`, `nombre`, `apellido`, `alias`, `email`, `contr
 (134, 'CientoTrintayCinco', 'CientoTrintayCinco', 'CientoTrintayCinco', 'CientoTrintayCinco@CientoTrintayCinco.com', '$2y$10$aBv2TYdReTCiBkDxtho3BOcGZzGgx7cxLeGf7K5qWn5lsxO.jht/W', NULL, NULL, 'usuario', '2024-10-24 17:41:58', 'activo', '$2y$10$N4DnIhmUWIZ/n9ovP9kZMejCMBc5IH2CBBKGcN5tS7duzB0F22c2u', 0),
 (135, 'CientoTreintayCinco', 'CientoTreintayCinco', 'CientoTreintayCinco', 'CientoTreintayCinco@CientoTreintayCinco.com', '$2y$10$/dpzduNx9/SoEs8tL4AsIu2e6k/N1M5niV1kZ1eVwk00tyM6OMRY2', NULL, NULL, 'admin', '2024-10-24 17:48:53', 'activo', '$2y$10$qZswWUjK1/.k4LP/ogz0eeVrfWhixrrPm/7XkfsLTdSr16Vbo0DHO', 0);
 
+--
+-- Disparadores `usuarios`
+--
+DROP TRIGGER IF EXISTS `auditar_creacion_usuario`;
+DELIMITER $$
+CREATE TRIGGER `auditar_creacion_usuario` AFTER INSERT ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario)
+  VALUES ('INSERT', 'usuarios', NEW.idUser, NEW.idUser);
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_usuarios`;
+DELIMITER $$
+CREATE TRIGGER `auditar_usuarios` AFTER INSERT ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('INSERT', 'usuarios', NEW.idUser, 'sistema', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_usuarios_delete`;
+DELIMITER $$
+CREATE TRIGGER `auditar_usuarios_delete` AFTER DELETE ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('DELETE', 'usuarios', OLD.idUser, OLD.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_usuarios_delete_archivo`;
+DELIMITER $$
+CREATE TRIGGER `auditar_usuarios_delete_archivo` AFTER DELETE ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria_accesos_archivo (idUser, accion, fecha)
+  VALUES (OLD.idUser, 'DELETE', NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_usuarios_insert`;
+DELIMITER $$
+CREATE TRIGGER `auditar_usuarios_insert` AFTER INSERT ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('INSERT', 'usuarios', NEW.idUser, NEW.idUser, NOW());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `auditar_usuarios_update`;
+DELIMITER $$
+CREATE TRIGGER `auditar_usuarios_update` AFTER UPDATE ON `usuarios` FOR EACH ROW BEGIN
+  INSERT INTO auditoria (accion, tabla_afectada, idRegistro, usuario, fecha)
+  VALUES ('UPDATE', 'usuarios', NEW.idUser, NEW.idUser, NOW());
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `usuarios_familias`
 --
 
+DROP TABLE IF EXISTS `usuarios_familias`;
 CREATE TABLE `usuarios_familias` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
@@ -4407,12 +4730,26 @@ INSERT INTO `usuarios_familias` (`id`, `idUser`, `idFamilia`) VALUES
 (81, 135, 95),
 (82, 135, 96);
 
+--
+-- Disparadores `usuarios_familias`
+--
+DROP TRIGGER IF EXISTS `before_insert_usuarios_familias`;
+DELIMITER $$
+CREATE TRIGGER `before_insert_usuarios_familias` BEFORE INSERT ON `usuarios_familias` FOR EACH ROW BEGIN
+  IF (SELECT COUNT(*) FROM familias WHERE idFamilia = NEW.idFamilia) = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La familia no existe';
+  END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `usuarios_grupos`
 --
 
+DROP TABLE IF EXISTS `usuarios_grupos`;
 CREATE TABLE `usuarios_grupos` (
   `idUser` int(11) NOT NULL,
   `idGrupo` int(11) NOT NULL
@@ -4498,6 +4835,19 @@ INSERT INTO `usuarios_grupos` (`idUser`, `idGrupo`) VALUES
 (133, 58),
 (135, 59),
 (135, 60);
+
+--
+-- Disparadores `usuarios_grupos`
+--
+DROP TRIGGER IF EXISTS `before_insert_usuarios_grupos`;
+DELIMITER $$
+CREATE TRIGGER `before_insert_usuarios_grupos` BEFORE INSERT ON `usuarios_grupos` FOR EACH ROW BEGIN
+  IF (SELECT COUNT(*) FROM grupos WHERE idGrupo = NEW.idGrupo) = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El grupo no existe';
+  END IF;
+END
+$$
+DELIMITER ;
 
 --
 -- Índices para tablas volcadas
@@ -4944,6 +5294,7 @@ DELIMITER $$
 --
 -- Eventos
 --
+DROP EVENT IF EXISTS `limpiar_cache_permisos`$$
 CREATE DEFINER=`root`@`localhost` EVENT `limpiar_cache_permisos` ON SCHEDULE EVERY 1 HOUR STARTS '2024-10-16 09:29:52' ON COMPLETION NOT PRESERVE ENABLE DO DELETE FROM permisos_cache WHERE TIMESTAMPDIFF(HOUR, fecha_cache, NOW()) > 1$$
 
 DELIMITER ;
