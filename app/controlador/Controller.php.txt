@@ -494,11 +494,11 @@ public function registro()
     // Formulario para insertar gasto de otro usuario
     public function formInsertarGastoOtroUsuario()
     {
-        $idUsuario = recoge('id');
+        $idUser = recoge('id');
         $m = new GastosModelo();
 
         // Asegurarse de que el usuario no es un superusuario
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
         if ($usuario['nivel_usuario'] === 'superadmin') {
             header('Location: index.php?ctl=error');
             exit();
@@ -557,18 +557,18 @@ public function registro()
     // Ver Gastos de un Usuario Específico (para superadmin)
     public function verGastosUsuario()
     {
-        $idUsuario = recoge('id'); // Obtener el ID del usuario
+        $idUser = recoge('id'); // Obtener el ID del usuario
         $m = new GastosModelo();
 
         // Asegurarse de que el usuario no es un superusuario
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
         if ($usuario['nivel_usuario'] === 'superadmin') {
             header('Location: index.php?ctl=error'); // Redirigir si es superadmin
             exit();
         }
 
         // Obtener los gastos del usuario
-        $gastos = $m->obtenerGastosPorUsuario($idUsuario);
+        $gastos = $m->obtenerGastosPorUsuario($idUser);
 
         $params = array(
             'gastos' => $gastos,
@@ -582,15 +582,15 @@ public function registro()
     public function insertarGastoOtroUsuario()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
-            $idUsuario = recoge('idUsuario');
+            $idUser = recoge('idUser');
             $monto = recoge('importe');
             $categoria = recoge('idCategoria');
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
             $m = new GastosModelo();
-            if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen)) {
-                header("Location: index.php?ctl=verGastosUsuario&id=$idUsuario");
+            if ($m->insertarGasto($idUser, $monto, $categoria, $concepto, $origen)) {
+                header("Location: index.php?ctl=verGastosUsuario&id=$idUser");
                 exit();
             }
         }
@@ -599,11 +599,11 @@ public function registro()
     // Formulario para insertar ingreso de otro usuario
     public function formInsertarIngresoOtroUsuario()
     {
-        $idUsuario = recoge('id');
+        $idUser = recoge('id');
         $m = new GastosModelo();
 
         // Asegurarse de que el usuario no es un superusuario
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
         if ($usuario['nivel_usuario'] === 'superadmin') {
             header('Location: index.php?ctl=error');
             exit();
@@ -620,15 +620,15 @@ public function registro()
     public function insertarIngresoOtroUsuario()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
-            $idUsuario = recoge('idUsuario');
+            $idUser = recoge('idUser');
             $monto = recoge('importe');
             $categoria = recoge('idCategoria');
             $concepto = recoge('concepto');
             $origen = recoge('origen');
 
             $m = new GastosModelo();
-            if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen)) {
-                header("Location: index.php?ctl=verIngresosUsuario&id=$idUsuario");
+            if ($m->insertarIngreso($idUser, $monto, $categoria, $concepto, $origen)) {
+                header("Location: index.php?ctl=verIngresosUsuario&id=$idUser");
                 exit();
             }
         }
@@ -779,11 +779,11 @@ public function registro()
     // Ver Ingresos de un Usuario Específico
     public function verIngresosUsuario()
     {
-        $idUsuario = recoge('id'); // Obtener el ID del usuario
+        $idUser = recoge('id'); // Obtener el ID del usuario
         $m = new GastosModelo();
 
         // Obtener el usuario que se está intentando visualizar
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
 
         // Verificar si el usuario actual es un superadmin o administrador
         if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin') {
@@ -794,14 +794,14 @@ public function registro()
             }
         } else {
             // Si es un usuario normal, solo puede ver sus propios datos
-            if ($idUsuario !== $_SESSION['usuario']['id']) {
+            if ($idUser !== $_SESSION['usuario']['id']) {
                 $this->redireccionarError('Acceso denegado. Solo puedes acceder a tus propios datos.');
                 return;
             }
         }
 
         // Obtener los ingresos del usuario
-        $ingresos = $m->obtenerIngresosPorUsuario($idUsuario);
+        $ingresos = $m->obtenerIngresosPorUsuario($idUser);
 
         $params = array(
             'ingresos' => $ingresos,
@@ -829,27 +829,27 @@ public function registro()
     // Comprobar el nivel de usuario
     if ($_SESSION['nivel_usuario'] === 'normal') {
         error_log("El usuario es de tipo 'normal'");
-        $idUsuario = $_SESSION['usuario']['id'];
-        $situacion = $m->obtenerSituacionFinanciera($idUsuario);
+        $idUser = $_SESSION['usuario']['id'];
+        $situacion = $m->obtenerSituacionFinanciera($idUser);
         error_log("Situación Financiera obtenida: " . print_r($situacion, true));
 
         if ($situacion === false) {
-            error_log("Error: No se pudo obtener la situación financiera para el usuario con ID " . $idUsuario);
+            error_log("Error: No se pudo obtener la situación financiera para el usuario con ID " . $idUser);
         }
 
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
         error_log("Usuario obtenido: " . print_r($usuario, true));
 
         if ($usuario === false) {
-            error_log("Error: No se pudo obtener el usuario con ID " . $idUsuario);
+            error_log("Error: No se pudo obtener el usuario con ID " . $idUser);
         }
 
-        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario);
-        $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario);
+        $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUser);
+        $usuario['totalGastos'] = $m->obtenerTotalGastos($idUser);
         $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
-        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
-        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+        $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUser);
+        $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUser);
 
         $params['usuarios'] = [$usuario];
         $params['situacion'] = $situacion;
@@ -1451,13 +1451,13 @@ public function formAsignarUsuario()
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bAsignarUsuario'])) {
-            $idUsuario = recoge('idUsuario');
+            $idUser = recoge('idUser');
             $idFamilia = recoge('idFamilia');
             $idGrupo = recoge('idGrupo');
 
             $m = new GastosModelo();
 
-            if ($m->actualizarUsuarioFamiliaGrupo($idUsuario, $idFamilia, $idGrupo)) {
+            if ($m->actualizarUsuarioFamiliaGrupo($idUser, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
             } else {
@@ -1581,23 +1581,23 @@ public function formAsignarUsuario()
         return;
     }
 
-    $idUsuario = recoge('id'); // Obtener el ID del usuario
+    $idUser = recoge('id'); // Obtener el ID del usuario
     $m = new GastosModelo();
     
     // Verificar si el usuario existe
-    $usuario = $m->obtenerUsuarioPorId($idUsuario);
+    $usuario = $m->obtenerUsuarioPorId($idUser);
     if (!$usuario) {
         $this->redireccionarError('Usuario no encontrado.');
         return;
     }
 
     // Eliminar los gastos asociados al usuario
-    $gastosEliminados = $m->eliminarGastosPorUsuario($idUsuario);
+    $gastosEliminados = $m->eliminarGastosPorUsuario($idUser);
     // Eliminar los ingresos asociados al usuario
-    $ingresosEliminados = $m->eliminarIngresosPorUsuario($idUsuario);
+    $ingresosEliminados = $m->eliminarIngresosPorUsuario($idUser);
 
     // Si se eliminaron correctamente los gastos e ingresos, eliminar el usuario
-    if ($gastosEliminados && $ingresosEliminados && $m->eliminarUsuario($idUsuario)) {
+    if ($gastosEliminados && $ingresosEliminados && $m->eliminarUsuario($idUser)) {
         header('Location: index.php?ctl=listarUsuarios');
         exit();
     } else {
@@ -1815,12 +1815,12 @@ public function asignarUsuarioFamiliaGrupo()
     $m = new GastosModelo();
     
     // Recogemos los datos del formulario
-    $idUsuario = recoge('idUsuario');
+    $idUser = recoge('idUser');
     $tipoVinculo = recoge('tipoVinculo');
     $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
     
     // Registro de depuración de los valores recogidos
-    error_log("DEBUG: ID Usuario -> $idUsuario, Tipo de Vínculo -> $tipoVinculo");
+    error_log("DEBUG: ID Usuario -> $idUser, Tipo de Vínculo -> $tipoVinculo");
 
     // Verificamos si el tipo de vínculo es 'familia' o 'grupo' y gestionamos en consecuencia
     if ($tipoVinculo === 'familia') {
@@ -1837,7 +1837,7 @@ public function asignarUsuarioFamiliaGrupo()
         }
 
         // Intentamos asignar el usuario a la familia
-        if ($m->asignarUsuarioAFamilia($idUsuario, $idFamilia)) {
+        if ($m->asignarUsuarioAFamilia($idUser, $idFamilia)) {
             // Redirigimos a la vista de familias en caso de éxito
             header('Location: index.php?ctl=listarFamilias');
             exit();
@@ -1860,7 +1860,7 @@ public function asignarUsuarioFamiliaGrupo()
         }
 
         // Intentamos asignar el usuario al grupo
-        if ($m->asignarUsuarioAGrupo($idUsuario, $idGrupo)) {
+        if ($m->asignarUsuarioAGrupo($idUser, $idGrupo)) {
             // Redirigimos a la vista de grupos en caso de éxito
             header('Location: index.php?ctl=verGrupos');
             exit();

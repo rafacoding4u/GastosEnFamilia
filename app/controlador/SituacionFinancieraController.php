@@ -34,12 +34,12 @@ class SituacionFinancieraController
     }
 
     // Función para ver la situación financiera de un usuario normal
-    private function verSituacionUsuario($m, $idUsuario, &$params)
+    private function verSituacionUsuario($m, $idUser, &$params)
     {
         try {
-            $usuario = $this->calcularSituacionUsuario($m, $idUsuario);
+            $usuario = $this->calcularSituacionUsuario($m, $idUser);
             $params['usuarios'] = [$usuario];
-            $params['situacion'] = $m->obtenerSituacionFinanciera($idUsuario);
+            $params['situacion'] = $m->obtenerSituacionFinanciera($idUser);
         } catch (Exception $e) {
             error_log("Error en verSituacionUsuario(): " . $e->getMessage());
             $this->redireccionarError('Error al obtener la situación financiera del usuario.');
@@ -126,22 +126,22 @@ class SituacionFinancieraController
     }
 
     // Función para calcular la situación financiera de un usuario
-    private function calcularSituacionUsuario($m, $idUsuario)
+    private function calcularSituacionUsuario($m, $idUser)
     {
         try {
-            $usuario = $m->obtenerUsuarioPorId($idUsuario);
-            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUsuario) ?? 0;
-            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUsuario) ?? 0;
+            $usuario = $m->obtenerUsuarioPorId($idUser);
+            $usuario['totalIngresos'] = $m->obtenerTotalIngresos($idUser) ?? 0;
+            $usuario['totalGastos'] = $m->obtenerTotalGastos($idUser) ?? 0;
             $usuario['saldo'] = $usuario['totalIngresos'] - $usuario['totalGastos'];
 
             // Mensajes de depuración para comprobar los valores
-            error_log("Usuario: " . $idUsuario);
+            error_log("Usuario: " . $idUser);
             error_log("Total Ingresos: " . $usuario['totalIngresos']);
             error_log("Total Gastos: " . $usuario['totalGastos']);
             error_log("Saldo: " . $usuario['saldo']);
 
-            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUsuario);
-            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUsuario);
+            $usuario['detalles_ingresos'] = $m->obtenerIngresosPorUsuario($idUser);
+            $usuario['detalles_gastos'] = $m->obtenerGastosPorUsuario($idUser);
             return $usuario;
         } catch (Exception $e) {
             error_log("Error en calcularSituacionUsuario(): " . $e->getMessage());

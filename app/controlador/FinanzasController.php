@@ -115,10 +115,10 @@ class FinanzasController
     public function verSituacionFinanciera()
     {
         $m = new GastosModelo();
-        $idUsuario = $_SESSION['usuario']['id'];
+        $idUser = $_SESSION['usuario']['id'];
 
-        $totalIngresos = $m->obtenerTotalIngresos($idUsuario) ?? 0;
-        $totalGastos = $m->obtenerTotalGastos($idUsuario) ?? 0;
+        $totalIngresos = $m->obtenerTotalIngresos($idUser) ?? 0;
+        $totalGastos = $m->obtenerTotalGastos($idUser) ?? 0;
 
         $saldo = $totalIngresos - $totalGastos;
 
@@ -196,18 +196,18 @@ class FinanzasController
 
             $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
             $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-            $idUsuario = $_SESSION['usuario']['id'];
+            $idUser = $_SESSION['usuario']['id'];
 
             $m = new GastosModelo();
 
             // Validar que el usuario pertenezca a la familia o grupo correspondiente
-            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUsuario)) {
+            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUser)) {
                 $params['mensaje'] = 'No tienes permiso para insertar gastos en esta familia o grupo.';
                 $this->formInsertarGasto($params);
                 return;
             }
 
-            if ($m->insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
+            if ($m->insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verGastos');
                 exit();
             } else {
@@ -234,19 +234,19 @@ class FinanzasController
 
             $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
             $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-            $idUsuario = $_SESSION['usuario']['id'];
+            $idUser = $_SESSION['usuario']['id'];
 
             $m = new GastosModelo();
 
             // Validar que el usuario pertenezca a la familia o grupo correspondiente
-            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUsuario)) {
+            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUser)) {
                 $params['mensaje'] = 'No tienes permiso para insertar ingresos en esta familia o grupo.';
                 $this->formInsertarIngreso($params);
                 return;
             }
 
             try {
-                if ($m->insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
+                if ($m->insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
                     header('Location: index.php?ctl=verIngresos');
                     exit();
                 } else {
@@ -408,11 +408,11 @@ class FinanzasController
     public function inicio()
     {
         $m = new GastosModelo();
-        $idUsuario = $_SESSION['usuario']['id'];
+        $idUser = $_SESSION['usuario']['id'];
 
         // Obtener los ingresos, gastos y calcular el saldo del usuario
-        $totalIngresos = $m->obtenerTotalIngresos($idUsuario) ?? 0;
-        $totalGastos = $m->obtenerTotalGastos($idUsuario) ?? 0;
+        $totalIngresos = $m->obtenerTotalIngresos($idUser) ?? 0;
+        $totalGastos = $m->obtenerTotalGastos($idUser) ?? 0;
         $saldo = $totalIngresos - $totalGastos;
 
         // Parámetros a pasar a la vista

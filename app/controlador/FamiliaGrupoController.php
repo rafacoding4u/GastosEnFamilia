@@ -480,12 +480,12 @@ class FamiliaGrupoController
         $m = new GastosModelo(); // Asumiendo que GastosModelo es el que gestiona las familias y grupos.
 
         // Recoger los datos del formulario
-        $idUsuario = recoge('idUsuario');
+        $idUser = recoge('idUser');
         $idFamilia = recoge('idFamilia') ?: null;
         $idGrupo = recoge('idGrupo') ?: null;
 
         // Validar que se haya seleccionado al menos una opción válida (familia o grupo)
-        if (empty($idUsuario) || (empty($idFamilia) && empty($idGrupo))) {
+        if (empty($idUser) || (empty($idFamilia) && empty($idGrupo))) {
             $params['mensaje'] = 'Debes seleccionar un usuario y al menos una familia o grupo para asignar.';
             $this->formAsignarUsuario($params);
             return;
@@ -496,13 +496,13 @@ class FamiliaGrupoController
             // Procesar asignación a familia
             if ($idFamilia) {
                 // Asignar el usuario a la familia
-                $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
             }
 
             // Procesar asignación a grupo
             if ($idGrupo) {
                 // Asignar el usuario al grupo
-                $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                $m->asignarUsuarioAGrupo($idUser, $idGrupo);
             }
 
             // Redirigir tras una asignación exitosa

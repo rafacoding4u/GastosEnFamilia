@@ -77,11 +77,11 @@ class GastosModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerUsuarioPorId($idUsuario)
+    public function obtenerUsuarioPorId($idUser)
     {
-        $sql = "SELECT * FROM usuarios WHERE idUser = :idUsuario";
+        $sql = "SELECT * FROM usuarios WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -243,19 +243,19 @@ class GastosModelo
         echo "Contraseñas de usuarios, familias, grupos y contraseñas premium verificadas y encriptadas correctamente.";
     }
 
-    public function eliminarUsuario($idUsuario)
+    public function eliminarUsuario($idUser)
     {
-        $sql = "DELETE FROM usuarios WHERE idUser = :idUsuario";
+        $sql = "DELETE FROM usuarios WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function actualizarUsuario($idUsuario, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia = null, $idGrupo = null, $passwordFamiliaGrupo = null)
+    public function actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia = null, $idGrupo = null, $passwordFamiliaGrupo = null)
     {
         try {
             // Verificar que el usuario esté asignado
-            if (empty($idUsuario)) {
+            if (empty($idUser)) {
                 throw new Exception('El usuario a actualizar debe estar definido.');
             }
 
@@ -266,7 +266,7 @@ class GastosModelo
                     throw new Exception('Contraseña de la familia incorrecta.');
                 }
                 // No asignar el resultado a una variable ya que el método no devuelve nada
-                $this->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                $this->asignarUsuarioAFamilia($idUser, $idFamilia);
                 $asignacionExitosa = true;  // Indicar éxito manualmente
             }
 
@@ -275,14 +275,14 @@ class GastosModelo
                     throw new Exception('Contraseña del grupo incorrecta.');
                 }
                 // No asignar el resultado a una variable ya que el método no devuelve nada
-                $this->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                $this->asignarUsuarioAGrupo($idUser, $idGrupo);
                 $asignacionExitosa = true;  // Indicar éxito manualmente
             }
 
 
             // Si no se asignó ni a familia ni a grupo, quitar cualquier asociación existente
             if ($idFamilia === null && $idGrupo === null) {
-                $this->quitarUsuarioDeFamiliaOGrupo($idUsuario);
+                $this->quitarUsuarioDeFamiliaOGrupo($idUser);
             }
 
             // Permitir que el usuario no esté asignado a una familia o grupo (usuario individual)
@@ -295,7 +295,7 @@ class GastosModelo
             $sql = "UPDATE usuarios 
             SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, telefono = :telefono, 
                 nivel_usuario = :nivel_usuario, idFamilia = :idFamilia, idGrupo = :idGrupo
-            WHERE idUser = :idUsuario";
+            WHERE idUser = :idUser";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(':nombre', $nombre, PDO::PARAM_STR);
@@ -306,7 +306,7 @@ class GastosModelo
             $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
             $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
             $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
 
             if (!$stmt->execute()) {
                 throw new Exception("Error al actualizar el usuario.");
@@ -319,19 +319,19 @@ class GastosModelo
         }
     }
     // Método para quitar al usuario de cualquier asociación de familia o grupo
-    public function quitarUsuarioDeFamiliaOGrupo($idUsuario)
+    public function quitarUsuarioDeFamiliaOGrupo($idUser)
     {
         try {
             // Eliminar de la tabla usuarios_familias
-            $sqlFamilia = "DELETE FROM usuarios_familias WHERE idUser = :idUsuario";
+            $sqlFamilia = "DELETE FROM usuarios_familias WHERE idUser = :idUser";
             $stmtFamilia = $this->conexion->prepare($sqlFamilia);
-            $stmtFamilia->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmtFamilia->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmtFamilia->execute();
 
             // Eliminar de la tabla usuarios_grupos
-            $sqlGrupo = "DELETE FROM usuarios_grupos WHERE idUser = :idUsuario";
+            $sqlGrupo = "DELETE FROM usuarios_grupos WHERE idUser = :idUser";
             $stmtGrupo = $this->conexion->prepare($sqlGrupo);
-            $stmtGrupo->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmtGrupo->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmtGrupo->execute();
         } catch (Exception $e) {
             error_log("Error al quitar al usuario de la familia o grupo: " . $e->getMessage());
@@ -347,60 +347,60 @@ class GastosModelo
     // -------------------------------
 
     // Obtener el total de ingresos para un usuario
-    public function obtenerTotalIngresos($idUsuario)
+    public function obtenerTotalIngresos($idUser)
     {
-        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalIngresos FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalIngresos FROM ingresos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
     // Obtener el total de gastos para un usuario
-    public function obtenerTotalGastos($idUsuario)
+    public function obtenerTotalGastos($idUser)
     {
-        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalGastos FROM gastos WHERE idUser = :idUsuario";
+        $sql = "SELECT IFNULL(SUM(importe), 0) AS totalGastos FROM gastos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
 
     // Obtener los gastos de un usuario
-    public function obtenerGastosPorUsuario($idUsuario, $offset = 0, $limite = 10)
+    public function obtenerGastosPorUsuario($idUser, $offset = 0, $limite = 10)
     {
-        $sql = "SELECT * FROM gastos WHERE idUser = :idUsuario LIMIT :offset, :limite";
+        $sql = "SELECT * FROM gastos WHERE idUser = :idUser LIMIT :offset, :limite";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function contarGastosPorUsuario($idUsuario)
+    public function contarGastosPorUsuario($idUser)
     {
-        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUsuario";
+        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn();
     }
 
     // Obtener los ingresos de un usuario
-    public function obtenerIngresosPorUsuario($idUsuario)
+    public function obtenerIngresosPorUsuario($idUser)
     {
-        $sql = "SELECT * FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "SELECT * FROM ingresos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
     // Obtener situación financiera de un usuario específico
-    public function obtenerSituacionFinanciera($idUsuario)
+    public function obtenerSituacionFinanciera($idUser)
     {
         $sql = "
         SELECT 
@@ -410,10 +410,10 @@ class GastosModelo
         FROM usuarios u
         LEFT JOIN ingresos i ON u.idUser = i.idUser
         LEFT JOIN gastos g ON u.idUser = g.idUser
-        WHERE u.idUser = :idUsuario";
+        WHERE u.idUser = :idUser";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -485,37 +485,37 @@ class GastosModelo
 
 
     // Añadir usuario a un grupo existente
-    public function añadirUsuarioAGrupo($idUsuario, $idGrupo)
+    public function añadirUsuarioAGrupo($idUser, $idGrupo)
     {
-        $sql = "UPDATE usuarios SET idGrupo = :idGrupo WHERE idUser = :idUsuario";
+        $sql = "UPDATE usuarios SET idGrupo = :idGrupo WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
         $stmt->bindParam(':idGrupo', $idGrupo);
-        $stmt->bindParam(':idUsuario', $idUsuario);
+        $stmt->bindParam(':idUser', $idUser);
         return $stmt->execute();
     }
 
     // Añadir usuario a una familia existente
-    public function añadirUsuarioAFamilia($idUsuario, $idFamilia)
+    public function añadirUsuarioAFamilia($idUser, $idFamilia)
     {
-        $sql = "UPDATE usuarios SET idFamilia = :idFamilia WHERE idUser = :idUsuario";
+        $sql = "UPDATE usuarios SET idFamilia = :idFamilia WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);  // Reemplazar $db con $this->conexion
         $stmt->bindParam(':idFamilia', $idFamilia);
-        $stmt->bindParam(':idUsuario', $idUsuario);
+        $stmt->bindParam(':idUser', $idUser);
         return $stmt->execute();
     }
 
     // Insertar gasto para un usuario
-    public function insertarGasto($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)
+    public function insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)
     {
         // Verificar que el usuario esté asignado
-        if (empty($idUsuario)) {
+        if (empty($idUser)) {
             throw new Exception('El gasto debe estar asociado a un usuario.');
         }
 
         $sql = "INSERT INTO gastos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-            VALUES (:idUsuario, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
+            VALUES (:idUser, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
         $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
@@ -528,11 +528,11 @@ class GastosModelo
 
 
     // Insertar ingreso para un usuario con manejo de excepciones y lógica corregida
-    public function insertarIngreso($idUsuario, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
+    public function insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
     {
         try {
             // Verificar que el usuario esté asignado
-            if (empty($idUsuario)) {
+            if (empty($idUser)) {
                 throw new Exception('El ingreso debe estar asociado a un usuario.');
             }
 
@@ -545,11 +545,11 @@ class GastosModelo
 
             // Preparar la consulta SQL
             $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-                VALUES (:idUsuario, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
+                VALUES (:idUser, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
 
             // Preparar la sentencia
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
             $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
             $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
@@ -702,22 +702,22 @@ class GastosModelo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Actualizar familia y/o grupo asignado a un usuario
-    public function actualizarUsuarioFamiliaGrupo($idUsuario, $familias = [], $grupos = [])
+    public function actualizarUsuarioFamiliaGrupo($idUser, $familias = [], $grupos = [])
     {
         try {
             // Validar que el usuario esté asignado
-            if (empty($idUsuario)) {
+            if (empty($idUser)) {
                 throw new Exception('El usuario a actualizar debe estar definido.');
             }
 
             // Asignar al usuario a múltiples familias
             foreach ($familias as $idFamilia) {
-                $this->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                $this->asignarUsuarioAFamilia($idUser, $idFamilia);
             }
 
             // Asignar al usuario a múltiples grupos
             foreach ($grupos as $idGrupo) {
-                $this->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                $this->asignarUsuarioAGrupo($idUser, $idGrupo);
             }
 
             return true;
@@ -1112,12 +1112,12 @@ class GastosModelo
         $stmt->bindValue(':idGasto', $idGasto, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    public function obtenerGastosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
+    public function obtenerGastosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
     {
         $sql = "SELECT g.*, c.nombreCategoria 
             FROM gastos g 
             LEFT JOIN categorias c ON g.idCategoria = c.idCategoria 
-            WHERE g.idUser = :idUsuario";
+            WHERE g.idUser = :idUser";
 
         // Aplicar los filtros
         if ($fechaInicio) {
@@ -1137,7 +1137,7 @@ class GastosModelo
         $sql .= " LIMIT :offset, :limite";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         if ($fechaInicio) {
             $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
         }
@@ -1157,9 +1157,9 @@ class GastosModelo
     }
 
     // Método para contar los resultados filtrados
-    public function contarGastosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
+    public function contarGastosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
     {
-        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUsuario";
+        $sql = "SELECT COUNT(*) FROM gastos WHERE idUser = :idUser";
 
         if ($fechaInicio) {
             $sql .= " AND fecha >= :fechaInicio";
@@ -1175,7 +1175,7 @@ class GastosModelo
         }
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         if ($fechaInicio) {
             $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
         }
@@ -1193,33 +1193,33 @@ class GastosModelo
     }
 
     // Obtener gastos por categoría
-    public function obtenerGastosPorCategoria($idUsuario)
+    public function obtenerGastosPorCategoria($idUser)
     {
         $sql = "
         SELECT c.nombreCategoria, SUM(g.importe) AS total
         FROM gastos g
         LEFT JOIN categorias c ON g.idCategoria = c.idCategoria
-        WHERE g.idUser = :idUsuario
+        WHERE g.idUser = :idUser
         GROUP BY g.idCategoria";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Obtener ingresos por categoría
-    public function obtenerIngresosPorCategoria($idUsuario)
+    public function obtenerIngresosPorCategoria($idUser)
     {
         $sql = "
         SELECT c.nombreCategoria, SUM(i.importe) AS total
         FROM ingresos i
         LEFT JOIN categorias c ON i.idCategoria = c.idCategoria
-        WHERE i.idUser = :idUsuario
+        WHERE i.idUser = :idUser
         GROUP BY i.idCategoria";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -1236,7 +1236,7 @@ class GastosModelo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerFamiliasPorUsuario($idUsuario)
+    public function obtenerFamiliasPorUsuario($idUser)
     {
         $sql = "
         SELECT f.*
@@ -1244,13 +1244,13 @@ class GastosModelo
         JOIN usuarios_familias uf ON f.idFamilia = uf.idFamilia
         WHERE uf.idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
-    public function obtenerGruposPorUsuario($idUsuario)
+    public function obtenerGruposPorUsuario($idUser)
     {
         $sql = "
         SELECT g.*
@@ -1258,7 +1258,7 @@ class GastosModelo
         JOIN usuarios_grupos ug ON g.idGrupo = ug.idGrupo
         WHERE ug.idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -1433,20 +1433,20 @@ class GastosModelo
 
 
     // Eliminar todos los gastos de un usuario
-    public function eliminarGastosPorUsuario($idUsuario)
+    public function eliminarGastosPorUsuario($idUser)
     {
-        $sql = "DELETE FROM gastos WHERE idUser = :idUsuario";
+        $sql = "DELETE FROM gastos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     // Eliminar todos los ingresos de un usuario
-    public function eliminarIngresosPorUsuario($idUsuario)
+    public function eliminarIngresosPorUsuario($idUser)
     {
-        $sql = "DELETE FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "DELETE FROM ingresos WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -1464,7 +1464,7 @@ class GastosModelo
 
 
 
-    public function asignarFamilia($idUsuario, $idFamilia = null, $nombreNuevaFamilia = null, $passwordNuevaFamilia = null)
+    public function asignarFamilia($idUser, $idFamilia = null, $nombreNuevaFamilia = null, $passwordNuevaFamilia = null)
     {
         try {
             // Si se proporciona el nombre de una nueva familia, la creamos
@@ -1484,9 +1484,9 @@ class GastosModelo
 
             // Asignamos el usuario a la familia (existente o recién creada)
             if ($idFamilia) {
-                $sqlAsignar = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUsuario, :idFamilia)";
+                $sqlAsignar = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUser, :idFamilia)";
                 $stmtAsignar = $this->conexion->prepare($sqlAsignar);
-                $stmtAsignar->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+                $stmtAsignar->bindValue(':idUser', $idUser, PDO::PARAM_INT);
                 $stmtAsignar->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
                 return $stmtAsignar->execute();
             }
@@ -1509,7 +1509,7 @@ class GastosModelo
 
 
 
-    public function asignarGrupo($idUsuario, $idGrupo = null, $nombreNuevoGrupo = null, $passwordNuevoGrupo = null)
+    public function asignarGrupo($idUser, $idGrupo = null, $nombreNuevoGrupo = null, $passwordNuevoGrupo = null)
     {
         try {
             // Si se proporciona el nombre de un nuevo grupo, lo creamos
@@ -1529,9 +1529,9 @@ class GastosModelo
 
             // Asignamos el usuario al grupo (existente o recién creado)
             if ($idGrupo) {
-                $sqlAsignar = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUsuario, :idGrupo)";
+                $sqlAsignar = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUser, :idGrupo)";
                 $stmtAsignar = $this->conexion->prepare($sqlAsignar);
-                $stmtAsignar->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+                $stmtAsignar->bindValue(':idUser', $idUser, PDO::PARAM_INT);
                 $stmtAsignar->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
                 return $stmtAsignar->execute();
             }
@@ -1557,9 +1557,9 @@ class GastosModelo
             return false;
         }
     }
-    public function obtenerIngresosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
+    public function obtenerIngresosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
     {
-        $sql = "SELECT * FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "SELECT * FROM ingresos WHERE idUser = :idUser";
         if ($fechaInicio) {
             $sql .= " AND fecha >= :fechaInicio";
         }
@@ -1575,7 +1575,7 @@ class GastosModelo
         $sql .= " LIMIT :offset, :limite";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         if ($fechaInicio) $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
         if ($fechaFin) $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
         if ($categoria) $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
@@ -1586,9 +1586,9 @@ class GastosModelo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function contarIngresosFiltrados($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
+    public function contarIngresosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
     {
-        $sql = "SELECT COUNT(*) FROM ingresos WHERE idUser = :idUsuario";
+        $sql = "SELECT COUNT(*) FROM ingresos WHERE idUser = :idUser";
         if ($fechaInicio) {
             $sql .= " AND fecha >= :fechaInicio";
         }
@@ -1603,7 +1603,7 @@ class GastosModelo
         }
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         if ($fechaInicio) $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
         if ($fechaFin) $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
         if ($categoria) $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
@@ -1656,13 +1656,13 @@ class GastosModelo
         }
     }
     // Método para obtener la preferencia del usuario sobre los resultados por página
-    public function obtenerPreferenciaUsuario($clave, $idUsuario)
+    public function obtenerPreferenciaUsuario($clave, $idUser)
     {
         try {
-            $sql = "SELECT valor FROM preferencias_usuarios WHERE clave = :clave AND idUser = :idUsuario";
+            $sql = "SELECT valor FROM preferencias_usuarios WHERE clave = :clave AND idUser = :idUser";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(':clave', $clave, PDO::PARAM_STR);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchColumn();
         } catch (PDOException $e) {
@@ -1680,7 +1680,7 @@ class GastosModelo
 
 
     // Método para obtener el resumen financiero del usuario
-    public function obtenerResumenFinancieroUsuario($idUsuario)
+    public function obtenerResumenFinancieroUsuario($idUser)
     {
         try {
             $sql = "
@@ -1691,10 +1691,10 @@ class GastosModelo
         FROM usuarios u
         LEFT JOIN ingresos i ON u.idUser = i.idUser
         LEFT JOIN gastos g ON u.idUser = g.idUser
-        WHERE u.idUser = :idUsuario";
+        WHERE u.idUser = :idUser";
 
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -1717,13 +1717,13 @@ class GastosModelo
     }
 
     // Método para registrar el envío de la newsletter
-    public function insertarNewsLetterEnvio($idUsuario, $idRefran, $saldoTotal, $gastosTotales, $ingresosTotales)
+    public function insertarNewsLetterEnvio($idUser, $idRefran, $saldoTotal, $gastosTotales, $ingresosTotales)
     {
         try {
             $sql = "INSERT INTO news_letter_envios (idUser, idRefran, saldo_total, gastos_totales, ingresos_totales, fecha_envio) 
-                VALUES (:idUsuario, :idRefran, :saldoTotal, :gastosTotales, :ingresosTotales, NOW())";
+                VALUES (:idUser, :idRefran, :saldoTotal, :gastosTotales, :ingresosTotales, NOW())";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindValue(':idRefran', $idRefran, PDO::PARAM_INT);
             $stmt->bindValue(':saldoTotal', $saldoTotal, PDO::PARAM_STR);
             $stmt->bindValue(':gastosTotales', $gastosTotales, PDO::PARAM_STR);
@@ -1826,7 +1826,7 @@ class GastosModelo
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
-    public function obtenerIdUsuarioPorAlias($alias)
+    public function obteneridUserPorAlias($alias)
     {
         $sql = "SELECT idUser FROM usuarios WHERE alias = :alias";
         $stmt = $this->conexion->prepare($sql);
@@ -1834,12 +1834,12 @@ class GastosModelo
         $stmt->execute();
         return $stmt->fetchColumn();
     }
-    public function actualizarUsuarioNivel($idUsuario, $nivel_usuario)
+    public function actualizarUsuarioNivel($idUser, $nivel_usuario)
     {
-        $sql = "UPDATE usuarios SET nivel_usuario = :nivel_usuario WHERE idUser = :idUsuario";
+        $sql = "UPDATE usuarios SET nivel_usuario = :nivel_usuario WHERE idUser = :idUser";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         return $stmt->execute();
     }
     // Obtener todos los registros de auditoría
@@ -1857,12 +1857,12 @@ class GastosModelo
     }
 
     // Obtener registros de auditoría de un usuario específico
-    public function obtenerAuditoriaPorUsuario($idUsuario)
+    public function obtenerAuditoriaPorUsuario($idUser)
     {
         try {
-            $sql = "SELECT * FROM auditoria WHERE idUser = :idUsuario ORDER BY fecha DESC";
+            $sql = "SELECT * FROM auditoria WHERE idUser = :idUser ORDER BY fecha DESC";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -1872,12 +1872,12 @@ class GastosModelo
     }
 
     // Registrar una acción en la auditoría
-    public function registrarAccionAuditoria($idUsuario, $accion, $detalles)
+    public function registrarAccionAuditoria($idUser, $accion, $detalles)
     {
         try {
-            $sql = "INSERT INTO auditoria (idUser, accion, detalles, fecha) VALUES (:idUsuario, :accion, :detalles, NOW())";
+            $sql = "INSERT INTO auditoria (idUser, accion, detalles, fecha) VALUES (:idUser, :accion, :detalles, NOW())";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindValue(':accion', $accion, PDO::PARAM_STR);
             $stmt->bindValue(':detalles', $detalles, PDO::PARAM_STR);
             return $stmt->execute();
@@ -1886,11 +1886,11 @@ class GastosModelo
             return false;
         }
     }
-    public function obtenerPresupuestosPorUsuario($idUsuario)
+    public function obtenerPresupuestosPorUsuario($idUser)
     {
         try {
-            $stmt = $this->conexion->prepare('SELECT * FROM presupuestos WHERE idUsuario = :idUsuario');
-            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt = $this->conexion->prepare('SELECT * FROM presupuestos WHERE idUser = :idUser');
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -1916,12 +1916,12 @@ class GastosModelo
             return false;
         }
     }
-    public function usuarioYaEnFamilia($idUsuario, $idFamilia)
+    public function usuarioYaEnFamilia($idUser, $idFamilia)
     {
         try {
-            $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUsuario AND idFamilia = :idFamilia";
+            $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -1932,12 +1932,12 @@ class GastosModelo
         }
     }
 
-    public function usuarioYaEnGrupo($idUsuario, $idGrupo)
+    public function usuarioYaEnGrupo($idUser, $idGrupo)
     {
         try {
-            $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUsuario AND idGrupo = :idGrupo";
+            $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -1947,9 +1947,9 @@ class GastosModelo
             return false;
         }
     }
-    public function usuarioPerteneceAFamiliaOGrupo($idUsuario, $idFamilia = null, $idGrupo = null)
+    public function usuarioPerteneceAFamiliaOGrupo($idUser, $idFamilia = null, $idGrupo = null)
     {
-        $sql = "SELECT COUNT(*) as conteo FROM usuarios_familias WHERE idUsuario = :idUsuario";
+        $sql = "SELECT COUNT(*) as conteo FROM usuarios_familias WHERE idUser = :idUser";
         if ($idFamilia) {
             $sql .= " AND idFamilia = :idFamilia";
         }
@@ -1959,7 +1959,7 @@ class GastosModelo
 
         try {
             $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             if ($idFamilia) {
                 $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
             }
@@ -2110,13 +2110,13 @@ class GastosModelo
             return false;
         }
     }
-    public function actualizarPasswordPremium($idUsuario, $hashedPasswordPremium)
+    public function actualizarPasswordPremium($idUser, $hashedPasswordPremium)
     {
         try {
-            $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUsuario";
+            $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUser";
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(':hashedPasswordPremium', $hashedPasswordPremium, PDO::PARAM_STR);
-            $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
             error_log("Error al actualizar la contraseña premium: " . $e->getMessage());

@@ -40,26 +40,26 @@ class UsuarioController
         echo "Contraseña del superadmin actualizada correctamente.";
     }
 
-    public function asignarPasswordPremium($idUsuario, $passwordPremium)
+    public function asignarPasswordPremium($idUser, $passwordPremium)
     {
         // Generar el hash de la nueva contraseña premium
         $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_DEFAULT);
 
         // Ejecutar la consulta para actualizar la contraseña premium del usuario
-        $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUsuario";
+        $sql = "UPDATE usuarios SET password_premium = :hashedPasswordPremium WHERE idUser = :idUser";
         $stmt = $this->modelo->getConexion()->prepare($sql);
         $stmt->bindValue(':hashedPasswordPremium', $hashedPasswordPremium);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
 
-        echo "Contraseña premium asignada correctamente al usuario con ID $idUsuario.";
+        echo "Contraseña premium asignada correctamente al usuario con ID $idUser.";
     }
 
-    public function verificarPasswordPremium($idUsuario, $passwordIntroducido)
+    public function verificarPasswordPremium($idUser, $passwordIntroducido)
     {
-        $sql = "SELECT password_premium FROM usuarios WHERE idUser = :idUsuario";
+        $sql = "SELECT password_premium FROM usuarios WHERE idUser = :idUser";
         $stmt = $this->modelo->getConexion()->prepare($sql);
-        $stmt->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -108,7 +108,7 @@ class UsuarioController
                 throw new Exception('Error al registrar el usuario.');
             }
 
-            $idUsuario = $m->obtenerIdUsuarioPorAlias($alias);
+            $idUser = $m->obteneridUserPorAlias($alias);
 
             // Si se selecciona crear familia
             if ($tipoVinculo === 'crear_familia') {
@@ -121,11 +121,11 @@ class UsuarioController
                     throw new Exception('Error al crear la familia.');
                 }
 
-                $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-                $m->añadirAdministradorAFamilia($idUsuario, $idFamilia);
+                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                $m->añadirAdministradorAFamilia($idUser, $idFamilia);
 
                 // Actualizar el rol del usuario a "admin"
-                $m->actualizarUsuarioNivel($idUsuario, 'admin');
+                $m->actualizarUsuarioNivel($idUser, 'admin');
             }
 
             // Si se selecciona crear grupo
@@ -139,11 +139,11 @@ class UsuarioController
                     throw new Exception('Error al crear el grupo.');
                 }
 
-                $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-                $m->añadirAdministradorAGrupo($idUsuario, $idGrupo);
+                $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+                $m->añadirAdministradorAGrupo($idUser, $idGrupo);
 
                 // Actualizar el rol del usuario a "admin"
-                $m->actualizarUsuarioNivel($idUsuario, 'admin');
+                $m->actualizarUsuarioNivel($idUser, 'admin');
             }
 
             // Si se une a una familia o grupo existente
@@ -156,19 +156,19 @@ class UsuarioController
                     if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
                         throw new Exception('Contraseña de la familia incorrecta.');
                     }
-                    $m->asignarUsuarioAFamilia($idUsuario, $idFamilia);
+                    $m->asignarUsuarioAFamilia($idUser, $idFamilia);
 
                     // Actualizar a rol 'usuario'
-                    $m->actualizarUsuarioNivel($idUsuario, 'usuario');
+                    $m->actualizarUsuarioNivel($idUser, 'usuario');
                 } elseif (strpos($idGrupoFamilia, 'grupo_') === 0) {
                     $idGrupo = str_replace('grupo_', '', $idGrupoFamilia);
                     if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
                         throw new Exception('Contraseña del grupo incorrecta.');
                     }
-                    $m->asignarUsuarioAGrupo($idUsuario, $idGrupo);
+                    $m->asignarUsuarioAGrupo($idUser, $idGrupo);
 
                     // Actualizar a rol 'usuario'
-                    $m->actualizarUsuarioNivel($idUsuario, 'usuario');
+                    $m->actualizarUsuarioNivel($idUser, 'usuario');
                 }
             }
 
@@ -445,7 +445,7 @@ class UsuarioController
             $m = new GastosModelo();
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
-                $idUsuario = $_GET['id'];
+                $idUser = $_GET['id'];
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
@@ -474,7 +474,7 @@ class UsuarioController
 
                 // Actualizar si no hay errores
                 if (empty($errores)) {
-                    if ($m->actualizarUsuario($idUsuario, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
+                    if ($m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
                         header('Location: index.php?ctl=listarUsuarios');
                         exit();
                     } else {
@@ -513,15 +513,15 @@ class UsuarioController
                 throw new Exception('No tienes permisos para eliminar este usuario.');
             }
 
-            $idUsuario = recoge('id');
+            $idUser = recoge('id');
             $m = new GastosModelo();
-            $usuario = $m->obtenerUsuarioPorId($idUsuario);
+            $usuario = $m->obtenerUsuarioPorId($idUser);
 
             if (!$usuario) {
                 throw new Exception('Usuario no encontrado.');
             }
 
-            if ($m->eliminarGastosPorUsuario($idUsuario) && $m->eliminarIngresosPorUsuario($idUsuario) && $m->eliminarUsuario($idUsuario)) {
+            if ($m->eliminarGastosPorUsuario($idUser) && $m->eliminarIngresosPorUsuario($idUser) && $m->eliminarUsuario($idUser)) {
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
             } else {
@@ -582,13 +582,13 @@ class UsuarioController
     }
 
     // Verificar si el usuario pertenece a una familia o grupo
-    private function perteneceAFamiliaOGrupo($idUsuario)
+    private function perteneceAFamiliaOGrupo($idUser)
     {
         $m = new GastosModelo();
-        $usuario = $m->obtenerUsuarioPorId($idUsuario);
+        $usuario = $m->obtenerUsuarioPorId($idUser);
         return ($usuario &&
-            ($m->usuarioYaEnFamilia($idUsuario, $_SESSION['usuario']['idFamilia']) ||
-                $m->usuarioYaEnGrupo($idUsuario, $_SESSION['usuario']['idGrupo'])));
+            ($m->usuarioYaEnFamilia($idUser, $_SESSION['usuario']['idFamilia']) ||
+                $m->usuarioYaEnGrupo($idUser, $_SESSION['usuario']['idGrupo'])));
     }
 
     public function buscarFamilias()
@@ -623,10 +623,10 @@ class UsuarioController
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $password_premium = recoge('password_premium');
-                $idUsuario = $_SESSION['usuario']['id'];
+                $idUser = $_SESSION['usuario']['id'];
 
                 // Verificar la contraseña premium
-                if (!$this->verificarPasswordPremium($idUsuario, $password_premium)) {
+                if (!$this->verificarPasswordPremium($idUser, $password_premium)) {
                     throw new Exception('Contraseña premium incorrecta. No tienes permisos para crear familias o grupos.');
                 }
 
@@ -640,8 +640,8 @@ class UsuarioController
                             throw new Exception("No se pudo crear la nueva familia $i.");
                         }
                         $idFamilia = $this->modelo->obtenerUltimoId();
-                        $this->modelo->asignarUsuarioAFamilia($idUsuario, $idFamilia);
-                        $this->modelo->asignarAdministradorAFamilia($idUsuario, $idFamilia);
+                        $this->modelo->asignarUsuarioAFamilia($idUser, $idFamilia);
+                        $this->modelo->asignarAdministradorAFamilia($idUser, $idFamilia);
                     }
                 }
 
@@ -655,8 +655,8 @@ class UsuarioController
                             throw new Exception("No se pudo crear el nuevo grupo $i.");
                         }
                         $idGrupo = $this->modelo->obtenerUltimoId();
-                        $this->modelo->asignarUsuarioAGrupo($idUsuario, $idGrupo);
-                        $this->modelo->asignarAdministradorAGrupo($idUsuario, $idGrupo);
+                        $this->modelo->asignarUsuarioAGrupo($idUser, $idGrupo);
+                        $this->modelo->asignarAdministradorAGrupo($idUser, $idGrupo);
                     }
                 }
 

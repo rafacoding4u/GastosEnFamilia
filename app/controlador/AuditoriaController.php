@@ -24,10 +24,10 @@ class AuditoriaController
             $params = [];
 
             // Verificar si se ha solicitado la auditoría de un usuario específico
-            $idUsuario = recoge('idUsuario');
-            if ($idUsuario) {
-                $params['auditoria'] = $this->modelo->obtenerAuditoriaPorUsuario($idUsuario);
-                $params['usuario'] = $this->modelo->obtenerUsuarioPorId($idUsuario);
+            $idUser = recoge('idUser');
+            if ($idUser) {
+                $params['auditoria'] = $this->modelo->obtenerAuditoriaPorUsuario($idUser);
+                $params['usuario'] = $this->modelo->obtenerUsuarioPorId($idUser);
             } else {
                 // Obtener todos los registros de auditoría
                 $params['auditoria'] = $this->modelo->obtenerAuditoriaGlobal();
@@ -46,8 +46,8 @@ class AuditoriaController
     {
         try {
             if (isset($_SESSION['usuario']['id'])) {
-                $idUsuario = $_SESSION['usuario']['id'];
-                $this->modelo->registrarAccionAuditoria($idUsuario, $accion, $detalles);
+                $idUser = $_SESSION['usuario']['id'];
+                $this->modelo->registrarAccionAuditoria($idUser, $accion, $detalles);
             }
         } catch (Exception $e) {
             error_log("Error en registrarAccion(): " . $e->getMessage());

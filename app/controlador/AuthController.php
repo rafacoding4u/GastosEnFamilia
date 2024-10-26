@@ -42,7 +42,7 @@ class AuthController
             }
 
             $m = new GastosModelo();
-            $idUsuario = $_SESSION['usuario']['id'];
+            $idUser = $_SESSION['usuario']['id'];
 
             $params = [
                 'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
@@ -55,11 +55,11 @@ class AuthController
                 $params['finanzasGlobales'] = $m->obtenerSituacionGlobal();
             } elseif ($_SESSION['nivel_usuario'] === self::NIVEL_ADMIN) {
                 // Admin ve el resumen financiero de sus familias y grupos
-                $params['finanzasFamilias'] = $m->obtenerFamiliasPorAdministrador($idUsuario);
-                $params['finanzasGrupos'] = $m->obtenerGruposPorAdministrador($idUsuario);
+                $params['finanzasFamilias'] = $m->obtenerFamiliasPorAdministrador($idUser);
+                $params['finanzasGrupos'] = $m->obtenerGruposPorAdministrador($idUser);
             } else {
                 // Usuario regular solo ve su resumen personal
-                $params['finanzasPersonales'] = $m->obtenerSituacionFinanciera($idUsuario);
+                $params['finanzasPersonales'] = $m->obtenerSituacionFinanciera($idUser);
             }
 
             $this->render('inicio.php', $params);
