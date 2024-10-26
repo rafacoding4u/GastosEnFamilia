@@ -286,10 +286,11 @@ class FinanzasController
         if (isset($_GET['id'])) {
             $gasto = $m->obtenerGastoPorId($_GET['id']);
 
-            if (!$gasto) {
+           /* if (!$gasto) {
                 header('Location: index.php?ctl=verGastos');
+                var_dump($gasto);
                 exit();
-            }
+            }*/
         }
 
         $categorias = $m->obtenerCategoriasGastos();

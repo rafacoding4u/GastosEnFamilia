@@ -1088,6 +1088,8 @@ class GastosModelo
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+
     // Actualizar un gasto
     public function actualizarGasto($idGasto, $concepto, $importe, $fecha, $origen, $categoria)
     {
