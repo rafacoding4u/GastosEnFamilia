@@ -12,7 +12,8 @@
                 <?php if ($_SESSION['nivel_usuario'] === 'superadmin'): ?>
                     <option value="global" <?= $tipo === 'global' ? 'selected' : '' ?>>Global</option>
                 <?php endif; ?>
-                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins ?>
+                <?php if ($_SESSION['nivel_usuario'] !== 'usuario_regular'): // Administradores y Superadmins 
+                ?>
                     <option value="familia" <?= $tipo === 'familia' ? 'selected' : '' ?>>Familia</option>
                     <option value="grupo" <?= $tipo === 'grupo' ? 'selected' : '' ?>>Grupo</option>
                 <?php endif; ?>
@@ -75,7 +76,7 @@
     <?php endif; ?>
 
     <!-- Mostrar usuarios si los hay y si el rol lo permite -->
-    <?php if ($_SESSION['nivel_usuario'] === 'superadmin' && isset($usuarios) && !empty($usuarios)): ?>
+    <?php if (in_array($_SESSION['nivel_usuario'], ['superadmin', 'admin', 'usuario_regular']) && isset($usuarios) && !empty($usuarios)): ?>
         <h4>Usuarios</h4>
         <table class="table table-bordered">
             <thead>
@@ -90,6 +91,8 @@
             </thead>
             <tbody>
                 <?php foreach ($usuarios as $usuario): ?>
+                    <?php if ($_SESSION['nivel_usuario'] === 'usuario_regular' && $usuario['idUser'] !== $_SESSION['usuario']['id']) continue; // Mostrar solo al usuario regular su propio detalle 
+                    ?>
                     <tr>
                         <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                         <td><?= htmlspecialchars($usuario['apellido']) ?></td>

@@ -423,20 +423,21 @@ class GastosModelo
     public function obtenerSituacionFinancieraFamilia($idFamilia)
     {
         $sql = "
-            SELECT 
-                SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
-                SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
-                (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
-            FROM usuarios u
-            LEFT JOIN ingresos i ON u.idUser = i.idUser
-            LEFT JOIN gastos g ON u.idUser = g.idUser
-            WHERE u.idFamilia = :idFamilia";
-
+        SELECT 
+            SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+            SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+            (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+        FROM usuarios u
+        LEFT JOIN ingresos i ON u.idUser = i.idUser
+        LEFT JOIN gastos g ON u.idUser = g.idUser
+        JOIN usuarios_familias uf ON u.idUser = uf.idUser
+        WHERE uf.idFamilia = :idFamilia";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
 
 
     public function calcularSaldoGlobalFamilia($idFamilia)
@@ -758,15 +759,17 @@ class GastosModelo
     public function obtenerSituacionFinancieraGrupo($idGrupo)
     {
         $sql = "SELECT SUM(i.importe) AS totalIngresos, SUM(g.importe) AS totalGastos 
-        FROM usuarios u 
-        LEFT JOIN ingresos i ON u.idUser = i.idUser 
-        LEFT JOIN gastos g ON u.idUser = g.idUser 
-        WHERE u.idGrupo = :idGrupo";
+            FROM usuarios u
+            LEFT JOIN ingresos i ON u.idUser = i.idUser 
+            LEFT JOIN gastos g ON u.idUser = g.idUser 
+            JOIN usuarios_grupos ug ON u.idUser = ug.idUser
+            WHERE ug.idGrupo = :idGrupo";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     public function obtenerSituacionFinancieraPorAdmin($idAdmin)
     {
         $sql = "
@@ -999,18 +1002,20 @@ class GastosModelo
 
     // Obtener la situación financiera global
     public function obtenerSituacionGlobal()
-    {
-        $sql = "
-            SELECT 
-                SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
-                SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
-                (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
-            FROM ingresos i
-            LEFT JOIN gastos g ON i.idUser = g.idUser";
+{
+    $sql = "
+        SELECT 
+            SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
+            SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
+            (SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) - SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END)) AS saldo
+        FROM usuarios u
+        LEFT JOIN ingresos i ON u.idUser = i.idUser
+        LEFT JOIN gastos g ON u.idUser = g.idUser";
+        
+    $stmt = $this->conexion->query($sql);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        $stmt = $this->conexion->query($sql);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 
 
     // Obtener todos los gastos
@@ -1284,7 +1289,6 @@ class GastosModelo
     }
 
 
-    // Verificar la contraseña de una familia
     // Verificar la contraseña de una familia
     public function verificarPasswordFamilia($idFamilia, $password)
     {

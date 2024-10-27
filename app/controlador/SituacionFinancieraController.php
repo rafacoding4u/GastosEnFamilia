@@ -51,7 +51,7 @@ class SituacionFinancieraController
     {
         try {
             $idAdmin = $_SESSION['usuario']['id'];  // Obtener el ID del administrador
-            $params['situacion'] = $m->obtenerSituacionFinanciera($idAdmin);  // Calcular la situación financiera del admin
+            $params['situacion'] = $m->obtenerSituacionFinancieraPorAdmin($idAdmin);  // Calcular la situación financiera del admin
 
             // Si el administrador tiene familias o grupos asignados, se muestran también
             $familiasAsignadas = $m->obtenerFamiliasPorAdministrador($idAdmin);
@@ -59,6 +59,7 @@ class SituacionFinancieraController
             $params['familias'] = $familiasAsignadas;
             $params['grupos'] = $gruposAsignados;
 
+            // Seleccionar la vista correspondiente
             if ($tipo === 'familia' && $idSeleccionado) {
                 $this->verSituacionFamilia($m, $idSeleccionado, $params);
             } elseif ($tipo === 'grupo' && $idSeleccionado) {
@@ -80,6 +81,7 @@ class SituacionFinancieraController
             $params['grupos'] = $m->obtenerGrupos();
             $params['usuariosLista'] = $m->obtenerUsuarios();
 
+            // Situación financiera global o específica
             if ($tipo === 'global') {
                 $params['situacion'] = $m->obtenerSituacionGlobal();
             } elseif ($tipo === 'familia' && $idSeleccionado) {
