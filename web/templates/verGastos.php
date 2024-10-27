@@ -6,7 +6,6 @@
         <input type="hidden" name="ctl" value="verGastos">
 
         <div class="row">
-            <!-- Filtro de fecha -->
             <div class="col">
                 <label for="fechaInicio">Desde:</label>
                 <input type="date" id="fechaInicio" name="fechaInicio" value="<?= htmlspecialchars($fechaInicio ?? '') ?>" class="form-control">
@@ -15,8 +14,6 @@
                 <label for="fechaFin">Hasta:</label>
                 <input type="date" id="fechaFin" name="fechaFin" value="<?= htmlspecialchars($fechaFin ?? '') ?>" class="form-control">
             </div>
-
-            <!-- Filtro de categoría -->
             <div class="col">
                 <label for="categoria">Categoría:</label>
                 <select id="categoria" name="categoria" class="form-control">
@@ -28,8 +25,6 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-
-            <!-- Filtro de origen -->
             <div class="col">
                 <label for="origen">Origen:</label>
                 <select id="origen" name="origen" class="form-control">
@@ -38,15 +33,35 @@
                     <option value="efectivo" <?= ($origenSeleccionado == 'efectivo') ? 'selected' : '' ?>>Efectivo</option>
                 </select>
             </div>
-
-            <!-- Botón de enviar -->
+            <div class="col">
+                <label for="asignado">Asignado a:</label>
+                <select id="asignado" name="asignado" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Familia" <?= (isset($asignadoSeleccionado) && $asignadoSeleccionado == 'Familia') ? 'selected' : '' ?>>Familia</option>
+                    <option value="Grupo" <?= (isset($asignadoSeleccionado) && $asignadoSeleccionado == 'Grupo') ? 'selected' : '' ?>>Grupo</option>
+                    <option value="Individual" <?= (isset($asignadoSeleccionado) && $asignadoSeleccionado == 'Individual') ? 'selected' : '' ?>>Individual</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="nombre">Nombre:</label>
+                <select id="nombre" name="nombre" class="form-control">
+                    <option value="">Todos</option>
+                    <?php if (isset($nombresDisponibles) && is_array($nombresDisponibles)): ?>
+                        <?php foreach ($nombresDisponibles as $nombre): ?>
+                            <option value="<?= htmlspecialchars($nombre['nombre_asociacion'] ?? '') ?>" <?= (isset($nombreSeleccionado) && $nombreSeleccionado == $nombre['nombre_asociacion']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($nombre['nombre_asociacion'] ?? 'No especificado') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
             <div class="col">
                 <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
             </div>
         </div>
     </form>
 
-    <!-- Botón para añadir un nuevo gasto (solo visible para usuarios con permiso) -->
+    <!-- Botón para añadir un nuevo gasto -->
     <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
         <div class="mt-3 mb-3">
             <a href="index.php?ctl=formInsertarGasto" class="btn btn-success">Añadir Gasto</a>
@@ -59,24 +74,43 @@
             <thead>
                 <tr>
                     <th>Categoría</th>
-                    <th>Importe</th>
+                    <th style="width: 12%;">Importe</th>
                     <th>Fecha</th>
                     <th>Origen</th>
                     <th>Concepto</th>
-                    <th>Acciones</th>
+                    <th style="width: 12%;">Asignado a:</th>
+                    <th style="width: 18%;">Nombre</th>
+                    <th style="width: 15%;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($gastos as $gasto): ?>
                     <tr>
                         <td><?= htmlspecialchars($gasto['nombreCategoria'] ?? 'Sin categoría') ?></td>
-                        <td><?= number_format($gasto['importe'], 2, ',', '.') ?> €</td>
-                        <td><?= htmlspecialchars($gasto['fecha'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($gasto['origen'] ?? '') ?></td>
-                        <td><?= htmlspecialchars($gasto['concepto'] ?? '') ?></td>
+                        <td><?= number_format($gasto['importe'] ?? 0, 2, ',', '.') ?> €</td>
+                        <td><?= htmlspecialchars($gasto['fecha'] ?? 'Sin fecha') ?></td>
+                        <td><?= htmlspecialchars($gasto['origen'] ?? 'No especificado') ?></td>
+                        <td><?= htmlspecialchars($gasto['concepto'] ?? 'Sin concepto') ?></td>
+
+                        <!-- Asignado a -->
+                        <td>
+                            <?php
+                            $tipoAsignacion = 'Individual';
+                            if (strpos($gasto['nombre_asociacion'], 'Familia') !== false) {
+                                $tipoAsignacion = 'Familia';
+                            } elseif (strpos($gasto['nombre_asociacion'], 'Grupo') !== false) {
+                                $tipoAsignacion = 'Grupo';
+                            }
+                            echo $tipoAsignacion;
+                            ?>
+                        </td>
+
+                        <!-- Nombre -->
+                        <td><?= htmlspecialchars($gasto['nombre_asociacion'] ?? 'No especificado') ?></td>
+
                         <td>
                             <!-- Mostrar acciones según los permisos del usuario -->
-                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['idUser'] === $gasto['idUsuario']): ?>
+                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['id'] === $gasto['idUser']): ?>
                                 <a href="index.php?ctl=editarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-warning btn-sm">Editar</a>
                                 <a href="index.php?ctl=eliminarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este gasto?')">Eliminar</a>
                             <?php else: ?>
@@ -89,20 +123,5 @@
         </table>
     <?php else: ?>
         <p>No hay gastos registrados.</p>
-    <?php endif; ?>
-
-    <!-- Paginación -->
-    <?php if ($totalPaginas > 1): ?>
-        <nav>
-            <ul class="pagination">
-                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                    <li class="page-item <?= ($i == $paginaActual) ? 'active' : '' ?>">
-                        <a class="page-link" href="index.php?ctl=verGastos&pagina=<?= $i ?>">
-                            <?= $i ?>
-                        </a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
-        </nav>
     <?php endif; ?>
 </div>

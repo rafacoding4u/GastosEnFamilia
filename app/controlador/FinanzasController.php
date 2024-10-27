@@ -9,44 +9,73 @@ class FinanzasController
     {
         $m = new GastosModelo();
 
+        // Obtener preferencia de resultados por página o establecer valor por defecto
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_gastos', $_SESSION['usuario']['id']) ?? 10;
+        $resultadosPorPagina = $resultadosPorPagina > 0 ? $resultadosPorPagina : 10;
 
-        if ($resultadosPorPagina <= 0) {
-            $resultadosPorPagina = 10;
-        }
-
+        // Recoger parámetros de filtro
         $fechaInicio = recoge('fechaInicio') ?: null;
         $fechaFin = recoge('fechaFin') ?: null;
         $categoria = recoge('categoria') ?: null;
         $origen = recoge('origen') ?: null;
+        $asignadoSeleccionado = recoge('asignado') ?: null;
+        $nombreSeleccionado = recoge('nombre') ?: null;
 
+        // Paginación
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        // Validar pertenencia del usuario a la familia o grupo para obtener los gastos
+        // Validar si el usuario pertenece a la familia o grupo antes de mostrar los gastos
         if (!$m->usuarioPerteneceAFamiliaOGrupo($_SESSION['usuario']['id'])) {
             $this->redireccionarError('No tienes permiso para ver estos gastos.');
             return;
         }
 
-        $gastos = $m->obtenerGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen, $offset, $resultadosPorPagina);
-        $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
+        // Llamar a la función que obtiene los gastos detallados
+        $gastos = $m->obtenerGastosFiltrados(
+            $_SESSION['usuario']['id'],
+            $fechaInicio,
+            $fechaFin,
+            $categoria,
+            $origen,
+            $asignadoSeleccionado,
+            $nombreSeleccionado,
+            $offset,
+            $resultadosPorPagina
+        );
 
+        // Depuración: Mostrar el contenido de $gastos para asegurar que los datos se están cargando correctamente
+        echo "<pre>";
+        var_dump($gastos);
+        echo "</pre>";
+
+        // Obtener total de gastos para paginación
+        $totalGastos = $m->contarGastosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalGastos / $resultadosPorPagina) : 1;
+
+        // Obtener lista de categorías para los filtros
         $categorias = $m->obtenerCategoriasGastos();
 
+        // Obtener nombres de asociaciones para desplegar en el filtro "Nombre"
+        $nombresDisponibles = $m->obtenerNombresAsociaciones();
+
+        // Preparar parámetros para pasar a la vista
         $params = array(
             'gastos' => $gastos,
             'categorias' => $categorias,
+            'nombresDisponibles' => $nombresDisponibles,
             'paginaActual' => $paginaActual,
             'totalPaginas' => $totalPaginas,
             'fechaInicio' => $fechaInicio,
             'fechaFin' => $fechaFin,
             'categoriaSeleccionada' => $categoria,
             'origenSeleccionado' => $origen,
+            'asignadoSeleccionado' => $asignadoSeleccionado,
+            'nombreSeleccionado' => $nombreSeleccionado,
             'resultadosPorPagina' => $resultadosPorPagina
         );
 
+        // Renderizar la vista 'verGastos.php' con los parámetros
         $this->render('verGastos.php', $params);
     }
 
@@ -196,7 +225,7 @@ class FinanzasController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
             // Validación del token CSRF
-            if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
                 die("Error CSRF");
             }
 
@@ -233,15 +262,30 @@ class FinanzasController
             'categorias' => $m->obtenerCategoriasGastos(),
             'familias' => $familias,
             'grupos' => $grupos,
-            'csrf_token' => bin2hex(random_bytes(32))
+            'csrf_token' => $_SESSION['csrf_token']
         ];
-
-        // Guardar el token en la sesión
-        $_SESSION['csrf_token'] = $params['csrf_token'];
 
         $this->render('formInsertarGasto.php', $params);
     }
 
+    // Formulario para insertar gasto
+    public function formInsertarGasto($params = array())
+    {
+        $m = new GastosModelo();
+
+        // Generar un token CSRF y guardarlo en la sesión
+        $csrf_token = bin2hex(random_bytes(32));
+        $_SESSION['csrf_token'] = $csrf_token;
+
+        // Obtener categorías, familias y grupos del usuario
+        $params['categorias'] = $m->obtenerCategoriasGastos();
+        $params['familias'] = $m->obtenerFamiliasPorUsuario($_SESSION['usuario']['id']) ?? []; // Asignar array vacío si no hay familias
+        $params['grupos'] = $m->obtenerGruposPorUsuario($_SESSION['usuario']['id']) ?? [];     // Asignar array vacío si no hay grupos
+        $params['csrf_token'] = $csrf_token;
+
+        // Renderizar el formulario de gasto con los parámetros adecuados
+        $this->render('formInsertarGasto.php', $params);
+    }
 
 
     // Insertar Ingreso

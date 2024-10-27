@@ -509,7 +509,7 @@ class GastosModelo
     public function insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $fecha, $idFamilia = null, $idGrupo = null)
     {
         $sql = "INSERT INTO gastos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-            VALUES (:idUser, :monto, :categoria, :concepto, :origen, :fecha, :idFamilia, :idGrupo)";
+        VALUES (:idUser, :monto, :categoria, :concepto, :origen, :fecha, :idFamilia, :idGrupo)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
@@ -522,6 +522,7 @@ class GastosModelo
 
         return $stmt->execute();
     }
+
 
     // Método para insertar ingreso para un usuario con manejo de excepciones y lógica corregida
     public function insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $fecha, $idFamilia = null, $idGrupo = null)
@@ -1074,14 +1075,19 @@ class GastosModelo
         $stmt->bindValue(':idGasto', $idGasto, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    public function obtenerGastosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limite = 10)
+    public function obtenerGastosFiltrados($idUsuario, $fechaInicio, $fechaFin, $categoria, $origen, $asignado, $nombre, $offset, $limit)
     {
-        $sql = "SELECT g.*, c.nombreCategoria 
-            FROM gastos g 
-            LEFT JOIN categorias c ON g.idCategoria = c.idCategoria 
-            WHERE g.idUser = :idUser";
+        $sql = "SELECT g.idGasto, g.importe, g.idCategoria, g.origen, g.concepto, g.fecha, 
+                   COALESCE(f.nombre_familia, gr.nombre_grupo, u.alias, 'No especificado') AS nombre_asociacion,
+                   COALESCE(c.nombreCategoria, 'Sin categoría') AS nombreCategoria
+            FROM gastos AS g
+            LEFT JOIN familias AS f ON g.idFamilia = f.idFamilia
+            LEFT JOIN grupos AS gr ON g.idGrupo = gr.idGrupo
+            LEFT JOIN usuarios AS u ON g.idUser = u.idUser
+            LEFT JOIN categorias AS c ON g.idCategoria = c.idCategoria
+            WHERE g.idUser = :idUsuario";
 
-        // Aplicar los filtros
+        // Agregar condiciones según los filtros
         if ($fechaInicio) {
             $sql .= " AND g.fecha >= :fechaInicio";
         }
@@ -1094,29 +1100,45 @@ class GastosModelo
         if ($origen) {
             $sql .= " AND g.origen = :origen";
         }
+        if ($asignado) {
+            if ($asignado === 'Familia') {
+                $sql .= " AND f.nombre_familia IS NOT NULL";
+            } elseif ($asignado === 'Grupo') {
+                $sql .= " AND gr.nombre_grupo IS NOT NULL";
+            } else {
+                $sql .= " AND f.nombre_familia IS NULL AND gr.nombre_grupo IS NULL";
+            }
+        }
+        if ($nombre) {
+            $sql .= " AND COALESCE(f.nombre_familia, gr.nombre_grupo, u.alias) = :nombre";
+        }
 
-        // Añadir límite y desplazamiento para la paginación
-        $sql .= " LIMIT :offset, :limite";
+        $sql .= " ORDER BY g.idGasto DESC LIMIT :offset, :limit";
 
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
         if ($fechaInicio) {
-            $stmt->bindValue(':fechaInicio', $fechaInicio, PDO::PARAM_STR);
+            $stmt->bindParam(':fechaInicio', $fechaInicio);
         }
         if ($fechaFin) {
-            $stmt->bindValue(':fechaFin', $fechaFin, PDO::PARAM_STR);
+            $stmt->bindParam(':fechaFin', $fechaFin);
         }
         if ($categoria) {
-            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+            $stmt->bindParam(':categoria', $categoria, PDO::PARAM_INT);
         }
         if ($origen) {
-            $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+            $stmt->bindParam(':origen', $origen, PDO::PARAM_STR);
         }
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        if ($nombre) {
+            $stmt->bindParam(':nombre', $nombre, PDO::PARAM_STR);
+        }
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     // Método para contar los resultados filtrados
     public function contarGastosFiltrados($idUser, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
@@ -2107,5 +2129,125 @@ class GastosModelo
             error_log("Error al actualizar la contraseña premium: " . $e->getMessage());
             return false;
         }
+    }
+    // Obtener gastos agrupados por familia y grupo
+    public function obtenerGastosAgrupadosPorFamiliaYGrupo($idUsuario, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null)
+    {
+        $condiciones = [];
+        $params = [':idUsuario' => $idUsuario];
+
+        // Condiciones opcionales para el filtro
+        if ($fechaInicio) {
+            $condiciones[] = 'g.fecha >= :fechaInicio';
+            $params[':fechaInicio'] = $fechaInicio;
+        }
+        if ($fechaFin) {
+            $condiciones[] = 'g.fecha <= :fechaFin';
+            $params[':fechaFin'] = $fechaFin;
+        }
+        if ($categoria) {
+            $condiciones[] = 'g.idCategoria = :categoria';
+            $params[':categoria'] = $categoria;
+        }
+        if ($origen) {
+            $condiciones[] = 'g.origen = :origen';
+            $params[':origen'] = $origen;
+        }
+
+        $whereClause = '';
+        if (!empty($condiciones)) {
+            $whereClause = ' AND ' . implode(' AND ', $condiciones);
+        }
+
+        $sql = "
+    SELECT f.nombre_familia, g.nombre_grupo, ga.*
+    FROM gastos ga
+    LEFT JOIN familias f ON ga.idFamilia = f.idFamilia
+    LEFT JOIN grupos g ON ga.idGrupo = g.idGrupo
+    WHERE ga.idUser = :idUsuario $whereClause
+    ORDER BY f.nombre_familia, g.nombre_grupo, ga.fecha DESC
+    ";
+
+        $stmt = $this->conexion->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function obtenerGastosConDetalles($userId, $fechaInicio = null, $fechaFin = null, $categoria = null, $origen = null, $offset = 0, $limit = 10)
+    {
+        $sql = "SELECT g.idGasto, g.importe, g.idCategoria, g.origen, g.concepto, g.fecha, 
+                   IFNULL(f.nombre_familia, IFNULL(gr.nombre_grupo, u.alias)) AS nombre_asociacion, 
+                   c.nombreCategoria
+            FROM gastos AS g
+            LEFT JOIN familias AS f ON g.idFamilia = f.idFamilia
+            LEFT JOIN grupos AS gr ON g.idGrupo = gr.idGrupo
+            LEFT JOIN usuarios AS u ON g.idUser = u.idUser
+            LEFT JOIN categorias AS c ON g.idCategoria = c.idCategoria
+            WHERE g.idUser = :userId";
+
+        // Condicionales para filtros
+        if ($fechaInicio) {
+            $sql .= " AND g.fecha >= :fechaInicio";
+        }
+        if ($fechaFin) {
+            $sql .= " AND g.fecha <= :fechaFin";
+        }
+        if ($categoria) {
+            $sql .= " AND g.idCategoria = :categoria";
+        }
+        if ($origen) {
+            $sql .= " AND g.origen = :origen";
+        }
+
+        $sql .= " ORDER BY g.idGasto DESC LIMIT :offset, :limit";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+        if ($fechaInicio) {
+            $stmt->bindParam(':fechaInicio', $fechaInicio);
+        }
+        if ($fechaFin) {
+            $stmt->bindParam(':fechaFin', $fechaFin);
+        }
+        if ($categoria) {
+            $stmt->bindParam(':categoria', $categoria, PDO::PARAM_INT);
+        }
+        if ($origen) {
+            $stmt->bindParam(':origen', $origen);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function obtenerNombresDisponibles()
+    {
+        $sql = "SELECT DISTINCT COALESCE(f.nombre_familia, gr.nombre_grupo, u.alias, 'No especificado') AS nombre_asociacion
+            FROM gastos AS g
+            LEFT JOIN familias AS f ON g.idFamilia = f.idFamilia
+            LEFT JOIN grupos AS gr ON g.idGrupo = gr.idGrupo
+            LEFT JOIN usuarios AS u ON g.idUser = u.idUser";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function obtenerNombresAsociaciones()
+    {
+        $sql = "SELECT DISTINCT COALESCE(f.nombre_familia, gr.nombre_grupo, u.alias) AS nombre_asociacion
+            FROM gastos AS g
+            LEFT JOIN familias AS f ON g.idFamilia = f.idFamilia
+            LEFT JOIN grupos AS gr ON g.idGrupo = gr.idGrupo
+            LEFT JOIN usuarios AS u ON g.idUser = u.idUser
+            WHERE g.idUser = :idUser";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $_SESSION['usuario']['id']);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
