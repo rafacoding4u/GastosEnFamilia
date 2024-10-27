@@ -1,10 +1,8 @@
 <div class="container p-4">
     <h2>Añadir Ingreso</h2>
 
-    <!-- Verificación de permisos para mostrar el formulario solo a usuarios autorizados -->
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'usuario' || $_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
-        <!-- Formulario para insertar ingreso -->
         <form action="index.php?ctl=insertarIngreso" method="post">
             <!-- Campo para el concepto del ingreso -->
             <div class="form-group">
@@ -46,10 +44,27 @@
                 <input type="date" id="fecha" name="fecha" class="form-control" value="<?= date('Y-m-d') ?>" required>
             </div>
 
-            <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+            <!-- Asignación a familia, grupo o individual -->
+            <div class="form-group">
+                <label for="asignacion">Asignar a:</label>
+                <select id="asignacion" name="asignacion" class="form-control" required>
+                    <option value="individual">Individual</option>
+                    <?php if (!empty($params['familias'])): ?>
+                        <?php foreach ($params['familias'] as $familia): ?>
+                            <option value="familia_<?= htmlspecialchars($familia['idFamilia']) ?>">Familia: <?= htmlspecialchars($familia['nombre_familia']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <?php if (!empty($params['grupos'])): ?>
+                        <?php foreach ($params['grupos'] as $grupo): ?>
+                            <option value="grupo_<?= htmlspecialchars($grupo['idGrupo']) ?>">Grupo: <?= htmlspecialchars($grupo['nombre_grupo']) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
 
-            <!-- Botón para enviar el formulario -->
+            <!-- Token CSRF -->
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '') ?>">
+
             <button type="submit" name="bInsertarIngreso" class="btn btn-primary mt-3">Añadir Ingreso</button>
 
             <!-- Mostrar mensaje de error si existe -->
@@ -61,7 +76,6 @@
         </form>
 
     <?php else: ?>
-        <!-- Mostrar mensaje de error si el usuario no tiene permisos -->
         <div class="alert alert-danger">
             No tienes permiso para acceder a esta página.
         </div>

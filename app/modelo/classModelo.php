@@ -505,84 +505,44 @@ class GastosModelo
     }
 
     // Insertar gasto para un usuario
-    public function insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)
-    {
-        // Verificar que el usuario esté asignado
-        if (empty($idUser)) {
-            throw new Exception('El gasto debe estar asociado a un usuario.');
-        }
 
+    public function insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $fecha, $idFamilia = null, $idGrupo = null)
+    {
         $sql = "INSERT INTO gastos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-            VALUES (:idUser, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
+            VALUES (:idUser, :monto, :categoria, :concepto, :origen, :fecha, :idFamilia, :idGrupo)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
         $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
         $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        $stmt->bindValue(':fecha', $fecha, PDO::PARAM_STR);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    // Método para insertar ingreso para un usuario con manejo de excepciones y lógica corregida
+    public function insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $fecha, $idFamilia = null, $idGrupo = null)
+    {
+        $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
+        VALUES (:idUser, :monto, :categoria, :concepto, :origen, :fecha, :idFamilia, :idGrupo)";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
+        $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+        $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+        $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        $stmt->bindValue(':fecha', $fecha, PDO::PARAM_STR);
+        $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 
 
-
-    // Insertar ingreso para un usuario con manejo de excepciones y lógica corregida
-    public function insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $idFamilia = null, $idGrupo = null)
-    {
-        try {
-            // Verificar que el usuario esté asignado
-            if (empty($idUser)) {
-                throw new Exception('El ingreso debe estar asociado a un usuario.');
-            }
-
-            // Permitir ingreso asociado a una familia, grupo o ser personal
-            // Un ingreso puede no tener idFamilia o idGrupo, es decir, ser personal.
-            if (empty($idFamilia) && empty($idGrupo)) {
-                $idFamilia = null;  // Si no tiene familia
-                $idGrupo = null;    // Si no tiene grupo
-            }
-
-            // Preparar la consulta SQL
-            $sql = "INSERT INTO ingresos (idUser, importe, idCategoria, concepto, origen, fecha, idFamilia, idGrupo) 
-                VALUES (:idUser, :monto, :categoria, :concepto, :origen, CURDATE(), :idFamilia, :idGrupo)";
-
-            // Preparar la sentencia
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
-            $stmt->bindValue(':monto', $monto, PDO::PARAM_STR);
-            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
-            $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
-            $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
-
-            // Asignar valor a idFamilia o NULL si no aplica
-            if ($idFamilia !== null) {
-                $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
-            } else {
-                $stmt->bindValue(':idFamilia', null, PDO::PARAM_NULL);
-            }
-
-            // Asignar valor a idGrupo o NULL si no aplica
-            if ($idGrupo !== null) {
-                $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
-            } else {
-                $stmt->bindValue(':idGrupo', null, PDO::PARAM_NULL);
-            }
-
-            // Ejecutar la sentencia
-            if ($stmt->execute()) {
-                return true; // Inserción exitosa
-            } else {
-                // Registrar el error de la consulta SQL
-                $errorInfo = $stmt->errorInfo();
-                throw new Exception("Error en la inserción: " . $errorInfo[2]);
-            }
-        } catch (Exception $e) {
-            // Registrar cualquier excepción en el log de errores
-            error_log("Error en insertarIngreso: " . $e->getMessage());
-            return false; // Devolver false si ocurre un error
-        }
-    }
 
 
 
@@ -1240,30 +1200,54 @@ class GastosModelo
 
     public function obtenerFamiliasPorUsuario($idUser)
     {
-        $sql = "
+        try {
+            $sql = "
         SELECT f.*
         FROM familias f
         JOIN usuarios_familias uf ON f.idFamilia = uf.idFamilia
         WHERE uf.idUser = :idUser";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+
+            // Ejecutar y verificar si hay resultados
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $result ?: []; // Devuelve un array vacío si no hay resultados
+
+        } catch (PDOException $e) {
+            error_log("Error en obtenerFamiliasPorUsuario: " . $e->getMessage());
+            return []; // Retorna un array vacío en caso de error
+        }
     }
+
 
 
     public function obtenerGruposPorUsuario($idUser)
     {
-        $sql = "
+        try {
+            $sql = "
         SELECT g.*
         FROM grupos g
         JOIN usuarios_grupos ug ON g.idGrupo = ug.idGrupo
         WHERE ug.idUser = :idUser";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+
+            // Ejecutar y verificar si hay resultados
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $result ?: []; // Devuelve un array vacío si no hay resultados
+
+        } catch (PDOException $e) {
+            error_log("Error en obtenerGruposPorUsuario: " . $e->getMessage());
+            return []; // Retorna un array vacío en caso de error
+        }
     }
+
 
     // Obtener grupos por administrador
     public function obtenerGruposPorAdministrador($idAdmin)
@@ -1613,23 +1597,22 @@ class GastosModelo
         $stmt->execute();
         return $stmt->fetchColumn();
     }
-    public function actualizarIngreso($idIngreso, $importe, $categoria, $concepto, $origen)
+    public function actualizarIngreso($idIngreso, $concepto, $importe, $fecha, $origen, $categoria)
     {
-        // Registrar el valor de idCategoria antes de ejecutar la consulta
-        error_log("Actualizando ingreso con idCategoria: " . $categoria);
-
         $sql = "UPDATE ingresos 
-            SET importe = :importe, idCategoria = :categoria, concepto = :concepto, origen = :origen 
+            SET concepto = :concepto, importe = :importe, fecha = :fecha, origen = :origen, idCategoria = :categoria 
             WHERE idIngreso = :idIngreso";
         $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':importe', $importe, PDO::PARAM_STR);
-        $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':concepto', $concepto, PDO::PARAM_STR);
+        $stmt->bindValue(':importe', $importe, PDO::PARAM_STR);
+        $stmt->bindValue(':fecha', $fecha, PDO::PARAM_STR); // Vinculando la fecha
         $stmt->bindValue(':origen', $origen, PDO::PARAM_STR);
+        $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':idIngreso', $idIngreso, PDO::PARAM_INT);
-
         return $stmt->execute();
     }
+
+
 
 
     public function eliminarIngreso($idIngreso)

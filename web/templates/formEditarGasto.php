@@ -1,56 +1,56 @@
 <div class="container p-4">
-    <h2>Editar Ingreso</h2>
+    <h2>Editar Gasto</h2>
 
     <!-- Verificación de permisos para mostrar el formulario solo a usuarios autorizados -->
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'usuario' || $_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
-        <?php if (isset($ingreso)): ?>
-            <!-- Formulario para editar ingreso -->
-            <form action="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" method="post">
-                <!-- Campo para el concepto del ingreso -->
+        <?php if (isset($gasto)): ?>
+            <!-- Formulario para editar gasto -->
+            <form action="index.php?ctl=editarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" method="post">
+                <!-- Campo para el concepto del gasto -->
                 <div class="form-group">
                     <label for="concepto">Concepto:</label>
-                    <input type="text" id="concepto" name="concepto" class="form-control" value="<?= htmlspecialchars($ingreso['concepto']) ?>" required>
+                    <input type="text" id="concepto" name="concepto" class="form-control" value="<?= htmlspecialchars($gasto['concepto']) ?>" required>
                 </div>
 
-                <!-- Campo para el importe del ingreso -->
+                <!-- Campo para el importe del gasto -->
                 <div class="form-group">
                     <label for="importe">Cantidad:</label>
-                    <input type="number" id="importe" name="importe" step="0.01" class="form-control" value="<?= htmlspecialchars($ingreso['importe']) ?>" required>
+                    <input type="number" id="importe" name="importe" step="0.01" class="form-control" value="<?= htmlspecialchars($gasto['importe']) ?>" required>
                 </div>
 
-                <!-- Selector de categoría de ingreso -->
+                <!-- Selector de categoría de gasto -->
                 <div class="form-group">
                     <label for="idCategoria">Categoría:</label>
                     <select id="idCategoria" name="idCategoria" class="form-control" required>
                         <?php foreach ($categorias as $categoria): ?>
-                            <option value="<?= htmlspecialchars($categoria['idCategoria']) ?>" <?= ($ingreso['idCategoria'] == $categoria['idCategoria']) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($categoria['idCategoria']) ?>" <?= ($gasto['idCategoria'] == $categoria['idCategoria']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($categoria['nombreCategoria']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <!-- Selector para el origen del ingreso ('banco' o 'efectivo') -->
+                <!-- Selector para el origen del gasto ('banco' o 'efectivo') -->
                 <div class="form-group">
                     <label for="origen">Origen:</label>
                     <select id="origen" name="origen" class="form-control" required>
-                        <option value="banco" <?= ($ingreso['origen'] == 'banco') ? 'selected' : '' ?>>🏦 Banco</option>
-                        <option value="efectivo" <?= ($ingreso['origen'] == 'efectivo') ? 'selected' : '' ?>>💵 Efectivo</option>
+                        <option value="banco" <?= ($gasto['origen'] == 'banco') ? 'selected' : '' ?>>🏦 Banco</option>
+                        <option value="efectivo" <?= ($gasto['origen'] == 'efectivo') ? 'selected' : '' ?>>💵 Efectivo</option>
                     </select>
                 </div>
 
-                <!-- Campo para la fecha del ingreso -->
+                <!-- Campo para la fecha del gasto -->
                 <div class="form-group">
                     <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control" value="<?= htmlspecialchars($ingreso['fecha']) ?>" required>
+                    <input type="date" id="fecha" name="fecha" class="form-control" value="<?= htmlspecialchars(substr($gasto['fecha'], 0, 10)) ?>" required>
                 </div>
 
                 <!-- Campo oculto para el token CSRF -->
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
 
                 <!-- Botón para enviar el formulario -->
-                <button type="submit" name="bEditarIngreso" class="btn btn-primary mt-3">Guardar Cambios</button>
+                <button type="submit" name="bEditarGasto" class="btn btn-primary mt-3">Guardar Cambios</button>
 
                 <!-- Mostrar mensaje de error si existe -->
                 <?php if (isset($params['mensaje'])): ?>
@@ -61,7 +61,7 @@
             </form>
         <?php else: ?>
             <div class="alert alert-danger">
-                No se encontró el ingreso solicitado.
+                No se encontró el gasto solicitado.
             </div>
         <?php endif; ?>
 

@@ -188,93 +188,140 @@ class FinanzasController
     // Insertar Gasto
     public function insertarGasto()
     {
+        $m = new GastosModelo();
+
+        // Obtener familias y grupos a los que pertenece el usuario
+        $familias = $m->obtenerFamiliasPorUsuario($_SESSION['usuario']['id']);
+        $grupos = $m->obtenerGruposPorUsuario($_SESSION['usuario']['id']);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarGasto'])) {
-            $monto = recoge('importe');
-            $categoria = recoge('idCategoria');
-            $concepto = recoge('concepto');
-            $origen = recoge('origen');
-
-            $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
-            $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-            $idUser = $_SESSION['usuario']['id'];
-
-            $m = new GastosModelo();
-
-            // Validar que el usuario pertenezca a la familia o grupo correspondiente
-            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUser)) {
-                $params['mensaje'] = 'No tienes permiso para insertar gastos en esta familia o grupo.';
-                $this->formInsertarGasto($params);
-                return;
+            // Validación del token CSRF
+            if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                die("Error CSRF");
             }
 
-            if ($m->insertarGasto($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
+            // Recolección y sanitización de los datos del formulario
+            $concepto = recoge('concepto');
+            $importe = recoge('importe');
+            $origen = recoge('origen');
+            $categoria = recoge('idCategoria');
+            $fecha = recoge('fecha');
+            $asignacion = recoge('asignacion');
+
+            // Inicializar valores de asignación
+            $idFamilia = null;
+            $idGrupo = null;
+
+            // Determinar asignación a familia, grupo o individual
+            if (strpos($asignacion, 'familia_') === 0) {
+                $idFamilia = str_replace('familia_', '', $asignacion);
+            } elseif (strpos($asignacion, 'grupo_') === 0) {
+                $idGrupo = str_replace('grupo_', '', $asignacion);
+            }
+
+            // Intentar insertar el gasto
+            if ($m->insertarGasto($_SESSION['usuario']['id'], $importe, $categoria, $concepto, $origen, $fecha, $idFamilia, $idGrupo)) {
                 header('Location: index.php?ctl=verGastos');
                 exit();
             } else {
                 $params['mensaje'] = 'No se pudo insertar el gasto.';
             }
         }
-        $this->formInsertarGasto();
+
+        // Preparar parámetros para el formulario
+        $params = [
+            'categorias' => $m->obtenerCategoriasGastos(),
+            'familias' => $familias,
+            'grupos' => $grupos,
+            'csrf_token' => bin2hex(random_bytes(32))
+        ];
+
+        // Guardar el token en la sesión
+        $_SESSION['csrf_token'] = $params['csrf_token'];
+
+        $this->render('formInsertarGasto.php', $params);
     }
+
+
 
     // Insertar Ingreso
     public function insertarIngreso()
     {
+        $m = new GastosModelo();
+
+        // Obtener familias y grupos del usuario o inicializar como vacíos
+        $familias = $m->obtenerFamiliasPorUsuario($_SESSION['usuario']['id']) ?? [];
+        $grupos = $m->obtenerGruposPorUsuario($_SESSION['usuario']['id']) ?? [];
+
+        // Generar y guardar el token CSRF si no está configurado ya en la sesión
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        // Preparar parámetros para el formulario
+        $params = [
+            'categorias' => $m->obtenerCategoriasIngresos(),
+            'familias' => $familias,
+            'grupos' => $grupos,
+            'csrf_token' => $_SESSION['csrf_token']
+        ];
+
+        // Comprobar si el formulario ha sido enviado
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarIngreso'])) {
-            $monto = recoge('importe');
-            $categoria = recoge('idCategoria');
+            // Validación del token CSRF
+            if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                die("Error CSRF");
+            }
+
+            // Recolectar y sanitizar datos
             $concepto = recoge('concepto');
+            $importe = recoge('importe');
             $origen = recoge('origen');
+            $categoria = recoge('idCategoria');
+            $fecha = recoge('fecha');
+            $asignacion = recoge('asignacion');
 
-            if (empty($monto) || empty($categoria) || empty($concepto) || empty($origen)) {
-                $params['mensaje'] = 'Todos los campos son obligatorios.';
-                $this->formInsertarIngreso($params);
-                return;
+            // Determinar la asignación
+            $idFamilia = null;
+            $idGrupo = null;
+            if (strpos($asignacion, 'familia_') === 0) {
+                $idFamilia = str_replace('familia_', '', $asignacion);
+            } elseif (strpos($asignacion, 'grupo_') === 0) {
+                $idGrupo = str_replace('grupo_', '', $asignacion);
             }
 
-            $idFamilia = $_SESSION['usuario']['idFamilia'] ?: null;
-            $idGrupo = $_SESSION['usuario']['idGrupo'] ?: null;
-            $idUser = $_SESSION['usuario']['id'];
-
-            $m = new GastosModelo();
-
-            // Validar que el usuario pertenezca a la familia o grupo correspondiente
-            if (!$m->usuarioPerteneceAFamiliaOGrupo($idUser)) {
-                $params['mensaje'] = 'No tienes permiso para insertar ingresos en esta familia o grupo.';
-                $this->formInsertarIngreso($params);
-                return;
-            }
-
-            try {
-                if ($m->insertarIngreso($idUser, $monto, $categoria, $concepto, $origen, $idFamilia, $idGrupo)) {
-                    header('Location: index.php?ctl=verIngresos');
-                    exit();
-                } else {
-                    $params['mensaje'] = 'No se pudo insertar el ingreso.';
-                }
-            } catch (Exception $e) {
-                $params['mensaje'] = 'Error al insertar ingreso: ' . $e->getMessage();
+            // Insertar el ingreso
+            if ($m->insertarIngreso($_SESSION['usuario']['id'], $importe, $categoria, $concepto, $origen, $fecha, $idFamilia, $idGrupo)) {
+                header('Location: index.php?ctl=verIngresos');
+                exit();
+            } else {
+                $params['mensaje'] = 'No se pudo insertar el ingreso.';
             }
         }
 
-        $this->formInsertarIngreso();
-    }
-
-    // Formulario para insertar gasto
-    public function formInsertarGasto($params = array())
-    {
-        $m = new GastosModelo();
-        $params['categorias'] = $m->obtenerCategoriasGastos();
-
-        $this->render('formInsertarGasto.php', $params);
+        // Renderizar el formulario de ingreso con parámetros correctos
+        $this->render('formInsertarIngreso.php', $params);
     }
 
     // Formulario para insertar ingreso
     public function formInsertarIngreso($params = array())
     {
         $m = new GastosModelo();
-        $params['categorias'] = $m->obtenerCategoriasIngresos();
 
+        // Generar un token CSRF y guardarlo en la sesión
+        $csrf_token = bin2hex(random_bytes(32));
+        $_SESSION['csrf_token'] = $csrf_token;
+
+        // Obtener categorías, familias y grupos del usuario
+        $params['categorias'] = $m->obtenerCategoriasIngresos();
+        $params['familias'] = $m->obtenerFamiliasPorUsuario($_SESSION['usuario']['id']) ?? []; // Array vacío si no hay familias
+        $params['grupos'] = $m->obtenerGruposPorUsuario($_SESSION['usuario']['id']) ?? [];     // Array vacío si no hay grupos
+        $params['csrf_token'] = $csrf_token;
+        var_dump($params['familias']);
+        var_dump($params['grupos']);
+
+
+        // Renderizar el formulario con los parámetros
         $this->render('formInsertarIngreso.php', $params);
     }
 
@@ -282,25 +329,34 @@ class FinanzasController
     public function editarGasto()
     {
         $m = new GastosModelo();
+        $gasto = null; // Inicializamos $gasto para evitar errores de variable no asignada
 
         if (isset($_GET['id'])) {
             $gasto = $m->obtenerGastoPorId($_GET['id']);
 
-           /* if (!$gasto) {
+            // Verificar si el gasto se encontró
+            if (!$gasto) {
+                // Redirigir si el gasto no existe
                 header('Location: index.php?ctl=verGastos');
-                var_dump($gasto);
                 exit();
-            }*/
+            }
         }
 
         $categorias = $m->obtenerCategoriasGastos();
 
         $params = array(
             'gasto' => $gasto,
-            'categorias' => $categorias
+            'categorias' => $categorias,
+            'csrf_token' => $_SESSION['csrf_token'] // Incluimos el token CSRF en los parámetros
         );
 
+        // Proceso de actualización del gasto
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarGasto'])) {
+            // Validación CSRF
+            if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                die("Error CSRF");
+            }
+
             $concepto = recoge('concepto');
             $importe = recoge('importe');
             $fecha = recoge('fecha');
@@ -318,10 +374,15 @@ class FinanzasController
         $this->render('formEditarGasto.php', $params);
     }
 
+
+
+
+
     // Editar Ingreso
     public function editarIngreso()
     {
         $m = new GastosModelo();
+        $ingreso = null;
 
         if (isset($_GET['id'])) {
             $ingreso = $m->obtenerIngresoPorId($_GET['id']);
@@ -334,18 +395,31 @@ class FinanzasController
 
         $categorias = $m->obtenerCategoriasIngresos();
 
+        // Generar un CSRF token y añadirlo a los parámetros
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Genera un token aleatorio si no existe
+        }
+
         $params = array(
             'ingreso' => $ingreso,
-            'categorias' => $categorias
+            'categorias' => $categorias,
+            'csrf_token' => $_SESSION['csrf_token'] // Asegura que el token esté disponible en los parámetros
         );
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarIngreso'])) {
+            // Validación del CSRF token
+            if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                die("Error CSRF: el token es inválido.");
+            }
+
+            // Recoger y sanitizar los valores del formulario
             $concepto = recoge('concepto');
             $importe = recoge('importe');
+            $fecha = recoge('fecha');
             $origen = recoge('origen');
-            $categoria = recoge('categoria');
+            $categoria = recoge('idCategoria');
 
-            if ($m->actualizarIngreso($ingreso['idIngreso'], $concepto, $importe, $origen, $categoria)) {
+            if ($m->actualizarIngreso($ingreso['idIngreso'], $concepto, $importe, $fecha, $origen, $categoria)) {
                 header('Location: index.php?ctl=verIngresos');
                 exit();
             } else {
@@ -355,6 +429,8 @@ class FinanzasController
 
         $this->render('formEditarIngreso.php', $params);
     }
+
+
 
     // Eliminar Gasto
     public function eliminarGasto()

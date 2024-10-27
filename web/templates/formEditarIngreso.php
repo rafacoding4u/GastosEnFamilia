@@ -5,7 +5,7 @@
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'usuario' || $_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
         <!-- Formulario para editar ingreso -->
-        <form action="index.php?ctl=actualizarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" method="post">
+        <form action="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" method="post">
             <!-- Campo para el concepto del ingreso -->
             <div class="form-group">
                 <label for="concepto">Concepto:</label>
@@ -42,7 +42,8 @@
             <!-- Campo para la fecha del ingreso -->
             <div class="form-group">
                 <label for="fecha">Fecha:</label>
-                <input type="date" id="fecha" name="fecha" class="form-control" value="<?= htmlspecialchars($ingreso['fecha']) ?>" required>
+                <!-- Aquí se asegura que la fecha está en el formato correcto para el campo de fecha -->
+                <input type="date" id="fecha" name="fecha" class="form-control" value="<?= htmlspecialchars(substr($ingreso['fecha'], 0, 10)) ?>" required>
             </div>
 
             <!-- Campo oculto para el token CSRF -->
