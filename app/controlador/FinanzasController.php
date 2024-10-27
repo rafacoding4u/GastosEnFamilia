@@ -102,43 +102,59 @@ class FinanzasController
         $m = new GastosModelo();
 
         $resultadosPorPagina = $m->obtenerPreferenciaUsuario('resultados_por_pagina_ingresos', $_SESSION['usuario']['id']) ?? 10;
-
-        if ($resultadosPorPagina <= 0) {
-            $resultadosPorPagina = 10;
-        }
+        $resultadosPorPagina = $resultadosPorPagina > 0 ? $resultadosPorPagina : 10;
 
         $fechaInicio = recoge('fechaInicio') ?: null;
         $fechaFin = recoge('fechaFin') ?: null;
         $categoria = recoge('categoria') ?: null;
+        $origen = recoge('origen') ?: null;
+        $asignadoSeleccionado = recoge('asignado') ?: null;
+        $nombreSeleccionado = recoge('nombre') ?: null;
 
         $paginaActual = recoge('pagina') ? (int)recoge('pagina') : 1;
         $offset = ($paginaActual - 1) * $resultadosPorPagina;
 
-        // Validar pertenencia del usuario a la familia o grupo para obtener los ingresos
         if (!$m->usuarioPerteneceAFamiliaOGrupo($_SESSION['usuario']['id'])) {
             $this->redireccionarError('No tienes permiso para ver estos ingresos.');
             return;
         }
 
-        $ingresos = $m->obtenerIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, null, $offset, $resultadosPorPagina);
-        $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria);
+        $ingresos = $m->obtenerIngresosFiltrados(
+            $_SESSION['usuario']['id'],
+            $fechaInicio,
+            $fechaFin,
+            $categoria,
+            $origen,
+            $asignadoSeleccionado,
+            $nombreSeleccionado,
+            $offset,
+            $resultadosPorPagina
+        );
+
+        $totalIngresos = $m->contarIngresosFiltrados($_SESSION['usuario']['id'], $fechaInicio, $fechaFin, $categoria, $origen);
 
         $totalPaginas = ($resultadosPorPagina > 0) ? ceil($totalIngresos / $resultadosPorPagina) : 1;
         $categorias = $m->obtenerCategoriasIngresos();
+        $nombresDisponibles = $m->obtenerNombresAsociaciones();
 
         $params = array(
             'ingresos' => $ingresos,
             'categorias' => $categorias,
+            'nombresDisponibles' => $nombresDisponibles,
             'paginaActual' => $paginaActual,
             'totalPaginas' => $totalPaginas,
             'fechaInicio' => $fechaInicio,
             'fechaFin' => $fechaFin,
             'categoriaSeleccionada' => $categoria,
+            'origenSeleccionado' => $origen,
+            'asignadoSeleccionado' => $asignadoSeleccionado,
+            'nombreSeleccionado' => $nombreSeleccionado,
             'resultadosPorPagina' => $resultadosPorPagina
         );
 
         $this->render('verIngresos.php', $params);
     }
+
 
     // Ver situación financiera del usuario (detallada)
     public function verSituacionFinanciera()
