@@ -45,6 +45,12 @@
 
                             <!-- Menú para Admin -->
                         <?php elseif ($nivel_usuario === 'admin'): ?>
+                            <!-- Opciones comunes entre Admin y Superadmin -->
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
+
+                            <!-- Opciones exclusivas para Admin -->
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
@@ -52,7 +58,6 @@
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verPresupuestos">Ver Presupuestos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verMetas">Ver Metas Financieras</a></li>
-                            <!-- Nueva opción para crear familias y grupos adicionales -->
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=formCrearFamiliaGrupoAdicionales">Crear Familias/Grupos adicionales</a></li>
 
                             <!-- Menú para Usuario regular o nivel 0 -->
