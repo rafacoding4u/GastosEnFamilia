@@ -1,8 +1,8 @@
 <div class="container p-4">
     <h2>Lista de Usuarios Registrados</h2>
 
-    <!-- Botón para crear usuario (solo visible para superadmin) -->
-    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+    <!-- Botón para crear usuario (visible para superadmin y admin) -->
+    <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin'])): ?>
         <a href="index.php?ctl=formCrearUsuario" class="btn btn-success mb-3">Crear Usuario</a>
     <?php endif; ?>
 
@@ -26,7 +26,8 @@
                     <th>Familia</th>
                     <th>Grupo</th>
                     <th>Tipo de Usuario</th>
-                    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                    <!-- Columna de Acciones para superadmin y admin -->
+                    <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin'])): ?>
                         <th>Acciones</th>
                     <?php endif; ?>
                 </tr>
@@ -54,7 +55,8 @@
                             }
                             ?>
                         </td>
-                        <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                        <!-- Acciones de Editar y Eliminar para superadmin y admin -->
+                        <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin'])): ?>
                             <td>
                                 <div class="d-flex">
                                     <!-- Botón para editar el usuario -->
