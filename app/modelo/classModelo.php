@@ -2301,4 +2301,27 @@ class GastosModelo
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Verifica si un usuario ya está asignado a una familia específica
+public function verificarUsuarioEnFamilia($idUser, $idFamilia)
+{
+    $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+}
+
+// Verifica si un usuario ya está asignado a un grupo específico
+public function verificarUsuarioEnGrupo($idUser, $idGrupo)
+{
+    $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+}
+
 }

@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['nivel_usuario'] === 'admin'): ?>
-                    <!-- Opciones del administrador -->
+                    <!-- Opciones de Gestión Financiera para Administradores -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=verGastos">Ver Gastos</a>
                     </li>
@@ -20,34 +20,47 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=formInsertarIngreso">Añadir Ingreso</a>
                     </li>
+
+                    <!-- Opciones de Presupuestos -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=verPresupuestos">Ver Presupuestos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=formCrearPresupuesto">Añadir Presupuesto</a>
                     </li>
+
+                    <!-- Opciones de Metas Financieras -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=verMetas">Ver Metas Financieras</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=FinanzasController&action=formCrearMeta">Añadir Meta Financiera</a>
                     </li>
+
+                    <!-- Situación Financiera -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=SituacionFinancieraController&action=verSituacion">Ver Situación Financiera</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuarios a Familias/Grupos</a>
-                    </li>
+
+                    <!-- Gestión de Categorías -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verCategoriasGastos">Gestionar Categorías de Gastos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=verCategoriasIngresos">Gestionar Categorías de Ingresos</a>
                     </li>
+
+                    <!-- Opciones de Creación de Familias y Grupos adicionales (si el usuario tiene permisos) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?ctl=formCrearFamiliaGrupoAdicionales">Crear Familias/Grupos Adicionales</a>
+                    </li>
+
+                    <!-- Cerrar Sesión -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                     </li>
                 <?php else: ?>
+                    <!-- Redirección al inicio de sesión si el usuario no es administrador -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a>
                     </li>
@@ -57,25 +70,25 @@
     </div>
 </nav>
 
-<!-- Resumen financiero -->
+<!-- Resumen financiero para el administrador -->
 <div class="container mt-4">
     <h4>Resumen Financiero</h4>
     <?php
-    // Instancia del modelo para obtener la situación financiera
+    // Instancia del modelo para obtener la situación financiera específica del usuario admin
     $modeloGastos = new GastosModelo();
-    $situacion = $modeloGastos->obtenerSituacionFinanciera($_SESSION['usuario']['id']);
+    $situacion = $modeloGastos->obtenerSituacionFinancieraPorAdmin($_SESSION['usuario']['id']);
     ?>
     <div class="card">
         <div class="card-header">
-            <strong>Total Ingresos:</strong> <?= number_format($situacion['totalIngresos'], 2, ',', '.') ?> €
+            <strong>Total Ingresos:</strong> <?= number_format($situacion['totalIngresos'] ?? 0, 2, ',', '.') ?> €
         </div>
         <div class="card-header">
-            <strong>Total Gastos:</strong> <?= number_format($situacion['totalGastos'], 2, ',', '.') ?> €
+            <strong>Total Gastos:</strong> <?= number_format($situacion['totalGastos'] ?? 0, 2, ',', '.') ?> €
         </div>
         <div class="card-header">
             <strong>Saldo:</strong>
-            <span style="color: <?= $situacion['saldo'] > 0 ? 'green' : ($situacion['saldo'] < 0 ? 'red' : 'gray') ?>;">
-                <?= number_format($situacion['saldo'], 2, ',', '.') ?> €
+            <span style="color: <?= ($situacion['saldo'] ?? 0) > 0 ? 'green' : (($situacion['saldo'] ?? 0) < 0 ? 'red' : 'gray') ?>;">
+                <?= number_format($situacion['saldo'] ?? 0, 2, ',', '.') ?> €
             </span>
         </div>
         <div class="card-body">
@@ -83,17 +96,17 @@
             <div class="details-section" style="display: none;">
                 <h5>Detalles de Ingresos</h5>
                 <ul>
-                    <?php foreach ($situacion['detalles_ingresos'] as $ingreso): ?>
+                    <?php foreach ($situacion['detalles_ingresos'] ?? [] as $ingreso): ?>
                         <li>
-                            <?= htmlspecialchars($ingreso['concepto']) ?>: <?= number_format($ingreso['importe'], 2, ',', '.') ?> € (<?= htmlspecialchars($ingreso['fecha']) ?>)
+                            <?= htmlspecialchars($ingreso['concepto']) ?>: <?= number_format($ingreso['importe'] ?? 0, 2, ',', '.') ?> € (<?= htmlspecialchars($ingreso['fecha']) ?>)
                         </li>
                     <?php endforeach; ?>
                 </ul>
                 <h5>Detalles de Gastos</h5>
                 <ul>
-                    <?php foreach ($situacion['detalles_gastos'] as $gasto): ?>
+                    <?php foreach ($situacion['detalles_gastos'] ?? [] as $gasto): ?>
                         <li>
-                            <?= htmlspecialchars($gasto['concepto']) ?>: <?= number_format($gasto['importe'], 2, ',', '.') ?> € (<?= htmlspecialchars($gasto['fecha']) ?>)
+                            <?= htmlspecialchars($gasto['concepto']) ?>: <?= number_format($gasto['importe'] ?? 0, 2, ',', '.') ?> € (<?= htmlspecialchars($gasto['fecha']) ?>)
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -103,7 +116,7 @@
 </div>
 
 <script>
-    document.querySelector('.toggle-details').addEventListener('click', function () {
+    document.querySelector('.toggle-details').addEventListener('click', function() {
         const detailsSection = document.querySelector('.details-section');
         if (detailsSection.style.display === 'none') {
             detailsSection.style.display = 'block';

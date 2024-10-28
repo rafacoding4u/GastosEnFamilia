@@ -476,43 +476,71 @@ class FamiliaGrupoController
 
     // Asignar usuario a una familia o grupo
     public function asignarUsuarioFamiliaGrupo()
-    {
-        $m = new GastosModelo(); // Asumiendo que GastosModelo es el que gestiona las familias y grupos.
+{
+    $m = new GastosModelo(); // Modelo que gestiona familias y grupos.
 
-        // Recoger los datos del formulario
-        $idUser = recoge('idUser');
-        $idFamilia = recoge('idFamilia') ?: null;
-        $idGrupo = recoge('idGrupo') ?: null;
+    // Recoger los datos del formulario
+    $idUser = recoge('idUsuario');
+    $idFamilias = recogeArray('idFamilia') ?: []; // Recoge un array de IDs de familias
+    $idGrupos = recogeArray('idGrupo') ?: []; // Recoge un array de IDs de grupos
+    $passwordFamiliaGrupo = recoge('passwordGrupoFamilia'); // Contraseña para acceso a familias/grupos existentes
 
-        // Validar que se haya seleccionado al menos una opción válida (familia o grupo)
-        if (empty($idUser) || (empty($idFamilia) && empty($idGrupo))) {
-            $params['mensaje'] = 'Debes seleccionar un usuario y al menos una familia o grupo para asignar.';
-            $this->formAsignarUsuario($params);
-            return;
-        }
-
-        // Intentar asignar el usuario al grupo/familia seleccionado
-        try {
-            // Procesar asignación a familia
-            if ($idFamilia) {
-                // Asignar el usuario a la familia
-                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-            }
-
-            // Procesar asignación a grupo
-            if ($idGrupo) {
-                // Asignar el usuario al grupo
-                $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-            }
-
-            // Redirigir tras una asignación exitosa
-            header('Location: index.php?ctl=listarGrupos'); // Redirigir a la vista de grupos
-            exit();
-        } catch (Exception $e) {
-            $params['mensaje'] = 'Error al asignar usuario: ' . $e->getMessage();
-            $this->formAsignarUsuario($params); // Mostrar el formulario con el mensaje de error
-        }
+    // Validar que se haya seleccionado al menos una familia o grupo
+    if (empty($idUser) || (empty($idFamilias) && empty($idGrupos))) {
+        $params['mensaje'] = 'Debes seleccionar un usuario y al menos una familia o grupo para asignar.';
+        $this->formAsignarUsuario($params);
+        return;
     }
+
+    try {
+        // Procesar asignación a las familias seleccionadas
+        foreach ($idFamilias as $idFamilia) {
+            // Verificar si el usuario ya está asignado a la familia
+            if ($m->verificarUsuarioEnFamilia($idUser, $idFamilia)) {
+                error_log("El usuario {$idUser} ya pertenece a la familia {$idFamilia}.");
+                continue; // Pasar a la siguiente familia si ya está asignado
+            }
+
+            // Validar contraseña de familia si se proporciona
+            if (!$m->verificarPasswordFamilia($idFamilia, $passwordFamiliaGrupo)) {
+                throw new Exception("Contraseña incorrecta para la familia ID {$idFamilia}.");
+            }
+
+            // Asignar el usuario a la familia
+            $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+            error_log("Usuario {$idUser} asignado a la familia {$idFamilia}.");
+        }
+
+        // Procesar asignación a los grupos seleccionados
+        foreach ($idGrupos as $idGrupo) {
+            // Verificar si el usuario ya está asignado al grupo
+            if ($m->verificarUsuarioEnGrupo($idUser, $idGrupo)) {
+                error_log("El usuario {$idUser} ya pertenece al grupo {$idGrupo}.");
+                continue; // Pasar al siguiente grupo si ya está asignado
+            }
+
+            // Validar contraseña de grupo si se proporciona
+            if (!$m->verificarPasswordGrupo($idGrupo, $passwordFamiliaGrupo)) {
+                throw new Exception("Contraseña incorrecta para el grupo ID {$idGrupo}.");
+            }
+
+            // Asignar el usuario al grupo
+            $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+            error_log("Usuario {$idUser} asignado al grupo {$idGrupo}.");
+        }
+
+        // Redirigir tras la asignación exitosa
+        header('Location: index.php?ctl=listarUsuarios');
+        exit();
+    } catch (Exception $e) {
+        // Capturar y mostrar cualquier error en el proceso de asignación
+        $params['mensaje'] = 'Error al asignar usuario: ' . $e->getMessage();
+        $this->formAsignarUsuario($params); // Mostrar el formulario con el mensaje de error
+    }
+}
+
+    
+
 
 
     // Método privado para generar un token CSRF

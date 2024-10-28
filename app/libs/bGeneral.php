@@ -6,19 +6,22 @@
  * 
  */
 
-function sinTildes($frase): string {
+function sinTildes($frase): string
+{
     $no_permitidas = array("á", "é", "í", "ó", "ú", "Á", "É", "Í", "Ó", "Ú", "à", "è", "ì", "ò", "ù", "À", "È", "Ì", "Ò", "Ù");
     $permitidas = array("a", "e", "i", "o", "u", "A", "E", "I", "O", "U", "a", "e", "i", "o", "u", "A", "E", "I", "O", "U");
     $texto = str_replace($no_permitidas, $permitidas, $frase);
     return $texto;
 }
 
-function sinEspacios($frase) {
+function sinEspacios($frase)
+{
     $texto = trim(preg_replace('/ +/', ' ', $frase));
     return $texto;
 }
 
-function recoge(string $var) {
+function recoge(string $var)
+{
     if (isset($_REQUEST[$var]) && (!is_array($_REQUEST[$var]))) {
         $tmp = sinEspacios($_REQUEST[$var]);
         $tmp = strip_tags($tmp);
@@ -27,7 +30,8 @@ function recoge(string $var) {
     return $tmp;
 }
 
-function cTexto(string $text, string $campo, array &$errores, int $max = 100, int $min = 1, bool $espacios = TRUE, bool $case = TRUE): bool {
+function cTexto(string $text, string $campo, array &$errores, int $max = 100, int $min = 1, bool $espacios = TRUE, bool $case = TRUE): bool
+{
     // Ajustar para permitir mayúsculas, minúsculas, tildes y espacios
     $case = ($case === TRUE) ? "i" : ""; // No hacer distinción entre mayúsculas y minúsculas
     $espacios = ($espacios === TRUE) ? " " : ""; // Incluir espacios si están permitidos
@@ -38,9 +42,10 @@ function cTexto(string $text, string $campo, array &$errores, int $max = 100, in
     return false;
 }
 
-function cUser(string $text, string $campo, array &$errores, int $max = 30, int $min = 1, bool $permitir_espacios = true): bool {
+function cUser(string $text, string $campo, array &$errores, int $max = 30, int $min = 1, bool $permitir_espacios = true): bool
+{
     // Incluir espacios si están permitidos
-    $espacios = $permitir_espacios ? " " : "_"; 
+    $espacios = $permitir_espacios ? " " : "_";
     // Validar que el texto solo contenga letras, números y espacios o guiones bajos
     if ((preg_match("/^[a-zA-Z0-9$espacios]{" . $min . "," . $max . "}$/u", sinTildes($text)))) {
         return true;
@@ -49,7 +54,8 @@ function cUser(string $text, string $campo, array &$errores, int $max = 30, int 
     return false;
 }
 
-function unixFechaAAAAMMDD($fecha, $campo, &$errores) {
+function unixFechaAAAAMMDD($fecha, $campo, &$errores)
+{
     $arrayfecha = explode("-", $fecha);
     if (count($arrayfecha) == 3) {
         $fechavalida = checkdate($arrayfecha[1], $arrayfecha[2], $arrayfecha[0]);
@@ -61,7 +67,8 @@ function unixFechaAAAAMMDD($fecha, $campo, &$errores) {
     return false;
 }
 
-function cNum(string $num, string $campo, array &$errores, bool $requerido = TRUE, int $max = PHP_INT_MAX): bool {
+function cNum(string $num, string $campo, array &$errores, bool $requerido = TRUE, int $max = PHP_INT_MAX): bool
+{
     $cuantificador = ($requerido) ? "+" : "*";
     if ((preg_match("/^[0-9]" . $cuantificador . "$/", $num))) {
         if ($num <= $max) return true;
@@ -70,7 +77,8 @@ function cNum(string $num, string $campo, array &$errores, bool $requerido = TRU
     return false;
 }
 
-function cRadio(string $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE) {
+function cRadio(string $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE)
+{
     if (in_array($text, $valores)) {
         return true;
     }
@@ -81,7 +89,8 @@ function cRadio(string $text, string $campo, array &$errores, array $valores, bo
     return false;
 }
 
-function cSelect(string $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE) {
+function cSelect(string $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE)
+{
     if (array_key_exists($text, $valores)) {
         return true;
     }
@@ -92,7 +101,8 @@ function cSelect(string $text, string $campo, array &$errores, array $valores, b
     return false;
 }
 
-function cCheck(array $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE) {
+function cCheck(array $text, string $campo, array &$errores, array $valores, bool $requerido = TRUE)
+{
     if (($requerido) && (count($text) == 0)) {
         $errores[$campo] = "Error en el campo $campo";
         return false;
@@ -106,7 +116,8 @@ function cCheck(array $text, string $campo, array &$errores, array $valores, boo
     return true;
 }
 
-function cFile(string $nombre, array &$errores, array $extensionesValidas, string $directorio, int  $max_file_size,  bool $required = TRUE) {
+function cFile(string $nombre, array &$errores, array $extensionesValidas, string $directorio, int  $max_file_size,  bool $required = TRUE)
+{
     if ((!$required) && $_FILES[$nombre]['error'] === 4)
         return true;
     if ($_FILES[$nombre]['error'] != 0) {
@@ -143,23 +154,27 @@ function cFile(string $nombre, array &$errores, array $extensionesValidas, strin
     }
 }
 
-function crypt_blowfish($password) {
+function crypt_blowfish($password)
+{
     $salt = '$2a$07$usesomesillystringforsalt$';
     $pass = crypt($password, $salt);
     return $pass;
 }
 
 // cookies
-function setSecureCookie($name, $value, $expire) {
+function setSecureCookie($name, $value, $expire)
+{
     setcookie($name, $value, $expire, "/", "", isset($_SERVER["HTTPS"]), true);
 }
 
-function getSecureCookie($name) {
+function getSecureCookie($name)
+{
     return isset($_COOKIE[$name]) ? htmlspecialchars($_COOKIE[$name], ENT_QUOTES, 'UTF-8') : null;
 }
 
 // Validar una contraseña (al menos 8 caracteres, una mayúscula y un número)
-function cContrasenya(string $contrasenya, array &$errores): bool {
+function cContrasenya(string $contrasenya, array &$errores): bool
+{
     if (strlen($contrasenya) < 8 || !preg_match('/[A-Z]/', $contrasenya) || !preg_match('/[0-9]/', $contrasenya)) {
         $errores['contrasenya'] = "La contraseña debe contener al menos 1 letra mayúscula, 1 número y tener un mínimo de 8 caracteres.";
         return false;
@@ -168,7 +183,8 @@ function cContrasenya(string $contrasenya, array &$errores): bool {
 }
 
 // Validar un email
-function cEmail(string $email, array &$errores): bool {
+function cEmail(string $email, array &$errores): bool
+{
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errores['email'] = "El correo electrónico no es válido.";
         return false;
@@ -177,7 +193,8 @@ function cEmail(string $email, array &$errores): bool {
 }
 
 // Validar teléfono (exactamente 9 dígitos)
-function cTelefono(string $telefono, array &$errores): bool {
+function cTelefono(string $telefono, array &$errores): bool
+{
     if (!preg_match('/^[0-9]{9}$/', $telefono)) {
         $errores['telefono'] = "El número de teléfono debe tener 9 dígitos.";
         return false;
@@ -186,7 +203,8 @@ function cTelefono(string $telefono, array &$errores): bool {
 }
 
 // Validar si el usuario tiene más de 18 años
-function validarEdad(string $fecha_nacimiento, array &$errores): bool {
+function validarEdad(string $fecha_nacimiento, array &$errores): bool
+{
     $fecha_actual = new DateTime();
     $fecha_nacimiento_dt = new DateTime($fecha_nacimiento);
     $edad = $fecha_actual->diff($fecha_nacimiento_dt)->y;
@@ -196,4 +214,21 @@ function validarEdad(string $fecha_nacimiento, array &$errores): bool {
         return false;
     }
     return true;
+}
+
+/**
+ * Recoge y sanitiza un array desde el formulario.
+ *
+ * @param string $nombreCampo Nombre del campo en el formulario.
+ * @return array Array sanitizado o vacío si no existe o no es un array.
+ */
+function recogeArray($nombreCampo)
+{
+    // Verificar que el campo existe y que es un array
+    if (isset($_POST[$nombreCampo]) && is_array($_POST[$nombreCampo])) {
+        return filter_var_array($_POST[$nombreCampo], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
+
+    // Retornar un array vacío si el campo no existe o no es un array
+    return [];
 }
