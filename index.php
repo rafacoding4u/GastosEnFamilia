@@ -40,8 +40,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['usuario']['nivel_usuario'])) {
-    $_SESSION['usuario']['nivel_usuario'] = 0;
-    error_log("Nivel de usuario no definido, asignado a 0", 3, __DIR__ . '/app/log/php-error.log');
+    $_SESSION['usuario']['nivel_usuario'] = 'registro'; // Asignamos el nivel 'registro' para usuarios no autenticados
+    error_log("Nivel de usuario no definido, asignado a 'registro'", 3, __DIR__ . '/app/log/php-error.log');
 }
 
 // Mapeo de rutas y sus controladores, incluyendo las opciones de SuperUsuario

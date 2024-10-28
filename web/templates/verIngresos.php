@@ -61,8 +61,8 @@
         </div>
     </form>
 
-    <!-- Botón para añadir un nuevo ingreso -->
-    <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+    <!-- Botón para añadir un nuevo ingreso (visible para admin, superadmin, y usuario regular) -->
+    <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['admin', 'superadmin', 'usuario'])): ?>
         <div class="mt-3 mb-3">
             <a href="index.php?ctl=formInsertarIngreso" class="btn btn-success">Añadir Ingreso</a>
         </div>
@@ -109,7 +109,8 @@
                         <td><?= htmlspecialchars($ingreso['nombre_asociacion'] ?? 'No especificado') ?></td>
 
                         <td>
-                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['id'] === $ingreso['idUser']): ?>
+                            <!-- Mostrar acciones según los permisos del usuario -->
+                            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['id'] === $ingreso['idUser']): ?>
                                 <a href="index.php?ctl=editarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-warning btn-sm">Editar</a>
                                 <a href="index.php?ctl=eliminarIngreso&id=<?= htmlspecialchars($ingreso['idIngreso']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este ingreso?')">Eliminar</a>
                             <?php else: ?>

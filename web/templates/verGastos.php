@@ -61,8 +61,8 @@
         </div>
     </form>
 
-    <!-- Botón para añadir un nuevo gasto -->
-    <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin'): ?>
+    <!-- Botón para añadir un nuevo gasto (visible para admin, superadmin, y usuario regular) -->
+    <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['admin', 'superadmin', 'usuario'])): ?>
         <div class="mt-3 mb-3">
             <a href="index.php?ctl=formInsertarGasto" class="btn btn-success">Añadir Gasto</a>
         </div>
@@ -110,7 +110,7 @@
 
                         <td>
                             <!-- Mostrar acciones según los permisos del usuario -->
-                            <?php if ($_SESSION['nivel_usuario'] === 'admin' || $_SESSION['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['id'] === $gasto['idUser']): ?>
+                            <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['id'] === $gasto['idUser']): ?>
                                 <a href="index.php?ctl=editarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-warning btn-sm">Editar</a>
                                 <a href="index.php?ctl=eliminarGasto&id=<?= htmlspecialchars($gasto['idGasto']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este gasto?')">Eliminar</a>
                             <?php else: ?>
