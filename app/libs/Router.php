@@ -28,7 +28,7 @@ class Router
             $method = $this->routes[$path]['method'];
 
             // Cargar el controlador y llamar al método
-            require_once "app/controlador/{$controller}.php";
+            require_once __DIR__ . "/../controlador/{$controller}.php";
             $controllerInstance = new $controller();
             $controllerInstance->$method();
         } else {

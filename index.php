@@ -33,41 +33,16 @@ if (!isset($_SESSION['usuario']['nivel_usuario'])) {
     error_log("Nivel de usuario no definido, asignado a 'registro'", 3, __DIR__ . '/app/log/php-error.log');
 }
 
-// Crear instancia del enrutador
+// Crear instancia del enrutador y definir rutas desde el archivo `Router.php`
 $router = new Router();
+require_once __DIR__ . '/app/libs/RouterConfig.php';  // Archivo donde configurar todas las rutas
 
-// Definir rutas públicas
-$router->addRoute('iniciarSesion', 'AuthController', 'iniciarSesion');
-$router->addRoute('registro', 'AuthController', 'registro');
-$router->addRoute('home', 'AuthController', 'home');
-
-// Definir rutas protegidas (requieren autenticación)
-$router->addRoute('inicio', 'AuthController', 'inicio');
-$router->addRoute('salir', 'AuthController', 'salir');
-$router->addRoute('listarUsuarios', 'UsuarioController', 'listarUsuarios');
-$router->addRoute('crearUsuario', 'UsuarioController', 'crearUsuario');
-$router->addRoute('eliminarUsuario', 'UsuarioController', 'eliminarUsuario');
-$router->addRoute('actualizarUsuario', 'UsuarioController', 'actualizarUsuario');
-$router->addRoute('formCrearUsuario', 'UsuarioController', 'formCrearUsuario');
-// Añadir las demás rutas según necesidades
-
-// Ejemplo adicional de ruta para auditoría (solo superadmin)
-$router->addRoute('verAuditoria', 'AuditoriaController', 'verAuditoria');
-
-// Verificación de autenticación en rutas protegidas
+// Verificar autenticación para rutas protegidas
 $ruta = $_GET['ctl'] ?? 'home';
 $rutasPermitidasSinAutenticacion = ['iniciarSesion', 'registro', 'home'];
 
 if (!isset($_SESSION['usuario']) && !in_array($ruta, $rutasPermitidasSinAutenticacion)) {
     header('Location: index.php?ctl=iniciarSesion');
-    exit();
-}
-
-// Verificación especial para asignación de contraseñas premium
-if ($ruta === 'asignarPasswordPremium' && isset($_GET['idUsuario']) && isset($_GET['password'])) {
-    require_once __DIR__ . '/app/controlador/UsuarioController.php';
-    $controllerInstance = new UsuarioController();
-    $controllerInstance->asignarPasswordPremium($_GET['idUsuario'], $_GET['password']);
     exit();
 }
 

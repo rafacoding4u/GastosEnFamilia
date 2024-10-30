@@ -533,7 +533,7 @@ class UsuarioController
         }
     }
 
-    // Listar usuarios con restricción para administradores
+    // Listar usuarios con restricción para administradores 
     public function listarUsuarios()
     {
         try {
@@ -551,12 +551,14 @@ class UsuarioController
                 $mensaje = 'Lista de usuarios registrados';
             }
 
+            // Parámetros para pasar a la vista
             $params = [
                 'usuarios' => $usuarios,
                 'mensaje' => $mensaje
             ];
 
-            $this->render('listarUsuarios.php', $params);
+            // Renderizar la vista listarUsuarios.php con los parámetros establecidos
+            $this->render('listarUsuarios', $params);
         } catch (Exception $e) {
             error_log("Error en listarUsuarios(): " . $e->getMessage());
             $this->redireccionarError('Error al listar los usuarios.');
@@ -564,13 +566,15 @@ class UsuarioController
     }
 
 
-    // Renderizar vistas
+
+    // Renderizar vistas con corrección para incluir .php automáticamente
     private function render($vista, $params = array())
     {
         try {
             extract($params);
             ob_start();
-            require __DIR__ . '/../../web/templates/' . $vista;
+            // Agregar la extensión .php automáticamente
+            require __DIR__ . '/../../web/templates/' . $vista . '.php';
             $contenido = ob_get_clean();
             require __DIR__ . '/../../web/templates/layout.php';
         } catch (Exception $e) {
@@ -578,6 +582,7 @@ class UsuarioController
             $this->redireccionarError('Error al renderizar la vista.');
         }
     }
+
 
     // Redireccionar en caso de error
     private function redireccionarError($mensaje)
