@@ -1,10 +1,10 @@
 <div class="container p-4">
-    <h2>Lista de Usuarios Registrados</h2>
-
-    <!-- Botón para crear usuario (visible para superadmin y admin) -->
+    <!-- Botón para crear un nuevo usuario (visible para superadmin y admin) -->
     <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin'])): ?>
-        <a href="index.php?ctl=formCrearUsuario" class="btn btn-success mb-3">Crear Usuario</a>
+        <a href="index.php?ctl=formCrearUsuario" class="btn btn-primary mb-3">Crear Usuario</a>
     <?php endif; ?>
+
+    <h2>Lista de Usuarios Registrados</h2>
 
     <!-- Mostrar mensaje en caso de éxito o error -->
     <?php if (isset($params['mensaje'])): ?>
@@ -44,25 +44,33 @@
                         <td><?= htmlspecialchars($usuario['nombre_grupo'] ?? 'Sin Grupo') ?></td>
                         <td>
                             <?php
-                            if ($usuario['nombre_familia'] === 'Sin Familia' && $usuario['nombre_grupo'] === 'Sin Grupo') {
+                            $nombreFamilia = $usuario['nombre_familia'] ?? 'Sin Familia';
+                            $nombreGrupo = $usuario['nombre_grupo'] ?? 'Sin Grupo';
+                            if ($nombreFamilia === 'Sin Familia' && $nombreGrupo === 'Sin Grupo') {
                                 echo "Individual";
-                            } elseif ($usuario['nombre_familia'] !== 'Sin Familia' && $usuario['nombre_grupo'] !== 'Sin Grupo') {
+                            } elseif ($nombreFamilia !== 'Sin Familia' && $nombreGrupo !== 'Sin Grupo') {
                                 echo "Familiar y en Grupo";
-                            } elseif ($usuario['nombre_familia'] !== 'Sin Familia') {
+                            } elseif ($nombreFamilia !== 'Sin Familia') {
                                 echo "Familiar";
-                            } elseif ($usuario['nombre_grupo'] !== 'Sin Grupo') {
+                            } elseif ($nombreGrupo !== 'Sin Grupo') {
                                 echo "En Grupo";
                             }
                             ?>
                         </td>
-                        <!-- Acciones de Editar y Eliminar para superadmin y admin -->
+                        <!-- Acciones de Editar y Eliminar según permisos de superadmin y admin -->
                         <?php if (in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin'])): ?>
                             <td>
                                 <div class="d-flex">
-                                    <!-- Botón para editar el usuario -->
-                                    <a href="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
-                                    <!-- Botón para eliminar el usuario -->
-                                    <a href="index.php?ctl=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
+                                    <?php
+                                    $esGestionado = $usuario['gestionado'] ?? true;
+                                    if ($esGestionado || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                                        <a href="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
+                                        <?php if ($usuario['idUser'] !== $_SESSION['usuario']['id']): ?>
+                                            <a href="index.php?ctl=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary" disabled>Acción no permitida</button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         <?php endif; ?>

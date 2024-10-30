@@ -533,17 +533,28 @@ class UsuarioController
         }
     }
 
-    // Listar usuarios
+    // Listar usuarios con restricción para administradores
     public function listarUsuarios()
     {
         try {
             $m = new GastosModelo();
-            $usuarios = $m->obtenerUsuarios();
 
-            $params = array(
+            // Verificamos el nivel de usuario para aplicar la restricción
+            if ($_SESSION['usuario']['nivel_usuario'] === 'admin') {
+                // Obtener solo los usuarios gestionados por el administrador
+                $idAdmin = $_SESSION['usuario']['id'];
+                $usuarios = $m->obtenerUsuariosGestionadosPorAdmin($idAdmin);
+                $mensaje = 'Lista de usuarios gestionados por el administrador';
+            } else {
+                // Si es Superadmin, obtiene todos los usuarios
+                $usuarios = $m->obtenerUsuarios();
+                $mensaje = 'Lista de usuarios registrados';
+            }
+
+            $params = [
                 'usuarios' => $usuarios,
-                'mensaje' => 'Lista de usuarios registrados'
-            );
+                'mensaje' => $mensaje
+            ];
 
             $this->render('listarUsuarios.php', $params);
         } catch (Exception $e) {
@@ -551,6 +562,7 @@ class UsuarioController
             $this->redireccionarError('Error al listar los usuarios.');
         }
     }
+
 
     // Renderizar vistas
     private function render($vista, $params = array())
@@ -673,5 +685,4 @@ class UsuarioController
             $this->render('formCrearFamiliaGrupoAdicionales.php', $params);
         }
     }
-
 }

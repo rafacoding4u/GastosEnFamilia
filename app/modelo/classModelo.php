@@ -1002,8 +1002,8 @@ class GastosModelo
 
     // Obtener la situación financiera global
     public function obtenerSituacionGlobal()
-{
-    $sql = "
+    {
+        $sql = "
         SELECT 
             SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
             SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
@@ -1011,10 +1011,10 @@ class GastosModelo
         FROM usuarios u
         LEFT JOIN ingresos i ON u.idUser = i.idUser
         LEFT JOIN gastos g ON u.idUser = g.idUser";
-        
-    $stmt = $this->conexion->query($sql);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 
 
@@ -2303,25 +2303,62 @@ class GastosModelo
     }
 
     // Verifica si un usuario ya está asignado a una familia específica
-public function verificarUsuarioEnFamilia($idUser, $idFamilia)
-{
-    $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-    $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
-}
+    public function verificarUsuarioEnFamilia($idUser, $idFamilia)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+    }
 
-// Verifica si un usuario ya está asignado a un grupo específico
-public function verificarUsuarioEnGrupo($idUser, $idGrupo)
-{
-    $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-    $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
-}
+    // Verifica si un usuario ya está asignado a un grupo específico
+    public function verificarUsuarioEnGrupo($idUser, $idGrupo)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+    }
+    public function obtenerUsuariosGestionadosPorAdmin($idAdmin)
+    {
+        $sql = "SELECT 
+                u.idUser,
+                u.nombre,
+                u.apellido,
+                u.alias,
+                u.email,
+                u.nivel_usuario,
+                IFNULL(GROUP_CONCAT(DISTINCT f.nombre_familia SEPARATOR ', '), 'Sin Familia') AS nombre_familia,
+                IFNULL(GROUP_CONCAT(DISTINCT g.nombre_grupo SEPARATOR ', '), 'Sin Grupo') AS nombre_grupo
+            FROM usuarios u
+            LEFT JOIN usuarios_familias uf ON u.idUser = uf.idUser
+            LEFT JOIN familias f ON uf.idFamilia = f.idFamilia
+            LEFT JOIN usuarios_grupos ug ON u.idUser = ug.idUser
+            LEFT JOIN grupos g ON ug.idGrupo = g.idGrupo
+            LEFT JOIN administradores_familias af ON f.idFamilia = af.idFamilia
+            LEFT JOIN administradores_grupos ag ON g.idGrupo = ag.idGrupo
+            WHERE 
+                af.idAdmin = :idAdmin OR 
+                ag.idAdmin = :idAdmin OR 
+                (u.nivel_usuario = 'usuario' AND u.idUser IN (
+                    SELECT uf.idUser FROM usuarios_familias uf WHERE uf.idFamilia IN (
+                        SELECT af.idFamilia FROM administradores_familias af WHERE af.idAdmin = :idAdmin
+                    )
+                ) OR 
+                u.idUser IN (
+                    SELECT ug.idUser FROM usuarios_grupos ug WHERE ug.idGrupo IN (
+                        SELECT ag.idGrupo FROM administradores_grupos ag WHERE ag.idAdmin = :idAdmin
+                    )
+                ))
+            GROUP BY u.idUser";
 
+        $stmt = $this->getConexion()->prepare($sql);
+        $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
