@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($params['idUser'] ?? '') ?>" method="post">
+        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['idUser']) ?>" method="post">
             <!-- Nombre -->
             <div class="form-group">
                 <label for="nombre">Nombre</label>
@@ -39,7 +39,7 @@
             <!-- Teléfono -->
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($params['telefono'] ?? '') ?>" required>
+                <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($params['telefono'] ?? '') ?>">
             </div>
 
             <!-- Familia -->
@@ -83,7 +83,7 @@
             </div>
 
             <!-- Token CSRF para la seguridad -->
-            <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
             <!-- Botón para guardar los cambios -->
             <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>

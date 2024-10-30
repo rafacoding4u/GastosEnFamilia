@@ -1,29 +1,29 @@
 <div class="container p-4">
     <!-- Verifica si el usuario está autenticado -->
-    <?php if (isset($_SESSION['usuario'])): ?>
-        <h2>Situación Financiera de <?= htmlspecialchars($_SESSION['usuario']['nombre']); ?></h2>
+    <?php if (isset($_SESSION['usuario']) && isset($_SESSION['usuario']['nivel_usuario']) && $_SESSION['usuario']['nivel_usuario'] !== 'registro'): ?>
+        <h2>Situación Financiera de <?= isset($_SESSION['usuario']['nombre']) ? htmlspecialchars($_SESSION['usuario']['nombre']) : 'Usuario'; ?></h2>
 
         <!-- Definir variables por defecto si no están presentes -->
         <?php
-            $totalIngresos = isset($totalIngresos) ? $totalIngresos : 0;
-            $totalGastos = isset($totalGastos) ? $totalGastos : 0;
-            $saldo = isset($saldo) ? $saldo : 0;
+        $totalIngresos = isset($totalIngresos) ? $totalIngresos : 0;
+        $totalGastos = isset($totalGastos) ? $totalGastos : 0;
+        $saldo = isset($saldo) ? $saldo : 0;
         ?>
 
         <!-- Mostrar Total Ingresos -->
-        <p><b>Total Ingresos:</b> 
-            <?= number_format(htmlspecialchars($totalIngresos), 2, ',', '.') . ' €' ?>
+        <p><b>Total Ingresos:</b>
+            <?= number_format($totalIngresos, 2, ',', '.') . ' €' ?>
         </p>
 
         <!-- Mostrar Total Gastos -->
-        <p><b>Total Gastos:</b> 
-            <?= number_format(htmlspecialchars($totalGastos), 2, ',', '.') . ' €' ?>
+        <p><b>Total Gastos:</b>
+            <?= number_format($totalGastos, 2, ',', '.') . ' €' ?>
         </p>
 
         <!-- Mostrar Balance -->
-        <p><b>Balance:</b> 
+        <p><b>Balance:</b>
             <span style="color: <?= $saldo >= 0 ? 'green' : 'red'; ?>;">
-                <?= number_format(htmlspecialchars($saldo), 2, ',', '.') . ' €' ?>
+                <?= number_format($saldo, 2, ',', '.') . ' €' ?>
             </span>
         </p>
 

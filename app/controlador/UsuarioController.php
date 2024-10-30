@@ -438,14 +438,25 @@ class UsuarioController
     public function actualizarUsuario()
     {
         try {
-            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))) {
+            // Verificación de permisos para superadmin o admin con permisos de gestión
+            if (
+                !isset($_SESSION['usuario']['nivel_usuario']) ||
+                ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                    !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))
+            ) {
                 throw new Exception('No tienes permisos para actualizar este usuario.');
             }
 
             $m = new GastosModelo();
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
-                $idUser = $_GET['id'];
+            // Validar que la solicitud sea POST y que contenga un ID de usuario
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['idUser'])) {
+                // Validar el token CSRF
+                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                    throw new Exception('Token CSRF inválido.');
+                }
+
+                $idUser = $_GET['idUser'];
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
@@ -464,10 +475,10 @@ class UsuarioController
                 cEmail($email, $errores);
                 cTelefono($telefono, $errores);
 
+                // Validar la existencia de familia y grupo
                 if ($idFamilia && !$m->obtenerFamiliaPorId($idFamilia)) {
                     $errores['familia'] = 'La familia seleccionada no existe.';
                 }
-
                 if ($idGrupo && !$m->obtenerGrupoPorId($idGrupo)) {
                     $errores['grupo'] = 'El grupo seleccionado no existe.';
                 }
@@ -475,6 +486,7 @@ class UsuarioController
                 // Actualizar si no hay errores
                 if (empty($errores)) {
                     if ($m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
+                        $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente';
                         header('Location: index.php?ctl=listarUsuarios');
                         exit();
                     } else {
@@ -487,14 +499,16 @@ class UsuarioController
                 throw new Exception('Método de solicitud no permitido o ID de usuario no proporcionado.');
             }
 
-            // Renderizar el formulario con los errores si ocurre un problema
+            // Obtener datos para la vista si hay errores
             $familias = $m->obtenerFamilias();
             $grupos = $m->obtenerGrupos();
 
             $params = array(
                 'familias' => $familias,
                 'grupos' => $grupos,
-                'errores' => $errores
+                'errores' => $errores,
+                'csrf_token' => $_SESSION['csrf_token'],  // Pasar token CSRF
+                'idUser' => $_GET['idUser']
             );
 
             $this->render('formEditarUsuario.php', $params);
@@ -503,6 +517,7 @@ class UsuarioController
             $this->redireccionarError('Error al actualizar el usuario.');
         }
     }
+
 
 
     // Eliminar usuario
@@ -558,7 +573,7 @@ class UsuarioController
             ];
 
             // Renderizar la vista listarUsuarios.php con los parámetros establecidos
-            $this->render('listarUsuarios', $params);
+            $this->render('listarUsuarios.php', $params);
         } catch (Exception $e) {
             error_log("Error en listarUsuarios(): " . $e->getMessage());
             $this->redireccionarError('Error al listar los usuarios.');
@@ -574,7 +589,7 @@ class UsuarioController
             extract($params);
             ob_start();
             // Agregar la extensión .php automáticamente
-            require __DIR__ . '/../../web/templates/' . $vista . '.php';
+            require __DIR__ . '/../../web/templates/' . $vista;
             $contenido = ob_get_clean();
             require __DIR__ . '/../../web/templates/layout.php';
         } catch (Exception $e) {
