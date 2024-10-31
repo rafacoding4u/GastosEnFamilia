@@ -28,6 +28,7 @@
 
                         <?php if ($nivel_usuario === 'superadmin'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=actualizarUsuario">Actualizar Usuario</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>

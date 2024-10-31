@@ -2,7 +2,7 @@
     <h2>Editar Usuario</h2>
 
     <!-- Verificación de permisos para mostrar el formulario solo a admins y superadmins -->
-    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+    <?php if (isset($_SESSION['usuario']) && ($_SESSION['usuario']['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['nivel_usuario'] === 'admin')): ?>
 
         <!-- Mostrar mensaje de éxito o error -->
         <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
@@ -11,7 +11,11 @@
             </div>
         <?php endif; ?>
 
-        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['idUser']) ?>" method="post">
+        <!-- Formulario para editar usuario -->
+        <form action="index.php?ctl=actualizarUsuario" method="post">
+            <!-- Asegurar que idUser esté presente en el POST -->
+            <input type="hidden" name="idUser" value="<?= htmlspecialchars($params['idUser'] ?? '') ?>">
+
             <!-- Nombre -->
             <div class="form-group">
                 <label for="nombre">Nombre</label>

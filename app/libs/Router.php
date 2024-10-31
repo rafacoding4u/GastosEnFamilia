@@ -27,14 +27,19 @@ class Router
             $controller = $this->routes[$path]['controller'];
             $method = $this->routes[$path]['method'];
 
-            // Cargar el controlador y llamar al método
-            require_once __DIR__ . "/../controlador/{$controller}.php";
-            $controllerInstance = new $controller();
-            $controllerInstance->$method();
-        } else {
-            // Ruta no encontrada: redirigir a una página de error o a la página principal
-            header("Location: index.php?ctl=home");
-            exit();
+            // Verificar que el archivo del controlador exista
+            $controllerPath = __DIR__ . "/../controlador/{$controller}.php";
+            if (file_exists($controllerPath)) {
+                require_once $controllerPath;
+                if (class_exists($controller) && method_exists($controller, $method)) {
+                    $controllerInstance = new $controller();
+                    $controllerInstance->$method();
+                    return;
+                }
+            }
         }
+        // Ruta no encontrada o controlador/método no válido
+        header("Location: index.php?ctl=error");
+        exit();
     }
 }

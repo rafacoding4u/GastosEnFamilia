@@ -46,7 +46,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a>
                     </li>
-                    
+
                     <!-- Nueva opción: Asignar Usuario a Familia o Grupo -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=formAsignarUsuario">Asignar Usuario a Familia o Grupo</a>
@@ -71,9 +71,20 @@
                         <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                     </li>
                 <?php else: ?>
-                    <!-- Si no es superadmin, redirigir al inicio de sesión -->
+                    <?php
+                    // Log para registrar intentos no autorizados
+                    error_log("Intento de acceso al menú SuperAdmin sin permisos.");
+                    error_log("Nivel de usuario actual: " . ($_SESSION['usuario']['nivel_usuario'] ?? 'No autenticado'));
+                    error_log("Detalles de sesión: " . print_r($_SESSION, true));
+
+                    // Mensaje de error para el usuario redirigido
+                    $_SESSION['mensaje_error'] = "No tienes permisos de SuperAdmin para acceder a esta sección.";
+                    ?>
+                    <!-- Redirección al inicio de sesión con mensaje contextual -->
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a>
+                        <a class="nav-link" href="index.php?ctl=iniciarSesion" title="Debes iniciar sesión como SuperAdmin para acceder.">
+                            Iniciar Sesión
+                        </a>
                     </li>
                 <?php endif; ?>
             </ul>

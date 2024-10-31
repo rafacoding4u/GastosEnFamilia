@@ -60,10 +60,11 @@
                         <a class="nav-link" href="index.php?ctl=salir">Cerrar Sesión</a>
                     </li>
                 <?php else: ?>
-                    <!-- Redirección al inicio de sesión si el usuario no es administrador -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?ctl=iniciarSesion">Iniciar Sesión</a>
+                        <span style="color: red; font-size: 0.9em;">(Acceso limitado, inicia sesión)</span>
                     </li>
+
                 <?php endif; ?>
             </ul>
         </div>

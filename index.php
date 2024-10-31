@@ -40,9 +40,27 @@ require_once __DIR__ . '/app/libs/RouterConfig.php';  // Archivo donde configura
 // Verificar autenticación para rutas protegidas
 $ruta = $_GET['ctl'] ?? 'home';
 $rutasPermitidasSinAutenticacion = ['iniciarSesion', 'registro', 'home'];
+$rutasSoloSuperadmin = [
+    'verAuditoria',
+    'listarFamilias',
+    'verGrupos',
+    'verSituacion',
+    'verCategoriasGastos',
+    'verCategoriasIngresos',
+    'verPresupuestos',
+    'verMetasGlobales',
+    'formAsignarUsuario'
+];
 
+// Redirigir a iniciar sesión si no está autenticado y la ruta no es pública
 if (!isset($_SESSION['usuario']) && !in_array($ruta, $rutasPermitidasSinAutenticacion)) {
     header('Location: index.php?ctl=iniciarSesion');
+    exit();
+}
+
+// Verificar si el usuario tiene permisos de superadmin para acceder a rutas exclusivas de este nivel
+if (in_array($ruta, $rutasSoloSuperadmin) && $_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
+    header('Location: index.php?ctl=error');
     exit();
 }
 

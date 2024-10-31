@@ -27,5 +27,11 @@ $router->addRoute('verPresupuestos', 'FinanzasController', 'verPresupuestos');
 $router->addRoute('verMetasGlobales', 'SituacionFinancieraController', 'verMetasGlobales');
 $router->addRoute('formAsignarUsuario', 'FamiliaGrupoController', 'formAsignarUsuario');
 
+// Ruta para manejar errores
+$router->addRoute('error', 'AuthController', 'error');
+$router->addRoute('accesoDenegado', 'ErrorController', 'accesoDenegado');
+$router->addRoute('errorGeneral', 'ErrorController', 'errorGeneral');
+
+
 // Rutas adicionales para otros roles o funcionalidades especiales
 // Agrega más rutas según las necesidades de cada nivel de usuario

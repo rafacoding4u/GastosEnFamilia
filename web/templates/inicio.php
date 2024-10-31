@@ -59,6 +59,15 @@
             <li><a href="index.php?ctl=registroInd">Registro Usuario</a></li>
         </ul>
 
+        <!-- Mostrar mensaje de error si está configurado en la sesión -->
+        <?php if (isset($_SESSION['mensaje_error'])): ?>
+            <div class="alert alert-warning mt-3">
+                <?= htmlspecialchars($_SESSION['mensaje_error']); ?>
+            </div>
+            <?php unset($_SESSION['mensaje_error']); // Limpiar el mensaje después de mostrarlo 
+            ?>
+        <?php endif; ?>
+
         <!-- Mensaje adicional si hay alguno -->
         <?php if (isset($mensaje) && !empty($mensaje)): ?>
             <div class="alert alert-info mt-3">
