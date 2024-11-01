@@ -1,0 +1,21 @@
+<?php
+session_start();
+
+// Autoload de clases y configuraciones
+require_once __DIR__ . '/app/libs/Config.php';
+require_once __DIR__ . '/app/libs/Router.php'; // Cambio aquí para la ruta correcta de Router.php
+
+// Controlador y acción por defecto
+$controllerName = $_GET['ctl'] ?? 'Auth'; // Usa AuthController como controlador de inicio
+$action = $_GET['act'] ?? 'inicio';
+
+try {
+    $router = new Router($controllerName, $action);
+    $contenido = $router->run();
+
+    // Cargar el layout con la variable $contenido para la vista
+    require_once __DIR__ . '/web/templates/layout.php';
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+}
+?>

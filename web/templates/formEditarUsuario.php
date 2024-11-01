@@ -12,8 +12,8 @@
         <?php endif; ?>
 
         <!-- Formulario para editar usuario -->
-        <form action="index.php?ctl=actualizarUsuario" method="post">
-            <!-- Asegurar que idUser esté presente en el POST -->
+        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['idUser'] ?? '') ?>" method="post">
+            <!-- Campo oculto para asegurar que el idUser esté presente en el POST -->
             <input type="hidden" name="idUser" value="<?= htmlspecialchars($params['idUser'] ?? '') ?>">
 
             <!-- Nombre -->

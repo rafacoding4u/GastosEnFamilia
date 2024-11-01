@@ -68,143 +68,6 @@ class UsuarioController
     }
 
 
-
-    /*public function registro()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        try {
-            $m = new GastosModelo();
-
-            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                throw new Exception('CSRF token inválido.');
-            }
-
-            // Recoger los datos del formulario
-            $nombre = htmlspecialchars(recoge('nombre'), ENT_QUOTES, 'UTF-8');
-            $apellido = htmlspecialchars(recoge('apellido'), ENT_QUOTES, 'UTF-8');
-            $alias = htmlspecialchars(recoge('alias'), ENT_QUOTES, 'UTF-8');
-            $email = filter_var(recoge('email'), FILTER_VALIDATE_EMAIL);
-            $telefono = htmlspecialchars(recoge('telefono'), ENT_QUOTES, 'UTF-8');
-            $password = htmlspecialchars(recoge('contrasenya'), ENT_QUOTES, 'UTF-8');
-            $fechaNacimiento = recoge('fecha_nacimiento');
-            $tipoVinculo = recoge('tipo_vinculo'); // Familia o grupo
-            $nivel_usuario = 'registro'; // Establecemos el rol como registro
-
-            // Validaciones...
-            if (!$email || empty($password) || empty($nombre) || empty($alias)) {
-                throw new Exception('Todos los campos son obligatorios.');
-            }
-
-            if ($m->existeUsuario($alias)) {
-                throw new Exception('El alias ya está en uso.');
-            }
-
-            $passwordEncriptada = password_hash($password, PASSWORD_DEFAULT);
-
-            // Insertar usuario con rol 'registro'
-            $usuarioRegistrado = $m->insertarUsuario($nombre, $apellido, $alias, $passwordEncriptada, $nivel_usuario, $fechaNacimiento, $email, $telefono);
-
-            if (!$usuarioRegistrado) {
-                throw new Exception('Error al registrar el usuario.');
-            }
-
-            $idUser = $m->obteneridUserPorAlias($alias);
-
-            // Si se selecciona crear familia
-            if ($tipoVinculo === 'crear_familia') {
-                $nombreFamilia = recoge('nombre_nueva_familia');
-                $passwordFamilia = password_hash(recoge('password_nueva_familia'), PASSWORD_DEFAULT);
-                $m->insertarFamilia($nombreFamilia, $passwordFamilia);
-                $idFamilia = $m->obtenerIdFamiliaPorNombre($nombreFamilia);
-
-                if (!$idFamilia) {
-                    throw new Exception('Error al crear la familia.');
-                }
-
-                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-                $m->añadirAdministradorAFamilia($idUser, $idFamilia);
-
-                // Actualizar el rol del usuario a "admin"
-                $m->actualizarUsuarioNivel($idUser, 'admin');
-            }
-
-            // Si se selecciona crear grupo
-            if ($tipoVinculo === 'crear_grupo') {
-                $nombreGrupo = recoge('nombre_nuevo_grupo');
-                $passwordGrupo = password_hash(recoge('password_nuevo_grupo'), PASSWORD_DEFAULT);
-                $m->insertarGrupo($nombreGrupo, $passwordGrupo);
-                $idGrupo = $m->obtenerIdGrupoPorNombre($nombreGrupo);
-
-                if (!$idGrupo) {
-                    throw new Exception('Error al crear el grupo.');
-                }
-
-                $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-                $m->añadirAdministradorAGrupo($idUser, $idGrupo);
-
-                // Actualizar el rol del usuario a "admin"
-                $m->actualizarUsuarioNivel($idUser, 'admin');
-            }
-
-            // Si se une a una familia o grupo existente
-            if ($tipoVinculo === 'familia' || $tipoVinculo === 'grupo') {
-                $idGrupoFamilia = recoge('idGrupoFamilia');
-                $passwordGrupoFamilia = recoge('passwordGrupoFamilia');
-
-                if (strpos($idGrupoFamilia, 'familia_') === 0) {
-                    $idFamilia = str_replace('familia_', '', $idGrupoFamilia);
-                    if (!$m->verificarPasswordFamilia($idFamilia, $passwordGrupoFamilia)) {
-                        throw new Exception('Contraseña de la familia incorrecta.');
-                    }
-                    $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-
-                    // Actualizar a rol 'usuario'
-                    $m->actualizarUsuarioNivel($idUser, 'usuario');
-                } elseif (strpos($idGrupoFamilia, 'grupo_') === 0) {
-                    $idGrupo = str_replace('grupo_', '', $idGrupoFamilia);
-                    if (!$m->verificarPasswordGrupo($idGrupo, $passwordGrupoFamilia)) {
-                        throw new Exception('Contraseña del grupo incorrecta.');
-                    }
-                    $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-
-                    // Actualizar a rol 'usuario'
-                    $m->actualizarUsuarioNivel($idUser, 'usuario');
-                }
-            }
-
-            // Registro exitoso
-            $params['mensaje'] = 'Usuario registrado con éxito.';
-            header('Location: index.php?ctl=iniciarSesion');
-            exit();
-        } catch (Exception $e) {
-            error_log("Error en registro(): " . $e->getMessage());
-            $params['mensaje'] = 'Error al registrarse. ' . $e->getMessage();
-
-            // Volver a cargar los grupos y familias en caso de error
-            if (!isset($m)) {
-                $m = new GastosModelo();
-            }
-
-            $params['familias'] = $m->obtenerFamilias();
-            $params['grupos'] = $m->obtenerGrupos();
-            $this->render('formRegistro.php', $params);
-        }
-    } else {
-        // Generar token CSRF
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-
-        // Obtener grupos y familias del modelo y pasarlos al formulario
-        $m = new GastosModelo();
-        $params['csrf_token'] = $_SESSION['csrf_token'];
-        $params['familias'] = $m->obtenerFamilias();
-        $params['grupos'] = $m->obtenerGrupos();
-
-        $this->render('formRegistro.php', $params);
-    }
-}*/
-
     public function crearUsuario()
     {
         try {
@@ -437,26 +300,28 @@ class UsuarioController
 
     public function actualizarUsuario()
     {
+        $conexion = $this->modelo->getConexion(); // Obtener la conexión una vez para reutilizar
         try {
-            // Verificación de permisos para superadmin o admin con permisos de gestión
-            if (
-                !isset($_SESSION['usuario']['nivel_usuario']) ||
-                ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
-                    !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))
-            ) {
+            error_log("Entrando en actualizarUsuario()");
+
+            // Verificar permisos
+            if (!isset($_SESSION['usuario']['nivel_usuario']) || ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))) {
                 throw new Exception('No tienes permisos para actualizar este usuario.');
             }
 
             $m = new GastosModelo();
 
-            // Validar que la solicitud sea POST y que contenga un ID de usuario
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['idUser'])) {
-                // Validar el token CSRF
+            // Validar que sea una solicitud POST con ID de usuario
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idUser'])) {
+                $idUser = $_POST['idUser'];
+
+                // Verificar token CSRF
                 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
                     throw new Exception('Token CSRF inválido.');
                 }
 
-                $idUser = $_GET['idUser'];
+                // Recoger datos
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
@@ -466,9 +331,9 @@ class UsuarioController
                 $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
                 $nivel_usuario = ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') ? recoge('nivel_usuario') : 'usuario';
 
-                $errores = array();
+                $errores = [];
 
-                // Validaciones
+                // Validar datos
                 cTexto($nombre, "nombre", $errores);
                 cTexto($apellido, "apellido", $errores);
                 cUser($alias, "alias", $errores);
@@ -483,15 +348,34 @@ class UsuarioController
                     $errores['grupo'] = 'El grupo seleccionado no existe.';
                 }
 
-                // Actualizar si no hay errores
+                // Si no hay errores, actualizar en una transacción
                 if (empty($errores)) {
-                    if ($m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
-                        $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente';
-                        header('Location: index.php?ctl=listarUsuarios');
-                        exit();
-                    } else {
-                        $params['mensaje'] = 'No se pudo actualizar el usuario.';
+                    $conexion->beginTransaction(); // Iniciar transacción
+
+                    // Actualizar usuario
+                    if (!$m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)) {
+                        throw new Exception('Error al actualizar los datos del usuario.');
                     }
+
+                    // Actualizar familia
+                    if ($idFamilia) {
+                        $sqlFamilia = "UPDATE usuarios_familias SET idFamilia = :idFamilia WHERE idUser = :idUser";
+                        $stmtFamilia = $conexion->prepare($sqlFamilia);
+                        $stmtFamilia->execute([':idFamilia' => $idFamilia, ':idUser' => $idUser]);
+                    }
+
+                    // Actualizar grupo
+                    if ($idGrupo) {
+                        $sqlGrupo = "UPDATE usuarios_grupos SET idGrupo = :idGrupo WHERE idUser = :idUser";
+                        $stmtGrupo = $conexion->prepare($sqlGrupo);
+                        $stmtGrupo->execute([':idGrupo' => $idGrupo, ':idUser' => $idUser]);
+                    }
+
+                    $conexion->commit(); // Confirmar transacción
+
+                    $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente';
+                    header('Location: index.php?ctl=listarUsuarios');
+                    exit();
                 } else {
                     $params['errores'] = $errores;
                 }
@@ -507,16 +391,23 @@ class UsuarioController
                 'familias' => $familias,
                 'grupos' => $grupos,
                 'errores' => $errores,
-                'csrf_token' => $_SESSION['csrf_token'],  // Pasar token CSRF
-                'idUser' => $_GET['idUser']
+                'csrf_token' => $_SESSION['csrf_token'],
+                'idUser' => $_POST['idUser'] ?? null
             );
 
             $this->render('formEditarUsuario.php', $params);
         } catch (Exception $e) {
+            // Verificación para asegurarse de que solo se llama a rollBack() si hay una transacción activa
+            if ($conexion->inTransaction()) {
+                $conexion->rollBack();
+            }
             error_log("Error en actualizarUsuario(): " . $e->getMessage());
-            $this->redireccionarError('Error al actualizar el usuario.');
+            $this->redireccionarError('Error al actualizar el usuario: ' . $e->getMessage());
         }
     }
+
+
+
 
 
 
@@ -594,6 +485,7 @@ class UsuarioController
             require __DIR__ . '/../../web/templates/layout.php';
         } catch (Exception $e) {
             error_log("Error en render(): " . $e->getMessage());
+            echo 'Error al renderizar la vista: ' . $e->getMessage(); // Mensaje temporal de depuración
             $this->redireccionarError('Error al renderizar la vista.');
         }
     }
@@ -607,20 +499,39 @@ class UsuarioController
         exit();
     }
 
-    // Validar si el usuario es administrador
+    // Validar si el usuario es administrador o superadmin
     private function esAdmin()
     {
-        return $_SESSION['usuario']['nivel_usuario'] === 'admin';
+        if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') {
+            error_log("Permisos verificados: Usuario es SuperAdmin");
+            return true; // SuperAdmin tiene permisos para todo
+        }
+        $isAdmin = $_SESSION['usuario']['nivel_usuario'] === 'admin';
+        error_log("Permisos verificados: Usuario es " . ($isAdmin ? "Admin" : "No es Admin ni SuperAdmin"));
+        return $isAdmin;
     }
 
-    // Verificar si el usuario pertenece a una familia o grupo
+    // Verificar si el usuario pertenece a una familia o grupo o si es SuperAdmin
     private function perteneceAFamiliaOGrupo($idUser)
     {
+        // Permitir acceso completo a SuperAdmin
+        if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') {
+            error_log("Permisos verificados: Usuario SuperAdmin, acceso completo a familias y grupos.");
+            return true;
+        }
+
+        // Comprobación para usuarios Admin o regular
         $m = new GastosModelo();
         $usuario = $m->obtenerUsuarioPorId($idUser);
-        return ($usuario &&
-            ($m->usuarioYaEnFamilia($idUser, $_SESSION['usuario']['idFamilia']) ||
-                $m->usuarioYaEnGrupo($idUser, $_SESSION['usuario']['idGrupo'])));
+
+        // Verificar si el usuario pertenece a la misma familia o grupo que el admin
+        $enFamilia = $m->usuarioYaEnFamilia($idUser, $_SESSION['usuario']['idFamilia']);
+        $enGrupo = $m->usuarioYaEnGrupo($idUser, $_SESSION['usuario']['idGrupo']);
+        $accesoPermitido = ($usuario && ($enFamilia || $enGrupo));
+
+        error_log("Permisos verificados: Usuario $idUser " . ($accesoPermitido ? "pertenece a la misma familia o grupo" : "no pertenece a la misma familia o grupo"));
+
+        return $accesoPermitido;
     }
 
     public function buscarFamilias()

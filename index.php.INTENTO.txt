@@ -1,0 +1,22 @@
+<?php
+session_start();
+
+require_once 'app/libs/Config.php';
+require_once 'app/libs/Router.php';
+
+try {
+    $router = new Router();
+    $router->handleRequest();
+} catch (Exception $e) {
+    // Registro del error en el archivo de log
+    error_log("Error en index.php: " . $e->getMessage());
+
+    // Mensaje de error para el usuario y detalles de depuración
+    echo "<h1>Se ha producido un error en la aplicación</h1>";
+    echo "<p>Detalles: " . $e->getMessage() . "</p>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+
+    // Redirigir a la página de error definida si existe
+    header("Location: index.php?ctl=error");
+    exit();
+}

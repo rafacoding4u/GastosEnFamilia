@@ -19,6 +19,13 @@ class ErrorController
         $params = ['mensaje' => 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo más tarde.'];
         $this->render('error.php', $params);
     }
+    public function mostrarError()
+    {
+        $mensaje = $_SESSION['error_mensaje'] ?? "Error desconocido.";
+        echo "<h1>Error 404: Página no encontrada</h1>";
+        echo "<p>$mensaje</p>";
+        unset($_SESSION['error_mensaje']); // Limpia el mensaje de error después de mostrarlo
+    }
 
     /**
      * Método para renderizar vistas específicas.

@@ -34,10 +34,12 @@ class GastosModelo
     public function getConexion()
     {
         if ($this->conexion === null) {
+            error_log("Error en getConexion(): No se ha establecido la conexión a la base de datos.");
             throw new Exception("No se ha establecido la conexión a la base de datos.");
         }
         return $this->conexion;
     }
+
 
     public function pruebaConexion()
     {
