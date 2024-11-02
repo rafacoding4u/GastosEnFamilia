@@ -39,32 +39,24 @@ require_once __DIR__ . '/app/libs/RouterConfig.php';  // Archivo donde configura
 
 // Verificar autenticación para rutas protegidas
 $ruta = $_GET['ctl'] ?? 'home';
-$rutasPermitidasSinAutenticacion = ['iniciarSesion', 'registro', 'home'];
-$rutasSoloSuperadmin = [
-    'verAuditoria',
-    'listarFamilias',
-    'verGrupos',
-    'verSituacion',
-    'verCategoriasGastos',
-    'verCategoriasIngresos',
-    'verPresupuestos',
-    'verMetasGlobales',
-    'formAsignarUsuario'
-];
+$rutasPermitidasSinAutenticacion = ['iniciarSesion', 'registro', 'home', 'error'];
 
 // Redirigir a iniciar sesión si no está autenticado y la ruta no es pública
 if (!isset($_SESSION['usuario']) && !in_array($ruta, $rutasPermitidasSinAutenticacion)) {
+    error_log("Redirigiendo a iniciarSesion por falta de autenticación para la ruta '$ruta'", 3, __DIR__ . '/app/log/php-error.log');
     header('Location: index.php?ctl=iniciarSesion');
     exit();
 }
 
-// Verificar si el usuario tiene permisos de superadmin para acceder a rutas exclusivas de este nivel
-if (in_array($ruta, $rutasSoloSuperadmin) && $_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
+// Verificar si el usuario tiene permisos de superadmin para acceder a rutas exclusivas
+if (!in_array($ruta, $rutasPermitidasSinAutenticacion) && !Config::verificarPermisos($ruta)) {
+    error_log("Redirigiendo a error por falta de permisos de superadmin para la ruta '$ruta'", 3, __DIR__ . '/app/log/php-error.log');
     header('Location: index.php?ctl=error');
     exit();
 }
 
 // Procesar la solicitud de la ruta actual
+error_log("Procesando la solicitud para la ruta '$ruta'", 3, __DIR__ . '/app/log/php-error.log');
 $router->handleRequest($ruta);
 
 ob_end_flush(); // Finaliza el almacenamiento en búfer y envía la salida al navegador

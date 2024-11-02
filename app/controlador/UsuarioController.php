@@ -316,6 +316,11 @@ class UsuarioController
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idUser'])) {
                 $idUser = $_POST['idUser'];
 
+                // Verificación para evitar que el usuario edite su propio usuario
+                if ($idUser == $_SESSION['usuario']['id']) {
+                    throw new Exception('No puedes editar tu propio usuario.');
+                }
+
                 // Verificar token CSRF
                 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
                     throw new Exception('Token CSRF inválido.');
@@ -411,15 +416,25 @@ class UsuarioController
 
 
 
-    // Eliminar usuario
+
     public function eliminarUsuario()
     {
         try {
-            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))) {
+            $idUser = recoge('id'); // Usuario que se intenta eliminar
+
+            // Verificar que el usuario no intente eliminarse a sí mismo
+            if ($idUser === $_SESSION['usuario']['id']) {
+                throw new Exception('No puedes eliminar tu propio usuario.');
+            }
+
+            // Verificar permisos según el nivel de usuario
+            if (
+                $_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($idUser))
+            ) {
                 throw new Exception('No tienes permisos para eliminar este usuario.');
             }
 
-            $idUser = recoge('id');
             $m = new GastosModelo();
             $usuario = $m->obtenerUsuarioPorId($idUser);
 
@@ -427,6 +442,7 @@ class UsuarioController
                 throw new Exception('Usuario no encontrado.');
             }
 
+            // Eliminar datos asociados al usuario
             if ($m->eliminarGastosPorUsuario($idUser) && $m->eliminarIngresosPorUsuario($idUser) && $m->eliminarUsuario($idUser)) {
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
@@ -438,6 +454,8 @@ class UsuarioController
             $this->redireccionarError('Error al eliminar el usuario.');
         }
     }
+
+
 
     // Listar usuarios con restricción para administradores 
     public function listarUsuarios()

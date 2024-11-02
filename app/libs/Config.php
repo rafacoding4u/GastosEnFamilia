@@ -1,6 +1,7 @@
 <?php
 
-class Config {
+class Config
+{
     private static $db_host = 'localhost';
     private static $db_user = 'root';
     private static $db_pass = 'Ladilla7890@2'; // Ajusta esta contraseña si tu usuario root la tiene configurada
@@ -16,7 +17,8 @@ class Config {
      * Obtiene la conexión a la base de datos.
      * @return PDO|null Retorna una conexión PDO o null en caso de error.
      */
-    public static function getConexion() {
+    public static function getConexion()
+    {
         try {
             $dsn = 'mysql:host=' . self::$db_host . ';dbname=' . self::$db_name . ';charset=' . self::$db_charset;
             $opciones = [
@@ -34,10 +36,110 @@ class Config {
     }
 
     /**
+     * Verifica si el usuario tiene permiso de superadmin para ciertas rutas exclusivas.
+     * @param string $ruta La ruta actual que se está accediendo.
+     * @return bool Retorna true si es superadmin y la ruta está permitida, false en caso contrario.
+     */
+    public static function verificarPermisos($ruta)
+    {
+        $nivelUsuario = $_SESSION['usuario']['nivel_usuario'] ?? 'registro';
+        $idUser = $_SESSION['usuario']['id'] ?? null;
+
+        // Definir permisos por rol
+        $permisos = [
+            'superadmin' => [
+                'usuarios' => ['leer', 'escribir', 'eliminar'],
+                'familias' => ['leer', 'escribir', 'eliminar'],
+                'grupos' => ['leer', 'escribir', 'eliminar'],
+                'gastos' => ['leer', 'escribir', 'eliminar'],
+                'ingresos' => ['leer', 'escribir', 'eliminar'],
+                'metas' => ['leer', 'escribir', 'eliminar'],
+                'presupuestos' => ['leer', 'escribir', 'eliminar']
+            ],
+            'admin' => [
+                'usuarios' => ['leer', 'escribir'], // Sin permiso de eliminar otros admin
+                'familias' => ['leer', 'escribir'],
+                'grupos' => ['leer', 'escribir'],
+                'gastos' => ['leer', 'escribir', 'eliminar'],
+                'ingresos' => ['leer', 'escribir', 'eliminar'],
+                'metas' => ['leer', 'escribir', 'eliminar'],
+                'presupuestos' => ['leer', 'escribir', 'eliminar']
+            ],
+            'usuario' => [
+                'usuarios' => ['leer'],
+                'gastos' => ['leer', 'escribir', 'eliminar'],
+                'ingresos' => ['leer', 'escribir', 'eliminar'],
+                'metas' => ['leer', 'escribir', 'eliminar'],
+                'presupuestos' => ['leer', 'escribir', 'eliminar']
+            ],
+            'registro' => [
+                'familias' => ['leer', 'escribir'],
+                'grupos' => ['leer', 'escribir']
+            ]
+        ];
+
+        // Rutas mapeadas a categorías
+        $rutasCategorias = [
+            'listarUsuarios' => 'usuarios',
+            'crearUsuario' => 'usuarios',
+            'eliminarUsuario' => 'usuarios',
+            'actualizarUsuario' => 'usuarios',
+            'verFamilias' => 'familias',
+            'crearFamilia' => 'familias',
+            'eliminarFamilia' => 'familias',
+            'verGrupos' => 'grupos',
+            'crearGrupo' => 'grupos',
+            'eliminarGrupo' => 'grupos',
+            'verGastos' => 'gastos',
+            'crearGasto' => 'gastos',
+            'eliminarGasto' => 'gastos',
+            'verIngresos' => 'ingresos',
+            'crearIngreso' => 'ingresos',
+            'eliminarIngreso' => 'ingresos',
+            'verMetas' => 'metas',
+            'crearMeta' => 'metas',
+            'eliminarMeta' => 'metas',
+            'verPresupuestos' => 'presupuestos',
+            'crearPresupuesto' => 'presupuestos',
+            'eliminarPresupuesto' => 'presupuestos'
+        ];
+
+        // Verificar si la ruta corresponde a alguna categoría
+        if (!isset($rutasCategorias[$ruta])) {
+            return false; // Ruta no permitida
+        }
+
+        $categoria = $rutasCategorias[$ruta];
+
+        // Comprobar permisos específicos para el rol actual
+        if (!isset($permisos[$nivelUsuario][$categoria])) {
+            return false; // Sin permisos para esta categoría
+        }
+
+        $accionesPermitidas = $permisos[$nivelUsuario][$categoria];
+
+        // Definir las acciones permitidas en función de la ruta
+        if (strpos($ruta, 'crear') !== false || strpos($ruta, 'actualizar') !== false) {
+            $accion = 'escribir';
+        } elseif (strpos($ruta, 'eliminar') !== false) {
+            $accion = 'eliminar';
+            // Restricción adicional: No permitir que superadmin o admin se eliminen a sí mismos
+            if ($ruta === 'eliminarUsuario' && isset($_GET['id']) && $_GET['id'] == $idUser) {
+                return false;
+            }
+        } else {
+            $accion = 'leer';
+        }
+
+        return in_array($accion, $accionesPermitidas);
+    }
+
+    /**
      * Maneja errores de conexión y otros errores en base al estado de depuración.
      * @param Exception $e La excepción capturada.
      */
-    public static function manejarError($e) {
+    public static function manejarError($e)
+    {
         $mensaje_error = "Error: " . $e->getMessage();
         if (self::$debug) {
             // Mostrar el error en pantalla si está en modo debug
@@ -52,7 +154,8 @@ class Config {
      * Registra un error en un archivo de log con detalles adicionales.
      * @param string $mensaje El mensaje de error a registrar.
      */
-    public static function registrarError($mensaje) {
+    public static function registrarError($mensaje)
+    {
         $fecha = date('Y-m-d H:i:s');
         $log_message = "[{$fecha}] {$mensaje}" . PHP_EOL;
 
@@ -69,7 +172,8 @@ class Config {
      * Verifica si el sistema está en modo depuración.
      * @return bool Retorna true si está en modo debug, false en caso contrario.
      */
-    public static function isDebug() {
+    public static function isDebug()
+    {
         return self::$debug;
     }
 
@@ -77,28 +181,34 @@ class Config {
      * Habilita o deshabilita el modo de depuración.
      * @param bool $debug_mode Si es true, habilita el modo debug; si es false, lo deshabilita.
      */
-    public static function setDebugMode($debug_mode) {
+    public static function setDebugMode($debug_mode)
+    {
         self::$debug = $debug_mode;
     }
 
     // Métodos para obtener los valores privados
-    public static function getDbUser() {
+    public static function getDbUser()
+    {
         return self::$db_user;
     }
 
-    public static function getDbPass() {
+    public static function getDbPass()
+    {
         return self::$db_pass;
     }
 
-    public static function getDbHost() {
+    public static function getDbHost()
+    {
         return self::$db_host;
     }
 
-    public static function getDbName() {
+    public static function getDbName()
+    {
         return self::$db_name;
     }
 
-    public static function getDbCharset() {
+    public static function getDbCharset()
+    {
         return self::$db_charset;
     }
 }

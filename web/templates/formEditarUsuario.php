@@ -1,8 +1,8 @@
 <div class="container p-4">
     <h2>Editar Usuario</h2>
 
-    <!-- Verificación de permisos para mostrar el formulario solo a admins y superadmins -->
-    <?php if (isset($_SESSION['usuario']) && ($_SESSION['usuario']['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['nivel_usuario'] === 'admin')): ?>
+    <!-- Verificación de permisos para mostrar el formulario solo a admins y superadmins con permisos -->
+    <?php if (isset($_SESSION['usuario']) && in_array($_SESSION['usuario']['nivel_usuario'], ['superadmin', 'admin']) && ($params['permisos']['puede_editar'] ?? false)): ?>
 
         <!-- Mostrar mensaje de éxito o error -->
         <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
@@ -96,7 +96,7 @@
     <?php else: ?>
         <!-- Mostrar mensaje de error si no tiene permisos -->
         <div class="alert alert-danger">
-            No tienes permiso para acceder a esta página.
+            No tienes permiso para editar este usuario.
         </div>
     <?php endif; ?>
 </div>

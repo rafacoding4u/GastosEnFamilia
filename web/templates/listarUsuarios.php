@@ -62,11 +62,12 @@
                             <td>
                                 <div class="d-flex">
                                     <?php
-                                    $esGestionado = $usuario['gestionado'] ?? true;
+                                    // Verificar si el usuario tiene permiso para gestionar este usuario
+                                    $esGestionado = $params['permisos'][$usuario['idUser']] ?? false;
                                     if ($esGestionado || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
-                                        <a href="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
+                                        <a href="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
                                         <?php if ($usuario['idUser'] !== $_SESSION['usuario']['id']): ?>
-                                            <a href="index.php?ctl=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
+                                            <a href="index.php?ctl=eliminarUsuario&idUser=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <button class="btn btn-secondary" disabled>Acción no permitida</button>

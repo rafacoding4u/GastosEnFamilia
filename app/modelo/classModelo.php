@@ -590,12 +590,20 @@ class GastosModelo
 
     public function obtenerFamiliaPorId($idFamilia)
     {
-        $sql = "SELECT * FROM familias WHERE idFamilia = :idFamilia";
-        $stmt = $this->conexion->prepare($sql);
+        $idUser = $_SESSION['usuario']['id'];
+
+        // Verificar si el usuario es admin de la familia o superadmin
+        if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !$this->esAdminDeFamiliaOGrupo($idUser, $idFamilia)) {
+            throw new Exception("No tienes permisos para acceder a esta familia.");
+        }
+
+        $query = "SELECT * FROM familias WHERE idFamilia = :idFamilia";
+        $stmt = $this->conexion->prepare($query);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
 
     // Insertar una familia con contraseña encriptada
     public function insertarFamilia($nombreFamilia, $passwordFamilia)
@@ -708,12 +716,20 @@ class GastosModelo
 
     public function obtenerGrupoPorId($idGrupo)
     {
-        $sql = "SELECT * FROM grupos WHERE idGrupo = :idGrupo";
-        $stmt = $this->conexion->prepare($sql);
+        $idUser = $_SESSION['usuario']['id'];
+
+        // Verificar si el usuario es admin del grupo o superadmin
+        if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !$this->esAdminDeFamiliaOGrupo($idUser, null, $idGrupo)) {
+            throw new Exception("No tienes permisos para acceder a este grupo.");
+        }
+
+        $query = "SELECT * FROM grupos WHERE idGrupo = :idGrupo";
+        $stmt = $this->conexion->prepare($query);
         $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     // Método para verificar si ya existe un grupo por nombre
     public function obtenerGrupoPorNombre($nombreGrupo)
     {
@@ -2362,5 +2378,33 @@ class GastosModelo
         $stmt->bindParam(':idAdmin', $idAdmin, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function esAdminDeFamiliaOGrupo($idUser, $idFamilia = null, $idGrupo = null)
+    {
+        if ($idFamilia !== null) {
+            // Verificar si el usuario es administrador de la familia específica
+            $query = "SELECT COUNT(*) FROM administradores_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
+            $stmt = $this->conexion->prepare($query);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->fetchColumn() > 0) {
+                return true;
+            }
+        }
+
+        if ($idGrupo !== null) {
+            // Verificar si el usuario es administrador del grupo específico
+            $query = "SELECT COUNT(*) FROM administradores_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
+            $stmt = $this->conexion->prepare($query);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindValue(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->fetchColumn() > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
