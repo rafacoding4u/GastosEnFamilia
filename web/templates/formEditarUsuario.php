@@ -9,10 +9,18 @@
             <div class="alert alert-info">
                 <?= htmlspecialchars($params['mensaje']); ?>
             </div>
+        <?php elseif (isset($params['errores']) && !empty($params['errores'])): ?>
+            <div class="alert alert-danger">
+                <ul>
+                    <?php foreach ($params['errores'] as $error): ?>
+                        <li><?= htmlspecialchars($error); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         <?php endif; ?>
 
         <!-- Formulario para editar usuario -->
-        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['idUser'] ?? '') ?>" method="post">
+        <form action="index.php?ctl=actualizarUsuario" method="post">
             <!-- Campo oculto para asegurar que el idUser esté presente en el POST -->
             <input type="hidden" name="idUser" value="<?= htmlspecialchars($params['idUser'] ?? '') ?>">
 
@@ -88,7 +96,6 @@
 
             <!-- Token CSRF para la seguridad -->
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-
             <!-- Botón para guardar los cambios -->
             <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
         </form>

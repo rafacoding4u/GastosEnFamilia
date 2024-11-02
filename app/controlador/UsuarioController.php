@@ -300,13 +300,23 @@ class UsuarioController
 
     public function actualizarUsuario()
     {
-        $conexion = $this->modelo->getConexion(); // Obtener la conexión una vez para reutilizar
+        error_log("Método de solicitud: " . $_SERVER['REQUEST_METHOD']);
+        error_log("Valor de idUser en POST: " . ($_POST['idUser'] ?? 'No existe'));
+        // Verificación estándar
+        $conexion = $this->modelo->getConexion();
+        if (!$conexion) {
+            throw new Exception('Error al conectar con la base de datos');
+        }
+
         try {
             error_log("Entrando en actualizarUsuario()");
 
             // Verificar permisos
-            if (!isset($_SESSION['usuario']['nivel_usuario']) || ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
-                !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))) {
+            if (
+                !isset($_SESSION['usuario']['nivel_usuario']) ||
+                ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                    !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))
+            ) {
                 throw new Exception('No tienes permisos para actualizar este usuario.');
             }
 
@@ -367,6 +377,11 @@ class UsuarioController
                         $sqlFamilia = "UPDATE usuarios_familias SET idFamilia = :idFamilia WHERE idUser = :idUser";
                         $stmtFamilia = $conexion->prepare($sqlFamilia);
                         $stmtFamilia->execute([':idFamilia' => $idFamilia, ':idUser' => $idUser]);
+                    } else {
+                        // Si no se selecciona una familia, elimina la relación si existe
+                        $sqlEliminarFamilia = "DELETE FROM usuarios_familias WHERE idUser = :idUser";
+                        $stmtEliminarFamilia = $conexion->prepare($sqlEliminarFamilia);
+                        $stmtEliminarFamilia->execute([':idUser' => $idUser]);
                     }
 
                     // Actualizar grupo
@@ -374,6 +389,11 @@ class UsuarioController
                         $sqlGrupo = "UPDATE usuarios_grupos SET idGrupo = :idGrupo WHERE idUser = :idUser";
                         $stmtGrupo = $conexion->prepare($sqlGrupo);
                         $stmtGrupo->execute([':idGrupo' => $idGrupo, ':idUser' => $idUser]);
+                    } else {
+                        // Si no se selecciona un grupo, elimina la relación si existe
+                        $sqlEliminarGrupo = "DELETE FROM usuarios_grupos WHERE idUser = :idUser";
+                        $stmtEliminarGrupo = $conexion->prepare($sqlEliminarGrupo);
+                        $stmtEliminarGrupo->execute([':idUser' => $idUser]);
                     }
 
                     $conexion->commit(); // Confirmar transacción
@@ -382,6 +402,7 @@ class UsuarioController
                     header('Location: index.php?ctl=listarUsuarios');
                     exit();
                 } else {
+                    // Si hay errores, cargar los datos con mensajes de error
                     $params['errores'] = $errores;
                 }
             } else {
@@ -410,6 +431,9 @@ class UsuarioController
             $this->redireccionarError('Error al actualizar el usuario: ' . $e->getMessage());
         }
     }
+
+
+
 
 
 
