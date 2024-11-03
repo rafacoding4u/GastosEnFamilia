@@ -60,7 +60,7 @@
                             <td>
                                 <div class="d-flex">
                                     <!-- Botón para editar el usuario -->
-                                    <a href="index.php?ctl=editarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
+                                    <a href="index.php?ctl=actualizarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-warning mr-2">Editar</a>
                                     <!-- Botón para eliminar el usuario -->
                                     <a href="index.php?ctl=eliminarUsuario&id=<?= htmlspecialchars($usuario['idUser']) ?>" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este usuario?')">Eliminar</a>
                                 </div>

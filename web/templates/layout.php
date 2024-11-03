@@ -29,6 +29,7 @@
                         <?php if ($nivel_usuario === 'superadmin'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=actualizarUsuarios">actualizarUsuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verAuditoria">Ver Auditoría</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verSituacion">Ver Situación Financiera</a></li>
@@ -41,6 +42,7 @@
                         <?php elseif ($nivel_usuario === 'admin'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarUsuarios">Gestionar Usuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=listarFamilias">Gestionar Familias</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?ctl=actualizarUsuarios">actualizarUsuarios</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGrupos">Gestionar Grupos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verGastos">Ver Gastos</a></li>
                             <li class="nav-item"><a class="nav-link" href="index.php?ctl=verIngresos">Ver Ingresos</a></li>

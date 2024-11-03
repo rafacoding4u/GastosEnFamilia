@@ -40,7 +40,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Inicializa el nivel de usuario si no está definido
 if (!isset($_SESSION['usuario']['nivel_usuario'])) {
-    $_SESSION['usuario']['nivel_usuario'] = 'registro'; // Asignamos el nivel 'registro' para usuarios no autenticados
+    $_SESSION['usuario']['nivel_usuario'] = 'registro';
     error_log("Nivel de usuario no definido, asignado a 'registro'", 3, __DIR__ . '/app/log/php-error.log');
 }
 
@@ -59,7 +59,7 @@ $map = array(
 
     // Gestión de usuarios
     'listarUsuarios' => array('controller' => 'UsuarioController', 'action' => 'listarUsuarios', 'nivel_usuario' => 2),
-    'editarUsuario' => array('controller' => 'UsuarioController', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
+    //'editarUsuario' => array('controller' => 'UsuarioController', 'action' => 'editarUsuario', 'nivel_usuario' => 2),
     'eliminarUsuario' => array('controller' => 'UsuarioController', 'action' => 'eliminarUsuario', 'nivel_usuario' => 2),
     'crearUsuario' => array('controller' => 'UsuarioController', 'action' => 'crearUsuario', 'nivel_usuario' => 2),
     'actualizarUsuario' => array('controller' => 'UsuarioController', 'action' => 'actualizarUsuario', 'nivel_usuario' => 2),
@@ -145,55 +145,37 @@ if (isset($_GET['ctl']) && $_GET['ctl'] == 'asignarPasswordPremium') {
 }
 
 // Verificar si la ruta solicitada existe
-if (isset($_GET['ctl'])) {
-    if (isset($map[$_GET['ctl']])) {
-        $ruta = $_GET['ctl'];
-        error_log("Ruta encontrada: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
-    } else {
-        // Manejo de error 404 si la ruta no es válida
-        header('HTTP/1.0 404 Not Found');
-        error_log("Ruta no encontrada: " . htmlspecialchars($_GET['ctl'] ?? ''), 3, __DIR__ . '/app/log/php-error.log');
-        echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
-        exit;
-    }
-} else {
-    $ruta = 'home';
-    error_log("Ruta por defecto 'home' asignada", 3, __DIR__ . '/app/log/php-error.log');
+$ruta = $_GET['ctl'] ?? 'home';
+if (!isset($map[$ruta])) {
+    header('HTTP/1.0 404 Not Found');
+    error_log("Ruta no encontrada: " . htmlspecialchars($_GET['ctl'] ?? ''), 3, __DIR__ . '/app/log/php-error.log');
+    echo '<html><body><h1>Error 404: No existe la ruta <i>' . htmlspecialchars($_GET['ctl']) . '</i></h1></body></html>';
+    exit();
 }
 
 $controlador = $map[$ruta];
 
-// Verificar si el método solicitado existe en el controlador
+// Verificar si el usuario tiene el nivel de acceso necesario
+$nivel_usuario = $_SESSION['usuario']['nivel_usuario'] ?? 'registro';
+if ($controlador['nivel_usuario'] > ($nivel_usuario === 'registro' ? 0 : $nivel_usuario)) {
+    header('HTTP/1.0 403 Forbidden');
+    error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
+    echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
+    exit();
+}
+
+// Instanciar el controlador y ejecutar la acción correspondiente
 try {
     $controllerInstance = new $controlador['controller'];
-
-    // Debug adicional para verificar las acciones disponibles en el controlador
-    error_log("Acciones disponibles en " . $controlador['controller'] . ": " . implode(', ', get_class_methods($controllerInstance)), 3, __DIR__ . '/app/log/php-error.log');
-
-    if (isset($_GET['action']) && method_exists($controllerInstance, $_GET['action'])) {
-        $action = $_GET['action'];
-    } else if (method_exists($controllerInstance, $controlador['action'])) {
-        $action = $controlador['action'];  // Acción por defecto si no está definida en la URL
-    } else {
-        throw new Exception("La acción especificada no existe en el controlador.");
-    }
-
-    if ($controlador['nivel_usuario'] <= $_SESSION['usuario']['nivel_usuario']) {
-        error_log("Ejecutando acción: {$action} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
-        call_user_func(array($controllerInstance, $action));
-    } else {
-        header('HTTP/1.0 403 Forbidden');
-        error_log("Acceso denegado para la ruta: {$_GET['ctl']}", 3, __DIR__ . '/app/log/php-error.log');
-        echo '<html><body><h1>Acceso denegado: No tienes suficientes privilegios para acceder a esta página.</h1></body></html>';
-        exit;
-    }
+    $action = $controlador['action'];
+    error_log("Ejecutando acción: {$action} en {$controlador['controller']}", 3, __DIR__ . '/app/log/php-error.log');
+    call_user_func([$controllerInstance, $action]);
 } catch (Exception $e) {
     error_log("Error capturado: " . $e->getMessage(), 3, __DIR__ . '/app/log/php-error.log');
     if (Config::isDebug()) {
         echo '<h2>Error: ' . $e->getMessage() . '</h2>';
         echo '<pre>' . $e->getTraceAsString() . '</pre>';
     } else {
-        error_log($e->getMessage(), 3, __DIR__ . '/app/log/php-error.log');
         echo '<h2>Ocurrió un error. Por favor, inténtalo más tarde.</h2>';
     }
 }

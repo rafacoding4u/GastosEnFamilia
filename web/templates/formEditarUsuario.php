@@ -86,7 +86,7 @@
             <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
 
             <!-- Botón para guardar los cambios -->
-            <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
+            <button type="submit" name="bActualizarUsuario" class="btn btn-primary">Guardar Cambios</button>
         </form>
 
     <?php else: ?>

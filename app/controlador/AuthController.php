@@ -31,34 +31,31 @@ class AuthController
         }
     }
 
-
-
     public function inicio()
     {
         try {
-            if (!isset($_SESSION['usuario']) || $_SESSION['nivel_usuario'] == 0) {
+            // Verificar si existe 'usuario' en la sesión y que 'nivel_usuario' esté definido
+            if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario']['nivel_usuario']) || $_SESSION['usuario']['nivel_usuario'] == 0) {
                 header('Location: index.php?ctl=iniciarSesion');
                 exit();
             }
 
             $m = new GastosModelo();
-            $idUser = $_SESSION['usuario']['id'];
+            $idUser = $_SESSION['usuario']['id'] ?? null;  // Usar null si no está definido
+            $nombreUsuario = $_SESSION['usuario']['nombre'] ?? 'Invitado';  // Mensaje por defecto si no está definido
 
             $params = [
-                'mensaje' => 'Bienvenido, ' . $_SESSION['usuario']['nombre'],
-                'nivel_usuario' => $_SESSION['nivel_usuario'],
+                'mensaje' => 'Bienvenido, ' . $nombreUsuario,
+                'nivel_usuario' => $_SESSION['usuario']['nivel_usuario'] ?? 'registro',  // Valor predeterminado
                 'fecha' => date('d-m-Y')
             ];
 
-            if ($_SESSION['nivel_usuario'] === self::NIVEL_SUPERADMIN) {
-                // Superadmin ve todo el resumen financiero global
+            if ($_SESSION['usuario']['nivel_usuario'] === self::NIVEL_SUPERADMIN) {
                 $params['finanzasGlobales'] = $m->obtenerSituacionGlobal();
-            } elseif ($_SESSION['nivel_usuario'] === self::NIVEL_ADMIN) {
-                // Admin ve el resumen financiero de sus familias y grupos
+            } elseif ($_SESSION['usuario']['nivel_usuario'] === self::NIVEL_ADMIN) {
                 $params['finanzasFamilias'] = $m->obtenerFamiliasPorAdministrador($idUser);
                 $params['finanzasGrupos'] = $m->obtenerGruposPorAdministrador($idUser);
             } else {
-                // Usuario regular solo ve su resumen personal
                 $params['finanzasPersonales'] = $m->obtenerSituacionFinanciera($idUser);
             }
 
@@ -135,7 +132,7 @@ class AuthController
     {
         try {
             if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['usuario'])) {
-                $this->registrarAcceso($_SESSION['usuario']['id'], 'logout');
+                $this->registrarAcceso($_SESSION['usuario']['id'] ?? null, 'logout');
                 session_unset();
                 session_destroy();
                 error_log("Sesión cerrada exitosamente.");
@@ -149,139 +146,136 @@ class AuthController
     }
 
     public function registro()
-{
-    try {
-        error_log("Iniciando proceso de registro de usuario...");
+    {
+        try {
+            error_log("Iniciando proceso de registro de usuario...");
 
-        $m = new GastosModelo();
+            $m = new GastosModelo();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // Recoger datos del formulario
-            $nombre = recoge('nombre');
-            $apellido = recoge('apellido');
-            $alias = recoge('alias');
-            $email = recoge('email');
-            $telefono = !empty(recoge('telefono')) ? recoge('telefono') : null;
-            $fecha_nacimiento = !empty(recoge('fecha_nacimiento')) ? recoge('fecha_nacimiento') : null;
+                // Recoger datos del formulario
+                $nombre = recoge('nombre');
+                $apellido = recoge('apellido');
+                $alias = recoge('alias');
+                $email = recoge('email');
+                $telefono = !empty(recoge('telefono')) ? recoge('telefono') : null;
+                $fecha_nacimiento = !empty(recoge('fecha_nacimiento')) ? recoge('fecha_nacimiento') : null;
 
-            // Recoger la contraseña que el usuario ha introducido
-            $contrasenya = recoge('contrasenya'); // Contraseña que el usuario elige
+                // Recoger la contraseña que el usuario ha introducido
+                $contrasenya = recoge('contrasenya'); // Contraseña que el usuario elige
 
-            // Encriptar la contraseña que el usuario eligió para iniciar sesión
-            $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
-            $nivel_usuario = 'usuario'; // Por defecto, el usuario será regular
+                // Encriptar la contraseña que el usuario eligió para iniciar sesión
+                $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
+                $nivel_usuario = 'usuario'; // Por defecto, el usuario será regular
 
-            // Generar solo la contraseña premium
-            $passwordPremium = bin2hex(random_bytes(4)); // Generar una contraseña aleatoria de 8 caracteres para password_premium
-            $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_BCRYPT); // Encriptar la contraseña premium
+                // Generar solo la contraseña premium
+                $passwordPremium = bin2hex(random_bytes(4)); // Generar una contraseña aleatoria de 8 caracteres para password_premium
+                $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_BCRYPT); // Encriptar la contraseña premium
 
-            // Insertar el nuevo usuario en la base de datos
-            $idUser = $m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
+                // Insertar el nuevo usuario en la base de datos
+                $idUser = $m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
 
-            if (!$idUser) {
-                throw new Exception('Error al registrar el usuario.');
-            }
-            error_log("Usuario creado con ID $idUser");
-
-            // Actualizar la contraseña premium en la base de datos
-            $m->actualizarPasswordPremium($idUser, $hashedPasswordPremium);
-            error_log("Contraseña premium generada para el usuario $alias: $passwordPremium");
-
-            // *** Recoger la opción de creación del formulario ***
-            $opcion_creacion = recoge('opcion_creacion'); // Añadimos la recogida de la opción de creación
-
-            // *** Verificación de los límites de creación para usuarios no premium ***
-            $maxFamiliasNoPremium = 1;
-            $maxGruposNoPremium = 1;
-            $totalFamilias = 0;
-            $totalGrupos = 0;
-
-            // Contar las familias y grupos que se están intentando crear
-            for ($i = 1; $i <= 5; $i++) {
-                $nombre_familia = recoge("nombre_nueva_familia_$i");
-                $password_familia = recoge("password_nueva_familia_$i");
-                if (!empty($nombre_familia) && !empty($password_familia)) {
-                    $totalFamilias++;
+                if (!$idUser) {
+                    throw new Exception('Error al registrar el usuario.');
                 }
-            }
+                error_log("Usuario creado con ID $idUser");
 
-            for ($i = 1; $i <= 10; $i++) {
-                $nombre_grupo = recoge("nombre_nuevo_grupo_$i");
-                $password_grupo = recoge("password_nuevo_grupo_$i");
-                if (!empty($nombre_grupo) && !empty($password_grupo)) {
-                    $totalGrupos++;
-                }
-            }
+                // Actualizar la contraseña premium en la base de datos
+                $m->actualizarPasswordPremium($idUser, $hashedPasswordPremium);
+                error_log("Contraseña premium generada para el usuario $alias: $passwordPremium");
 
-            // Validar si el usuario es premium para permitir más de una familia o grupo
-            if ($totalFamilias > $maxFamiliasNoPremium || $totalGrupos > $maxGruposNoPremium) {
-                // El usuario no es premium y ha intentado crear más de una familia o grupo
-                throw new Exception('No tienes permisos para crear más de una familia o grupo. Debes ser usuario premium.');
-            }
+                // *** Recoger la opción de creación del formulario ***
+                $opcion_creacion = recoge('opcion_creacion'); // Añadimos la recogida de la opción de creación
 
-            // *** Fin de la verificación de los límites ***
+                // *** Verificación de los límites de creación para usuarios no premium ***
+                $maxFamiliasNoPremium = 1;
+                $maxGruposNoPremium = 1;
+                $totalFamilias = 0;
+                $totalGrupos = 0;
 
-            // Si el usuario desea crear familias o grupos, procede con la creación
-            if ($opcion_creacion === 'crear_familia' || $opcion_creacion === 'crear_ambos') {
-                for ($i = 1; $i <= $totalFamilias; $i++) {
+                // Contar las familias y grupos que se están intentando crear
+                for ($i = 1; $i <= 5; $i++) {
                     $nombre_familia = recoge("nombre_nueva_familia_$i");
                     $password_familia = recoge("password_nueva_familia_$i");
-
                     if (!empty($nombre_familia) && !empty($password_familia)) {
-                        if (!$m->insertarFamilia($nombre_familia, $password_familia)) {
-                            throw new Exception("No se pudo crear la nueva familia $i.");
-                        }
-                        $idFamilia = $m->obtenerUltimoId();
-                        $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-                        $m->asignarAdministradorAFamilia($idUser, $idFamilia);
-                        $nivel_usuario = 'admin'; // Cambiar a rol administrador
-                        error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                        $totalFamilias++;
                     }
                 }
-            }
 
-            if ($opcion_creacion === 'crear_grupo' || $opcion_creacion === 'crear_ambos') {
-                for ($i = 1; $i <= $totalGrupos; $i++) {
+                for ($i = 1; $i <= 10; $i++) {
                     $nombre_grupo = recoge("nombre_nuevo_grupo_$i");
                     $password_grupo = recoge("password_nuevo_grupo_$i");
-
                     if (!empty($nombre_grupo) && !empty($password_grupo)) {
-                        if (!$m->insertarGrupo($nombre_grupo, $password_grupo)) {
-                            throw new Exception("No se pudo crear el nuevo grupo $i.");
-                        }
-                        $idGrupo = $m->obtenerUltimoId();
-                        $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-                        $m->asignarAdministradorAGrupo($idUser, $idGrupo);
-                        $nivel_usuario = 'admin'; // Cambiar a rol administrador
-                        error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                        $totalGrupos++;
                     }
                 }
-            }
 
-            // Actualizar el rol del usuario dependiendo de si es administrador o no
-            $m->actualizarUsuarioNivel($idUser, $nivel_usuario);
+                // Validar si el usuario es premium para permitir más de una familia o grupo
+                if ($totalFamilias > $maxFamiliasNoPremium || $totalGrupos > $maxGruposNoPremium) {
+                    // El usuario no es premium y ha intentado crear más de una familia o grupo
+                    throw new Exception('No tienes permisos para crear más de una familia o grupo. Debes ser usuario premium.');
+                }
 
-            // *** Mostrar la contraseña premium en pantalla para propósitos de prueba ***
-            $_SESSION['mensaje_exito'] = "Usuario registrado con éxito. 
+                // *** Fin de la verificación de los límites ***
+
+                // Si el usuario desea crear familias o grupos, procede con la creación
+                if ($opcion_creacion === 'crear_familia' || $opcion_creacion === 'crear_ambos') {
+                    for ($i = 1; $i <= $totalFamilias; $i++) {
+                        $nombre_familia = recoge("nombre_nueva_familia_$i");
+                        $password_familia = recoge("password_nueva_familia_$i");
+
+                        if (!empty($nombre_familia) && !empty($password_familia)) {
+                            if (!$m->insertarFamilia($nombre_familia, $password_familia)) {
+                                throw new Exception("No se pudo crear la nueva familia $i.");
+                            }
+                            $idFamilia = $m->obtenerUltimoId();
+                            $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                            $m->asignarAdministradorAFamilia($idUser, $idFamilia);
+                            $nivel_usuario = 'admin'; // Cambiar a rol administrador
+                            error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                        }
+                    }
+                }
+
+                if ($opcion_creacion === 'crear_grupo' || $opcion_creacion === 'crear_ambos') {
+                    for ($i = 1; $i <= $totalGrupos; $i++) {
+                        $nombre_grupo = recoge("nombre_nuevo_grupo_$i");
+                        $password_grupo = recoge("password_nuevo_grupo_$i");
+
+                        if (!empty($nombre_grupo) && !empty($password_grupo)) {
+                            if (!$m->insertarGrupo($nombre_grupo, $password_grupo)) {
+                                throw new Exception("No se pudo crear el nuevo grupo $i.");
+                            }
+                            $idGrupo = $m->obtenerUltimoId();
+                            $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+                            $m->asignarAdministradorAGrupo($idUser, $idGrupo);
+                            $nivel_usuario = 'admin'; // Cambiar a rol administrador
+                            error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                        }
+                    }
+                }
+
+                // Actualizar el rol del usuario dependiendo de si es administrador o no
+                $m->actualizarUsuarioNivel($idUser, $nivel_usuario);
+
+                // *** Mostrar la contraseña premium en pantalla para propósitos de prueba ***
+                $_SESSION['mensaje_exito'] = "Usuario registrado con éxito. 
                 <br>Contraseña premium generada: <strong>$passwordPremium</strong>";
 
-            // Redirigir al inicio de sesión
-            header('Location: index.php?ctl=iniciarSesion');
-            exit();
+                // Redirigir al inicio de sesión
+                header('Location: index.php?ctl=iniciarSesion');
+                exit();
+            }
+
+            // Renderizar el formulario si no es POST
+            $this->render('formRegistro.php', []);
+        } catch (Exception $e) {
+            error_log("Error en registro(): " . $e->getMessage());
+            $params['mensaje'] = 'Error al registrarse. ' . $e->getMessage();
+            $this->render('formRegistro.php', $params);
         }
-
-        // Renderizar el formulario si no es POST
-        $this->render('formRegistro.php', []);
-    } catch (Exception $e) {
-        error_log("Error en registro(): " . $e->getMessage());
-        $params['mensaje'] = 'Error al registrarse. ' . $e->getMessage();
-        $this->render('formRegistro.php', $params);
     }
-}
-
-
-
 
     private function registrarAcceso($idUser, $accion)
     {
@@ -319,6 +313,7 @@ class AuthController
             header('Location: index.php?ctl=error');
         }
     }
+
     public function registroInd()
     {
         try {
