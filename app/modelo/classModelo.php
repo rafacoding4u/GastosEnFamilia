@@ -79,19 +79,42 @@ class GastosModelo
 
     public function obtenerUsuarioPorId($idUser)
     {
-        $sql = "SELECT * FROM usuarios WHERE idUser = :idUser";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
-        $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            // Obtener los detalles básicos del usuario
+            $stmt = $this->conexion->prepare("SELECT * FROM usuarios WHERE idUser = :idUser");
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$usuario) {
-            error_log("Error: No se encontró el usuario con ID {$idUser}");
-            return false; // Devuelve false si el usuario no se encuentra
+            // Verificar si el usuario existe
+            if (!$usuario) {
+                error_log("Error: No se encontró el usuario con ID {$idUser}");
+                return false; // Devuelve false si el usuario no se encuentra
+            }
+
+            // Obtener las familias asociadas al usuario
+            $stmtFamilias = $this->conexion->prepare("SELECT idFamilia FROM usuarios_familias WHERE idUser = :idUser");
+            $stmtFamilias->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtFamilias->execute();
+            $familias = $stmtFamilias->fetchAll(PDO::FETCH_COLUMN);
+
+            // Obtener los grupos asociados al usuario
+            $stmtGrupos = $this->conexion->prepare("SELECT idGrupo FROM usuarios_grupos WHERE idUser = :idUser");
+            $stmtGrupos->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtGrupos->execute();
+            $grupos = $stmtGrupos->fetchAll(PDO::FETCH_COLUMN);
+
+            // Asignar las familias y grupos al array de usuario
+            $usuario['familias'] = $familias;
+            $usuario['grupos'] = $grupos;
+
+            return $usuario;
+        } catch (PDOException $e) {
+            error_log("Error al obtener el usuario por ID: " . $e->getMessage());
+            return false;
         }
-
-        return $usuario;
     }
+
 
 
     public function existeUsuario($alias)
@@ -1856,18 +1879,34 @@ class GastosModelo
     public function consultarFamiliaPorId($idFamilia)
     {
         try {
-            // Conexión a la base de datos
-            $stmt = $this->conexion->prepare("SELECT idFamilia, nombre_familia, idAdmin FROM familias WHERE idFamilia = :idFamilia");
+            // Obtener los detalles básicos de la familia
+            $stmt = $this->conexion->prepare("SELECT idFamilia, nombre_familia FROM familias WHERE idFamilia = :idFamilia");
             $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
             $stmt->execute();
+            $familia = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Retornar el resultado de la consulta
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            // Verificar si la familia existe
+            if (!$familia) {
+                return false;
+            }
+
+            // Obtener el ID del administrador asociado a esta familia
+            $stmtAdmin = $this->conexion->prepare("SELECT idAdmin FROM administradores_familias WHERE idFamilia = :idFamilia LIMIT 1");
+            $stmtAdmin->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmtAdmin->execute();
+            $admin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+
+            // Asignar el ID del administrador a los datos de la familia
+            $familia['idAdmin'] = $admin['idAdmin'] ?? null;
+
+            return $familia;
         } catch (PDOException $e) {
             error_log("Error al consultar la familia por ID: " . $e->getMessage());
             return false;
         }
     }
+
+
     public function obtenerIdGrupoPorNombre($nombreGrupo)
     {
         try {
@@ -2338,5 +2377,70 @@ class GastosModelo
         $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+    }
+    // En classModelo.php
+
+    public function actualizarFamiliasUsuario($idUser, $idFamilias)
+    {
+        try {
+            // Iniciar una transacción para mayor seguridad
+            $this->conexion->beginTransaction();
+
+            // Eliminar asociaciones previas del usuario con familias
+            $sqlDelete = "DELETE FROM usuarios_familias WHERE idUser = :idUser";
+            $stmtDelete = $this->conexion->prepare($sqlDelete);
+            $stmtDelete->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtDelete->execute();
+
+            // Insertar nuevas asociaciones
+            $sqlInsert = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUser, :idFamilia)";
+            $stmtInsert = $this->conexion->prepare($sqlInsert);
+
+            foreach ($idFamilias as $idFamilia) {
+                $stmtInsert->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+                $stmtInsert->execute();
+            }
+
+            // Confirmar la transacción
+            $this->conexion->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->conexion->rollBack();
+            error_log("Error al actualizar familias del usuario: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarGruposUsuario($idUser, $idGrupos)
+    {
+        try {
+            // Iniciar una transacción para mayor seguridad
+            $this->conexion->beginTransaction();
+
+            // Eliminar asociaciones previas del usuario con grupos
+            $sqlDelete = "DELETE FROM usuarios_grupos WHERE idUser = :idUser";
+            $stmtDelete = $this->conexion->prepare($sqlDelete);
+            $stmtDelete->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtDelete->execute();
+
+            // Insertar nuevas asociaciones
+            $sqlInsert = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUser, :idGrupo)";
+            $stmtInsert = $this->conexion->prepare($sqlInsert);
+
+            foreach ($idGrupos as $idGrupo) {
+                $stmtInsert->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+                $stmtInsert->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+                $stmtInsert->execute();
+            }
+
+            // Confirmar la transacción
+            $this->conexion->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->conexion->rollBack();
+            error_log("Error al actualizar grupos del usuario: " . $e->getMessage());
+            return false;
+        }
     }
 }

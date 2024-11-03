@@ -9,10 +9,9 @@ class UsuarioController
 
     public function __construct()
     {
-        // Inicializar el modelo en el constructor
         $this->modelo = new GastosModelo();
 
-        // Verifica si el usuario está autenticado
+        // Verificar si el usuario está autenticado
         if (!isset($_SESSION['usuario'])) {
             header('Location: index.php?ctl=iniciarSesion');
             exit();
@@ -297,46 +296,63 @@ class UsuarioController
         }
     }
 
+    // Actualizar usuario
     public function actualizarUsuario()
     {
         try {
-            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))) {
+            if (
+                $_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))
+            ) {
                 throw new Exception('No tienes permisos para actualizar este usuario.');
             }
 
             $m = new GastosModelo();
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id']) && is_numeric($_GET['id'])) {
                 $idUser = $_GET['id'];
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
                 $email = recoge('email');
                 $telefono = recoge('telefono');
-                $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
-                $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
+                $idFamilias = recogeArray('idFamilia') ?: []; // Array de IDs de familias seleccionadas
+                $idGrupos = recogeArray('idGrupo') ?: []; // Array de IDs de grupos seleccionados
                 $nivel_usuario = ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') ? recoge('nivel_usuario') : 'usuario';
 
-                $errores = array();
+                $errores = [];
 
-                // Validaciones
+                // Validaciones de campos
                 cTexto($nombre, "nombre", $errores);
                 cTexto($apellido, "apellido", $errores);
                 cUser($alias, "alias", $errores);
                 cEmail($email, $errores);
                 cTelefono($telefono, $errores);
 
-                if ($idFamilia && !$m->obtenerFamiliaPorId($idFamilia)) {
-                    $errores['familia'] = 'La familia seleccionada no existe.';
+                // Verificar existencia de cada familia y grupo seleccionados
+                foreach ($idFamilias as $idFamilia) {
+                    if (!$m->obtenerFamiliaPorId($idFamilia)) {
+                        $errores['familia'] = 'Una de las familias seleccionadas no existe.';
+                        break;
+                    }
                 }
 
-                if ($idGrupo && !$m->obtenerGrupoPorId($idGrupo)) {
-                    $errores['grupo'] = 'El grupo seleccionado no existe.';
+                foreach ($idGrupos as $idGrupo) {
+                    if (!$m->obtenerGrupoPorId($idGrupo)) {
+                        $errores['grupo'] = 'Uno de los grupos seleccionados no existe.';
+                        break;
+                    }
                 }
 
-                // Actualizar si no hay errores
+                // Proceder si no hay errores
                 if (empty($errores)) {
-                    if ($m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $idFamilia, $idGrupo)) {
+                    // Actualizar datos básicos del usuario
+                    if ($m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)) {
+
+                        // Actualizar relaciones con familias y grupos
+                        $m->actualizarFamiliasUsuario($idUser, $idFamilias);
+                        $m->actualizarGruposUsuario($idUser, $idGrupos);
+
                         header('Location: index.php?ctl=listarUsuarios');
                         exit();
                     } else {
@@ -349,15 +365,15 @@ class UsuarioController
                 throw new Exception('Método de solicitud no permitido o ID de usuario no proporcionado.');
             }
 
-            // Renderizar el formulario con los errores si ocurre un problema
+            // Preparar datos de vista con errores si algo falla
             $familias = $m->obtenerFamilias();
             $grupos = $m->obtenerGrupos();
 
-            $params = array(
+            $params = [
                 'familias' => $familias,
                 'grupos' => $grupos,
                 'errores' => $errores
-            );
+            ];
 
             $this->render('formEditarUsuario.php', $params);
         } catch (Exception $e) {
@@ -367,15 +383,25 @@ class UsuarioController
     }
 
 
+
     // Eliminar usuario
     public function eliminarUsuario()
     {
         try {
-            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))) {
+            if (
+                $_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
+                !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['id']))
+            ) {
                 throw new Exception('No tienes permisos para eliminar este usuario.');
             }
 
             $idUser = recoge('id');
+
+            // Verificar que el ID sea válido
+            if (!$idUser || !is_numeric($idUser)) {
+                throw new Exception('ID de usuario no proporcionado o inválido.');
+            }
+
             $m = new GastosModelo();
             $usuario = $m->obtenerUsuarioPorId($idUser);
 
@@ -383,7 +409,12 @@ class UsuarioController
                 throw new Exception('Usuario no encontrado.');
             }
 
-            if ($m->eliminarGastosPorUsuario($idUser) && $m->eliminarIngresosPorUsuario($idUser) && $m->eliminarUsuario($idUser)) {
+            // Eliminar usuario y registros asociados
+            if (
+                $m->eliminarGastosPorUsuario($idUser) &&
+                $m->eliminarIngresosPorUsuario($idUser) &&
+                $m->eliminarUsuario($idUser)
+            ) {
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
             } else {
@@ -429,21 +460,21 @@ class UsuarioController
         }
     }
 
-    // Redireccionar en caso de error
+    // Redirección en caso de error
     private function redireccionarError($mensaje)
     {
         $_SESSION['error_mensaje'] = $mensaje;
-        header('Location: index.php?ctl=error');
+        header("Location: index.php?ctl=error");
         exit();
     }
 
-    // Validar si el usuario es administrador
+    // Verificar si el usuario es administrador
     private function esAdmin()
     {
         return $_SESSION['usuario']['nivel_usuario'] === 'admin';
     }
 
-    // Verificar si el usuario pertenece a una familia o grupo
+    // Comprobar si el usuario pertenece a una familia o grupo
     private function perteneceAFamiliaOGrupo($idUser)
     {
         $m = new GastosModelo();
@@ -535,5 +566,4 @@ class UsuarioController
             $this->render('formCrearFamiliaGrupoAdicionales.php', $params);
         }
     }
-
 }

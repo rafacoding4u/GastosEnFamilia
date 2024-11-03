@@ -221,38 +221,42 @@ class FamiliaGrupoController
     {
         $m = new GastosModelo();
 
-        // Comprobación de permisos: solo admins y superadmins pueden editar
-        if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' && $_SESSION['usuario']['nivel_usuario'] !== 'admin') {
-            header("Location: index.php?ctl=error");
-            exit();
+        // Obtener el ID de la familia de los parámetros
+        $idFamilia = recoge('id');
+        error_log("ID de familia recibido en editarFamilia: " . $idFamilia);
+
+        if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
+            $this->redireccionarError('Acceso denegado. Solo superadmin puede editar familias.');
+            return;
         }
 
-        $idFamilia = recoge('id'); // Recoge el ID de familia del parámetro GET
-
-        // Verificar que el ID de familia sea válido y exista en la base de datos
-        if (!$idFamilia || !is_numeric($idFamilia)) {
-            error_log("Error: ID de familia no proporcionado o inválido.");
-            $_SESSION['error_mensaje'] = "ID de familia no proporcionado o inválido.";
+        // Verificar si la familia existe
+        $familia = $m->consultarFamiliaPorId($idFamilia);
+        if (!$familia) {
+            error_log("Error: No se encontró la familia con ID {$idFamilia}.");
+            $_SESSION['error_mensaje'] = "No se encontró la familia.";
             header('Location: index.php?ctl=listarFamilias');
             exit();
         }
 
-        // Si es una solicitud POST, intentamos actualizar la familia
+        // Procesar el formulario cuando se envía por POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                // Verificación del token CSRF
-                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                    throw new Exception('CSRF token inválido.');
+                // Validar el token CSRF
+                if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+                    throw new Exception('Token CSRF inválido.');
                 }
 
-                $nombreFamilia = htmlspecialchars(recoge('nombre_familia'), ENT_QUOTES, 'UTF-8');
+                // Recoger y limpiar los datos del formulario
+                $nombreFamilia = recoge('nombre_familia');
                 $idAdmin = recoge('idAdmin');
 
+                // Validar que el administrador esté seleccionado
                 if (empty($idAdmin)) {
                     throw new Exception('Debe seleccionar un administrador.');
                 }
 
-                // Intento de actualización de la familia
+                // Intentar actualizar la familia en la base de datos
                 if ($m->actualizarFamilia($idFamilia, $nombreFamilia, $idAdmin)) {
                     header('Location: index.php?ctl=listarFamilias');
                     exit();
@@ -264,35 +268,26 @@ class FamiliaGrupoController
                 $params['mensaje'] = 'Error al editar la familia: ' . $e->getMessage();
             }
         } else {
-            // Para solicitudes GET, cargamos los datos actuales de la familia para el formulario de edición
+            // Generar un nuevo token CSRF si aún no existe
             if (empty($_SESSION['csrf_token'])) {
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             }
 
-            // Intento de consulta de la familia en la base de datos
-            $familia = $m->obtenerFamiliaPorId($idFamilia); // Asegúrate de tener este método en GastosModelo
-
-            if (!$familia) {
-                error_log("Error: No se encontró la familia con ID {$idFamilia}.");
-                $_SESSION['error_mensaje'] = "No se encontró la familia.";
-                header('Location: index.php?ctl=listarFamilias');
-                exit();
-            }
-
-            $usuarios = $m->obtenerUsuarios(); // Obtener los usuarios disponibles para selección de administrador
-
-            // Preparación de los parámetros para la vista
-            $params = array(
-                'idFamilia' => $idFamilia,
+            // Obtener la lista de usuarios y pasar los datos a la vista
+            $usuarios = $m->obtenerUsuarios();
+            $params = [
+                'idFamilia' => $familia['idFamilia'],
                 'nombreFamilia' => $familia['nombre_familia'],
                 'idAdmin' => $familia['idAdmin'],
                 'usuarios' => $usuarios,
                 'csrf_token' => $_SESSION['csrf_token']
-            );
+            ];
 
             $this->render('formEditarFamilia.php', $params);
         }
     }
+
+
 
     // Editar Grupo
     public function editarGrupo()

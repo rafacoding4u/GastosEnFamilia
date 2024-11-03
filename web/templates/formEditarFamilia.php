@@ -17,9 +17,9 @@
                 <label for="idAdmin">Asignar Administrador a la Familia</label>
                 <select name="idAdmin" id="idAdmin" class="form-control" required>
                     <option value="">Seleccione un administrador</option>
-                    <?php if (!empty($usuarios) && is_array($usuarios)): ?>
-                        <?php foreach ($usuarios as $usuario): ?>
-                            <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= $usuario['idUser'] == $params['idAdmin'] ? 'selected' : '' ?>>
+                    <?php if (!empty($params['usuarios']) && is_array($params['usuarios'])): ?>
+                        <?php foreach ($params['usuarios'] as $usuario): ?>
+                            <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= $usuario['idUser'] == ($params['idAdmin'] ?? '') ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -33,10 +33,10 @@
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '') ?>">
 
             <!-- Mostrar posibles errores -->
-            <?php if (isset($errores) && !empty($errores)): ?>
+            <?php if (isset($params['errores']) && !empty($params['errores'])): ?>
                 <div class="alert alert-danger">
                     <ul>
-                        <?php foreach ($errores as $error): ?>
+                        <?php foreach ($params['errores'] as $error): ?>
                             <li><?= htmlspecialchars($error) ?></li>
                         <?php endforeach; ?>
                     </ul>
@@ -44,9 +44,9 @@
             <?php endif; ?>
 
             <!-- Mostrar mensajes de éxito -->
-            <?php if (isset($mensaje)): ?>
+            <?php if (isset($params['mensaje'])): ?>
                 <div class="alert alert-info">
-                    <?= htmlspecialchars($mensaje ?? '') ?>
+                    <?= htmlspecialchars($params['mensaje'] ?? '') ?>
                 </div>
             <?php endif; ?>
 
