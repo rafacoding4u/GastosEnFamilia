@@ -83,8 +83,16 @@ class GastosModelo
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$usuario) {
+            error_log("Error: No se encontró el usuario con ID {$idUser}");
+            return false; // Devuelve false si el usuario no se encuentra
+        }
+
+        return $usuario;
     }
+
 
     public function existeUsuario($alias)
     {
@@ -592,8 +600,16 @@ class GastosModelo
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(':idFamilia', $idFamilia, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $familia = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$familia) {
+            error_log("Error: No se encontró la familia con ID {$idFamilia}");
+            return false; // Devuelve false si la familia no se encuentra
+        }
+
+        return $familia;
     }
+
 
     // Insertar una familia con contraseña encriptada
     public function insertarFamilia($nombreFamilia, $passwordFamilia)
@@ -1002,8 +1018,8 @@ class GastosModelo
 
     // Obtener la situación financiera global
     public function obtenerSituacionGlobal()
-{
-    $sql = "
+    {
+        $sql = "
         SELECT 
             SUM(CASE WHEN i.importe IS NOT NULL THEN i.importe ELSE 0 END) AS totalIngresos,
             SUM(CASE WHEN g.importe IS NOT NULL THEN g.importe ELSE 0 END) AS totalGastos,
@@ -1011,10 +1027,10 @@ class GastosModelo
         FROM usuarios u
         LEFT JOIN ingresos i ON u.idUser = i.idUser
         LEFT JOIN gastos g ON u.idUser = g.idUser";
-        
-    $stmt = $this->conexion->query($sql);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 
 
@@ -2303,25 +2319,24 @@ class GastosModelo
     }
 
     // Verifica si un usuario ya está asignado a una familia específica
-public function verificarUsuarioEnFamilia($idUser, $idFamilia)
-{
-    $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-    $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
-}
+    public function verificarUsuarioEnFamilia($idUser, $idFamilia)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+    }
 
-// Verifica si un usuario ya está asignado a un grupo específico
-public function verificarUsuarioEnGrupo($idUser, $idGrupo)
-{
-    $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-    $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
-}
-
+    // Verifica si un usuario ya está asignado a un grupo específico
+    public function verificarUsuarioEnGrupo($idUser, $idGrupo)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // Retorna true si existe la asignación
+    }
 }
