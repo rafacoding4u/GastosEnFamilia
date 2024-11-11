@@ -192,19 +192,34 @@ class UsuarioController
     public function formCrearUsuario()
     {
         try {
-            // Verificación del nivel de usuario
-            if ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin') {
-                $this->redireccionarError('Acceso denegado. Solo superadmin puede crear usuarios.');
+            // Verificación del nivel de usuario y permisos según el rol
+            $nivelUsuario = $_SESSION['usuario']['nivel_usuario'];
+            $m = new GastosModelo();
+
+            // Si el usuario es superadmin, tiene acceso completo para crear usuarios, familias y grupos sin límite
+            if ($nivelUsuario === 'superadmin') {
+                $familias = $m->obtenerFamilias();
+                $grupos = $m->obtenerGrupos();
+            } elseif ($nivelUsuario === 'admin') {
+                // Para admin: obtén solo las familias y grupos que administra y aplica los límites de creación
+                $adminGestion = new AdminGestion($_SESSION['usuario']['idUser']);
+                $familias = $adminGestion->obtenerFamiliasAdministradas();
+                $grupos = $adminGestion->obtenerGruposAdministrados();
+
+                // Verificación de límite de creación
+                if (count($familias) >= 10) {
+                    $this->redireccionarError('Límite de familias alcanzado para este administrador.');
+                    return;
+                }
+                if (count($grupos) >= 30) {
+                    $this->redireccionarError('Límite de grupos alcanzado para este administrador.');
+                    return;
+                }
+            } else {
+                // Usuarios regulares no tienen permiso para crear usuarios
+                $this->redireccionarError('Acceso denegado. No tienes permiso para crear usuarios.');
                 return;
             }
-
-            // Inicialización del modelo
-            $m = new GastosModelo();
-            error_log("Cargando familias y grupos para el formulario de creación de usuario...");
-
-            // Obtener las familias y grupos registrados
-            $familias = $m->obtenerFamilias();
-            $grupos = $m->obtenerGrupos();
 
             // Verificar que las familias y grupos se obtuvieron correctamente
             if (!$familias || !$grupos) {
@@ -216,19 +231,23 @@ class UsuarioController
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             error_log("Token CSRF generado para el formulario de creación de usuario.");
 
-            // Pasar los datos a la vista del formulario de creación de usuario
+            // Pasar los datos a la vista del formulario de creación de usuario, excluyendo superadmin de opciones de rol
             $params = [
                 'csrf_token' => $_SESSION['csrf_token'],
                 'familias' => $familias,
-                'grupos' => $grupos
+                'grupos' => $grupos,
+                'roles_disponibles' => ($nivelUsuario === 'superadmin') ? ['usuario', 'admin', 'superadmin'] : ['usuario', 'admin']
             ];
 
-            $this->render('formCrearUsuario.php', $params);
+            // Cargar el formulario correspondiente (superadmin o admin)
+            $vistaFormulario = ($nivelUsuario === 'superadmin') ? 'formCrearUsuario.php' : 'formCrearUsuarioAdmin.php';
+            $this->render($vistaFormulario, $params);
         } catch (Exception $e) {
             error_log("Error en formCrearUsuario(): " . $e->getMessage());
             $this->redireccionarError('Error al mostrar el formulario de creación de usuario.');
         }
     }
+
 
 
 
@@ -242,8 +261,8 @@ class UsuarioController
             // Validar nivel de usuario y permisos
             if (
                 !isset($_SESSION['usuario']['nivel_usuario']) ||
-                ($_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
-                    !($this->esAdmin() && isset($_GET['idUser']) && $this->perteneceAFamiliaOGrupo($_GET['idUser'])))
+                (!$this->esSuperAdmin() &&
+                    !($this->esAdmin() && isset($_POST['idUser']) && $this->perteneceAFamiliaOGrupo($_POST['idUser'])))
             ) {
                 error_log("Permiso denegado: El usuario no tiene permisos para actualizar este usuario.");
                 throw new Exception('No tienes permisos para actualizar este usuario.');
@@ -266,11 +285,11 @@ class UsuarioController
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
                 $email = recoge('email');
-                $telefono = recoge('telefono') ?? ''; // Opcional
-                $fecha_nacimiento = recoge('fecha_nacimiento') ?? ''; // Opcional
+                $telefono = recoge('telefono') !== '' ? recoge('telefono') : null; // Opcional
+                $fecha_nacimiento = recoge('fecha_nacimiento') !== '' ? recoge('fecha_nacimiento') : null; // Opcional
                 $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
                 $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
-                $nivel_usuario = ($_SESSION['usuario']['nivel_usuario'] === 'superadmin') ? recoge('nivel_usuario') : 'usuario';
+                $nivel_usuario = $this->esSuperAdmin() ? recoge('nivel_usuario') : 'usuario';
 
                 $errores = [];
                 cTexto($nombre, "nombre", $errores);
@@ -303,21 +322,23 @@ class UsuarioController
                     error_log("Iniciando transacción para la actualización del usuario con ID: $idUser");
 
                     // Actualizar datos de usuario
-                    if (!$m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)) {
+                    if (!$m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $fecha_nacimiento)) {
                         error_log("Error al actualizar los datos del usuario con ID: $idUser");
                         throw new Exception('Error al actualizar los datos del usuario.');
                     }
 
-                    // Actualizar familia y grupo
+                    // Eliminar asignaciones previas de familia y grupo
+                    $m->eliminarFamiliasDeUsuario($idUser);
+                    $m->eliminarGruposDeUsuario($idUser);
+
+                    // Asignar nueva familia y grupo si están seleccionados
                     if ($idFamilia) {
-                        $sqlFamilia = "UPDATE usuarios_familias SET idFamilia = :idFamilia WHERE idUser = :idUser";
-                        $stmtFamilia = $conexion->prepare($sqlFamilia);
-                        $stmtFamilia->execute([':idFamilia' => $idFamilia, ':idUser' => $idUser]);
+                        $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                        error_log("Usuario $idUser asignado a la familia $idFamilia");
                     }
                     if ($idGrupo) {
-                        $sqlGrupo = "UPDATE usuarios_grupos SET idGrupo = :idGrupo WHERE idUser = :idUser";
-                        $stmtGrupo = $conexion->prepare($sqlGrupo);
-                        $stmtGrupo->execute([':idGrupo' => $idGrupo, ':idUser' => $idUser]);
+                        $m->asignarUsuarioAGrupo($idUser, $idGrupo);
+                        error_log("Usuario $idUser asignado al grupo $idGrupo");
                     }
 
                     $conexion->commit();
@@ -349,7 +370,7 @@ class UsuarioController
         }
     }
 
-    // editar usuario último
+
     public function editarUsuario()
     {
         $conexion = $this->modelo->getConexion();
@@ -367,11 +388,11 @@ class UsuarioController
             }
 
             // Verificar si se ha pasado el ID del usuario a editar
-            if (!isset($_GET['idUser'])) {
-                throw new Exception("ID de usuario no proporcionado.");
+            if (!isset($_GET['idUser']) || !is_numeric($_GET['idUser'])) {
+                throw new Exception("ID de usuario no proporcionado o no es válido.");
             }
 
-            $idUser = $_GET['idUser'];
+            $idUser = (int)$_GET['idUser'];
             $m = new GastosModelo();
 
             // Obtener los datos del usuario a editar
@@ -380,12 +401,23 @@ class UsuarioController
                 throw new Exception("Usuario no encontrado con ID: $idUser");
             }
 
+            // Verificar si el usuario es regular (si el admin solo puede editar usuarios regulares)
+            if ($usuario['nivel_usuario'] === 'admin' && !$this->esSuperAdmin()) {
+                throw new Exception("No tienes permisos para editar un administrador.");
+            }
+
             // Obtener listas de familias y grupos para los desplegables
             $familias = $m->obtenerFamilias();
             $grupos = $m->obtenerGrupos();
 
+            // Verificar que las listas de familias y grupos se hayan obtenido
+            if ($familias === false || $grupos === false) {
+                throw new Exception("Error al cargar familias o grupos.");
+            }
+
             // Generar token CSRF para el formulario de edición
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            error_log("Token CSRF generado para el formulario de edición de usuario.");
 
             // Pasar los datos a la vista del formulario de edición
             $params = [
@@ -398,12 +430,18 @@ class UsuarioController
 
             // Renderizar el formulario de edición
             $this->render('formEditarUsuario.php', $params);
+
+            // Asignar nuevas familias al usuario (si se proporcionan en el formulario de edición)
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['familias'])) {
+                $familiasSeleccionadas = $_POST['familias'];
+                $this->asignarFamiliasAUsuario($idUser, $familiasSeleccionadas);
+                error_log("Familias asignadas exitosamente al usuario $idUser.");
+            }
         } catch (Exception $e) {
             error_log("Error en editarUsuario(): " . $e->getMessage());
             $this->redireccionarError('Error al cargar la edición del usuario: ' . $e->getMessage());
         }
     }
-
 
     // Eliminar usuario
     public function eliminarUsuario()
@@ -460,6 +498,30 @@ class UsuarioController
             }
             error_log("Error en eliminarUsuario(): " . $e->getMessage());
             $this->redireccionarError('Error al eliminar el usuario: ' . $e->getMessage());
+        }
+    }
+    // Método para verificar si el usuario actual es superadmin
+    private function esSuperAdmin()
+    {
+        return isset($_SESSION['usuario']['nivel_usuario']) && $_SESSION['usuario']['nivel_usuario'] === 'superadmin';
+    }
+
+    // Método para asignar familias a un usuario
+    private function asignarFamiliasAUsuario($idUser, $familiasSeleccionadas)
+    {
+        try {
+            $m = new GastosModelo();
+            // Primero, eliminamos las asociaciones previas del usuario en la tabla usuarios_familias
+            $m->eliminarFamiliasDeUsuario($idUser);
+
+            // Luego, asignamos las nuevas familias seleccionadas
+            foreach ($familiasSeleccionadas as $idFamilia) {
+                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+            }
+            error_log("Asignación de familias completada para el usuario $idUser.");
+        } catch (Exception $e) {
+            error_log("Error en asignarFamiliasAUsuario(): " . $e->getMessage());
+            throw new Exception('Error al asignar familias al usuario.');
         }
     }
 }

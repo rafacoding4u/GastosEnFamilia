@@ -19,17 +19,28 @@ class UsuarioAdminController
     public function listarUsuariosAdmin()
     {
         try {
-            $usuarios = $this->gestionAdmin->listarUsuariosGestionados();  // Solo usuarios bajo su administración
+            $filtros = [
+                'nombre' => $_GET['nombre'] ?? '',
+                'apellido' => $_GET['apellido'] ?? '',
+                'alias' => $_GET['alias'] ?? '',
+                'email' => $_GET['email'] ?? '',
+                'nivel_usuario' => $_GET['nivel_usuario'] ?? '',
+            ];
+
+            $usuarios = $this->gestionAdmin->obtenerUsuariosGestionados($this->adminId, $filtros);
+
             $params = [
                 'usuarios' => $usuarios,
                 'mensaje' => 'Lista de usuarios bajo su administración'
             ];
-            $this->render('listarUsuariosAdmin.php', $params);  // Vista específica para Admin
+
+            $this->render('listarUsuariosAdmin.php', $params);
         } catch (Exception $e) {
             error_log("Error en listarUsuariosAdmin(): " . $e->getMessage());
             $this->redireccionarError('Error al listar los usuarios.');
         }
     }
+
 
     // Crear usuario bajo los límites de familia/grupo
     public function crearUsuario()
@@ -164,5 +175,47 @@ class UsuarioAdminController
         $_SESSION['error_mensaje'] = $mensaje;
         header('Location: index.php?ctl=error');
         exit();
+    }
+    public function formCrearUsuarioAdmin()
+    {
+        try {
+            // Verificación del nivel de usuario
+            if ($_SESSION['usuario']['nivel_usuario'] !== 'admin') {
+                $this->redireccionarError('Acceso denegado. Solo los administradores pueden crear usuarios.');
+                return;
+            }
+
+            // Inicialización de la clase de gestión específica para administradores
+            $adminGestion = new AdminGestion($this->adminId); // Usa $this->adminId para consistencia
+            error_log("Cargando familias y grupos para el formulario de creación de usuario (Admin)...");
+
+            // Obtener las familias y grupos administrados por el administrador
+            $familias = $adminGestion->obtenerFamiliasAdministradas();
+            $grupos = $adminGestion->obtenerGruposAdministrados();
+
+            // Verificar que las familias y grupos se obtuvieron correctamente
+            if (empty($familias) || empty($grupos)) {
+                throw new Exception("No se pudieron cargar las familias o los grupos para el administrador.");
+            }
+            error_log("Familias y grupos para administrador cargados exitosamente.");
+
+            // Generar un token CSRF para el formulario
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            error_log("Token CSRF generado para el formulario de creación de usuario (Admin).");
+
+            // Pasar los datos a la vista del formulario de creación de usuario
+            $params = [
+                'csrf_token' => $_SESSION['csrf_token'],
+                'familias' => $familias,
+                'grupos' => $grupos,
+                'roles_disponibles' => ['usuario', 'admin'], // Roles permitidos para el administrador
+            ];
+
+            // Renderizar la vista del formulario de creación de usuario específico para administradores
+            $this->render('formCrearUsuarioAdmin.php', $params);
+        } catch (Exception $e) {
+            error_log("Error en formCrearUsuarioAdmin(): " . $e->getMessage());
+            $this->redireccionarError('Error al mostrar el formulario de creación de usuario para administrador.');
+        }
     }
 }

@@ -90,6 +90,10 @@ $router->addRoute('eliminarCategoriaIngreso', 'CategoriaController', 'eliminarCa
 
 // Rutas para funcionalidades del usuario Admin (UsuarioAdminController)
 $router->addRoute('listarUsuariosAdmin', 'UsuarioAdminController', 'listarUsuariosAdmin');
+$router->addRoute('formCrearUsuarioAdmin', 'UsuarioAdminController', 'formCrearUsuarioAdmin');
+
+
+
 $router->addRoute('crearUsuarioAdmin', 'UsuarioAdminController', 'crearUsuario');
 $router->addRoute('editarUsuarioAdmin', 'UsuarioAdminController', 'editarUsuarioRegular');
 $router->addRoute('eliminarUsuarioAdmin', 'UsuarioAdminController', 'eliminarUsuarioRegular');
