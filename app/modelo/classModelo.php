@@ -778,20 +778,23 @@ class GastosModelo
         }
     }
     // Actualiza los datos de un usuario
-    public function actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)
+    public function actualizarUsuario($userId, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)
     {
         $sql = "UPDATE usuarios SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, 
-            telefono = :telefono, nivel_usuario = :nivel_usuario WHERE idUser = :idUser";
+            telefono = :telefono, nivel_usuario = :nivel_usuario WHERE id_usuario = :userId";
+
         $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':nombre', $nombre, PDO::PARAM_STR);
         $stmt->bindParam(':apellido', $apellido, PDO::PARAM_STR);
         $stmt->bindParam(':alias', $alias, PDO::PARAM_STR);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->bindParam(':telefono', $telefono, PDO::PARAM_STR);
-        $stmt->bindParam(':nivel_usuario', $nivel_usuario, PDO::PARAM_STR);
-        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':nivel_usuario', $nivel_usuario, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
+
 
     // Actualizar la relación de un usuario con una familia
     public function actualizarUsuarioFamilia($idUser, $idFamilia)
@@ -1863,6 +1866,180 @@ class GastosModelo
         $stmt = $conexion->prepare("SELECT * FROM administradores_grupos WHERE idAdmin = :adminId");
         $stmt->execute(['adminId' => $adminId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // ******** Métodos para gestionar los gastos ********
+
+    // Obtener todos los gastos de un usuario
+    public function obtenerGastosPorUsuario($userId)
+    {
+        $sql = "SELECT * FROM gastos WHERE id_usuario = :userId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    // Insertar un nuevo gasto
+    public function insertarGasto($datosGasto)
+    {
+        $sql = "INSERT INTO gastos (id_usuario, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $datosGasto['idUser'], PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $datosGasto['descripcion']);
+        $stmt->bindParam(':monto', $datosGasto['monto']);
+        $stmt->bindParam(':fecha', $datosGasto['fecha']);
+        return $stmt->execute();
+    }
+
+    // Obtener un gasto por su ID
+    public function obtenerGastoPorId($gastoId)
+    {
+        $sql = "SELECT * FROM gastos WHERE id = :gastoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':gastoId', $gastoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Actualizar un gasto por ID
+    public function actualizarGasto($gastoId, $nuevosDatos)
+    {
+        $sql = "UPDATE gastos SET descripcion = :descripcion, monto = :monto, fecha = :fecha WHERE id = :gastoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':gastoId', $gastoId, PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $nuevosDatos['descripcion']);
+        $stmt->bindParam(':monto', $nuevosDatos['monto']);
+        $stmt->bindParam(':fecha', $nuevosDatos['fecha']);
+        return $stmt->execute();
+    }
+
+    // Eliminar un gasto por ID
+    public function eliminarGastoPorId($gastoId)
+    {
+        $sql = "DELETE FROM gastos WHERE id = :gastoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':gastoId', $gastoId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // ******** Métodos para gestionar los ingresos ********
+
+    // Obtener todos los ingresos de un usuario
+    public function obtenerIngresosPorUsuario($userId)
+    {
+        $sql = "SELECT * FROM ingresos WHERE id_usuario = :userId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Insertar un nuevo ingreso
+    public function insertarIngreso($datosIngreso)
+    {
+        $sql = "INSERT INTO ingresos (id_usuario, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':idUser', $datosIngreso['idUser'], PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $datosIngreso['descripcion']);
+        $stmt->bindParam(':monto', $datosIngreso['monto']);
+        $stmt->bindParam(':fecha', $datosIngreso['fecha']);
+        return $stmt->execute();
+    }
+
+    // Obtener un ingreso por ID
+    public function obtenerIngresoPorId($ingresoId)
+    {
+        $sql = "SELECT * FROM ingresos WHERE id = :ingresoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':ingresoId', $ingresoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Actualizar un ingreso por ID
+    public function actualizarIngreso($ingresoId, $nuevosDatos)
+    {
+        $sql = "UPDATE ingresos SET descripcion = :descripcion, monto = :monto, fecha = :fecha WHERE id = :ingresoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':ingresoId', $ingresoId, PDO::PARAM_INT);
+        $stmt->bindParam(':descripcion', $nuevosDatos['descripcion']);
+        $stmt->bindParam(':monto', $nuevosDatos['monto']);
+        $stmt->bindParam(':fecha', $nuevosDatos['fecha']);
+        return $stmt->execute();
+    }
+
+    // Eliminar un ingreso por ID
+    public function eliminarIngresoPorId($ingresoId)
+    {
+        $sql = "DELETE FROM ingresos WHERE id = :ingresoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':ingresoId', $ingresoId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // ******** Métodos adicionales para restricciones de familias y grupos ********
+
+    // Contar la cantidad de familias a las que pertenece un usuario
+    public function contarFamiliasUsuario($userId)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE id_usuario = :userId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    // Contar la cantidad de usuarios en una familia
+    public function contarUsuariosFamilia($familiaId)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE id_familia = :familiaId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':familiaId', $familiaId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    // Contar la cantidad de grupos a los que pertenece un usuario
+    public function contarGruposUsuario($userId)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE id_usuario = :userId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    // Contar la cantidad de usuarios en un grupo
+    public function contarUsuariosGrupo($grupoId)
+    {
+        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE id_grupo = :grupoId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':grupoId', $grupoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+    public function obtenerSituacionPorUsuario($userId)
+    {
+        // Ajusta esta consulta según la estructura de tus tablas de situación financiera
+        $sql = "SELECT * FROM situacion_financiera WHERE id_usuario = :userId";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Obtener el resumen financiero de un usuario específico
+    public function obtenerResumenFinancieroPorUsuario($userId)
+    {
+        $sql = "SELECT SUM(cantidad) AS total_gastos FROM gastos WHERE id_usuario = :userId
+            UNION ALL
+            SELECT SUM(cantidad) AS total_ingresos FROM ingresos WHERE id_usuario = :userId";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Devuelve un resumen con total de gastos e ingresos
     }
 
 
