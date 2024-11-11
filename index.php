@@ -65,12 +65,6 @@ $router->addRoute('asignarUsuario', 'UsuarioController', 'asignarUsuario');
 $router->addRoute('formAsignarUsuario', 'FamiliaGrupoController', 'formAsignarUsuario');
 $router->addRoute('asignarUsuarioFamiliaGrupo', 'FamiliaGrupoController', 'asignarUsuarioFamiliaGrupo');
 
-// Rutas para usuarios con rol Admin (UsuarioAdminController)
-$router->addRoute('listarUsuariosAdmin', 'UsuarioAdminController', 'listarUsuariosAdmin');
-$router->addRoute('crearUsuarioAdmin', 'UsuarioAdminController', 'crearUsuario');
-$router->addRoute('editarUsuarioAdmin', 'UsuarioAdminController', 'editarUsuarioRegular');
-$router->addRoute('eliminarUsuarioAdmin', 'UsuarioAdminController', 'eliminarUsuarioRegular');
-
 // Rutas para usuarios con rol Regular (UsuarioRegularController)
 $router->addRoute('verResumenFinanciero', 'UsuarioRegularController', 'mostrarResumenFinanciero');
 $router->addRoute('listarGastosUsuario', 'UsuarioRegularController', 'listarGastos');
@@ -95,7 +89,7 @@ $router->addRoute('editarCategoriaGasto', 'CategoriaController', 'editarCategori
 $router->addRoute('eliminarCategoriaIngreso', 'CategoriaController', 'eliminarCategoriaIngreso');
 
 // Rutas para funcionalidades del usuario Admin (UsuarioAdminController)
-$router->addRoute('listarUsuariosAdmin', 'UsuarioAdminController', 'listarUsuariosGestionados');
+$router->addRoute('listarUsuariosAdmin', 'UsuarioAdminController', 'listarUsuariosAdmin');
 $router->addRoute('crearUsuarioAdmin', 'UsuarioAdminController', 'crearUsuario');
 $router->addRoute('editarUsuarioAdmin', 'UsuarioAdminController', 'editarUsuarioRegular');
 $router->addRoute('eliminarUsuarioAdmin', 'UsuarioAdminController', 'eliminarUsuarioRegular');
@@ -124,22 +118,18 @@ $rutasPermitidasSinAutenticacion = ['iniciarSesion', 'registro', 'home', 'error'
 if (isset($_SESSION['usuario'])) {
     $userRole = $_SESSION['usuario']['nivel_usuario'];
 
-    // Determinar la ruta de inicio según el rol del usuario
     switch ($userRole) {
         case 'superadmin':
             $ruta = $ruta ?? 'inicio';
             break;
         case 'admin':
-            // Asigna a `inicioAdmin` solo si `ctl` no está establecido
             $ruta = $ruta ?? 'listarUsuariosAdmin';
             break;
         case 'usuario':
-            // Asigna a `inicioUsuario` solo si `ctl` no está establecido
             $ruta = $ruta ?? 'inicioUsuario';
             break;
     }
 } else {
-    // Usuarios no autenticados solo pueden ver las rutas públicas
     if (!in_array($ruta, $rutasPermitidasSinAutenticacion)) {
         header('Location: index.php?ctl=iniciarSesion');
         exit();

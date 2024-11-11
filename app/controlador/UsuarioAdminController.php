@@ -72,9 +72,14 @@ class UsuarioAdminController
     }
 
     // Editar usuario regular gestionado por el Admin
-    public function editarUsuarioRegular($idUser)
+    public function editarUsuarioRegular()
     {
         try {
+            $idUser = $_GET['idUser'] ?? null;
+            if (!$idUser) {
+                throw new Exception('ID de usuario no especificado.');
+            }
+
             $usuario = $this->validarAccesoUsuarioRegular($idUser);
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -104,9 +109,14 @@ class UsuarioAdminController
     }
 
     // Eliminar usuario regular gestionado por el Admin
-    public function eliminarUsuarioRegular($idUser)
+    public function eliminarUsuarioRegular()
     {
         try {
+            $idUser = $_GET['idUser'] ?? null;
+            if (!$idUser) {
+                throw new Exception('ID de usuario no especificado.');
+            }
+
             $usuario = $this->validarAccesoUsuarioRegular($idUser);
             $this->gestionAdmin->eliminarUsuarioRegular($idUser);
             $_SESSION['mensaje_exito'] = "Usuario eliminado correctamente.";
@@ -121,8 +131,8 @@ class UsuarioAdminController
     // Método privado para validar el acceso del Admin a un usuario regular
     private function validarAccesoUsuarioRegular($idUser)
     {
-        $usuario = $this->gestionAdmin->listarUsuariosGestionados();
-        $usuario = array_filter($usuario, function ($u) use ($idUser) {
+        $usuarios = $this->gestionAdmin->listarUsuariosGestionados();
+        $usuario = array_filter($usuarios, function ($u) use ($idUser) {
             return $u['id'] == $idUser && $u['nivel_usuario'] === 'usuario';
         });
 
