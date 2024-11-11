@@ -1,0 +1,184 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* Encabezado */
+header {
+    background-color: #1a73e8;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffeb3b;
+}
+
+/* Principal */
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2,
+h3 {
+    color: #1a73e8;
+    margin-bottom: 20px;
+}
+
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form .form-group {
+    margin-bottom: 20px;
+}
+
+form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form input[type="date"],
+form select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+form input:focus,
+form select:focus {
+    border-color: #1a73e8;
+}
+
+button[type="submit"] {
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #1558b0;
+}
+
+/* Mensajes de error y éxito */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Pie de página */
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #1a73e8;
+    color: #fff;
+    font-size: 0.9rem;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 0;
+}
+
+.error {
+    color: red;
+    /* O cualquier color que prefieras */
+    font-weight: bold;
+    background-color: lightyellow;
+    /* Para resaltar sobre fondo blanco */
+    padding: 5px;
+}
+
+/* Aplica el ancho mínimo para las columnas Nombre y Apellido */
+.details-column {
+    min-width: 5px !important;
+    /* Reduce aún más si es necesario */
+    white-space: nowrap;
+    /* Evita que el contenido se divida en varias líneas */
+    overflow: hidden;
+    /* Oculta el contenido desbordado */
+    text-overflow: ellipsis;
+    /* Añade puntos suspensivos si el contenido es muy largo */
+}
+
+/* Estilo para hacer el encabezado de la tabla fijo */
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    /* Fondo para diferenciar el encabezado */
+    z-index: 2;
+    text-align: center;
+    font-weight: bold;
+}
