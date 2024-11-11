@@ -1,29 +1,21 @@
 <div class="container p-4">
-    <h2><?= htmlspecialchars($mensaje) ?></h2>
+    <h2>Editar Categoría de Gasto</h2>
 
-    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
-
-        <form action="index.php?ctl=editarCategoriaGasto" method="post">
-            <input type="hidden" name="idCategoria" value="<?= htmlspecialchars($categoria['idCategoria']) ?>">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-
-            <div class="form-group">
-                <label for="nombreCategoria">Nombre de la categoría:</label>
-                <input type="text" id="nombreCategoria" name="nombreCategoria" class="form-control" value="<?= htmlspecialchars($categoria['nombreCategoria']) ?>" required>
-            </div>
-
-            <button type="submit" name="bEditarCategoriaGasto" class="btn btn-primary mt-3">Guardar Cambios</button>
-
-            <?php if (isset($mensaje)): ?>
-                <div class="alert alert-info mt-3">
-                    <?= htmlspecialchars($mensaje) ?>
-                </div>
-            <?php endif; ?>
-        </form>
-
-    <?php else: ?>
-        <div class="alert alert-danger">
-            No tienes permiso para acceder a esta página.
-        </div>
+    <?php if (isset($params['mensaje'])): ?>
+        <div class="alert alert-info"><?= htmlspecialchars($params['mensaje']); ?></div>
     <?php endif; ?>
+
+    <form action="index.php?ctl=editarCategoriaGasto" method="post">
+        <!-- Campo oculto para el token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= $params['csrf_token']; ?>">
+        <!-- Campo oculto para ID de la categoría -->
+        <input type="hidden" name="idCategoria" value="<?= htmlspecialchars($params['categoria']['idCategoria']); ?>">
+
+        <div class="form-group">
+            <label for="nombreCategoria">Nombre de la Categoría:</label>
+            <input type="text" id="nombreCategoria" name="nombreCategoria" class="form-control" value="<?= htmlspecialchars($params['categoria']['nombreCategoria']); ?>" required>
+        </div>
+
+        <button type="submit" name="bEditarCategoriaGasto" class="btn btn-primary">Guardar Cambios</button>
+    </form>
 </div>

@@ -192,15 +192,21 @@ function cEmail(string $email, array &$errores): bool
     return true;
 }
 
-// Validar teléfono (exactamente 9 dígitos)
+// Validar teléfono (exactamente 9 dígitos, pero opcional)
 function cTelefono(string $telefono, array &$errores): bool
 {
+    // Si el campo está vacío, lo consideramos válido (opcional)
+    if (empty($telefono)) {
+        return true;
+    }
+    // Validar que tenga exactamente 9 dígitos
     if (!preg_match('/^[0-9]{9}$/', $telefono)) {
         $errores['telefono'] = "El número de teléfono debe tener 9 dígitos.";
         return false;
     }
     return true;
 }
+
 
 // Validar si el usuario tiene más de 18 años
 function validarEdad(string $fecha_nacimiento, array &$errores): bool
@@ -215,20 +221,7 @@ function validarEdad(string $fecha_nacimiento, array &$errores): bool
     }
     return true;
 }
-
-/**
- * Recoge y sanitiza un array desde el formulario.
- *
- * @param string $nombreCampo Nombre del campo en el formulario.
- * @return array Array sanitizado o vacío si no existe o no es un array.
- */
-function recogeArray($nombreCampo)
+function recogeArray($campo)
 {
-    // Verificar que el campo existe y que es un array
-    if (isset($_POST[$nombreCampo]) && is_array($_POST[$nombreCampo])) {
-        return filter_var_array($_POST[$nombreCampo], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    }
-
-    // Retornar un array vacío si el campo no existe o no es un array
-    return [];
+    return isset($_POST[$campo]) && is_array($_POST[$campo]) ? $_POST[$campo] : [];
 }

@@ -3,7 +3,7 @@
 
     <!-- Verificar permisos del usuario -->
     <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
-    
+
         <!-- Formulario para asignar usuario -->
         <form method="POST" action="index.php?ctl=asignarUsuarioFamiliaGrupo">
 
@@ -11,11 +11,25 @@
             <div class="form-group">
                 <label for="idUsuario">Selecciona un Usuario:</label>
                 <select name="idUsuario" id="idUsuario" class="form-control" required>
-                    <?php foreach ($usuarios as $usuario): ?>
-                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
-                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (empty($usuarios)): ?>
+                        <option disabled>No hay usuarios disponibles</option>
+                    <?php else: ?>
+                        <?php foreach ($usuarios as $usuario): ?>
+                            <option value="<?= htmlspecialchars($usuario['idUser']) ?>">
+                                <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
+
+            <!-- Selección de rol del usuario -->
+            <div class="form-group">
+                <label for="rolUsuario">Selecciona el Rol del Usuario:</label>
+                <select name="rolUsuario" id="rolUsuario" class="form-control" required>
+                    <option value="superadmin">Superadmin</option>
+                    <option value="admin">Admin</option>
+                    <option value="usuario">Usuario Regular</option>
                 </select>
             </div>
 
@@ -35,48 +49,67 @@
             <!-- Selección de familias existentes -->
             <div class="form-group">
                 <label for="idFamilia">Selecciona Familias Existentes:</label>
-                <select name="idFamilia[]" id="idFamilia" class="form-control" multiple>
-                    <?php foreach ($familias as $familia): ?>
-                        <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
-                            <?= htmlspecialchars($familia['nombre_familia']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                <select name="idFamilia[]" id="idFamilia" class="form-control" multiple onchange="renderPasswordInputs('familia')">
+                    <?php if (empty($familias)): ?>
+                        <option disabled>No hay familias disponibles</option>
+                    <?php else: ?>
+                        <?php foreach ($familias as $familia): ?>
+                            <option value="<?= htmlspecialchars($familia['idFamilia']) ?>">
+                                <?= htmlspecialchars($familia['nombre_familia']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
+            <div id="familiaPasswordsContainer"></div>
 
             <!-- Selección de grupos existentes -->
             <div class="form-group">
                 <label for="idGrupo">Selecciona Grupos Existentes:</label>
-                <select name="idGrupo[]" id="idGrupo" class="form-control" multiple>
-                    <?php foreach ($grupos as $grupo): ?>
-                        <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
-                            <?= htmlspecialchars($grupo['nombre_grupo']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                <select name="idGrupo[]" id="idGrupo" class="form-control" multiple onchange="renderPasswordInputs('grupo')">
+                    <?php if (empty($grupos)): ?>
+                        <option disabled>No hay grupos disponibles</option>
+                    <?php else: ?>
+                        <?php foreach ($grupos as $grupo): ?>
+                            <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>">
+                                <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
-
-            <!-- Contraseña para asociación existente -->
-            <div class="form-group">
-                <label for="passwordGrupoFamilia">Introduce la contraseña para acceder al grupo o familia existente (si aplica):</label>
-                <input type="password" name="passwordGrupoFamilia" class="form-control">
-            </div>
+            <div id="grupoPasswordsContainer"></div>
 
             <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= isset($params['csrf_token']) ? htmlspecialchars($params['csrf_token']) : '' ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
 
             <button type="submit" class="btn btn-primary">Asignar Usuario</button>
         </form>
 
     <?php else: ?>
-        <div class="alert alert-danger">
-            No tienes permiso para acceder a esta página.
-        </div>
+        <div class="alert alert-danger">No tienes permiso para acceder a esta página.</div>
     <?php endif; ?>
 </div>
 
 <script>
-    // Renderizar campos para crear familias
+    // Función para renderizar campos de contraseña para cada familia o grupo seleccionado
+    function renderPasswordInputs(type) {
+        const select = document.getElementById(type === 'familia' ? 'idFamilia' : 'idGrupo');
+        const container = document.getElementById(type === 'familia' ? 'familiaPasswordsContainer' : 'grupoPasswordsContainer');
+        container.innerHTML = '';
+
+        Array.from(select.selectedOptions).forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label for="${type}Password_${option.value}">Contraseña para ${type === 'familia' ? 'Familia' : 'Grupo'} ${option.text}:</label>
+                <input type="password" name="${type}Password[${option.value}]" class="form-control" required>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // Renderizar campos para crear nuevas familias
     function renderFamiliaInputs() {
         const numFamilias = document.getElementById('numFamilias').value;
         const familiasContainer = document.getElementById('familiasContainer');
@@ -95,7 +128,7 @@
         }
     }
 
-    // Renderizar campos para crear grupos
+    // Renderizar campos para crear nuevos grupos
     function renderGrupoInputs() {
         const numGrupos = document.getElementById('numGrupos').value;
         const gruposContainer = document.getElementById('gruposContainer');
@@ -114,4 +147,3 @@
         }
     }
 </script>
-

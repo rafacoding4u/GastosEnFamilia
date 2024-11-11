@@ -1,16 +1,18 @@
-<?php
+<?php 
 
 class Config {
+    // Configuración de conexión a la base de datos
     private static $db_host = 'localhost';
     private static $db_user = 'root';
-    private static $db_pass = 'Ladilla7890@2'; // Ajusta esta contraseña si tu usuario root la tiene configurada
-    private static $db_name = 'gastosencasa_bd';
-    private static $db_charset = 'utf8';
+    private static $db_pass = 'Ladilla7890@2';
+    private static $db_name = 'lascuentasclaras';
+    private static $db_charset = 'utf8mb4';
 
-    private static $debug = true; // Cambia a 'false' en producción
+    // Modo de depuración
+    private static $debug = true; // Cuando se estuviera en producción cambiar a 'false'
 
     // Path para el archivo de log
-    private static $log_file = __DIR__ . '/../log/logExcepcio.txt'; // Unificamos en un solo archivo
+    private static $log_file = __DIR__ . '/../log/logExcepcio.txt';
 
     /**
      * Obtiene la conexión a la base de datos.
@@ -45,7 +47,7 @@ class Config {
         }
         // Registrar el error en el archivo de log siempre
         self::registrarError($mensaje_error);
-        error_log($mensaje_error, 3, self::$log_file);  // Asegúrate de siempre registrar en el archivo
+        error_log($mensaje_error, 3, self::$log_file);
     }
 
     /**

@@ -1,41 +1,45 @@
 <div class="container p-4">
     <h2>Editar Grupo</h2>
 
-    <!-- Verificar permisos del usuario -->
-    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'admin' || $_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
 
-        <!-- Formulario para editar un grupo -->
-        <form action="index.php?ctl=editarGrupo&id=<?= htmlspecialchars($params['idGrupo']) ?>" method="post">
-            <!-- Nombre del grupo -->
+        <form action="index.php?ctl=editarGrupo&id=<?= htmlspecialchars($params['idGrupo'] ?? '') ?>" method="POST">
             <div class="form-group">
                 <label for="nombre_grupo">Nombre del Grupo</label>
-                <input type="text" class="form-control" id="nombre_grupo" name="nombre_grupo" value="<?= htmlspecialchars($params['nombre_grupo']) ?>" required>
+                <input type="text" class="form-control" id="nombre_grupo" name="nombre_grupo" value="<?= htmlspecialchars($params['nombreGrupo'] ?? '') ?>" required>
             </div>
 
-            <!-- Asignar administrador del grupo -->
+            <!-- Selección de múltiples Administradores -->
             <div class="form-group">
-                <label for="id_admin">Seleccionar Administrador del Grupo</label>
-                <select class="form-control" id="id_admin" name="id_admin" required>
-                    <?php if (!empty($params['administradores'])): ?>
-                        <?php foreach ($params['administradores'] as $admin): ?>
-                            <option value="<?= htmlspecialchars($admin['idUser']) ?>" <?= $params['idAdminActual'] == $admin['idUser'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($admin['nombre'] . ' ' . $admin['apellido']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value="">No se encontraron administradores disponibles</option>
-                    <?php endif; ?>
+                <label for="idAdmin">Asignar Administradores al Grupo</label>
+                <select name="idAdmin[]" id="idAdmin" class="form-control" multiple required>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= in_array($usuario['idUser'], $params['administradoresAsignados']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
-            <!-- Campo oculto para el token CSRF -->
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token']) ?>">
+            <!-- Selección de múltiples Usuarios -->
+            <div class="form-group">
+                <label for="usuarios">Asignar Usuarios al Grupo</label>
+                <select name="usuarios[]" id="usuarios" class="form-control" multiple>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <option value="<?= htmlspecialchars($usuario['idUser']) ?>" <?= in_array($usuario['idUser'], $params['usuariosAsignados']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($params['csrf_token'] ?? '') ?>">
 
             <!-- Mostrar posibles errores -->
-            <?php if (isset($params['errores']) && !empty($params['errores'])): ?>
+            <?php if (isset($errores) && !empty($errores)): ?>
                 <div class="alert alert-danger">
                     <ul>
-                        <?php foreach ($params['errores'] as $error): ?>
+                        <?php foreach ($errores as $error): ?>
                             <li><?= htmlspecialchars($error) ?></li>
                         <?php endforeach; ?>
                     </ul>
@@ -43,18 +47,16 @@
             <?php endif; ?>
 
             <!-- Mostrar mensajes de éxito -->
-            <?php if (isset($params['mensaje'])): ?>
+            <?php if (isset($mensaje)): ?>
                 <div class="alert alert-info">
-                    <?= htmlspecialchars($params['mensaje']) ?>
+                    <?= htmlspecialchars($mensaje ?? '') ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Botón para enviar el formulario -->
-            <button type="submit" name="bEditarGrupo" class="btn btn-primary">Actualizar Grupo</button>
+            <button type="submit" name="bEditarGrupo" class="btn btn-primary">Guardar cambios</button>
         </form>
 
     <?php else: ?>
-        <!-- Mensaje de error si el usuario no tiene permisos -->
         <div class="alert alert-danger">
             No tienes permiso para acceder a esta página.
         </div>

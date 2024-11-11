@@ -1,6 +1,6 @@
-<?php if (!empty($_SESSION['error_mensaje'])): ?>
-    <div class="alert alert-danger">
-        <?= htmlspecialchars($_SESSION['error_mensaje']) ?>
-    </div>
-    <?php unset($_SESSION['error_mensaje']); // Limpiar el mensaje después de mostrarlo ?>
-<?php endif; ?>
+<!-- error.php -->
+<div class="container">
+    <h2>Error</h2>
+    <p><?= htmlspecialchars($mensaje) ?></p>
+    <a href="index.php?ctl=home" class="btn btn-primary">Volver al inicio</a>
+</div>

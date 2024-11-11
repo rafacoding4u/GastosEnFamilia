@@ -57,8 +57,8 @@
                     <option value="">Seleccionar un grupo...</option>
                     <?php if (isset($grupos) && is_array($grupos)): ?>
                         <?php foreach ($grupos as $grupo): ?>
-                            <option value="<?= isset($grupo['idGrupo']) ? htmlspecialchars($grupo['idGrupo']) : '' ?>">
-                                <?= isset($grupo['nombre_grupo']) ? htmlspecialchars($grupo['nombre_grupo']) : 'No especificado' ?>
+                            <option value="<?= htmlspecialchars($grupo['idGrupo'] ?? '') ?>">
+                                <?= htmlspecialchars($grupo['nombre_grupo'] ?? 'Sin nombre') ?>
                             </option>
                         <?php endforeach; ?>
                     <?php else: ?>

@@ -2,6 +2,8 @@
 require_once 'app/libs/bSeguridad.php';
 require_once 'app/libs/bGeneral.php';
 require_once 'app/modelo/classModelo.php';
+require_once 'app/controlador/CategoriaController.php';
+
 
 class CategoriaController
 {
@@ -10,18 +12,22 @@ class CategoriaController
     {
         try {
             $m = new GastosModelo();
-            $categorias = $m->obtenerCategoriasGastos();
 
-            // Verificar si cada categoría está en uso por algún gasto
-            foreach ($categorias as &$categoria) {
-                $categoria['enUso'] = $m->categoriaEnUso($categoria['idCategoria'], 'gastos');
-                $categoria['creadaPorUsuario'] = ($categoria['creado_por'] == $_SESSION['usuario']['id']);
-            }
+            // Obtener filtros de búsqueda desde la solicitud GET
+            $filtros = [
+                'idCategoria' => $_GET['idCategoria'] ?? null,
+                'nombreCategoria' => $_GET['nombreCategoria'] ?? null,
+                'creado_por_alias' => $_GET['creado_por_alias'] ?? null,
+                'creado_por_id' => $_GET['creado_por_id'] ?? null,
+                'creado_por_rol' => $_GET['creado_por_rol'] ?? null,
+            ];
 
-            $params = array(
+            $categorias = $m->obtenerCategoriasGastosConDetalles($filtros);
+
+            $params = [
                 'categorias' => $categorias,
                 'mensaje' => 'Gestión de categorías de gastos'
-            );
+            ];
 
             $this->render('verCategoriasGastos.php', $params);
         } catch (Exception $e) {
@@ -30,23 +36,30 @@ class CategoriaController
         }
     }
 
+
+
+
     // Ver categorías de ingresos
     public function verCategoriasIngresos()
     {
         try {
             $m = new GastosModelo();
-            $categorias = $m->obtenerCategoriasIngresos();
 
-            // Verificar si cada categoría está en uso por algún ingreso
-            foreach ($categorias as &$categoria) {
-                $categoria['enUso'] = $m->categoriaIngresoEnUso($categoria['idCategoria']);
-                $categoria['creadaPorUsuario'] = ($categoria['creado_por'] == $_SESSION['usuario']['id']);
-            }
+            // Obtener filtros de búsqueda desde la solicitud GET
+            $filtros = [
+                'idCategoria' => $_GET['idCategoria'] ?? null,
+                'nombreCategoria' => $_GET['nombreCategoria'] ?? null,
+                'creado_por_alias' => $_GET['creado_por_alias'] ?? null,
+                'creado_por_id' => $_GET['creado_por_id'] ?? null,
+                'creado_por_rol' => $_GET['creado_por_rol'] ?? null,
+            ];
 
-            $params = array(
+            $categorias = $m->obtenerCategoriasIngresosConDetalles($filtros);
+
+            $params = [
                 'categorias' => $categorias,
                 'mensaje' => 'Gestión de categorías de ingresos'
-            );
+            ];
 
             $this->render('verCategoriasIngresos.php', $params);
         } catch (Exception $e) {
@@ -55,41 +68,58 @@ class CategoriaController
         }
     }
 
-    // Insertar nueva categoría de gasto
+
+
     public function insertarCategoriaGasto()
     {
         try {
+            // Verificar permisos de usuario
             if (!esAdmin() && !esSuperadmin()) {
                 $this->redireccionarError('Acceso denegado.');
                 return;
             }
 
-            // Generar el token CSRF
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            // Generar y verificar el token CSRF en la solicitud GET inicial
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
 
+            // Verificar que la solicitud sea POST y que se haya enviado el formulario correctamente
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaGasto'])) {
+                // Verificar token CSRF
+                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                    throw new Exception('Token CSRF inválido.');
+                }
+
                 $nombreCategoria = recoge('nombreCategoria');
                 $m = new GastosModelo();
-                $creadoPor = $_SESSION['usuario']['id']; // Guardamos el id del usuario que crea la categoría
+                $creadoPor = $_SESSION['usuario']['id'];
 
+                // Validar el nombre de la categoría
                 if (empty($nombreCategoria)) {
                     $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
                 } elseif ($m->insertarCategoriaGasto($nombreCategoria, $creadoPor)) {
+                    // Log de éxito
                     error_log("Categoría de gasto '{$nombreCategoria}' creada por el usuario con id {$creadoPor}.");
                     header('Location: index.php?ctl=verCategoriasGastos');
                     exit();
                 } else {
+                    // Mensaje de error si la inserción falla
                     $params['mensaje'] = 'No se pudo insertar la categoría de gasto.';
                     error_log("Fallo al insertar categoría de gasto: '{$nombreCategoria}'.");
                 }
             }
 
+            // Mostrar la vista de categorías con el mensaje en caso de error
             $this->verCategoriasGastos();
         } catch (Exception $e) {
+            // Log de errores para excepciones
             error_log("Error en insertarCategoriaGasto(): " . $e->getMessage());
             $this->redireccionarError('Error al insertar la categoría de gasto.');
         }
     }
+
+
 
     // Insertar nueva categoría de ingreso
     public function insertarCategoriaIngreso()
@@ -100,13 +130,18 @@ class CategoriaController
                 return;
             }
 
-            // Generar el token CSRF
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bInsertarCategoriaIngreso'])) {
+                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                    throw new Exception('Token CSRF inválido.');
+                }
+
                 $nombreCategoria = recoge('nombreCategoria');
                 $m = new GastosModelo();
-                $creadoPor = $_SESSION['usuario']['id']; // Guardamos el id del usuario que crea la categoría
+                $creadoPor = $_SESSION['usuario']['id'];
 
                 if (empty($nombreCategoria)) {
                     $params['mensaje'] = 'El nombre de la categoría no puede estar vacío.';
@@ -127,20 +162,25 @@ class CategoriaController
         }
     }
 
+
     // Editar categoría de gasto
     public function editarCategoriaGasto()
     {
         try {
+            // Verificar permisos de usuario
             if (!esAdmin() && !esSuperadmin()) {
                 $this->redireccionarError('Acceso denegado.');
                 return;
             }
 
+            $m = new GastosModelo();
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Procesar la solicitud de actualización
                 $idCategoria = recoge('idCategoria');
                 $nombreCategoria = recoge('nombreCategoria');
-                $m = new GastosModelo();
 
+                // Intentar actualizar el nombre de la categoría
                 if ($m->actualizarCategoriaGasto($idCategoria, $nombreCategoria)) {
                     error_log("Categoría de gasto '{$nombreCategoria}' actualizada.");
                     header('Location: index.php?ctl=verCategoriasGastos');
@@ -150,16 +190,16 @@ class CategoriaController
                     error_log("Fallo al actualizar categoría de gasto con ID: {$idCategoria}.");
                 }
             } else {
+                // Cargar el formulario de edición con los datos de la categoría
                 if (isset($_GET['id'])) {
-                    $m = new GastosModelo();
                     $categoria = $m->obtenerCategoriaGastoPorId($_GET['id']);
 
                     if ($categoria) {
-                        $params = array(
+                        $params = [
                             'categoria' => $categoria,
                             'mensaje' => 'Editar Categoría de Gasto',
-                            'csrf_token' => $_SESSION['csrf_token']
-                        );
+                            'csrf_token' => $_SESSION['csrf_token'] = bin2hex(random_bytes(32)) // Generar token CSRF
+                        ];
                         $this->render('formEditarCategoriaGasto.php', $params);
                     } else {
                         $this->redireccionarError('Categoría no encontrada.');
@@ -174,10 +214,13 @@ class CategoriaController
         }
     }
 
+
+
     // Editar categoría de ingreso
     public function editarCategoriaIngreso()
     {
         try {
+            // Verifica permisos
             if (!esAdmin() && !esSuperadmin()) {
                 $this->redireccionarError('Acceso denegado.');
                 return;
@@ -186,7 +229,9 @@ class CategoriaController
             $m = new GastosModelo();
 
             // Generar el token CSRF
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bEditarCategoriaIngreso'])) {
                 $idCategoria = recoge('idCategoria');
@@ -209,13 +254,17 @@ class CategoriaController
                     $categoria = $m->obtenerCategoriaIngresoPorId($_GET['id']);
 
                     if ($categoria) {
-                        $params['categoria'] = $categoria;
+                        $params = [
+                            'categoria' => $categoria,
+                            'mensaje' => 'Editar Categoría de Ingreso',
+                            'csrf_token' => $_SESSION['csrf_token']
+                        ];
                         $this->render('formEditarCategoriaIngreso.php', $params);
                     } else {
                         $this->redireccionarError('Categoría no válida.');
                     }
                 } else {
-                    $this->redireccionarError('Categoría no válida.');
+                    $this->redireccionarError('Solicitud no válida.');
                 }
             }
         } catch (Exception $e) {
@@ -223,6 +272,7 @@ class CategoriaController
             $this->redireccionarError('Error al actualizar la categoría de ingreso.');
         }
     }
+
 
     // Eliminar categoría de gasto
     public function eliminarCategoriaGasto()

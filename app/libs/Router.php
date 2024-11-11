@@ -4,42 +4,57 @@ class Router
 {
     private $routes = [];
 
-    /**
-     * Define una ruta en el enrutador.
-     *
-     * @param string $path Ruta de la URL (por ejemplo, 'inicio').
-     * @param string $controller Controlador asociado.
-     * @param string $method Método del controlador a ejecutar.
-     */
+    // Añadir una ruta específica con controlador y método asociados
     public function addRoute($path, $controller, $method)
     {
         $this->routes[$path] = ['controller' => $controller, 'method' => $method];
+        error_log("Ruta añadida: $path -> $controller::$method");
     }
 
-    /**
-     * Procesa la ruta solicitada.
-     *
-     * @param string $path Ruta de la URL solicitada.
-     */
+    // Manejar la solicitud actual verificando la ruta y llamando al controlador adecuado
     public function handleRequest($path)
     {
-        if (isset($this->routes[$path])) {
-            $controller = $this->routes[$path]['controller'];
-            $method = $this->routes[$path]['method'];
+        try {
+            // Comprobar si la ruta está definida en el array de rutas
+            if (isset($this->routes[$path])) {
+                $controllerName = $this->routes[$path]['controller'];
+                $methodName = $this->routes[$path]['method'];
 
-            // Verificar que el archivo del controlador exista
-            $controllerPath = __DIR__ . "/../controlador/{$controller}.php";
-            if (file_exists($controllerPath)) {
-                require_once $controllerPath;
-                if (class_exists($controller) && method_exists($controller, $method)) {
-                    $controllerInstance = new $controller();
-                    $controllerInstance->$method();
-                    return;
+                error_log("Procesando ruta: $path usando controlador: $controllerName y método: $methodName");
+
+                // Ruta hacia el controlador
+                $controllerPath = "app/controlador/{$controllerName}.php";
+
+                // Comprobar si el archivo de controlador existe
+                if (file_exists($controllerPath)) {
+                    require_once $controllerPath;
+
+                    // Verificar que la clase del controlador existe
+                    if (class_exists($controllerName)) {
+                        $controllerInstance = new $controllerName();
+
+                        // Verificar que el método existe en el controlador
+                        if (method_exists($controllerInstance, $methodName)) {
+                            $controllerInstance->$methodName();
+                        } else {
+                            throw new Exception("Método $methodName no encontrado en el controlador $controllerName.");
+                        }
+                    } else {
+                        throw new Exception("Controlador $controllerName no encontrado.");
+                    }
+                } else {
+                    throw new Exception("Archivo de controlador $controllerPath no encontrado.");
                 }
+            } else {
+                // Redirigir a error si la ruta no existe
+                error_log("Ruta no encontrada: $path. Redirigiendo a página de error.");
+                header("Location: index.php?ctl=error");
+                exit();
             }
+        } catch (Exception $e) {
+            error_log("Excepción en Router al manejar la ruta: " . $e->getMessage());
+            header("Location: index.php?ctl=error");
+            exit();
         }
-        // Ruta no encontrada o controlador/método no válido
-        header("Location: index.php?ctl=error");
-        exit();
     }
 }

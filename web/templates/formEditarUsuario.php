@@ -1,59 +1,63 @@
 <div class="container p-4">
     <h2>Editar Usuario</h2>
 
-    <!-- Verificación de permisos para mostrar el formulario solo a admins y superadmins -->
     <?php if (isset($_SESSION['usuario']) && ($_SESSION['usuario']['nivel_usuario'] === 'superadmin' || $_SESSION['usuario']['nivel_usuario'] === 'admin')): ?>
 
-        <!-- Mostrar mensaje de éxito o error -->
         <?php if (isset($params['mensaje']) && !empty($params['mensaje'])): ?>
             <div class="alert alert-info">
                 <?= htmlspecialchars($params['mensaje']); ?>
             </div>
         <?php endif; ?>
 
-        <!-- Formulario para editar usuario -->
-        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['idUser'] ?? '') ?>" method="post">
-            <!-- Campo oculto para asegurar que el idUser esté presente en el POST -->
-            <input type="hidden" name="idUser" value="<?= htmlspecialchars($params['idUser'] ?? '') ?>">
+        <?php if (isset($params['errores']) && !empty($params['errores'])): ?>
+            <div class="alert alert-danger">
+                <?php foreach ($params['errores'] as $error): ?>
+                    <p><?= htmlspecialchars($error); ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Nombre -->
+        <form action="index.php?ctl=actualizarUsuario&idUser=<?= htmlspecialchars($params['usuario']['idUser'] ?? '') ?>" method="post">
+            <input type="hidden" name="idUser" value="<?= htmlspecialchars($params['usuario']['idUser'] ?? '') ?>">
+
             <div class="form-group">
                 <label for="nombre">Nombre</label>
-                <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($params['nombre'] ?? '') ?>" required>
+                <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($params['usuario']['nombre'] ?? '') ?>" required>
             </div>
 
-            <!-- Apellido -->
             <div class="form-group">
                 <label for="apellido">Apellido</label>
-                <input type="text" name="apellido" class="form-control" value="<?= htmlspecialchars($params['apellido'] ?? '') ?>" required>
+                <input type="text" name="apellido" class="form-control" value="<?= htmlspecialchars($params['usuario']['apellido'] ?? '') ?>" required>
             </div>
 
-            <!-- Alias -->
             <div class="form-group">
                 <label for="alias">Alias</label>
-                <input type="text" name="alias" class="form-control" value="<?= htmlspecialchars($params['alias'] ?? '') ?>" required>
+                <input type="text" name="alias" class="form-control" value="<?= htmlspecialchars($params['usuario']['alias'] ?? '') ?>" required>
             </div>
 
-            <!-- Email -->
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($params['email'] ?? '') ?>" required>
+                <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($params['usuario']['email'] ?? '') ?>" required>
             </div>
 
-            <!-- Teléfono -->
             <div class="form-group">
-                <label for="telefono">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($params['telefono'] ?? '') ?>">
+                <label for="telefono">Teléfono (Opcional)</label>
+                <input type="text" name="telefono" class="form-control" value="<?= htmlspecialchars($params['usuario']['telefono'] ?? '') ?>" pattern="\d{9}" title="El teléfono debe tener 9 dígitos">
             </div>
 
-            <!-- Familia -->
             <div class="form-group">
-                <label for="idFamilia">Familia</label>
-                <select name="idFamilia" class="form-control">
+                <label for="fecha_nacimiento">Fecha de Nacimiento (Opcional)</label>
+                <input type="text" name="fecha_nacimiento" class="form-control" value="<?= htmlspecialchars($params['usuario']['fecha_nacimiento'] ?? '') ?>" pattern="\d{2}/\d{2}/\d{4}" title="La fecha debe tener el formato dd/mm/yyyy">
+            </div>
+
+            <!-- Selección de familias -->
+            <div class="form-group">
+                <label for="idFamilia">Familia(s)</label>
+                <select name="idFamilia[]" id="idFamilia" class="form-control" multiple>
                     <option value="">Sin Familia</option>
                     <?php if (isset($params['familias'])): ?>
                         <?php foreach ($params['familias'] as $familia): ?>
-                            <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= (isset($params['idFamilia']) && $familia['idFamilia'] == $params['idFamilia']) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= (isset($params['usuario']['idFamilia']) && in_array($familia['idFamilia'], (array) $params['usuario']['idFamilia'])) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($familia['nombre_familia']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -61,14 +65,14 @@
                 </select>
             </div>
 
-            <!-- Grupo -->
+            <!-- Selección de grupos -->
             <div class="form-group">
-                <label for="idGrupo">Grupo</label>
-                <select name="idGrupo" class="form-control">
+                <label for="idGrupo">Grupo(s)</label>
+                <select name="idGrupo[]" id="idGrupo" class="form-control" multiple>
                     <option value="">Sin Grupo</option>
                     <?php if (isset($params['grupos'])): ?>
                         <?php foreach ($params['grupos'] as $grupo): ?>
-                            <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= (isset($params['idGrupo']) && $grupo['idGrupo'] == $params['idGrupo']) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= (isset($params['usuario']['idGrupo']) && in_array($grupo['idGrupo'], (array) $params['usuario']['idGrupo'])) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($grupo['nombre_grupo']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -76,25 +80,25 @@
                 </select>
             </div>
 
-            <!-- Nivel de usuario -->
+            <!-- Nivel de Usuario -->
             <div class="form-group">
                 <label for="nivel_usuario">Nivel de Usuario</label>
-                <select name="nivel_usuario" class="form-control" required>
-                    <option value="usuario" <?= (isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'usuario') ? 'selected' : '' ?>>Usuario</option>
-                    <option value="admin" <?= (isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'admin') ? 'selected' : '' ?>>Administrador</option>
-                    <option value="superadmin" <?= (isset($params['nivel_usuario']) && $params['nivel_usuario'] == 'superadmin') ? 'selected' : '' ?>>Superusuario</option>
+                <select name="nivel_usuario" class="form-control" required <?= ($params['usuario']['idUser'] ?? null) === ($_SESSION['usuario']['id'] ?? null) ? 'disabled' : '' ?>>
+                    <option value="usuario" <?= (isset($params['usuario']['nivel_usuario']) && $params['usuario']['nivel_usuario'] == 'usuario') ? 'selected' : '' ?>>Usuario</option>
+                    <option value="admin" <?= (isset($params['usuario']['nivel_usuario']) && $params['usuario']['nivel_usuario'] == 'admin') ? 'selected' : '' ?>>Administrador</option>
+                    <?php if ($_SESSION['usuario']['nivel_usuario'] === 'superadmin'): ?>
+                        <option value="superadmin" <?= (isset($params['usuario']['nivel_usuario']) && $params['usuario']['nivel_usuario'] == 'superadmin') ? 'selected' : '' ?>>Superusuario</option>
+                    <?php endif; ?>
                 </select>
             </div>
 
-            <!-- Token CSRF para la seguridad -->
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
-            <!-- Botón para guardar los cambios -->
-            <button type="submit" name="bEditarUsuario" class="btn btn-primary">Guardar Cambios</button>
+            <button type="submit" name="bActualizarUsuario" class="btn btn-primary">Guardar Cambios</button>
+            <a href="index.php?ctl=listarUsuarios" class="btn btn-secondary">Cancelar</a>
         </form>
 
     <?php else: ?>
-        <!-- Mostrar mensaje de error si no tiene permisos -->
         <div class="alert alert-danger">
             No tienes permiso para acceder a esta página.
         </div>
