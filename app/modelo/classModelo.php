@@ -781,7 +781,7 @@ class GastosModelo
     public function actualizarUsuario($userId, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario)
     {
         $sql = "UPDATE usuarios SET nombre = :nombre, apellido = :apellido, alias = :alias, email = :email, 
-            telefono = :telefono, nivel_usuario = :nivel_usuario WHERE id_usuario = :userId";
+            telefono = :telefono, nivel_usuario = :nivel_usuario WHERE idUser = :userId";
 
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1873,7 +1873,7 @@ class GastosModelo
     // Obtener todos los gastos de un usuario
     public function obtenerGastosPorUsuario($userId)
     {
-        $sql = "SELECT * FROM gastos WHERE id_usuario = :userId";
+        $sql = "SELECT * FROM gastos WHERE idUser = :userId";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1882,7 +1882,7 @@ class GastosModelo
     // Insertar un nuevo gasto
     public function insertarGasto($datosGasto)
     {
-        $sql = "INSERT INTO gastos (id_usuario, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
+        $sql = "INSERT INTO gastos (idUser, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':idUser', $datosGasto['idUser'], PDO::PARAM_INT);
         $stmt->bindParam(':descripcion', $datosGasto['descripcion']);
@@ -1927,7 +1927,7 @@ class GastosModelo
     // Obtener todos los ingresos de un usuario
     public function obtenerIngresosPorUsuario($userId)
     {
-        $sql = "SELECT * FROM ingresos WHERE id_usuario = :userId";
+        $sql = "SELECT * FROM ingresos WHERE idUser = :userId";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1937,7 +1937,7 @@ class GastosModelo
     // Insertar un nuevo ingreso
     public function insertarIngreso($datosIngreso)
     {
-        $sql = "INSERT INTO ingresos (id_usuario, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
+        $sql = "INSERT INTO ingresos (idUser, descripcion, monto, fecha) VALUES (:idUser, :descripcion, :monto, :fecha)";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':idUser', $datosIngreso['idUser'], PDO::PARAM_INT);
         $stmt->bindParam(':descripcion', $datosIngreso['descripcion']);
@@ -1982,7 +1982,7 @@ class GastosModelo
     // Contar la cantidad de familias a las que pertenece un usuario
     public function contarFamiliasUsuario($userId)
     {
-        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE id_usuario = :userId";
+        $sql = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :userId";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -2002,7 +2002,7 @@ class GastosModelo
     // Contar la cantidad de grupos a los que pertenece un usuario
     public function contarGruposUsuario($userId)
     {
-        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE id_usuario = :userId";
+        $sql = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :userId";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -2021,7 +2021,7 @@ class GastosModelo
     public function obtenerSituacionPorUsuario($userId)
     {
         // Ajusta esta consulta según la estructura de tus tablas de situación financiera
-        $sql = "SELECT * FROM situacion_financiera WHERE id_usuario = :userId";
+        $sql = "SELECT * FROM situacion_financiera WHERE idUser = :userId";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -2031,9 +2031,9 @@ class GastosModelo
     // Obtener el resumen financiero de un usuario específico
     public function obtenerResumenFinancieroPorUsuario($userId)
     {
-        $sql = "SELECT SUM(cantidad) AS total_gastos FROM gastos WHERE id_usuario = :userId
+        $sql = "SELECT SUM(cantidad) AS total_gastos FROM gastos WHERE idUser = :userId
             UNION ALL
-            SELECT SUM(cantidad) AS total_ingresos FROM ingresos WHERE id_usuario = :userId";
+            SELECT SUM(cantidad) AS total_ingresos FROM ingresos WHERE idUser = :userId";
 
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
