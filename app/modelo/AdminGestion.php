@@ -4,13 +4,13 @@ require_once 'classModelo.php';
 
 class AdminGestion extends GastosModelo
 {
-    protected $conexion; // Cambiado a protected
+    protected $conexion;
     private $adminId;
 
     public function __construct($adminId)
     {
         parent::__construct(); // Inicializa la conexión a la base de datos en la clase principal
-        $this->conexion = $this->getConexion(); // Asigna la conexión desde el modelo
+        $this->conexion = $this->getConexion();
         $this->adminId = $adminId;
     }
 
@@ -35,9 +35,9 @@ class AdminGestion extends GastosModelo
             LEFT JOIN grupos g ON ug.idGrupo = g.idGrupo
             LEFT JOIN administradores_grupos ag ON ag.idGrupo = g.idGrupo
             WHERE (af.idAdmin = :idAdmin OR ag.idAdmin = :idAdmin OR u.idUser = :idAdmin)
-        ";
+            ";
 
-            // Filtrado dinámico
+            // Añadir filtros dinámicos si están presentes
             if (!empty($filtros['nombre'])) {
                 $sql .= " AND u.nombre LIKE :nombre";
             }
@@ -56,10 +56,11 @@ class AdminGestion extends GastosModelo
 
             $sql .= " GROUP BY u.idUser";
 
+            // Preparación de la consulta
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindValue(':idAdmin', $idAdmin, PDO::PARAM_INT);
 
-            // Vinculación de parámetros de filtro si existen
+            // Añadir parámetros de los filtros si están presentes
             if (!empty($filtros['nombre'])) {
                 $stmt->bindValue(':nombre', '%' . $filtros['nombre'] . '%', PDO::PARAM_STR);
             }
@@ -76,6 +77,7 @@ class AdminGestion extends GastosModelo
                 $stmt->bindValue(':nivel_usuario', $filtros['nivel_usuario'], PDO::PARAM_STR);
             }
 
+            // Ejecutar la consulta y obtener resultados
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -86,7 +88,6 @@ class AdminGestion extends GastosModelo
             throw new Exception('Error al listar los usuarios gestionados.');
         }
     }
-
 
     // Crear un nuevo usuario dentro de los límites de familia y grupo
     public function crearUsuario($datosUsuario)
@@ -120,22 +121,45 @@ class AdminGestion extends GastosModelo
         $usuario = $this->obtenerUsuarioPorId($idUser);
 
         if ($usuario && $usuario['nivel_usuario'] === 'usuario' && $this->esUsuarioGestionado($idUser)) {
-            return $this->actualizarUsuario(
-                $idUser,
-                $nuevosDatos['nombre'],
-                $nuevosDatos['apellido'],
-                $nuevosDatos['alias'],
-                $nuevosDatos['email'],
-                $nuevosDatos['telefono'],
-                'usuario', // Nivel de usuario como un parámetro adicional
-                $nuevosDatos['fecha_nacimiento']
-            );
+            $this->conexion->beginTransaction();
+
+            try {
+                $this->actualizarUsuario(
+                    $idUser,
+                    $nuevosDatos['nombre'],
+                    $nuevosDatos['apellido'],
+                    $nuevosDatos['alias'],
+                    $nuevosDatos['email'],
+                    $nuevosDatos['telefono'],
+                    $nuevosDatos['nivel_usuario'],
+                    $nuevosDatos['fecha_nacimiento']
+                );
+
+                $this->eliminarFamiliasDeUsuario($idUser);
+                if (!empty($nuevosDatos['idFamilia'])) {
+                    foreach ($nuevosDatos['idFamilia'] as $idFamilia) {
+                        $this->asignarUsuarioAFamilia($idUser, $idFamilia);
+                    }
+                }
+
+                $this->eliminarGruposDeUsuario($idUser);
+                if (!empty($nuevosDatos['idGrupo'])) {
+                    foreach ($nuevosDatos['idGrupo'] as $idGrupo) {
+                        $this->asignarUsuarioAGrupo($idUser, $idGrupo);
+                    }
+                }
+
+                $this->conexion->commit();
+                return true;
+            } catch (Exception $e) {
+                $this->conexion->rollBack();
+                error_log("Error en editarUsuarioRegular: " . $e->getMessage());
+                throw new Exception("Error al editar el usuario.");
+            }
         } else {
             throw new Exception("No tienes permisos para editar este usuario.");
         }
     }
-
-
 
     // Eliminar solo los usuarios regulares bajo la administración del admin
     public function eliminarUsuarioRegular($idUser)
@@ -149,7 +173,7 @@ class AdminGestion extends GastosModelo
         }
     }
 
-    // Verificar si el usuario está gestionado por el admin (pertenece a sus familias o grupos)
+    // Verificar si el usuario está gestionado por el admin
     private function esUsuarioGestionado($idUser)
     {
         $familiasGestionadas = $this->obtenerFamiliasAdmin($this->adminId);
@@ -169,7 +193,7 @@ class AdminGestion extends GastosModelo
         return false;
     }
 
-    // Obtener familias administradas por el admin (respetando el límite de 5)
+    // Métodos de manejo de familias y grupos
     public function obtenerFamiliasAdministradas()
     {
         $familias = $this->obtenerFamiliasAdmin($this->adminId);
@@ -179,7 +203,6 @@ class AdminGestion extends GastosModelo
         return $familias;
     }
 
-    // Obtener grupos administrados por el admin (respetando el límite de 5)
     public function obtenerGruposAdministrados()
     {
         $grupos = $this->obtenerGruposAdmin($this->adminId);
@@ -189,8 +212,84 @@ class AdminGestion extends GastosModelo
         return $grupos;
     }
 
-    public function obtenerUsuarioPorId($idUser)
+    public function eliminarFamiliasDeUsuario($idUser)
     {
-        return $this->obtenerUsuarioPorId($idUser);
+        try {
+            $sql = "DELETE FROM usuarios_familias WHERE idUser = :idUser";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+            error_log("Asociaciones de familias eliminadas para el usuario $idUser");
+        } catch (Exception $e) {
+            error_log("Error en eliminarFamiliasDeUsuario: " . $e->getMessage());
+            throw new Exception("Error al eliminar familias del usuario.");
+        }
+    }
+
+    public function eliminarGruposDeUsuario($idUser)
+    {
+        try {
+            $sql = "DELETE FROM usuarios_grupos WHERE idUser = :idUser";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->execute();
+            error_log("Asociaciones de grupos eliminadas para el usuario $idUser");
+        } catch (Exception $e) {
+            error_log("Error en eliminarGruposDeUsuario: " . $e->getMessage());
+            throw new Exception("Error al eliminar grupos del usuario.");
+        }
+    }
+
+    public function asignarUsuarioAFamilia($idUser, $idFamilia)
+    {
+        try {
+            $sqlVerificar = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
+            $stmtVerificar = $this->conexion->prepare($sqlVerificar);
+            $stmtVerificar->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtVerificar->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmtVerificar->execute();
+
+            if ($stmtVerificar->fetchColumn() > 0) {
+                error_log("El usuario $idUser ya está asignado a la familia $idFamilia");
+                return;
+            }
+
+            $sql = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUser, :idFamilia)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
+            $stmt->execute();
+            error_log("Usuario $idUser asignado a la familia $idFamilia exitosamente.");
+        } catch (Exception $e) {
+            error_log("Error en asignarUsuarioAFamilia: " . $e->getMessage());
+            throw new Exception("Error al asignar usuario a la familia.");
+        }
+    }
+
+    public function asignarUsuarioAGrupo($idUser, $idGrupo)
+    {
+        try {
+            $sqlVerificar = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
+            $stmtVerificar = $this->conexion->prepare($sqlVerificar);
+            $stmtVerificar->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmtVerificar->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            $stmtVerificar->execute();
+
+            if ($stmtVerificar->fetchColumn() > 0) {
+                error_log("El usuario $idUser ya está asignado al grupo $idGrupo");
+                return false;
+            }
+
+            $sql = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUser, :idGrupo)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
+            $stmt->execute();
+            error_log("Usuario $idUser asignado al grupo $idGrupo exitosamente.");
+            return true;
+        } catch (Exception $e) {
+            error_log("Error en asignarUsuarioAGrupo: " . $e->getMessage());
+            throw new Exception("Error al asignar usuario al grupo.");
+        }
     }
 }

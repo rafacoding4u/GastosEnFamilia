@@ -2,14 +2,18 @@
 require_once 'app/libs/bSeguridad.php';
 require_once 'app/libs/bGeneral.php';
 require_once 'app/modelo/classModelo.php';
+require_once 'app/modelo/AdminGestion.php';
 
 class UsuarioController
 {
     private $modelo;
+    private $adminGestion;
 
     public function __construct()
     {
         $this->modelo = new GastosModelo();
+        $adminId = $_SESSION['usuario']['id'] ?? null;
+        $this->adminGestion = new AdminGestion($adminId); // Asegúrate de que esta línea esté presente
     }
 
     // Verificar si el usuario es admin
@@ -110,9 +114,8 @@ class UsuarioController
                 throw new Exception('No tienes permisos para crear un usuario.');
             }
 
-            $m = new GastosModelo();
-
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Recogemos los datos del formulario
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
@@ -121,30 +124,23 @@ class UsuarioController
                 $fecha_nacimiento = recoge('fecha_nacimiento') ?: null;
                 $contrasenya = recoge('contrasenya');
                 $hashedPassword = password_hash($contrasenya, PASSWORD_BCRYPT);
-                $nivel_usuario = recoge('nivel_usuario'); // Recoger nivel de usuario seleccionado
+                $nivel_usuario = recoge('nivel_usuario');
 
-                // Generar y encriptar la contraseña premium
-                $passwordPremium = bin2hex(random_bytes(4));
-                $hashedPasswordPremium = password_hash($passwordPremium, PASSWORD_BCRYPT);
+                $idUser = $this->modelo->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
 
-                $idUser = $m->insertarUsuario($nombre, $apellido, $alias, $hashedPassword, $nivel_usuario, $fecha_nacimiento, $email, $telefono);
                 if (!$idUser) throw new Exception('Error al insertar el usuario.');
                 error_log("Usuario creado con ID $idUser");
 
-                // Actualizar la contraseña premium
-                $m->actualizarPasswordPremium($idUser, $hashedPasswordPremium);
-
-                // Lógica para la creación de familias y grupos
+                // Asignación a familia y grupo usando AdminGestion
                 $opcion_creacion = recoge('opcion_creacion');
                 if (in_array($opcion_creacion, ['crear_familia', 'crear_ambos'])) {
                     $nombre_familia = recoge('nombre_nueva_familia');
                     $password_familia = recoge('password_nueva_familia');
                     if ($nombre_familia && $password_familia) {
-                        if ($m->insertarFamilia($nombre_familia, $password_familia)) {
-                            $idFamilia = $m->obtenerUltimoId();
-                            $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-                            $m->asignarAdministradorAFamilia($idUser, $idFamilia);
-                            error_log("Usuario $idUser asignado como administrador a la familia $idFamilia");
+                        $idFamilia = $this->modelo->insertarFamilia($nombre_familia, $password_familia);
+                        if ($idFamilia) {
+                            $this->adminGestion->asignarUsuarioAFamilia($idUser, $idFamilia);
+                            $this->adminGestion->asignarAdministradorAFamilia($idUser, $idFamilia);
                         }
                     }
                 }
@@ -153,36 +149,29 @@ class UsuarioController
                     $nombre_grupo = recoge('nombre_nuevo_grupo');
                     $password_grupo = recoge('password_nuevo_grupo');
                     if ($nombre_grupo && $password_grupo) {
-                        if ($m->insertarGrupo($nombre_grupo, $password_grupo)) {
-                            $idGrupo = $m->obtenerUltimoId();
-                            $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-                            $m->asignarAdministradorAGrupo($idUser, $idGrupo);
-                            error_log("Usuario $idUser asignado como administrador al grupo $idGrupo");
+                        $idGrupo = $this->modelo->insertarGrupo($nombre_grupo, $password_grupo);
+                        if ($idGrupo) {
+                            $this->adminGestion->asignarUsuarioAGrupo($idUser, $idGrupo);
+                            $this->adminGestion->asignarAdministradorAGrupo($idUser, $idGrupo);
                         }
                     }
                 }
 
-                $m->actualizarUsuarioNivel($idUser, $nivel_usuario);
-
-                $_SESSION['mensaje_exito'] = "Usuario creado con éxito. Contraseña premium generada: <strong>$passwordPremium</strong>";
+                // Redireccionar con mensaje de éxito
+                $_SESSION['mensaje_exito'] = "Usuario creado con éxito.";
                 header('Location: index.php?ctl=listarUsuarios');
                 exit();
             }
 
             $params = [
-                'familias' => $m->obtenerFamilias(),
-                'grupos' => $m->obtenerGrupos(),
+                'familias' => $this->modelo->obtenerFamilias(),
+                'grupos' => $this->modelo->obtenerGrupos(),
                 'csrf_token' => $_SESSION['csrf_token'],
             ];
             $this->render('formCrearUsuario.php', $params);
         } catch (Exception $e) {
             error_log("Error en crearUsuario(): " . $e->getMessage());
-            $params = [
-                'mensaje' => 'Error al crear el usuario: ' . $e->getMessage(),
-                'familias' => $m->obtenerFamilias(),
-                'grupos' => $m->obtenerGrupos(),
-            ];
-            $this->render('formCrearUsuario.php', $params);
+            $this->render('formCrearUsuario.php', ['mensaje' => $e->getMessage()]);
         }
     }
 
@@ -252,115 +241,42 @@ class UsuarioController
 
 
 
+    // Método para actualizar usuario
     public function actualizarUsuario()
     {
         $conexion = $this->modelo->getConexion();
         try {
-            error_log("Entrando en actualizarUsuario()");
-
-            // Validar nivel de usuario y permisos
-            if (
-                !isset($_SESSION['usuario']['nivel_usuario']) ||
-                (!$this->esSuperAdmin() &&
-                    !($this->esAdmin() && isset($_POST['idUser']) && $this->perteneceAFamiliaOGrupo($_POST['idUser'])))
-            ) {
-                error_log("Permiso denegado: El usuario no tiene permisos para actualizar este usuario.");
-                throw new Exception('No tienes permisos para actualizar este usuario.');
-            }
-
-            $m = new GastosModelo();
-
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idUser'])) {
                 $idUser = $_POST['idUser'];
-                error_log("Procesando actualización para el usuario con ID: $idUser");
 
-                // Verificar token CSRF
-                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                    error_log("Token CSRF inválido para la actualización del usuario con ID: $idUser");
-                    throw new Exception('Token CSRF inválido.');
-                }
-
-                // Recoger y validar los datos del formulario
+                // Recoger datos del formulario
                 $nombre = recoge('nombre');
                 $apellido = recoge('apellido');
                 $alias = recoge('alias');
                 $email = recoge('email');
-                $telefono = recoge('telefono') !== '' ? recoge('telefono') : null; // Opcional
-                $fecha_nacimiento = recoge('fecha_nacimiento') !== '' ? recoge('fecha_nacimiento') : null; // Opcional
-                $idFamilia = recoge('idFamilia') ? recoge('idFamilia') : null;
-                $idGrupo = recoge('idGrupo') ? recoge('idGrupo') : null;
-                $nivel_usuario = $this->esSuperAdmin() ? recoge('nivel_usuario') : 'usuario';
+                $telefono = recoge('telefono') ?: null;
+                $fecha_nacimiento = recoge('fecha_nacimiento') ?: null;
+                $idFamilia = recoge('idFamilia') ?: null;
+                $idGrupo = recoge('idGrupo') ?: null;
 
-                $errores = [];
-                cTexto($nombre, "nombre", $errores);
-                cTexto($apellido, "apellido", $errores);
-                cUser($alias, "alias", $errores);
-                cEmail($email, $errores);
+                // Actualizar usuario principal
+                $this->modelo->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, 'usuario', $fecha_nacimiento);
 
-                // Validación del teléfono solo si no está vacío
-                if (!empty($telefono) && !preg_match('/^\d{9}$/', $telefono)) {
-                    $errores['telefono'] = "El número de teléfono debe tener 9 dígitos.";
+                // Usar AdminGestion para actualizar familias y grupos
+                $this->adminGestion->eliminarFamiliasDeUsuario($idUser); // Cambiado a adminGestion
+                $this->adminGestion->eliminarGruposDeUsuario($idUser);   // Cambiado a adminGestion
+
+                if ($idFamilia) {
+                    $this->adminGestion->asignarUsuarioAFamilia($idUser, $idFamilia); // Cambiado a adminGestion
+                }
+                if ($idGrupo) {
+                    $this->adminGestion->asignarUsuarioAGrupo($idUser, $idGrupo); // Cambiado a adminGestion
                 }
 
-                // Validación de la fecha de nacimiento solo si no está vacía
-                if (!empty($fecha_nacimiento) && !preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $fecha_nacimiento)) {
-                    $errores['fecha_nacimiento'] = "La fecha debe tener el formato dd/mm/yyyy.";
-                }
-
-                // Validar existencia de familia y grupo
-                if ($idFamilia && !$m->obtenerFamiliaPorId($idFamilia)) {
-                    error_log("Error: La familia con ID $idFamilia no existe.");
-                    $errores['familia'] = 'La familia seleccionada no existe.';
-                }
-                if ($idGrupo && !$m->obtenerGrupoPorId($idGrupo)) {
-                    error_log("Error: El grupo con ID $idGrupo no existe.");
-                    $errores['grupo'] = 'El grupo seleccionado no existe.';
-                }
-
-                if (empty($errores)) {
-                    $conexion->beginTransaction();
-                    error_log("Iniciando transacción para la actualización del usuario con ID: $idUser");
-
-                    // Actualizar datos de usuario
-                    if (!$m->actualizarUsuario($idUser, $nombre, $apellido, $alias, $email, $telefono, $nivel_usuario, $fecha_nacimiento)) {
-                        error_log("Error al actualizar los datos del usuario con ID: $idUser");
-                        throw new Exception('Error al actualizar los datos del usuario.');
-                    }
-
-                    // Eliminar asignaciones previas de familia y grupo
-                    $m->eliminarFamiliasDeUsuario($idUser);
-                    $m->eliminarGruposDeUsuario($idUser);
-
-                    // Asignar nueva familia y grupo si están seleccionados
-                    if ($idFamilia) {
-                        $m->asignarUsuarioAFamilia($idUser, $idFamilia);
-                        error_log("Usuario $idUser asignado a la familia $idFamilia");
-                    }
-                    if ($idGrupo) {
-                        $m->asignarUsuarioAGrupo($idUser, $idGrupo);
-                        error_log("Usuario $idUser asignado al grupo $idGrupo");
-                    }
-
-                    $conexion->commit();
-                    $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente';
-                    header('Location: index.php?ctl=listarUsuarios');
-                    exit();
-                } else {
-                    $params['errores'] = $errores;
-                    $params['usuario'] = compact('nombre', 'apellido', 'alias', 'email', 'telefono', 'fecha_nacimiento', 'nivel_usuario', 'idFamilia', 'idGrupo');
-                }
-            } else {
-                throw new Exception('Método de solicitud no permitido o ID de usuario no proporcionado.');
+                $_SESSION['mensaje_exito'] = 'Usuario actualizado correctamente';
+                header('Location: index.php?ctl=listarUsuarios');
+                exit();
             }
-
-            // Preparar datos para la vista de edición
-            $familias = $m->obtenerFamilias();
-            $grupos = $m->obtenerGrupos();
-            $params['familias'] = $familias;
-            $params['grupos'] = $grupos;
-            $params['csrf_token'] = $_SESSION['csrf_token'];
-
-            $this->render('formEditarUsuario.php', $params);
         } catch (Exception $e) {
             if ($conexion->inTransaction()) {
                 $conexion->rollBack();
@@ -369,7 +285,6 @@ class UsuarioController
             $this->redireccionarError('Error al actualizar el usuario: ' . $e->getMessage());
         }
     }
-
 
     public function editarUsuario()
     {
@@ -446,53 +361,25 @@ class UsuarioController
     // Eliminar usuario
     public function eliminarUsuario()
     {
-        $conexion = $this->modelo->getConexion();
         try {
-            // Verificación de permisos
-            if (
-                $_SESSION['usuario']['nivel_usuario'] !== 'superadmin' &&
-                !($this->esAdmin() && $this->perteneceAFamiliaOGrupo($_GET['idUser']))
-            ) {
-                throw new Exception('No tienes permisos para eliminar este usuario.');
-            }
+            $idUser = $_GET['idUser'] ?? null;
+            if (!$idUser) throw new Exception('ID de usuario no proporcionado.');
 
-            // Obtener ID del usuario a eliminar
-            $idUser = isset($_GET['idUser']) ? (int)$_GET['idUser'] : null;
-
-            if (!$idUser) {
-                throw new Exception('ID de usuario no proporcionado.');
-            }
-
-            $m = new GastosModelo();
-
-            // Verificar si el usuario existe
-            $usuario = $m->obtenerUsuarioPorId($idUser);
-            if (!$usuario) {
-                throw new Exception('Usuario no encontrado.');
-            }
-
-            // Iniciar transacción
+            $conexion = $this->modelo->getConexion();
             $conexion->beginTransaction();
 
-            // Eliminar registros de gastos e ingresos asociados al usuario
-            if (!$m->eliminarGastosPorUsuario($idUser) || !$m->eliminarIngresosPorUsuario($idUser)) {
-                throw new Exception('Error al eliminar los registros de gastos o ingresos del usuario.');
-            }
+            // Eliminar asociaciones de familias y grupos del usuario usando AdminGestion
+            $this->adminGestion->eliminarFamiliasDeUsuario($idUser); // Cambiado a adminGestion
+            $this->adminGestion->eliminarGruposDeUsuario($idUser);   // Cambiado a adminGestion
 
-            // Eliminar el usuario
-            if (!$m->eliminarUsuarioPorId($idUser)) {
-                throw new Exception('Error al eliminar el usuario.');
-            }
+            // Eliminar usuario en sí
+            $this->modelo->eliminarUsuarioPorId($idUser);
 
-            // Confirmar transacción
             $conexion->commit();
-
-            // Redirección después de eliminación exitosa con mensaje de éxito
             $_SESSION['mensaje_exito'] = 'Usuario eliminado correctamente';
             header('Location: index.php?ctl=listarUsuarios');
             exit();
         } catch (Exception $e) {
-            // Rollback en caso de error
             if ($conexion->inTransaction()) {
                 $conexion->rollBack();
             }
@@ -510,13 +397,11 @@ class UsuarioController
     private function asignarFamiliasAUsuario($idUser, $familiasSeleccionadas)
     {
         try {
-            $m = new GastosModelo();
-            // Primero, eliminamos las asociaciones previas del usuario en la tabla usuarios_familias
-            $m->eliminarFamiliasDeUsuario($idUser);
+            // Usar AdminGestion para eliminar y asignar familias
+            $this->adminGestion->eliminarFamiliasDeUsuario($idUser); // Cambiado a adminGestion
 
-            // Luego, asignamos las nuevas familias seleccionadas
             foreach ($familiasSeleccionadas as $idFamilia) {
-                $m->asignarUsuarioAFamilia($idUser, $idFamilia);
+                $this->adminGestion->asignarUsuarioAFamilia($idUser, $idFamilia); // Cambiado a adminGestion
             }
             error_log("Asignación de familias completada para el usuario $idUser.");
         } catch (Exception $e) {

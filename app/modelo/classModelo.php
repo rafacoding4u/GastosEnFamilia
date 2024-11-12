@@ -243,64 +243,9 @@ class GastosModelo
         return $this->conexion->lastInsertId();
     }
 
-    // Asignar un usuario a una familia específica con verificación previa
-    public function asignarUsuarioAFamilia($idUser, $idFamilia)
-    {
-        try {
-            // Verificar si el usuario ya está asignado a la familia
-            $sqlVerificar = "SELECT COUNT(*) FROM usuarios_familias WHERE idUser = :idUser AND idFamilia = :idFamilia";
-            $stmtVerificar = $this->conexion->prepare($sqlVerificar);
-            $stmtVerificar->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmtVerificar->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-            $stmtVerificar->execute();
+    
 
-            if ($stmtVerificar->fetchColumn() > 0) {
-                error_log("El usuario $idUser ya está asignado a la familia $idFamilia");
-                return; // No hacer nada si ya está asignado
-            }
-
-            // Proceder a asignar si no existe la asignación
-            $sql = "INSERT INTO usuarios_familias (idUser, idFamilia) VALUES (:idUser, :idFamilia)";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmt->bindParam(':idFamilia', $idFamilia, PDO::PARAM_INT);
-            $stmt->execute();
-            error_log("Usuario $idUser asignado a la familia $idFamilia exitosamente.");
-        } catch (Exception $e) {
-            error_log("Error en asignarUsuarioAFamilia: " . $e->getMessage());
-            throw new Exception("Error al asignar usuario a la familia.");
-        }
-    }
-
-    // Asignar un usuario a un grupo específico con verificación previa
-    public function asignarUsuarioAGrupo($idUser, $idGrupo)
-    {
-        try {
-            // Verificar si el usuario ya está asignado al grupo
-            $sqlVerificar = "SELECT COUNT(*) FROM usuarios_grupos WHERE idUser = :idUser AND idGrupo = :idGrupo";
-            $stmtVerificar = $this->conexion->prepare($sqlVerificar);
-            $stmtVerificar->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmtVerificar->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
-            $stmtVerificar->execute();
-
-            if ($stmtVerificar->fetchColumn() > 0) {
-                error_log("El usuario $idUser ya está asignado al grupo $idGrupo");
-                return false; // Retorna false si ya está asignado
-            }
-
-            // Proceder a asignar si no existe la asignación
-            $sql = "INSERT INTO usuarios_grupos (idUser, idGrupo) VALUES (:idUser, :idGrupo)";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmt->bindParam(':idGrupo', $idGrupo, PDO::PARAM_INT);
-            $stmt->execute();
-            error_log("Usuario $idUser asignado al grupo $idGrupo exitosamente.");
-            return true; // Retorna true si la asignación fue exitosa
-        } catch (Exception $e) {
-            error_log("Error en asignarUsuarioAGrupo: " . $e->getMessage());
-            throw new Exception("Error al asignar usuario al grupo.");
-        }
-    }
+    
 
     public function obtenerGruposPorAdministrador($idAdmin)
     {
@@ -2036,34 +1981,10 @@ class GastosModelo
             throw new Exception("No se pudo asignar el usuario a la familia.");
         }
     }
-    public function eliminarFamiliasDeUsuario($idUser)
-    {
-        try {
-            $sql = "DELETE FROM usuarios_familias WHERE idUser = :idUser";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmt->execute();
-            error_log("Asociaciones de familias eliminadas para el usuario $idUser");
-        } catch (Exception $e) {
-            error_log("Error en eliminarFamiliasDeUsuario: " . $e->getMessage());
-            throw new Exception("Error al eliminar familias del usuario.");
-        }
-    }
+    
 
 
-    public function eliminarGruposDeUsuario($idUser)
-    {
-        try {
-            $sql = "DELETE FROM usuarios_grupos WHERE idUser = :idUser";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-            $stmt->execute();
-            error_log("Asociaciones de grupos eliminadas para el usuario $idUser");
-        } catch (Exception $e) {
-            error_log("Error en eliminarGruposDeUsuario: " . $e->getMessage());
-            throw new Exception("Error al eliminar grupos del usuario.");
-        }
-    }
+    
 
 
 

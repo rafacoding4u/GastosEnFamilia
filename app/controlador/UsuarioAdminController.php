@@ -91,14 +91,24 @@ class UsuarioAdminController
                 throw new Exception('ID de usuario no especificado.');
             }
 
+            // Validar acceso del admin al usuario regular
             $usuario = $this->validarAccesoUsuarioRegular($idUser);
+
+            // Cargar listas de familias y grupos que gestiona el admin
+            $familias = $this->gestionAdmin->obtenerFamiliasAdministradas();
+            $grupos = $this->gestionAdmin->obtenerGruposAdministrados();
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $nuevosDatos = [
                     'nombre' => recoge('nombre'),
                     'apellido' => recoge('apellido'),
                     'alias' => recoge('alias'),
-                    'email' => recoge('email')
+                    'email' => recoge('email'),
+                    'telefono' => recoge('telefono'),
+                    'fecha_nacimiento' => recoge('fecha_nacimiento'),
+                    'idFamilia' => $_POST['idFamilia'] ?? [],
+                    'idGrupo' => $_POST['idGrupo'] ?? [],
+                    'nivel_usuario' => recoge('nivel_usuario')
                 ];
                 $this->gestionAdmin->editarUsuarioRegular($idUser, $nuevosDatos);
                 $_SESSION['mensaje_exito'] = "Usuario editado correctamente.";
@@ -106,10 +116,12 @@ class UsuarioAdminController
                 exit();
             }
 
-            // Cargar datos del usuario para la edición
+            // Preparar datos para la vista, incluyendo familias y grupos
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             $params = [
                 'usuario' => $usuario,
+                'familias' => $familias,
+                'grupos' => $grupos,
                 'csrf_token' => $_SESSION['csrf_token']
             ];
             $this->render('formEditarUsuarioAdmin.php', $params);
@@ -118,6 +130,7 @@ class UsuarioAdminController
             $this->redireccionarError('Error al editar el usuario.');
         }
     }
+
 
     // Eliminar usuario regular gestionado por el Admin
     public function eliminarUsuarioRegular()
@@ -143,8 +156,10 @@ class UsuarioAdminController
     private function validarAccesoUsuarioRegular($idUser)
     {
         $usuarios = $this->gestionAdmin->listarUsuariosGestionados();
+
+        // Filtrar usuarios asegurando que 'id' existe en cada elemento
         $usuario = array_filter($usuarios, function ($u) use ($idUser) {
-            return $u['id'] == $idUser && $u['nivel_usuario'] === 'usuario';
+            return isset($u['idUser']) && $u['idUser'] == $idUser && isset($u['nivel_usuario']) && $u['nivel_usuario'] === 'usuario';
         });
 
         if (empty($usuario)) {
@@ -153,6 +168,7 @@ class UsuarioAdminController
 
         return current($usuario);  // Devuelve el primer usuario encontrado
     }
+
 
     // Renderizar vistas
     private function render($vista, $params = [])

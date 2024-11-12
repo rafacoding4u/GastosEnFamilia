@@ -28,8 +28,9 @@ class UsuarioGestion
         $email = $nuevosDatos['email'] ?? null;
         $telefono = $nuevosDatos['telefono'] ?? null;
         $fecha_nacimiento = $nuevosDatos['fecha_nacimiento'] ?? null;
+        $nivel_usuario = $nuevosDatos['nivel_usuario'] ?? null; // Agregar esta línea
 
-        // Llamada a actualizarUsuario con 7 parámetros requeridos
+        // Llamada a actualizarUsuario con 8 parámetros requeridos
         return $this->modelo->actualizarUsuario(
             $this->userId,
             $nombre,
@@ -37,9 +38,11 @@ class UsuarioGestion
             $alias,
             $email,
             $telefono,
-            $fecha_nacimiento
+            $fecha_nacimiento,
+            $nivel_usuario // Ahora se pasará sin problemas
         );
     }
+
 
     // Listar solo los gastos del propio usuario
     public function listarGastosUsuario()
