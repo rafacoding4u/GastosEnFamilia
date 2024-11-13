@@ -58,7 +58,7 @@
                     <?php if (isset($params['familias'])): ?>
                         <?php foreach ($params['familias'] as $familia): ?>
                             <option value="<?= htmlspecialchars($familia['idFamilia']) ?>" <?= (isset($params['usuario']['idFamilia']) && in_array($familia['idFamilia'], (array) $params['usuario']['idFamilia'])) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($familia['nombre_familia']) ?>
+                                <?= htmlspecialchars($familia['nombre_familia'] ?? 'Familia sin nombre') ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -73,7 +73,7 @@
                     <?php if (isset($params['grupos'])): ?>
                         <?php foreach ($params['grupos'] as $grupo): ?>
                             <option value="<?= htmlspecialchars($grupo['idGrupo']) ?>" <?= (isset($params['usuario']['idGrupo']) && in_array($grupo['idGrupo'], (array) $params['usuario']['idGrupo'])) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($grupo['nombre_grupo']) ?>
+                                <?= htmlspecialchars($grupo['nombre_grupo'] ?? 'Grupo sin nombre') ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>

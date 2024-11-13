@@ -196,20 +196,62 @@ class AdminGestion extends GastosModelo
     // Métodos de manejo de familias y grupos
     public function obtenerFamiliasAdministradas()
     {
-        $familias = $this->obtenerFamiliasAdmin($this->adminId);
-        if (count($familias) >= 5) {
-            throw new Exception("Límite de 5 familias administradas alcanzado.");
+        try {
+            $sql = "
+            SELECT f.idFamilia, f.nombre_familia
+            FROM familias f
+            JOIN administradores_familias af ON af.idFamilia = f.idFamilia
+            WHERE af.idAdmin = :adminId
+        ";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':adminId', $this->adminId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $familias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Verificar que el resultado contiene los datos esperados
+            error_log("Familias administradas obtenidas: " . json_encode($familias));
+
+            if (count($familias) >= 5) {
+                throw new Exception("Límite de 5 familias administradas alcanzado.");
+            }
+
+            return $familias;
+        } catch (PDOException $e) {
+            error_log("Error en obtenerFamiliasAdministradas(): " . $e->getMessage());
+            throw new Exception("Error al obtener las familias administradas.");
         }
-        return $familias;
     }
 
     public function obtenerGruposAdministrados()
     {
-        $grupos = $this->obtenerGruposAdmin($this->adminId);
-        if (count($grupos) >= 5) {
-            throw new Exception("Límite de 5 grupos administrados alcanzado.");
+        try {
+            $sql = "
+            SELECT g.idGrupo, g.nombre_grupo
+            FROM grupos g
+            JOIN administradores_grupos ag ON ag.idGrupo = g.idGrupo
+            WHERE ag.idAdmin = :adminId
+        ";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(':adminId', $this->adminId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $grupos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Verificar que el resultado contiene los datos esperados
+            error_log("Grupos administrados obtenidos: " . json_encode($grupos));
+
+            if (count($grupos) >= 5) {
+                throw new Exception("Límite de 5 grupos administrados alcanzado.");
+            }
+
+            return $grupos;
+        } catch (PDOException $e) {
+            error_log("Error en obtenerGruposAdministrados(): " . $e->getMessage());
+            throw new Exception("Error al obtener los grupos administrados.");
         }
-        return $grupos;
     }
 
     public function eliminarFamiliasDeUsuario($idUser)

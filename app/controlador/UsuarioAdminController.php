@@ -98,6 +98,10 @@ class UsuarioAdminController
             $familias = $this->gestionAdmin->obtenerFamiliasAdministradas();
             $grupos = $this->gestionAdmin->obtenerGruposAdministrados();
 
+            // Verificar contenido de las listas de familias y grupos
+            error_log("Contenido de familias: " . json_encode($familias));
+            error_log("Contenido de grupos: " . json_encode($grupos));
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $nuevosDatos = [
                     'nombre' => recoge('nombre'),
@@ -130,6 +134,7 @@ class UsuarioAdminController
             $this->redireccionarError('Error al editar el usuario.');
         }
     }
+
 
 
     // Eliminar usuario regular gestionado por el Admin
